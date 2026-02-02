@@ -437,6 +437,12 @@ claude-code-onboarding/
     ├── settings.json                    # Permissions and hook configs
     ├── settings.local.json              # Personal overrides (gitignored)
     │
+    ├── hooks/                            # Lifecycle hook scripts (chmod +x after cloning)
+    │   ├── pre-bash-guard.sh             # Block destructive bash commands
+    │   ├── pre-edit-protect-sensitive.sh # Block edits to .env, keys, lock files
+    │   ├── post-edit-format.sh           # Auto-format TS/JS/Dart/Python after edits
+    │   └── stop-secret-scan.sh           # Scan changed files for leaked secrets
+    │
     ├── agents/                          # Specialist AI personas (invoke with @name)
     │   ├── java-spring-api.md           # Spring Boot WebFlux expert
     │   ├── nodejs-typescript.md         # Node.js / TypeScript expert
