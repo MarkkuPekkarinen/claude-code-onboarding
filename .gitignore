@@ -1,0 +1,124 @@
+# Miscellaneous
+*.class
+*.lock
+*.log
+*.pyc
+*.swp
+.buildlog/
+.history
+
+# Environment
+.env
+.env.local
+*.env
+
+# Claude Code local settings
+.claude/settings.local.json
+.claude/mcp.local.json
+CLAUDE.local.md
+
+# IDE
+.idea/
+.vscode/*
+!.vscode/launch.json
+!.vscode/settings.json
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Flutter repo-specific
+app/.dart_tool/
+app/.packages
+app/build/
+app/.flutter-plugins
+app/.flutter-plugins-dependencies
+
+/bin/cache/
+/bin/internal/bootstrap.bat
+/bin/internal/bootstrap.sh
+/bin/mingit/
+/dev/benchmarks/mega_gallery/
+/dev/bots/.recipe_deps
+/dev/bots/android_tools/
+/dev/devicelab/ABresults*.json
+/dev/docs/doc/
+/dev/docs/flutter.docs.zip
+/dev/docs/lib/
+/dev/docs/pubspec.yaml
+/dev/integration_tests/**/xcuserdata
+/dev/integration_tests/**/Pods
+/packages/flutter/coverage/
+version
+analysis_benchmark.json
+
+# Claude temp files
+.claude/temp/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Node
+node_modules/
+
+# Generated
+*.g.dart
+*.freezed.dart
+
+# Build outputs
+*.apk
+*.aab
+*.ipa
+*.app
+
+# Coverage
+coverage/
+
+# packages file containing multi-root paths
+.packages.generated
+
+# Flutter/Dart/Pub related
+**/doc/api/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+**/generated_plugin_registrant.dart
+.packages
+.pub-preload-cache/
+.pub/
+build/
+flutter_*.png
+linked_*.ds
+unlinked.ds
+unlinked_spec.ds
+
+# Android related
+**/android/**/gradle-wrapper.jar
+.gradle/
+**/android/captures/
+**/android/gradlew
+**/android/gradlew.bat
+**/android/local.properties
+**/android/**/GeneratedPluginRegistrant.java
+**/android/key.properties
+*.jks
+
+# MCP & API keys
+.mcp.json
+.env
+.env.local
+.env*.local
+*-credentials.json
+*-credentials-*.json
+
+# Claude
+.claude/settings.local.json
+
+sheets-mcp-credentials.json
+
+.firebase/**/*
