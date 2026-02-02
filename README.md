@@ -560,8 +560,6 @@ This repo's `settings.json` comes pre-configured with sensible defaults.
 
 ### Prompting Best Practices
 
-### Prompting Best Practices
-
 1. **Be specific** — The more context you give Claude, the better the output:
 
 | ❌ Vague | ✅ Specific |
