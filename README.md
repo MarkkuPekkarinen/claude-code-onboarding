@@ -136,17 +136,54 @@ Then **restart Claude Code** (`/exit`) or restart(close and reopen) the vscode.
 
 Here's a quick reference for every building block. Knowing *when to use what* is the key to being productive.
 
-### Quick Decision Matrix
 
-| Need | Use |
-|------|-----|
-| Set project conventions & context | `CLAUDE.md` |
-| Repeatable prompt you trigger yourself | Slash Command |
-| Deep domain expertise in isolation | Agent (Subagent) |
-| Auto-applied knowledge & templates | Skill |
-| Hard enforcement of rules | Hook |
-| Connect to external services | MCP Server |
-| Persist memory across sessions | Claude-Mem plugin |
+### Quick Overview
+
+| # | Component | What It Does | Location | Invoked By |
+|---|-----------|-------------|----------|------------|
+| 1 | **CLAUDE.md** | Markdown files Claude reads at startup for project context — tech stack, coding standards, commands, architecture, workflows | `./CLAUDE.md` (project), `~/.claude/CLAUDE.md` (global), `.claude/rules/` (conditional) | Auto-loaded at startup |
+| 2 | **settings.json** | JSON configuration for permissions, hooks, and environment — allow/deny/ask permission rules, hooks config, env vars | `.claude/settings.json` (project), `~/.claude/settings.json` (user) | Auto-loaded at startup |
+| 3 | **Skills** | Modular expertise Claude uses **automatically** based on context — lazy-loaded when needed, not user-invoked. Best for complex, recurring workflows (code review, API design patterns) | `.claude/skills/<skill-name>/SKILL.md` | Claude decides (auto) |
+| 4 | **Slash Commands** | `/command` shortcuts for repeatable prompts — quick actions you trigger manually | `.claude/commands/<command-name>.md` | You type `/command` |
+| 5 | **Sub-agents** | Specialized AI with isolated context for complex tasks — parallel processing, focused expertise, preserves main context | `.claude/agents/<agent-name>.md` | You type `@agent` |
+| 6 | **Hooks** | Scripts that run at lifecycle events (pre/post tool use, session start/stop) — auto-formatting, validation, notifications | Defined in `settings.json` → `"hooks"` | Automatic on events |
+| 7 | **MCP Servers** | Tool connections to external services — GitHub, Slack, databases, live docs, APIs | `.mcp.json` (project root) | Claude uses as needed |
+
+### The Golden Formula
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│  CLAUDE.md          → What Claude knows about your project   │
+│  settings.json      → What Claude can / can't do             │
+│  Skills             → How Claude handles recurring tasks     │
+│  Commands           → Quick actions you trigger manually     │
+│  Sub-agents         → Specialists for complex work           │
+│  Hooks              → Automatic formatting / validation      │
+│  MCP Servers        → External tool connections              │
+└──────────────────────────────────────────────────────────────┘
+```
+
+### When to Use What — Decision Matrix
+
+| You Need To... | Use | Example |
+|-----------------|-----|---------|
+| Set project conventions & context | `CLAUDE.md` | Tech stack, coding standards, git workflow |
+| Control what Claude can do | `settings.json` | Allow `git` commands, deny `sudo` |
+| Auto-apply patterns for a domain | Skill | Always use Riverpod when building Flutter |
+| Run a repeatable prompt yourself | Slash Command | `/scaffold-spring-api weather-service` |
+| Get deep domain expertise in isolation | Sub-agent | `@database-designer Design schema for...` |
+| Enforce hard rules every time | Hook | Block commits without passing tests |
+| Connect to external services | MCP Server | GitHub PRs, Context7 live docs, Firebase |
+| Remember things across sessions | Claude-Mem plugin | Persistent memory of past decisions |
+
+### MCP Servers in This Repo
+
+| Server | What It Does |
+|--------|-------------|
+| **Context7** | Live, up-to-date documentation for any library — add `use context7` to prompts |
+| **GitHub** | Create issues, PRs, browse repos, review code |
+| **Filesystem** | Advanced file search and manipulation |
+| **Firebase** | Firestore and Auth operations |
 
 
 ### CLAUDE.md — Project Memory
@@ -285,6 +322,8 @@ claude-code-onboarding/
     │
     ├── agents/                         # Specialist AI personas
     │   ├── java-spring-api.md          # Spring Boot WebFlux expert
+    │   ├── nodejs-typescript.md        # Node.js 24 / TypeScript 5.x expert
+    │   ├── python-dev.md              # Python 3.14 / FastAPI expert
     │   ├── angular-spa.md              # Angular frontend expert
     │   ├── flutter-mobile.md           # Flutter mobile expert
     │   ├── database-designer.md        # PostgreSQL + Firestore architect
@@ -292,6 +331,8 @@ claude-code-onboarding/
     │
     ├── commands/                        # Slash commands (triggered with /name)
     │   ├── scaffold-spring-api.md      # /scaffold-spring-api <name>
+    │   ├── scaffold-node-api.md        # /scaffold-node-api <name>
+    │   ├── scaffold-python-api.md      # /scaffold-python-api <name>
     │   ├── scaffold-angular-app.md     # /scaffold-angular-app <name>
     │   ├── scaffold-flutter-app.md     # /scaffold-flutter-app fitness tracker
     │   ├── design-database.md          # /design-database <domain description>
@@ -301,6 +342,8 @@ claude-code-onboarding/
     │
     └── skills/                          # Auto-activated domain knowledge
         ├── java-spring-api/SKILL.md    # Spring Boot patterns & templates
+        ├── nodejs-typescript/SKILL.md  # Node.js / TypeScript patterns & templates
+        ├── python-dev/SKILL.md         # Python / FastAPI patterns & templates
         ├── angular-spa/SKILL.md        # Angular patterns & templates
         ├── flutter-mobile/SKILL.md     # Flutter patterns & templates
         ├── database-design/SKILL.md    # Schema design patterns
@@ -325,7 +368,7 @@ Then iterate:
 > Add a dashboard screen showing weekly workout summary with charts
 ```
 
-### Exercise 2: Build a Weather REST API
+### Exercise 2: Build a Weather REST API (Java)
 
 ```
 > /scaffold-spring-api weather-service
@@ -333,7 +376,25 @@ Then iterate:
 > Add integration tests for the weather endpoint
 ```
 
-### Exercise 3: Design a Full-Stack E-Commerce System
+### Exercise 3: Build a Todo API (Node.js/TypeScript)
+
+```
+> /scaffold-node-api todo-service
+> @nodejs-typescript Add a Todo model with Zod, a CRUD router, and an in-memory store
+> Add Vitest tests for create and list endpoints
+> Add a PUT endpoint to mark todos as complete
+```
+
+### Exercise 4: Build an Analytics API (Python)
+
+```
+> /scaffold-python-api analytics-service
+> @python-dev Add an async endpoint that accepts event data and stores it with timestamps
+> Create a Pydantic model for events with type, payload, and metadata
+> Add pytest tests for the event endpoints
+```
+
+### Exercise 5: Design a Full-Stack E-Commerce System
 
 ```
 > /design-architecture An e-commerce platform with product catalog, shopping cart, checkout, and order tracking. Angular SPA for web, Flutter for mobile, Spring Boot backend.
@@ -342,15 +403,17 @@ Then iterate:
 > @java-spring-api Create CRUD endpoints for Products with name, description, price, category, and image URL
 ```
 
-### Exercise 4: Use Context7 for Latest Docs
+### Exercise 6: Use Context7 for Latest Docs
 
 ```
 > Create a Spring Boot WebFlux endpoint that uses Spring Security with JWT. use context7
 > Build an Angular component using the new Angular signals API. use context7
 > Set up Firebase App Check in Flutter. use context7
+> Create a FastAPI endpoint with async SQLAlchemy. use context7
+> Build an Express middleware with Zod request validation. use context7
 ```
 
-### Exercise 5: Design & Review Architecture
+### Exercise 7: Design & Review Architecture
 
 ```
 > @architect Review the current project structure and suggest improvements
@@ -358,7 +421,7 @@ Then iterate:
 > @database-designer Design the notification schema with PostgreSQL for persistence and Firestore for real-time delivery
 ```
 
-### Exercise 6: Add a Feature End-to-End
+### Exercise 8: Add a Feature End-to-End
 
 ```
 > /add-feature User profile management — users can update their name, avatar, and preferences. Backend API + Angular settings page + Flutter profile screen
@@ -378,6 +441,14 @@ Then iterate:
 
 5. **Resume sessions** — `claude -c` continues your last conversation, `claude --resume` lets you pick from recent sessions
 
+### CLAUDE.md Tips
+
+- Keep it under 20KB — too much drowns the signal
+- Put the most important rules at the top
+- Use imports for large docs: `@docs/api-reference.md`
+- Use `CLAUDE.local.md` for personal preferences (auto-gitignored)
+
+---
 
 ## 10. Troubleshooting
 
@@ -427,3 +498,6 @@ claude doctor
 | MCP Specification | [modelcontextprotocol.io](https://modelcontextprotocol.io) |
 | Prompting Guide | [docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview) |
 
+---
+
+**Happy coding! 🎉** Start with Exercise 1, and within an hour you'll be building real features with Claude Code as your AI pair programmer.
