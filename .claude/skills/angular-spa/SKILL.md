@@ -13,160 +13,129 @@ npx @angular/cli@latest new my-app \
 cd my-app
 ```
 
-## Standalone Component Template
-```typescript
-import { Component, ChangeDetectionStrategy, signal, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+## Code Templates
 
-@Component({
-  selector: 'app-feature',
-  standalone: true,
-  imports: [CommonModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    @if (loading()) {
-      <div class="spinner">Loading...</div>
-    } @else {
-      <div class="feature">
-        @for (item of items(); track item.id) {
-          <div class="feature__item">{{ item.name }}</div>
-        }
-      </div>
-    }
-  `,
-  styles: [`
-    .feature { display: flex; flex-direction: column; gap: 1rem; }
-    .feature__item { padding: 1rem; border: 1px solid #e0e0e0; border-radius: 8px; }
-  `]
-})
-export class FeatureComponent {
-  private service = inject(FeatureService);
-  items = signal<Item[]>([]);
-  loading = signal(true);
+For standalone component, service, lazy routes, app.config, interceptor, and test templates:
+**Read** [`reference/angular-templates.md`](/Users/kumaraniyyasamysrinivasan/mydrive/personal/claude-code-onboarding/.claude/skills/angular-spa/reference/angular-templates.md)
 
-  constructor() {
-    this.service.getAll().subscribe({
-      next: (data) => { this.items.set(data); this.loading.set(false); },
-      error: () => this.loading.set(false),
-    });
-  }
-}
+## Process
+
+1. **Understand Requirements** — Clarify feature scope, API endpoints, data models, and UI requirements
+2. **Scaffold Structure** — Create feature folder under `src/app/features/<feature-name>/`
+3. **Generate Component** — Use Read tool to access standalone component template; create with signals-based state
+4. **Create Service** — Use Read tool for service template; implement API calls with HttpClient + RxJS
+5. **Configure Routes** — Add lazy-loaded route using `loadComponent` in `app.routes.ts` or feature routes
+6. **Write Tests** — Use Read tool for test templates; write unit tests for component and service
+7. **Style Component** — Create SCSS file with BEM naming (`.block__element--modifier`)
+8. **Verify Build** — Run `ng build` to ensure no compilation errors
+
+## Key Patterns
+
+| Pattern | Description |
+|---------|-------------|
+| **Standalone Component** | Use `standalone: true`, no NgModule required |
+| **Signals** | Use `signal()`, `computed()`, `effect()` for reactive state |
+| **inject() Function** | Prefer `inject()` over constructor injection |
+| **OnPush Change Detection** | Use `ChangeDetectionStrategy.OnPush` for performance |
+| **Lazy Loading** | Use `loadComponent` for routes, `loadChildren` for feature routes |
+| **Functional Interceptors** | Use `HttpInterceptorFn` instead of class-based interceptors |
+| **Functional Guards** | Use `CanActivateFn` instead of class-based guards |
+| **Control Flow Syntax** | Use `@if`, `@for`, `@switch` instead of `*ngIf`, `*ngFor` |
+| **BEM Naming** | Use `.block__element--modifier` for CSS classes |
+| **RxJS Observables** | Return `Observable<T>` from services, subscribe in components |
+
+## Folder Structure
+
+```
+src/app/
+├── core/               # Singletons: auth, interceptors, guards
+│   ├── auth/
+│   ├── interceptors/
+│   └── guards/
+├── shared/             # Reusable components, pipes, directives
+│   ├── components/
+│   ├── pipes/
+│   └── directives/
+├── features/           # Feature modules (lazy loaded)
+│   ├── dashboard/
+│   │   ├── dashboard.component.ts
+│   │   ├── dashboard.component.html
+│   │   ├── dashboard.component.scss
+│   │   └── dashboard.component.spec.ts
+│   ├── users/
+│   │   ├── users.routes.ts
+│   │   ├── user-list.component.ts
+│   │   └── user-detail.component.ts
+│   └── settings/
+├── app.component.ts
+├── app.routes.ts
+└── app.config.ts
 ```
 
-## Service Template
-```typescript
-import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+## Error Handling
 
-@Injectable({ providedIn: 'root' })
-export class UserService {
-  private http = inject(HttpClient);
-  private baseUrl = `${environment.apiUrl}/api/v1/users`;
+### Common Compilation Errors
 
-  getAll(): Observable<User[]> {
-    return this.http.get<User[]>(this.baseUrl);
-  }
+**Error:** `NullInjectorError: No provider for HttpClient`
+- **Fix:** Add `provideHttpClient()` to `app.config.ts` providers
 
-  getById(id: string): Observable<User> {
-    return this.http.get<User>(`${this.baseUrl}/${id}`);
-  }
+**Error:** `Component is not standalone`
+- **Fix:** Add `standalone: true` to `@Component` decorator
 
-  create(dto: CreateUserDto): Observable<User> {
-    return this.http.post<User>(this.baseUrl, dto);
-  }
+**Error:** `Cannot find module './feature.component'`
+- **Fix:** Ensure component is exported with `export class FeatureComponent`
 
-  update(id: string, dto: UpdateUserDto): Observable<User> {
-    return this.http.patch<User>(`${this.baseUrl}/${id}`, dto);
-  }
+**Error:** `ExpressionChangedAfterItHasBeenCheckedError`
+- **Fix:** Use `ChangeDetectionStrategy.OnPush` or wrap state changes in `setTimeout` / `effect`
 
-  delete(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`);
-  }
-}
+### Runtime Errors
+
+**Error:** Route not lazy loading
+- **Fix:** Verify `loadComponent` returns a Promise; use dynamic import `() => import('./...')`
+
+**Error:** Interceptor not firing
+- **Fix:** Register with `provideHttpClient(withInterceptors([...]))` in `app.config.ts`
+
+**Error:** Signal not updating UI
+- **Fix:** Ensure you're calling `.set()` or `.update()`, not mutating signal value directly
+
+**Error:** Guard not protecting route
+- **Fix:** Add `canActivate: [guardFn]` to route config
+
+## Angular CLI Commands
+
+```bash
+# Generate component (standalone)
+ng generate component features/users/user-list --standalone
+
+# Generate service
+ng generate service core/services/user
+
+# Generate guard (functional)
+ng generate guard core/guards/auth --functional
+
+# Run dev server
+ng serve
+
+# Build for production
+ng build --configuration=production
+
+# Run tests
+ng test
+
+# Run linter
+ng lint
 ```
 
-## Lazy Routes Template
-```typescript
-// app.routes.ts
-import { Routes } from '@angular/router';
-import { authGuard } from './core/guards/auth.guard';
+## Best Practices
 
-export const routes: Routes = [
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-  {
-    path: 'dashboard',
-    loadComponent: () => import('./features/dashboard/dashboard.component')
-      .then(m => m.DashboardComponent),
-    canActivate: [authGuard],
-  },
-  {
-    path: 'users',
-    loadChildren: () => import('./features/users/users.routes')
-      .then(m => m.USER_ROUTES),
-    canActivate: [authGuard],
-  },
-  {
-    path: 'login',
-    loadComponent: () => import('./features/auth/login.component')
-      .then(m => m.LoginComponent),
-  },
-  { path: '**', redirectTo: 'dashboard' },
-];
-```
-
-## app.config.ts
-```typescript
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { routes } from './app.routes';
-
-export const appConfig: ApplicationConfig = {
-  providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes),
-    provideHttpClient(withInterceptorsFromDi()),
-  ],
-};
-```
-
-## Auth Interceptor
-```typescript
-import { HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
-import { AuthService } from '../services/auth.service';
-
-export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const token = inject(AuthService).getToken();
-  if (token) {
-    req = req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
-  }
-  return next(req);
-};
-```
-
-## Component Test Template
-```typescript
-describe('UserListComponent', () => {
-  let fixture: ComponentFixture<UserListComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [UserListComponent],
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-      ],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(UserListComponent);
-    fixture.detectChanges();
-  });
-
-  it('should display users', () => {
-    expect(fixture.nativeElement.querySelectorAll('.user-card').length).toBeGreaterThan(0);
-  });
-});
-```
+- Always use `ChangeDetectionStrategy.OnPush` for performance
+- Prefer signals over BehaviorSubject for component state
+- Use `inject()` instead of constructor injection (modern Angular style)
+- Lazy load all feature routes to reduce initial bundle size
+- Use `trackBy` in `@for` loops for performance with large lists
+- Unsubscribe from observables using `takeUntilDestroyed()` or `async` pipe
+- Write unit tests for all components and services
+- Use environment files for API URLs and configuration
+- Follow BEM naming for CSS classes
+- Keep components small and focused (Single Responsibility Principle)

@@ -6,7 +6,8 @@ allowed-tools: Bash, Read, Write, Edit
 
 # Flutter Mobile Development Skill
 
-## Quick Scaffold — New Flutter Project
+## Quick Scaffold
+
 ```bash
 flutter create --org com.company --platforms ios,android my_app
 cd my_app
@@ -20,167 +21,45 @@ flutter pub add dev:riverpod_generator dev:freezed dev:json_serializable dev:bui
 dart run build_runner build --delete-conflicting-outputs
 ```
 
-## pubspec.yaml Essentials
-```yaml
-dependencies:
-  flutter:
-    sdk: flutter
-  flutter_riverpod: ^2.5.0
-  riverpod_annotation: ^2.4.0
-  freezed_annotation: ^2.4.0
-  json_annotation: ^4.9.0
-  go_router: ^14.0.0
-  firebase_core: ^3.6.0
-  cloud_firestore: ^5.5.0
-  firebase_auth: ^5.3.0
+## Process
 
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  riverpod_generator: ^2.4.0
-  freezed: ^2.5.0
-  json_serializable: ^6.8.0
-  build_runner: ^2.4.0
-  mocktail: ^1.0.0
-```
+1. **Read templates** - Use Read tool on `reference/flutter-templates.md` for all code templates (Freezed models, Riverpod providers, screens, GoRouter, tests, Firebase integration)
+2. **Create feature structure** - Build `lib/features/<feature>/data/`, `domain/`, `presentation/` directories
+3. **Define models** - Create Freezed data models in `data/models/` with Firestore serialization
+4. **Build providers** - Create Riverpod notifiers with `@riverpod` annotation in `presentation/providers/`
+5. **Design screens** - Build `ConsumerWidget` screens that watch `AsyncValue<T>` providers
+6. **Run codegen** - Execute `dart run build_runner build --delete-conflicting-outputs`
+7. **Write tests** - Create widget tests with `ProviderScope` overrides
 
-## Freezed Model Template
-```dart
-import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+## Key Patterns
 
-part 'user_model.freezed.dart';
-part 'user_model.g.dart';
+| Pattern | Description |
+|---------|-------------|
+| `@freezed` models | Immutable data classes with `fromFirestore` factory |
+| `@riverpod` providers | Code-generated state notifiers with `AsyncValue` |
+| `ConsumerWidget` | Widgets that watch providers via `ref.watch()` |
+| `AsyncValue.when()` | Handle loading/error/data states declaratively |
+| Clean Architecture | Separate data/domain/presentation layers |
+| GoRouter | Declarative routing with path parameters |
+| Firebase Auth | Stream-based auth state with `authStateChanges()` |
+| Firestore snapshots | Real-time data with `.snapshots()` streams |
 
-@freezed
-class UserModel with _$UserModel {
-  const factory UserModel({
-    required String id,
-    required String email,
-    required String displayName,
-    @Default('') String photoUrl,
-    required DateTime createdAt,
-  }) = _UserModel;
+## Error Handling
 
-  factory UserModel.fromJson(Map<String, dynamic> json) =>
-      _$UserModelFromJson(json);
+**Build runner fails**: Delete `.dart_tool/build/`, run `flutter clean`, retry codegen
 
-  factory UserModel.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
-    return UserModel(
-      id: doc.id,
-      email: data['email'] ?? '',
-      displayName: data['displayName'] ?? '',
-      photoUrl: data['photoUrl'] ?? '',
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
-    );
-  }
-}
-```
+**Missing generated files**: Ensure `part` directives match filename (e.g., `part 'user_model.g.dart';`)
 
-## Riverpod Provider Template
-```dart
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+**Provider not found**: Run `dart run build_runner build`, import generated `.g.dart` file
 
-part 'user_provider.g.dart';
+**Firestore Timestamp errors**: Use `(data['createdAt'] as Timestamp).toDate()` in `fromFirestore`
 
-@riverpod
-class UserList extends _$UserList {
-  @override
-  FutureOr<List<UserModel>> build() async {
-    return ref.read(userRepositoryProvider).getUsers();
-  }
+**Hot reload breaks state**: Restart app fully when changing provider signatures
 
-  Future<void> refresh() async {
-    state = const AsyncValue.loading();
-    state = await AsyncValue.guard(
-      () => ref.read(userRepositoryProvider).getUsers(),
-    );
-  }
+**AsyncValue stuck loading**: Check repository returns data, use `AsyncValue.guard()` to catch errors
 
-  Future<void> add(CreateUserDto dto) async {
-    await ref.read(userRepositoryProvider).createUser(dto);
-    await refresh();
-  }
-}
-```
+## Templates Reference
 
-## Screen Template
-```dart
-class UserListScreen extends ConsumerWidget {
-  const UserListScreen({super.key});
+For all code templates (pubspec.yaml, Freezed models, Riverpod providers, screen widgets, GoRouter config, widget tests, Firebase integration, repository patterns):
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final usersAsync = ref.watch(userListProvider);
-
-    return Scaffold(
-      appBar: AppBar(title: const Text('Users')),
-      body: usersAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(child: Text('Error: $err')),
-        data: (users) => ListView.builder(
-          itemCount: users.length,
-          itemBuilder: (context, index) {
-            final user = users[index];
-            return ListTile(
-              title: Text(user.displayName),
-              subtitle: Text(user.email),
-              onTap: () => context.go('/users/${user.id}'),
-            );
-          },
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.go('/users/new'),
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
-}
-```
-
-## GoRouter Configuration
-```dart
-final appRouter = GoRouter(
-  initialLocation: '/home',
-  routes: [
-    GoRoute(path: '/login', builder: (_, __) => const LoginScreen()),
-    ShellRoute(
-      builder: (_, __, child) => AppShell(child: child),
-      routes: [
-        GoRoute(path: '/home', builder: (_, __) => const HomeScreen()),
-        GoRoute(path: '/users', builder: (_, __) => const UserListScreen()),
-        GoRoute(path: '/users/:id', builder: (_, state) =>
-          UserDetailScreen(userId: state.pathParameters['id']!)),
-      ],
-    ),
-  ],
-  redirect: (context, state) {
-    final isLoggedIn = FirebaseAuth.instance.currentUser != null;
-    if (!isLoggedIn && state.uri.path != '/login') return '/login';
-    if (isLoggedIn && state.uri.path == '/login') return '/home';
-    return null;
-  },
-);
-```
-
-## Widget Test Template
-```dart
-void main() {
-  testWidgets('UserListScreen shows users', (tester) async {
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          userListProvider.overrideWith((ref) => [
-            UserModel(id: '1', email: 'a@b.com', displayName: 'Alice', createdAt: DateTime.now()),
-          ]),
-        ],
-        child: const MaterialApp(home: UserListScreen()),
-      ),
-    );
-    await tester.pumpAndSettle();
-    expect(find.text('Alice'), findsOneWidget);
-  });
-}
-```
+Read `/Users/kumaraniyyasamysrinivasan/mydrive/personal/claude-code-onboarding/.claude/skills/flutter-mobile/reference/flutter-templates.md`

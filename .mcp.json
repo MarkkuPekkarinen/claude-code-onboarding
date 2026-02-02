@@ -9,7 +9,7 @@
       "timeout": 60000,
       "description": "GitHub Copilot MCP server for repository operations"
     },
-     "angular-cli": {
+    "angular-cli": {
       "type": "stdio",
       "command": "npx",
       "args": [
@@ -19,7 +19,7 @@
       ],
       "timeout": 60000
     },
-     "chrome-devtools": {
+    "chrome-devtools": {
       "type": "stdio",
       "command": "npx",
       "args": [
@@ -34,19 +34,17 @@
       "args": [
         "-y",
         "firebase-tools@latest",
-        "mcp",
-        "--dir",
-        "/Users/kumaraniyyasamysrinivasan/mydrive/personal/claude-code-onboarding"
+        "mcp"
       ],
       "timeout": 60000
     },
     "context7": {
+      "type": "stdio",
       "description": "Context7 MCP pulls up-to-date, version-specific documentation and code examples straight from the source — and places them directly into your prompt.",
       "command": "npx",
-      "type": "stdio",
       "timeout": 60000,
       "args": [
-        "-y", 
+        "-y",
         "@upstash/context7-mcp"
       ]
     },
@@ -54,37 +52,32 @@
       "type": "stdio",
       "command": "npx",
       "args": [
-        "-y", 
+        "-y",
         "@modelcontextprotocol/server-sequential-thinking"
       ],
       "timeout": 60000,
       "description": "Sequential thinking MCP server for step-by-step reasoning"
     },
-    "dart": {
+    "dart-mcp-server": {
       "type": "stdio",
-      "command": "dart",
-      "args": [
-        "mcp-server"
-      ],
-      "timeout": 60000
-    },
-     "dart-mcp-server": {
       "command": "dart",
       "args": [
         "mcp-server",
         "--force-roots-fallback"
-      ]
+      ],
+      "timeout": 60000
     },
     "filesystem": {
+      "type": "stdio",
       "description": "Secure filesystem access for Claude Code with configurable directory permissions and file operations.",
       "command": "npx",
       "args": [
         "-y",
         "@modelcontextprotocol/server-filesystem",
-        "/Users/kumaraniyyasamysrinivasan/mydrive/personal/claude-code-onboarding"
+        "."
       ]
     },
-     "langchain-docs": {
+    "langchain-docs": {
       "type": "http",
       "url": "https://docs.langchain.com/mcp",
       "timeout": 60000

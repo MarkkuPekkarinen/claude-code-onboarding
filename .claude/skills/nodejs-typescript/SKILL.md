@@ -6,6 +6,17 @@ allowed-tools: Bash, Read, Write, Edit
 
 # Node.js 24 + TypeScript 5.x Development Skill
 
+This skill provides patterns for Node.js 24 with TypeScript 5.x, including Express REST APIs, Zod validation, testing with Vitest, and Docker deployment.
+
+## Process
+
+1. **Scaffold** - Use quick commands below to initialize project structure
+2. **Configure** - Read templates from reference file for package.json, tsconfig, and environment setup
+3. **Build API** - Create Express app with routes, services, middleware, and error handling
+4. **Validate** - Implement Zod schemas for runtime validation and type inference
+5. **Test** - Write integration tests with Vitest and supertest
+6. **Containerize** - Add Docker multi-stage build for production deployment
+
 ## Quick Scaffold — New Node.js/TypeScript Project
 
 ```bash
@@ -17,172 +28,111 @@ npm install @types/express --save-dev
 npx tsc --init
 ```
 
-## package.json Essentials
-```json
-{
-  "name": "my-service",
-  "version": "1.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "build": "tsc",
-    "start": "node dist/index.js",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "lint": "eslint src/",
-    "typecheck": "tsc --noEmit"
-  },
-  "engines": {
-    "node": ">=24.0.0"
-  }
-}
+## Code Templates Reference
+
+For all code templates and configuration patterns, Read the reference file:
+
+**[reference/nodejs-templates.md](reference/nodejs-templates.md)**
+
+Contains:
+- package.json Essentials
+- tsconfig.json
+- Express App Template (app.ts + index.ts)
+- Zod Validation + Type Inference
+- Error Handler Middleware
+- Route Template (Router with GET/POST)
+- Vitest Test Template
+- Docker Template (multi-stage build)
+- Environment Configuration (Zod-validated env)
+- Service Layer Template
+- Custom Error Classes
+- Enhanced Error Handler
+- Logging Middleware
+- vitest.config.ts
+
+## Key Patterns
+
+| Pattern | Description |
+|---------|-------------|
+| ESM-first | `"type": "module"` in package.json, `.js` extensions in imports |
+| Strict TypeScript | `strict: true`, target `ES2024`, module `NodeNext` |
+| Zod validation | Runtime validation with automatic TypeScript type inference |
+| Layered architecture | routes → services → repositories → models |
+| Error handling | Custom error classes + centralized error middleware |
+| Async/await | Always use `async`/`await`, wrap in try-catch, call `next(error)` |
+| Type inference | Use `z.infer<typeof Schema>` instead of manual types |
+
+## Folder Structure
+
+```
+src/
+├── index.ts           # Entry point
+├── app.ts             # Express app setup
+├── routes/            # API route handlers
+├── services/          # Business logic
+├── repositories/      # Data access layer
+├── models/            # Types, interfaces, Zod schemas
+├── middleware/        # Auth, validation, error handling, logging
+├── config/            # Environment config
+└── utils/             # Shared utilities
+
+tests/
+├── unit/
+└── integration/
 ```
 
-## tsconfig.json
-```json
-{
-  "compilerOptions": {
-    "target": "ES2024",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "strict": true,
-    "esModuleInterop": true,
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "declaration": true,
-    "sourceMap": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "tests"]
-}
+## Error Handling
+
+### Common Issues and Solutions
+
+**Import errors with .js extensions**
+- Node.js ESM requires `.js` extensions even for `.ts` files
+- Example: `import { app } from './app.js';`
+
+**Module not found errors**
+- Check `"type": "module"` in package.json
+- Verify `tsconfig.json` has `"module": "NodeNext"` and `"moduleResolution": "NodeNext"`
+
+**Zod validation failures**
+- Wrap `Schema.parse()` in try-catch or let error handler catch `ZodError`
+- Use `Schema.safeParse()` for manual error handling without throwing
+
+**TypeScript type mismatches**
+- Run `npx tsc --noEmit` to check types without building
+- Use `satisfies` operator for type-safe literals
+- Prefer `z.infer<typeof Schema>` over manual types
+
+**Port already in use**
+- Check for running processes: `lsof -i :3000`
+- Use dynamic port: `process.env.PORT ?? 3000`
+
+**Missing environment variables**
+- Validate env vars with Zod schema (see reference file)
+- Use `.env` file locally, never commit it
+
+## Testing Best Practices
+
+- Use `supertest` for API integration tests
+- Mock external dependencies in service layer tests
+- Use `beforeEach` to reset state between tests
+- Run `npm test` before commits
+- Aim for 80%+ coverage on critical paths
+
+## Development Workflow
+
+```bash
+npm run dev        # Start dev server with hot reload
+npm run typecheck  # Check types without building
+npm run build      # Compile to dist/
+npm test           # Run tests once
+npm run test:watch # Run tests in watch mode
 ```
 
-## Express App Template
-```typescript
-// src/app.ts
-import express from 'express';
-import { errorHandler } from './middleware/error-handler.js';
-import { userRouter } from './routes/user.routes.js';
+## Key Dependencies
 
-const app = express();
-app.use(express.json());
-app.use('/api/v1/users', userRouter);
-app.use(errorHandler);
-
-export { app };
-```
-
-```typescript
-// src/index.ts
-import { app } from './app.js';
-
-const PORT = process.env.PORT ?? 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-```
-
-## Zod Validation + Type Inference
-```typescript
-import { z } from 'zod';
-
-export const CreateUserSchema = z.object({
-  email: z.string().email(),
-  name: z.string().min(1).max(100),
-  role: z.enum(['admin', 'user', 'viewer']).default('user'),
-});
-
-export type CreateUserDto = z.infer<typeof CreateUserSchema>;
-
-// In route handler:
-const dto = CreateUserSchema.parse(req.body); // throws ZodError on invalid input
-```
-
-## Error Handler Middleware
-```typescript
-import { Request, Response, NextFunction } from 'express';
-import { ZodError } from 'zod';
-
-export function errorHandler(err: Error, req: Request, res: Response, next: NextFunction) {
-  if (err instanceof ZodError) {
-    res.status(400).json({ error: 'Validation failed', details: err.errors });
-    return;
-  }
-  console.error(err);
-  res.status(500).json({ error: 'Internal server error' });
-}
-```
-
-## Route Template
-```typescript
-import { Router, Request, Response, NextFunction } from 'express';
-import { CreateUserSchema } from '../models/user.schema.js';
-import { userService } from '../services/user.service.js';
-
-export const userRouter = Router();
-
-userRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const users = await userService.findAll();
-    res.json({ data: users });
-  } catch (error) {
-    next(error);
-  }
-});
-
-userRouter.post('/', async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const dto = CreateUserSchema.parse(req.body);
-    const user = await userService.create(dto);
-    res.status(201).json(user);
-  } catch (error) {
-    next(error);
-  }
-});
-```
-
-## Vitest Test Template
-```typescript
-import { describe, it, expect } from 'vitest';
-import request from 'supertest';
-import { app } from '../src/app.js';
-
-describe('User API', () => {
-  it('POST /api/v1/users returns 201', async () => {
-    const res = await request(app)
-      .post('/api/v1/users')
-      .send({ email: 'test@example.com', name: 'Test User' });
-
-    expect(res.status).toBe(201);
-    expect(res.body.email).toBe('test@example.com');
-  });
-
-  it('POST /api/v1/users returns 400 on invalid email', async () => {
-    const res = await request(app)
-      .post('/api/v1/users')
-      .send({ email: 'not-an-email', name: 'Test' });
-
-    expect(res.status).toBe(400);
-  });
-});
-```
-
-## Docker Template
-```dockerfile
-FROM node:24-alpine AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
-
-FROM node:24-alpine
-WORKDIR /app
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/package*.json ./
-RUN npm ci --omit=dev
-EXPOSE 3000
-CMD ["node", "dist/index.js"]
-```
+- **express** - Web framework
+- **zod** - Runtime validation + type inference
+- **tsx** - TypeScript execution with hot reload
+- **vitest** - Fast unit test framework
+- **supertest** - HTTP assertion library for API tests
+- **dotenv** - Environment variable loading

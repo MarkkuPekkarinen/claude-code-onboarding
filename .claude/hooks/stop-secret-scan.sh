@@ -19,8 +19,10 @@ changed=$(git diff --name-only HEAD 2>/dev/null || git diff --name-only 2>/dev/n
 #   ghp_...          → GitHub Personal Access Token
 #   sk-...           → OpenAI / Stripe Secret Key
 #   sk-ant-...       → Anthropic API Key
-#   password = "..." → Hardcoded passwords (but not ${VAR} references)
-patterns='AKIA[0-9A-Z]{16}|AIza[0-9A-Za-z\-_]{35}|ghp_[0-9a-zA-Z]{36}|sk-[0-9a-zA-Z]{20,}|sk-ant-[0-9a-zA-Z\-_]{20,}'
+#   eyJ...           → JWT token (base64-encoded JSON)
+#   -----BEGIN...    → Private key (RSA, EC, DSA, OPENSSH)
+#   xox[pboa]-...    → Slack token (bot, user, app)
+patterns='AKIA[0-9A-Z]{16}|AIza[0-9A-Za-z\-_]{35}|ghp_[0-9a-zA-Z]{36}|sk-[0-9a-zA-Z]{20,}|sk-ant-[0-9a-zA-Z\-_]{20,}|eyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}|-----BEGIN (RSA |EC |DSA |OPENSSH )?PRIVATE KEY-----|xox[pboa]-[0-9]{10,}-[a-zA-Z0-9-]+'
 
 hits=""
 while IFS= read -r file; do

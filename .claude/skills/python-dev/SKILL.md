@@ -23,151 +23,61 @@ pip install fastapi uvicorn pydantic pydantic-settings
 pip install -e ".[dev]"
 ```
 
-## pyproject.toml and Project Config
+## Reference Files
 
-Read `reference/python-project-config.md` for the pyproject.toml template, Docker configuration, and common commands.
+**Project configuration and tooling**: Read `reference/python-project-config.md` for pyproject.toml template, Docker configuration, and common commands.
 
-## FastAPI App Template
+**Code templates**: Read `reference/fastapi-templates.md` for FastAPI app structure, Pydantic models, route handlers, SQLAlchemy models, and pytest fixtures.
+
+## Process
+
+1. **Scaffold project structure** using uv or pip commands above
+2. **Read reference files** when you need specific templates or configuration
+3. **Create folder structure**: `src/my_service/` with subfolders `api/routes/`, `models/`, `services/`, `core/`
+4. **Write main.py** using FastAPI app template with lifespan context manager
+5. **Define Pydantic models** for request/response validation in `models/`
+6. **Implement route handlers** in `api/routes/` with proper HTTP methods and status codes
+7. **Add business logic** in `services/` layer (keep routes thin)
+8. **Configure environment** using pydantic-settings in `core/config.py`
+9. **Write tests** with pytest-asyncio and AsyncClient fixtures
+10. **Format and type-check**: Run `ruff format`, `ruff check --fix`, and `mypy`
+
+## Key Patterns
+
+| Pattern | Implementation |
+|---------|---------------|
+| **Type hints** | Use everywhere: `def func(x: int) -> str:` |
+| **Async by default** | All I/O-bound operations use `async def` and `await` |
+| **Validation** | Pydantic models for all API inputs/outputs |
+| **Config** | pydantic-settings with `.env` file support |
+| **Dependency injection** | FastAPI `Depends()` for services and repositories |
+| **Error handling** | Raise `HTTPException` with appropriate status codes |
+| **Database** | SQLAlchemy 2.0+ with async session and `Mapped[]` types |
+| **Testing** | pytest with fixtures, httpx AsyncClient, 80%+ coverage |
+
+## Error Handling
+
+**API errors**: Always raise `HTTPException` with descriptive detail messages.
+
 ```python
-# src/my_service/main.py
-from fastapi import FastAPI
-from contextlib import asynccontextmanager
-from .api.routes import user_router, health_router
-from .core.config import settings
+from fastapi import HTTPException
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # Startup
-    print(f"Starting {settings.app_name}")
-    yield
-    # Shutdown
-    print("Shutting down")
+if not user:
+    raise HTTPException(status_code=404, detail="User not found")
 
-app = FastAPI(
-    title=settings.app_name,
-    version="1.0.0",
-    lifespan=lifespan,
-)
-
-app.include_router(health_router, prefix="/api/v1", tags=["health"])
-app.include_router(user_router, prefix="/api/v1/users", tags=["users"])
+if not has_permission:
+    raise HTTPException(status_code=403, detail="Insufficient permissions")
 ```
 
-## Pydantic Models Template
+**Validation errors**: Pydantic automatically returns 422 with validation details. Use `Field()` constraints for business rules.
+
+**Database errors**: Catch SQLAlchemy exceptions in service layer and convert to appropriate HTTP exceptions.
+
 ```python
-# src/my_service/models/user.py
-from pydantic import BaseModel, EmailStr, Field
-from uuid import UUID, uuid4
-from datetime import datetime
+from sqlalchemy.exc import IntegrityError
 
-class CreateUserRequest(BaseModel):
-    email: EmailStr
-    name: str = Field(min_length=1, max_length=100)
-
-class UpdateUserRequest(BaseModel):
-    name: str | None = Field(default=None, min_length=1, max_length=100)
-    email: EmailStr | None = None
-
-class UserResponse(BaseModel):
-    id: UUID
-    email: str
-    name: str
-    created_at: datetime
-    updated_at: datetime
-
-    model_config = {"from_attributes": True}
+try:
+    await session.commit()
+except IntegrityError:
+    raise HTTPException(status_code=409, detail="Email already exists")
 ```
-
-## Config with pydantic-settings
-```python
-# src/my_service/core/config.py
-from pydantic_settings import BaseSettings
-
-class Settings(BaseSettings):
-    app_name: str = "My Service"
-    debug: bool = False
-    database_url: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/mydb"
-    secret_key: str = "change-me"
-
-    model_config = {"env_file": ".env"}
-
-settings = Settings()
-```
-
-## Route Handler Template
-```python
-# src/my_service/api/routes/users.py
-from fastapi import APIRouter, HTTPException, Depends
-from uuid import UUID
-from ...models.user import CreateUserRequest, UserResponse
-from ...services.user_service import UserService
-
-router = APIRouter()
-
-@router.get("/", response_model=list[UserResponse])
-async def list_users(service: UserService = Depends()) -> list[UserResponse]:
-    return await service.find_all()
-
-@router.get("/{user_id}", response_model=UserResponse)
-async def get_user(user_id: UUID, service: UserService = Depends()) -> UserResponse:
-    user = await service.find_by_id(user_id)
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    return user
-
-@router.post("/", response_model=UserResponse, status_code=201)
-async def create_user(request: CreateUserRequest, service: UserService = Depends()) -> UserResponse:
-    return await service.create(request)
-```
-
-## SQLAlchemy Async Model
-```python
-# src/my_service/models/db/user.py
-from sqlalchemy import String, DateTime
-from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy.dialects.postgresql import UUID as PG_UUID
-from uuid import UUID, uuid4
-from datetime import datetime, timezone
-
-class UserEntity(Base):
-    __tablename__ = "users"
-
-    id: Mapped[UUID] = mapped_column(PG_UUID(as_uuid=True), primary_key=True, default=uuid4)
-    email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
-    name: Mapped[str] = mapped_column(String(100), nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
-    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
-```
-
-## Pytest Template
-```python
-# tests/test_users.py
-import pytest
-from httpx import AsyncClient, ASGITransport
-from src.my_service.main import app
-
-@pytest.fixture
-async def client():
-    transport = ASGITransport(app=app)
-    async with AsyncClient(transport=transport, base_url="http://test") as ac:
-        yield ac
-
-@pytest.mark.asyncio
-async def test_create_user(client: AsyncClient):
-    response = await client.post(
-        "/api/v1/users",
-        json={"email": "john@example.com", "name": "John Doe"},
-    )
-    assert response.status_code == 201
-    data = response.json()
-    assert data["email"] == "john@example.com"
-
-@pytest.mark.asyncio
-async def test_create_user_invalid_email(client: AsyncClient):
-    response = await client.post(
-        "/api/v1/users",
-        json={"email": "not-valid", "name": "Test"},
-    )
-    assert response.status_code == 422
-```
-
