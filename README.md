@@ -34,14 +34,15 @@ Before you begin, make sure you have:
 - **A Claude subscription** — Claude Pro or Max at [claude.ai](https://claude.ai), OR an Anthropic API key from the [Console](https://console.anthropic.com)
 
 **Optional for Quick Start: But Required for MCP server**
-- **[Node.js v24.13](https://nodejs.org/en/download)**
-- **[Python v3.14](https://www.python.org/downloads/)**
+- **[Install Node.js v24.13](https://nodejs.org/en/download)**
+- **[Install Python v3.14](https://www.python.org/downloads/)**
 
 
 ## 2. Clone This Repo
 
+- Clone this Claude Code onboarding kit Repo
+
 ```bash
-# Clone the onboarding kit
 git clone https://github.com/kumaran-is/claude-code-onboarding.git
 cd claude-code-onboarding
 
