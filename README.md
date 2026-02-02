@@ -324,42 +324,81 @@ This repo comes pre-configured with:
 
 ```
 claude-code-onboarding/
-├── CLAUDE.md                           # Project memory — tech stack, conventions, rules
-├── .mcp.json                           # MCP servers: Context7, GitHub, Filesystem, Firebase
+├── CLAUDE.md                            # Project memory — tech stack, conventions, rules
+├── .mcp.json                            # MCP servers: Context7, GitHub, Filesystem, Firebase
 ├── .gitignore
-├── README.md                           # ← You are here
+├── README.md                            # ← You are here
 │
 └── .claude/
-    ├── settings.json                   # Permissions and hook configs
+    ├── settings.json                    # Permissions and hook configs
+    ├── settings.local.json              # Personal overrides (gitignored)
     │
-    ├── agents/                         # Specialist AI personas
-    │   ├── java-spring-api.md          # Spring Boot WebFlux expert
-    │   ├── nodejs-typescript.md        # Node.js 24 / TypeScript 5.x expert
-    │   ├── python-dev.md              # Python 3.14 / FastAPI expert
-    │   ├── angular-spa.md              # Angular frontend expert
-    │   ├── flutter-mobile.md           # Flutter mobile expert
-    │   ├── database-designer.md        # PostgreSQL + Firestore architect
-    │   └── architect.md                # Solution architect
+    ├── agents/                          # Specialist AI personas (invoke with @name)
+    │   ├── java-spring-api.md           # Spring Boot WebFlux expert
+    │   ├── nodejs-typescript.md         # Node.js / TypeScript expert
+    │   ├── python-dev.md                # Python / FastAPI expert
+    │   ├── angular-spa.md               # Angular frontend expert
+    │   ├── flutter-mobile.md            # Flutter mobile expert
+    │   ├── flutter-security-expert.md   # Security & privacy compliance
+    │   ├── frontend-design.md           # Creative UI/UX design specialist
+    │   ├── database-designer.md         # PostgreSQL + Firestore architect
+    │   ├── architect.md                 # Solution architect
+    │   ├── code-reviewer.md             # Code quality & review specialist
+    │   ├── security-reviewer.md         # Security vulnerability reviewer
+    │   ├── accessibility-auditor.md     # WCAG / a11y compliance auditor
+    │   ├── postgresql-database-reviewer.md # PostgreSQL performance & schema reviewer
+    │   ├── riverpod-reviewer.md         # Flutter Riverpod state management reviewer
+    │   ├── dedup-code-agent.md          # Dead code & duplication detector
+    │   └── ui-standards-expert.md       # UI consistency & design system enforcement
     │
-    ├── commands/                        # Slash commands (triggered with /name)
-    │   ├── scaffold-spring-api.md      # /scaffold-spring-api <name>
-    │   ├── scaffold-node-api.md        # /scaffold-node-api <name>
-    │   ├── scaffold-python-api.md      # /scaffold-python-api <name>
-    │   ├── scaffold-angular-app.md     # /scaffold-angular-app <name>
-    │   ├── scaffold-flutter-app.md     # /scaffold-flutter-app fitness tracker
-    │   ├── design-database.md          # /design-database <domain description>
-    │   ├── design-architecture.md      # /design-architecture <system description>
-    │   ├── add-feature.md              # /add-feature <feature description>
-    │   └── project-status.md           # /project-status
+    ├── commands/                         # Slash commands (triggered with /name)
+    │   ├── scaffold-spring-api.md       # /scaffold-spring-api <name>
+    │   ├── scaffold-node-api.md         # /scaffold-node-api <name>
+    │   ├── scaffold-python-api.md       # /scaffold-python-api <name>
+    │   ├── scaffold-angular-app.md      # /scaffold-angular-app <name>
+    │   ├── scaffold-flutter-app.md      # /scaffold-flutter-app <name>
+    │   ├── design-database.md           # /design-database <domain description>
+    │   ├── design-architecture.md       # /design-architecture <system description>
+    │   ├── add-feature.md               # /add-feature <feature description>
+    │   ├── project-status.md            # /project-status
+    │   └── changelog.md                 # /changelog [version] — generate release notes
     │
-    └── skills/                          # Auto-activated domain knowledge
-        ├── java-spring-api/SKILL.md    # Spring Boot patterns & templates
-        ├── nodejs-typescript/SKILL.md  # Node.js / TypeScript patterns & templates
-        ├── python-dev/SKILL.md         # Python / FastAPI patterns & templates
-        ├── angular-spa/SKILL.md        # Angular patterns & templates
-        ├── flutter-mobile/SKILL.md     # Flutter patterns & templates
-        ├── database-design/SKILL.md    # Schema design patterns
-        └── architecture-design/SKILL.md # Architecture patterns & templates
+    └── skills/                           # Auto-activated domain knowledge
+        ├── java-spring-api/SKILL.md     # Spring Boot patterns & templates
+        ├── java-coding-standard/SKILL.md # Java coding standards & conventions
+        ├── nodejs-typescript/SKILL.md   # Node.js / TypeScript patterns & templates
+        ├── python-dev/SKILL.md          # Python / FastAPI patterns & templates
+        ├── angular-spa/SKILL.md         # Angular patterns & templates
+        ├── flutter-mobile/SKILL.md      # Flutter patterns & templates
+        ├── architecture-design/SKILL.md # Architecture patterns & templates
+        ├── domain-finder/SKILL.md       # Domain name brainstorming & availability
+        ├── changelog-generator/SKILL.md # Git history → user-facing release notes
+        ├── database-schema-designer/    # Database schema design (multi-file skill)
+        │   ├── SKILL.md                 # Core schema design patterns
+        │   ├── README.md                # Skill documentation
+        │   ├── assets/templates/
+        │   │   └── migration-template.sql
+        │   └── references/
+        │       └── schema-design-checklist.md
+        ├── mcp-builder/                 # MCP server development (multi-file skill)
+        │   ├── SKILL.md                 # Core MCP building patterns
+        │   ├── reference/               # Best practices & platform guides
+        │   │   ├── mcp_best_practices.md
+        │   │   ├── node_mcp_server.md
+        │   │   ├── python_mcp_server.md
+        │   │   └── evaluation.md
+        │   └── scripts/                 # Evaluation & connection utilities
+        │       ├── connections.py
+        │       ├── evaluation.py
+        │       ├── example_evaluation.xml
+        │       └── requirements.txt
+        └── playwright-skill/            # E2E testing with Playwright (multi-file skill)
+            ├── SKILL.md                 # Core Playwright patterns
+            ├── API_REFERENCE.md         # Playwright API quick reference
+            ├── package.json
+            ├── run.js
+            └── lib/
+                └── helpers.js
 ```
 
 ## 8. Hands-On Exercises
