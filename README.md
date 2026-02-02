@@ -2,7 +2,7 @@
 
 **Get your team from zero to productive with Claude Code in under 30 minutes.**
 
-This repository is a pre-configured basic starter kit with agents, skills, slash commands, and MCP integrations for tech stack: **Java v21**, **Spring Boot Reactive Web(Web Flux) v3.5x**, **Node.sj v24.13**, **TypeScript 5.x**, **Angular 21.x**, **Python v3.13**, **Flutter v3.38**, **Dartv3.11**, **PostgreSQL**, and **Firebase**.
+This repository is a pre-configured basic starter kit with agents, skills, slash commands, and MCP integrations for tech stack: **Java v21**, **Spring Boot Reactive Web(Web Flux) v3.5x**, **Node.sj v24.13**, **TypeScript 5.x**, **Angular 21.x**, **Python v3.14**, **Flutter v3.38**, **Dartv3.11**, **PostgreSQL**, and **Firebase**.
 
 Clone it, install Claude Code, and start building.
 

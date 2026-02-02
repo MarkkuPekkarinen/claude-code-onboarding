@@ -5,12 +5,14 @@ This is a **team onboarding repository** for learning and practicing Claude Code
 It contains pre-configured agents, skills, slash commands, and MCP server integrations for our tech stack.
 
 ## Tech Stack
-- **Backend**: Java 21, Spring Boot 3.5 (WebFlux / Reactive), REST APIs, Python 3.14.x
-- **Frontend**: Angular 21+ (SPA), TypeScript, RxJS, SCSS
-- **Mobile**: Flutter 3.x (Dart), cross-platform (iOS + Android)
+- **Backend (Java)**: Java 21, Spring Boot 3.5.x (WebFlux / Reactive), REST APIs
+- **Backend (Node.js)**: Node.js 24.13, TypeScript 5.x, Express/Fastify
+- **Backend (Python)**: Python 3.14, FastAPI, Pydantic v2, SQLAlchemy async
+- **Frontend**: Angular 21.x (SPA), TypeScript 5.x, RxJS, SCSS
+- **Mobile**: Flutter 3.38 (Dart 3.11), cross-platform (iOS + Android)
 - **Database**: PostgreSQL (primary), Firebase Firestore (mobile real-time)
 - **Infrastructure**: Firebase (Auth, Firestore, Cloud Messaging), Docker
-- **Build Tools**: Gradle (Java), npm (Angular), flutter CLI
+- **Build Tools**: Gradle (Java), npm (Node.js/Angular), uv/pip (Python), flutter CLI
 
 ## Code Conventions
 
@@ -22,9 +24,25 @@ It contains pre-configured agents, skills, slash commands, and MCP server integr
 - DTOs as Java records, entities as classes with JPA/R2DBC annotations
 - Tests: JUnit 5 + WebTestClient for reactive endpoints
 
+### Node.js / TypeScript
+- Use **Node.js 24** with **TypeScript 5.x**, ESM (`"type": "module"`)
+- `strict: true` in tsconfig, target `ES2024`, module `NodeNext`
+- Use `zod` for runtime validation and type inference
+- Express or Fastify for REST APIs
+- Folder structure: `routes/ → services/ → models/ → middleware/`
+- Tests: Vitest + supertest
+
+### Python
+- Use **Python 3.14** with type hints everywhere
+- **FastAPI** for REST APIs, **Pydantic v2** for validation
+- Async by default: `async def` endpoints, `asyncpg` for PostgreSQL
+- Use `uv` for package management, `ruff` for linting, `mypy` for types
+- Folder structure: `api/routes/ → services/ → repositories/ → models/`
+- Tests: pytest + pytest-asyncio + httpx
+
 ### Angular
 - Standalone components (no NgModules unless legacy)
-- Signals for state management (Angular 21+ style)
+- Signals for state management (Angular 17+ style)
 - Lazy-loaded routes via `loadComponent`
 - Use `HttpClient` with RxJS operators
 - SCSS for styling, follow BEM naming
@@ -50,6 +68,21 @@ It contains pre-configured agents, skills, slash commands, and MCP server integr
 ./gradlew bootRun                    # Run backend
 ./gradlew test                       # Run tests
 ./gradlew build                      # Build JAR
+
+# Node.js / TypeScript
+npm run dev                          # Dev server with hot reload (tsx)
+npm run build                        # Compile TypeScript
+npm run start                        # Run compiled JS
+npm test                             # Run Vitest tests
+npx tsc --noEmit                     # Type check only
+
+# Python / FastAPI
+uvicorn src.my_service.main:app --reload  # Dev server
+pytest -v                            # Run tests
+ruff check src/ --fix                # Lint and auto-fix
+ruff format src/                     # Format code
+mypy src/                            # Type check
+alembic upgrade head                 # Run DB migrations
 
 # Angular
 ng serve                             # Dev server at localhost:4200
