@@ -318,26 +318,7 @@ This repo comes pre-configured with:
 }
 ```
 
-### Keyboard Shortcuts (Inside Claude Code)
-
-| Shortcut | Action |
-|----------|--------|
-| `/help` | Show all available commands |
-| `/clear` | Clear conversation context |
-| `/compact` | Manually trigger context compaction |
-| `/rewind` | Go back to a previous state |
-| `/checkpoints` | File-level undo points |
-| `/exit` | Exit Claude Code |
-| `/agents` | List / create agents |
-| `/mcp` | Check MCP server status |
-| `!` | Quick bash command prefix |
-| `@` | Search for files |
-| `Tab` | Toggle thinking display |
-| `Shift+Enter` | Multi-line input |
-| `Ctrl+U` | Delete entire line (faster than backspace) |
-| `Esc` | Cancel current generation |
-| `Esc Esc` | Interrupt Claude / restore code |
-
+> **Tip:** Install the `hookify` plugin to create hooks conversationally — run `/hookify` and describe what you want in plain English.
 
 ## 7. What's in This Repo
 
@@ -488,67 +469,74 @@ This is the real-world workflow — a single command that triggers scaffolding, 
 
 ## 9. Claude Code Power Features
 
+### Keyboard Shortcuts (Inside Claude Code)
+
+| Shortcut | Action |
+|----------|--------|
+| `/help` | Show all available commands |
+| `/clear` | Clear conversation context |
+| `/compact` | Manually trigger context compaction |
+| `/rewind` | Go back to a previous state |
+| `/checkpoints` | File-level undo points |
+| `/exit` | Exit Claude Code |
+| `/agents` | List / create agents |
+| `/mcp` | Check MCP server status |
+| `!` | Quick bash command prefix |
+| `@` | Search for files |
+| `Tab` | Toggle thinking display |
+| `Shift+Enter` | Multi-line input |
+| `Ctrl+U` | Delete entire line (faster than backspace) |
+| `Esc` | Cancel current generation |
+| `Esc Esc` | Interrupt Claude / restore code |
+| `/context` | View context usage as a colored grid |
+| `/cost` | Show token usage statistics |
+| `/stats` | Usage stats with date range (7/30/all-time) |
+| `/usage` | View plan limits and usage |
+| `/model` | Switch between models |
+| `/plan` | Enter plan mode (Opus plans, Sonnet executes) |
+| `/rename <name>` | Name the current session |
+| `/resume <name>` | Resume a previous session by name or ID |
+| `/review` | Request code review |
+| `/doctor` | Run diagnostics |
+
 ### Essential CLI Flags
 
 | Flag | What It Does | Example |
-|------|-------------|---------|
+|---|---|---|
 | `claude` | Start interactive session | `claude` |
-| `claude -p "task"` | Print mode — non-interactive, prints result and exits | `claude -p "explain this codebase"` |
+| `claude --dangerously-skip-permissions` | Skip all permission prompts ⚠️ use with caution | For trusted CI environments only |
 | `claude --continue` | Continue last session | `claude --continue` |
-| `claude --resume <id>` | Resume specific session by ID or name | `claude --resume auth-refactor` |
-| `claude --model <name>` | Use specific model (sonnet, opus, haiku) | `claude --model opus` |
-| `claude --output-format json` | JSON output (great for CI/CD) | `claude -p "run tests" --output-format json` |
-| `claude --max-turns N` | Limit agentic turns (print mode) | `claude -p --max-turns 3 "fix lint errors"` |
-| `claude --max-budget-usd N` | Cap API spend (print mode) | `claude -p --max-budget-usd 5.00 "run tests"` |
+| `claude --resume` | Resume a specific session by ID or name | `claude --resume auth-refactor` |
+| `claude --model <name>` | Use a specific model | `claude --model opus` |
+| `claude --output-format json` | JSON output (useful for CI/CD pipelines) | `claude -p "run tests" --output-format json` |
 | `claude --add-dir <path>` | Add extra working directories | `claude --add-dir ../frontend ../shared` |
-| `claude --dangerously-skip-permissions` | Skip all permission prompts ⚠️ | Use with extreme caution |
 | `claude --debug` | Enable debug logging | `claude --debug "api,mcp"` |
 
 ### Core Tools
 
-Every tool Claude Code has access to:
+These are the built-in tools Claude Code can use during a session:
 
-| Tool | Purpose | Needs Permission? |
-|------|---------|:-:|
+| Tool | Purpose | Needs Permission |
+|---|---|---|
 | **Read** | Read files, images, PDFs | No |
 | **Write** | Create new files | Yes |
-| **Edit** | Modify existing files (exact string replacement) | Yes |
+| **Edit** | Modify existing files via exact string replacement | Yes |
 | **Bash** | Execute shell commands | Yes |
 | **Grep** | Search content with regex (ripgrep) | No |
 | **Glob** | Find files by pattern | No |
 | **Task** | Launch sub-agents | No |
 | **TodoWrite** | Track multi-step task progress | No |
-| **WebFetch** | Fetch and analyze web pages | Yes |
+| **WebFetch** | Fetch and read web pages | Yes |
 | **WebSearch** | Search the web | Yes |
 | **LSP** | Go-to-definition, find references, hover docs | No |
-| **NotebookRead/Edit** | Read/edit Jupyter notebooks | Read: No, Edit: Yes |
-
-### @ File References
-
-Reference files directly in prompts with `@` — Claude reads them automatically:
-
-```
-> Review @src/auth/login.ts for security issues
-> Compare @src/api/v1/users.ts and @src/api/v2/users.ts — what changed?
-> Generate tests for @src/utils/validator.ts
-> This bug is in @src/services/auth.ts, check @logs/error.log for clues
-```
-
-Works in both regular prompts and slash command arguments. Reduces token usage compared to reading entire directories.
-
-### Prompting Best Practices
-
-| Instead of... | Write... |
-|---------------|----------|
-| "Add tests" | "Write Jest tests for `src/utils/date.ts` covering: formatDate with valid dates, invalid inputs, and timezone handling" |
-| "Fix the bug" | "Login fails when email contains `+`. Fix `src/auth/validate.ts:23` to handle plus signs in email addresses" |
-| "Review this" | "Review `src/api/users.ts` for: N+1 queries, missing error handling, and SQL injection risks" |
-| "Make it faster" | "Profile the `/api/products` endpoint. Identify the slowest operation. Target: < 100ms response" |
-| "Add auth" | "Add JWT authentication to the Express API: login/register endpoints, middleware for protected routes, refresh tokens with 7-day expiry" |
+| **NotebookRead** | Read Jupyter notebooks | No |
+| **NotebookEdit** | Edit Jupyter notebooks | Yes |
 
 ### Permission Model
 
-Claude Code uses an allow / deny / ask system. Configure in `.claude/settings.json`:
+Claude Code uses an **allow / deny / ask** system. Common safe commands run without asking, sensitive files are blocked entirely, and everything else asks for confirmation.
+
+Configure in `.claude/settings.json`:
 
 ```json
 {
@@ -566,43 +554,61 @@ Claude Code uses an allow / deny / ask system. Configure in `.claude/settings.js
 }
 ```
 
-This lets common safe commands run without asking, blocks sensitive file edits entirely, and asks for everything else. The kit's `settings.json` comes pre-configured with sensible defaults.
+This repo's `settings.json` comes pre-configured with sensible defaults.
 
 ## 10. Tips & Best Practices
 
-### Getting the Best Results
+### Prompting Best Practices
 
-1. **Be specific** — "Create a REST endpoint for user registration with email validation, password hashing using BCrypt, and a confirmation email trigger" beats "make a signup API"
+1. **Be specific** — The more context you give Claude, the better the output:
+| ❌ Vague | ✅ Specific |
+|---------------|----------|
+| "Add tests" | "Write Jest tests for `src/utils/date.ts` covering: formatDate with valid dates, invalid inputs, and timezone handling" |
+| "Fix the bug" | "Login fails when email contains `+`. Fix `src/auth/validate.ts:23` to handle plus signs in email addresses" |
+| "Review this" | "Review `src/api/users.ts` for: N+1 queries, missing error handling, and SQL injection risks" |
+| "Make it faster" | "Profile the `/api/products` endpoint. Identify the slowest operation. Target: < 100ms response" |
+| "Add auth" | "Add JWT authentication to the Express API: login/register endpoints, middleware for protected routes, refresh tokens with 7-day expiry" |
 
 2. **Use agents for focused work** — `@java-spring-api` gives you a specialized backend expert instead of a generalist
 
-3. **Add `use context7`** to any prompt when you need current library documentation — it fetches live docs and prevents hallucinated APIs
+3. **Append `use context7`** to any prompt when you need current library docs — it fetches live documentation and prevents hallucinated APIs
 
-4. **Use `/init` as a starting point** — it auto-generates a `CLAUDE.md` from your codebase, but always trim and curate the result by hand (see "Writing a Good CLAUDE.md" below)
+4. **Resume sessions** — `claude -c` continues your last conversation, `claude --resume` lets you pick from recent sessions
 
-5. **Resume sessions** — `claude -c` continues your last conversation, `claude --resume` lets you pick from recent sessions
+5. **Chain commands in one prompt** — combine slash commands and natural language: `/scaffold-spring-api order-service then @java-spring-api add CRUD for Orders with items, totals, and status`
 
-6. **Chain commands in one prompt** — you can combine commands and natural language: `/scaffold-spring-api order-service then @java-spring-api add CRUD for Orders with items, totals, and status`
+### @ File References
 
-7. **Use sandbox mode** for risky operations — Claude runs in a restricted environment without affecting your system. Conversely, `--dangerously-skip-permissions` removes all guardrails (use with extreme caution)
+Reference files directly in prompts with `@`  — Claude reads them into context automatically, which is more token-efficient than reading entire directories:
+
+```
+> Review @src/auth/login.ts for security issues
+> Compare @src/api/v1/users.ts and @src/api/v2/users.ts — what changed?
+> Generate tests for @src/utils/validator.ts
+> This bug is in @src/services/auth.ts, check @logs/error.log for clues
+```
+
+Works in both regular prompts and slash command arguments. Reduces token usage compared to reading entire directories.
 
 ### Context Window Management
 
-Your 200K context window is your most precious resource. Mismanaging it is the #1 cause of degraded performance.
+Your 200K context window is your most precious resource. Mismanaging degrades performance and output quality.
 
 | Problem | Impact | Fix |
 |---------|--------|-----|
 | Too many MCPs enabled | Each MCP's tool definitions eat context before you even start. 20+ MCPs can cut usable context from 200K to ~70K | Keep MCPs in config but disable unused ones — enable ≤ 10 servers / ≤ 80 tools at a time |
 | Too many plugins active | Same issue — each plugin adds tool definitions | Install many, enable only 4–5 per project |
 | Long sessions without compacting | Context fills up, Claude loses track of earlier work | Use `/compact` to manually trigger compaction, or let auto-compact handle it |
-| Huge CLAUDE.md | Goes into every prompt, crowding out actual task context | Keep < 300 lines, use progressive disclosure |
+| Oversized CLAUDE.md | Goes into every prompt, crowding out actual task context | Keep < 300 lines or <40 KB , use progressive disclosure |
 
 **Check your current state anytime:**
 
 ```
-> /mcp                  # See MCP status and tool count
-> /plugins              # See enabled plugins
-> /statusline           # Shows context remaining %
+> /mcp                  # MCP status and tool count
+> /plugins              # Enabled plugins
+> /statusline           # Context remaining %
+> /context              # Context usage as a colored grid
+> /cost                 # Token usage statistics
 ```
 
 ### Parallel Workflows
@@ -610,64 +616,46 @@ Your 200K context window is your most precious resource. Mismanaging it is the #
 Don't queue tasks — run them simultaneously:
 
 | Technique | When to Use | How |
-|-----------|-------------|-----|
-| `/fork` | Non-overlapping tasks in the same repo | Type `/fork` to branch the conversation — each fork works independently |
+|---|---|---|
+| **Sub-agents** | Independent subtasks within one session | Claude spawns multiple `@agents` that run in parallel with isolated context |
+| **/fork** | Non-overlapping tasks in the same repo | Branches the conversation — each fork works independently |
 | **Git worktrees** | Overlapping tasks that touch the same files | Each worktree is an independent checkout with its own Claude instance |
-| **tmux** | Long-running commands (servers, test suites) | Claude runs in a tmux session you can detach/reattach to monitor |
+| **tmux** | Long-running commands (servers, test suites) | Claude runs in a tmux session you can detach and reattach |
+
+**Note** sub-agents iscommonly used light-weight parallelism option — no git setup or terminal multiplexing needed, just spawn agents within the same session.
+
+```bash
+# Sub-agents — parallel specialists in one session
+> @java-spring-api Build the auth endpoints
+> @angular-spa Build the login page
+> @database-designer Design the user schema
+# Claude can run these concurrently without context collision
+```
+
+```bash
+# /fork — branch the conversation
+> /fork
+# Fork 1: Add payment processing
+# Fork 2: Add email notifications
+# Each fork works independently in the same repo
+```
 
 ```bash
 # Git worktrees — parallel Claudes without conflicts
 git worktree add ../feature-auth feature/auth
 git worktree add ../feature-dashboard feature/dashboard
 # Run separate `claude` instances in each directory
-
-# tmux — monitor long-running commands
-tmux new -s dev          # Start named session
-# Claude runs servers here, you can detach (Ctrl+B, D) and reattach:
-tmux attach -t dev
 ```
 
-### Hooks Quick Reference
-
-Hooks automate guardrails and formatting. Define them in `settings.json` under `"hooks"`:
-
-| Hook Type | Fires When | Common Uses |
-|-----------|-----------|-------------|
-| `PreToolUse` | Before a tool executes | Validation, tmux reminders for long commands, block risky operations |
-| `PostToolUse` | After a tool finishes | Auto-format with Prettier/ruff, type-check, warn about `console.log` |
-| `UserPromptSubmit` | When you send a message | Input validation, context injection |
-| `Stop` | When Claude finishes responding | Audit modified files, run linter on changes |
-| `PreCompact` | Before context compaction | Save important state before context is compressed |
-| `Notification` | On permission requests | Custom notification routing |
-
-**Example:** Auto-format TypeScript after every edit + block `console.log`:
-
-```json
-{
-  "hooks": {
-    "PostToolUse": [{
-      "matcher": "Edit && .ts/.tsx",
-      "hooks": [{
-        "type": "command",
-        "command": "npx prettier --write $FILEPATH && npx tsc --noEmit"
-      }]
-    }],
-    "Stop": [{
-      "matcher": "*",
-      "hooks": [{
-        "type": "command",
-        "command": "git diff --name-only | xargs grep -l 'console.log' && echo '[Hook] console.log detected in changes' >&2"
-      }]
-    }]
-  }
-}
+```bash
+# tmux — monitor long-running tasks
+tmux new -s dev
+# Detach: Ctrl+B, D | Reattach: tmux attach -t dev
 ```
-
-> 💡 **Tip:** Install the `hookify` plugin to create hooks conversationally — run `/hookify` and describe what you want in plain English.
 
 ### Plugins Ecosystem
 
-Beyond Claude-Mem, there's a growing plugin ecosystem. Plugins bundle tools, skills, hooks, or MCP integrations for easy install.
+Beyond Claude-Mem, there's a growing plugin ecosystem. Plugins bundle tools, skills, agents, hooks, or MCP integrations for easy install.
 
 ```bash
 # Install a plugin marketplace
@@ -677,76 +665,26 @@ Beyond Claude-Mem, there's a growing plugin ecosystem. Plugins bundle tools, ski
 > /plugins
 ```
 
-**Worth exploring:**
+**Sample plugins:**
 
 | Plugin | What It Does |
 |--------|-------------|
 | `typescript-lsp` | Real-time type checking + go-to-definition without an IDE |
-| `pyright-lsp` | Python type checking (useful if running Claude outside an editor) |
 | `hookify` | Create hooks by describing them in natural language |
-| `mgrep` | Better code search than ripgrep — supports local + web search |
 | `context7` | Live documentation for any library |
-| `commit-commands` | Streamlined git workflow commands |
 
 > ⚠️ **Same context warning as MCPs** — each enabled plugin adds tool definitions. Install many, enable few.
 
-### Keyboard Shortcuts
-
-**Slash Commands:**
-
-| Command | Action |
-|---------|--------|
-| `/help` | Show all available commands |
-| `/clear` | Clear conversation context |
-| `/compact [focus]` | Compact context (optionally specify what to keep) |
-| `/fork` | Fork conversation for parallel work |
-| `/rewind` | Go back to a previous state (undo code changes) |
-| `/checkpoints` | File-level undo points |
-| `/statusline` | Customize status bar (branch, context %, model, todos) |
-| `/context` | View context usage as a colored grid |
-| `/cost` | Show token usage statistics |
-| `/stats` | Usage stats with date range (7/30/all-time) |
-| `/usage` | View plan limits and usage |
-| `/exit` | Exit Claude Code |
-| `/memory` | Open CLAUDE.md in your editor |
-| `/agents` | List / create agents |
-| `/mcp` | Check MCP server status |
-| `/model` | Switch between models |
-| `/plan` | Enter plan mode (Opus plans, Sonnet executes) |
-| `/rename <name>` | Name the current session |
-| `/resume <name>` | Resume a previous session by name or ID |
-| `/review` | Request code review |
-| `/doctor` | Run diagnostics |
-
-**Keyboard:**
-
-| Shortcut | Action |
-|----------|--------|
-| `!` | Quick bash command prefix |
-| `@` | Search for files (include in prompts too) |
-| `Tab` | Toggle thinking mode (sticky) |
-| `Shift+Enter` | Multi-line input |
-| `Ctrl+U` | Delete entire line |
-| `Ctrl+R` | Search command history |
-| `Ctrl+O` | View transcript (shows thinking blocks) |
-| `Ctrl+G` | Edit prompt in system text editor |
-| `Ctrl+B` | Background current command / agent |
-| `Ctrl+Z` | Suspend / Undo |
-| `Alt+T` / `Option+T` | Toggle thinking mode |
-| `Alt+P` / `Option+P` | Switch models while typing |
-| `Esc` | Cancel current generation |
-| `Esc Esc` | Interrupt Claude / restore code |
-
 ### Writing a Good CLAUDE.md
 
-Your `CLAUDE.md` is the **highest-leverage file** in the entire setup — it goes into every session and shapes every task. A bad line here ripples into every plan, every implementation, every artifact Claude produces. Invest time crafting it carefully.
+Your `CLAUDE.md` is the **highest-leverage file** in the entire setup — it goes into every session and shapes every task. A bad line here gets into every plan, every implementation, every artifact Claude produces. Invest time crafting it carefully.
 
 #### The Basics: WHAT → WHY → HOW
 
 | Tell Claude... | Example |
 |----------------|---------|
-| **WHAT** — your tech, stack, project structure | "Monorepo: `apps/api` (Spring Boot), `apps/web` (Angular), `packages/shared`" |
-| **WHY** — the purpose of each part | "The `gateway` service handles auth + rate-limiting for all downstream APIs" |
+| **WHAT** — your project context, tech stack, rules, project structure | "Monorepo: `apps/api` (Spring Boot), `apps/web` (Angular), `packages/shared`" |
+| **WHY** — the purpose of each part | "The `auth + gateway` service handles auth + rate-limiting for all downstream APIs" |
 | **HOW** — how to work on the project | "Use `bun` not `npm`. Run tests with `./mvnw test`. Flyway migrations live in `db/migrations/`" |
 
 #### Key Principles
@@ -758,7 +696,7 @@ Your `CLAUDE.md` is the **highest-leverage file** in the entire setup — it goe
 | **Progressive disclosure** | Don't dump everything into CLAUDE.md. Keep domain-specific docs in separate files and reference them so Claude reads them only when needed (see example below). |
 | **Don't use it as a linter** | Never send an LLM to do a linter's job. Use deterministic tools (ruff, Biome, ESLint) via Hooks instead. Style guidelines bloat your context and degrade instruction-following. |
 | **Prefer pointers over copies** | Don't paste code snippets — they go stale. Point to `file:line` references so Claude reads the actual source of truth. |
-| **Craft it by hand** | Avoid auto-generating with `/init` for your primary CLAUDE.md. Auto-generated files tend to include too much irrelevant content. Use `/init` as a *starting point* only, then trim aggressively. |
+| **Craft it by hand** | `/init` auto-generates a CLAUDE.md but includes too much irrelevant content. Use it as a starting point, then trim aggressively. |
 
 #### Progressive Disclosure Example
 
@@ -785,48 +723,56 @@ E-commerce platform — Spring Boot API + Angular SPA + Flutter mobile.
 
 #### Quick Rules of Thumb
 
-- **< 300 lines** is the general consensus; shorter is better (some teams use < 60 lines)
-- Most important rules go **at the top and bottom** — LLMs attend most to the peripheries of the prompt
+- **< 300 lines** or **<40 KB** is the general rule, shorter is better (some teams use < 60 lines)
+- Most important rules go **at the top and bottom** — LLMs attend most to the start and end of context
 - Use `CLAUDE.local.md` for personal preferences (auto-gitignored)
-- Use `.claude/rules/` for conditional rules that only apply in specific directories
+- Use `.claude/rules/` for conditional rules scoped to specific directories
 
 ## 11. Troubleshooting
 
-### "command not found: claude"
+### `command not found: claude`
+
+Your shell can't find the Claude binary. Add it to your PATH:
+
 ```bash
-# Add to your shell config
 echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
 ### "Context too large" error
+
 ```
 > /compact                          # Quick reset
-> /compact "keep the auth work"     # Smart cleanup — preserves specified context
+> /compact "keep the auth work"     # Preserves specified context
 ```
-Prevention: use `/compact` every ~50 operations in long sessions, or start fresh for new features.
+
+**Prevention:** use `/compact` every ~50 operations in long sessions, or start a fresh session for new features.
 
 ### Edit tool fails with "string not found"
 Claude's Edit tool requires an exact string match including whitespace and indentation. Fix:
+
 ```
 > Read the file again to see exact content
 ```
 If the string appears multiple times, provide more surrounding context for uniqueness.
 
 ### MCP server not connecting
+
+Run `/mcp` to check status. 
 ```
 > /mcp
 ```
 Check the status output. Common fixes:
-- Make sure `npx` is available (Node.js installed)
-- For GitHub MCP, set your token: `export GITHUB_TOKEN=ghp_your_token_here`
+- Ensure `npx` is available (requires Node.js)
+- For GitHub MCP, set your token: `export GITHUB_PERSONAL_ACCESS_TOKEN=ghp_your_token`
 - Restart Claude Code after changing `.mcp.json`
-- On Windows, MCP servers need `cmd /c` wrapper: `"command": "cmd", "args": ["/c", "npx", "-y", "package-name"]`
+- On Windows, MCP servers need a `cmd` wrapper: `"command": "cmd", "args": ["/c", "npx", "-y", "package-name"]`
 
 ### Claude isn't using skills or agents
+
 - Verify the files exist: `ls .claude/agents/` and `ls .claude/skills/`
-- Check YAML frontmatter in each file (needs `---` delimiters)
-- Try explicitly mentioning: "Use the java-spring-api skill"
+- Check that each file has valid YAML frontmatter (`---` delimiters)
+- Try referencing explicitly: "Use the java-spring-api skill"
 
 ### Background task not responding
 ```
@@ -835,15 +781,25 @@ Check the status output. Common fixes:
 ```
 
 ### Permission errors
-- Never use `sudo` with npm installs
-- Fix npm permissions: `npm config set prefix ~/.npm-global` and add to PATH
-- Pre-configure permissions in `.claude/settings.json` to avoid repeated prompts
+
+Never use `sudo` with npm installs. Fix global permissions instead:
+
+```bash
+npm config set prefix ~/.npm-global
+echo 'export PATH="$HOME/.npm-global/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+Pre-configure allowed commands in `.claude/settings.json` to avoid repeated permission prompts.
 
 ### Run diagnostics
+
+When something isn't working and you're not sure why:
+
 ```bash
-claude doctor          # General diagnostics
-claude --debug         # Debug mode with full logging
-claude --debug "mcp"   # Debug specific categories
+claude doctor              # General health check
+claude --debug             # Full debug logging
+claude --debug "mcp"       # Debug a specific category
 ```
 
 ## 12. Resources
