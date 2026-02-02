@@ -1,0 +1,93 @@
+{
+  "mcpServers": {
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer ${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      },
+      "timeout": 60000,
+      "description": "GitHub Copilot MCP server for repository operations"
+    },
+     "angular-cli": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@angular/cli",
+        "mcp"
+      ],
+      "timeout": 60000
+    },
+     "chrome-devtools": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "chrome-devtools-mcp@latest"
+      ],
+      "timeout": 60000
+    },
+    "firebase": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "firebase-tools@latest",
+        "mcp",
+        "--dir",
+        "/Users/kumaraniyyasamysrinivasan/mydrive/personal/claude-code-onboarding"
+      ],
+      "timeout": 60000
+    },
+    "context7": {
+      "description": "Context7 MCP pulls up-to-date, version-specific documentation and code examples straight from the source — and places them directly into your prompt.",
+      "command": "npx",
+      "type": "stdio",
+      "timeout": 60000,
+      "args": [
+        "-y", 
+        "@upstash/context7-mcp"
+      ]
+    },
+    "sequential-thinking": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y", 
+        "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "timeout": 60000,
+      "description": "Sequential thinking MCP server for step-by-step reasoning"
+    },
+    "dart": {
+      "type": "stdio",
+      "command": "dart",
+      "args": [
+        "mcp-server"
+      ],
+      "timeout": 60000
+    },
+     "dart-mcp-server": {
+      "command": "dart",
+      "args": [
+        "mcp-server",
+        "--force-roots-fallback"
+      ]
+    },
+    "filesystem": {
+      "description": "Secure filesystem access for Claude Code with configurable directory permissions and file operations.",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/kumaraniyyasamysrinivasan/mydrive/personal/claude-code-onboarding"
+      ]
+    },
+     "langchain-docs": {
+      "type": "http",
+      "url": "https://docs.langchain.com/mcp",
+      "timeout": 60000
+    }
+  }
+}

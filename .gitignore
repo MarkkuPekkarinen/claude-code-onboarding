@@ -14,7 +14,6 @@
 
 # Claude Code local settings
 .claude/settings.local.json
-.claude/mcp.local.json
 CLAUDE.local.md
 
 # IDE
@@ -109,7 +108,7 @@ unlinked_spec.ds
 *.jks
 
 # MCP & API keys
-.mcp.json
+
 .env
 .env.local
 .env*.local
@@ -122,3 +121,43 @@ unlinked_spec.ds
 sheets-mcp-credentials.json
 
 .firebase/**/*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Claude Code local overrides
+.claude/settings.local.json
+CLAUDE.local.md
+
+# Environment files
+.env
+.env.local
+
+# Java / Maven
+target/
+*.class
+*.jar
+
+# Angular / Node
+node_modules/
+dist/
+.angular/
+
+# Flutter
+.dart_tool/
+.packages
+build/
+*.g.dart
+*.freezed.dart
+
+# Firebase
+firebase-debug.log
+
+# Docker
+docker-compose.override.yml

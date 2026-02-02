@@ -10,7 +10,7 @@ Create a new Java 21 / Spring Boot 3.5.x WebFlux project with the following:
 **Project name:** $ARGUMENTS (default to "my-api" if not provided)
 
 ## Steps
-1. Create the Gradle project structure with `build.gradle.kts`
+1. Create the Maven project structure with `pom.xml`
 2. Set up package: `com.company.<projectname>`
 3. Create directory structure:
    - `controller/`, `service/`, `repository/`, `model/entity/`, `model/dto/`, `config/`, `exception/`

@@ -12,7 +12,7 @@ It contains pre-configured agents, skills, slash commands, and MCP server integr
 - **Mobile**: Flutter 3.38 (Dart 3.11), cross-platform (iOS + Android)
 - **Database**: PostgreSQL (primary), Firebase Firestore (mobile real-time)
 - **Infrastructure**: Firebase (Auth, Firestore, Cloud Messaging), Docker
-- **Build Tools**: Gradle (Java), npm (Node.js/Angular), uv/pip (Python), flutter CLI
+- **Build Tools**: Maven (Java), npm (Node.js/Angular), uv/pip (Python), flutter CLI
 
 ## Code Conventions
 
@@ -65,9 +65,9 @@ It contains pre-configured agents, skills, slash commands, and MCP server integr
 ## Common Commands
 ```bash
 # Java / Spring Boot
-./gradlew bootRun                    # Run backend
-./gradlew test                       # Run tests
-./gradlew build                      # Build JAR
+./mvnw spring-boot:run               # Run backend
+./mvnw test                          # Run tests
+./mvnw package                       # Build JAR
 
 # Node.js / TypeScript
 npm run dev                          # Dev server with hot reload (tsx)
