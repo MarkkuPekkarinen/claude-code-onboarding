@@ -394,7 +394,47 @@ This repo comes pre-configured with:
 
 > **Tip:** Install the `hookify` plugin to create hooks conversationally — run `/hookify` and describe what you want in plain English.
 
-## 9. What's in This Repo
+## 9. What Gets Sent to the LLM?
+
+Every time you send a prompt in Claude Code, it assembles a **context window** — the complete package of information sent to the LLM for that turn. Understanding what goes into this window helps you manage it effectively.
+
+### Context Window Anatomy
+
+![Context Window](./img/what-sent-to-the-llm.png)
+
+### What Each Layer Contains
+
+| Layer | What's Loaded | When | Token Impact |
+|---|---|---|---|
+| **System Prompt** |Claude's core behavior rules, response formatting, ethical guidelines. Internal to Claude Code — not visible or editable by users. | Always — every turn | ~3K tokens (fixed) |
+| **System Tools** | Built-in tool definitions (Read, Write, Edit, Bash, Grep, etc.). Internal to Claude Code — not visible or editable by users. | Always — every turn | ~12K tokens (fixed) |
+| **CLAUDE.md** | Your project context — tech stack, conventions, rules | Startup — persists all session | Varies (keep under 300 lines or under 40KB) |
+| **MCP Tools** | Tool schemas from connected MCP servers | Startup, or on-demand via Tool Search | Can be 5K–50K+ depending on server count |
+| **Agent Definitions** | Descriptions of available sub-agents | Startup | Small (~100 tokens per agent) |
+| **Hooks Config** | Hook definitions from settings.json | Startup | ~1K tokens |
+| **Slash Commands** | Resolved command content (only the one you invoked) | When you run `/command` | Varies per command |
+| **Skills** | Skill content (only skills Claude deems relevant) | On-demand — Claude decides | Varies per skill |
+| **@ File References** | File contents pulled into the prompt | When you use `@file` in a prompt | Depends on file size |
+| **Conversation History** | All prior messages, responses, and tool outputs | Accumulates every turn | Grows linearly |
+| **Compression Buffer** | Reserved space for auto-compaction summaries | When context approaches ~75% full | ~22% of window |
+
+### Key Takeaways
+
+**Everything competes for the same 200K tokens.** A bloated CLAUDE.md, 20 MCP servers, and a long conversation history all eat from the same pool. When the window fills up, Claude's output quality degrades.
+
+**MCP tools are the biggest variable cost.** Each connected server adds tool schemas to every turn. With 20+ servers, you can lose 50K+ tokens before typing anything. Claude Code now has **Tool Search** that loads MCP tools on-demand (auto-activates when tools exceed 10% of context), but keeping unused servers disabled is still best practice.
+
+**Skills and commands load selectively.** Unlike CLAUDE.md (always loaded), skills only load when Claude determines they're relevant, and slash commands only load when you invoke them. This is why skills are preferred over stuffing everything into CLAUDE.md.
+
+**Monitor your usage:**
+
+```
+> /context              # Visual breakdown of token usage
+> /cost                 # Token and cost statistics
+> /compact              # Manually compress conversation history
+```
+
+## 10. What's in This Repo
 
 ```
 claude-code-onboarding/
@@ -475,7 +515,7 @@ claude-code-onboarding/
                 └── helpers.js
 ```
 
-## 10. Hands-On Exercises
+## 11. Hands-On Exercises
 
 Work through these exercises to get familiar with Claude Code. Each one uses different components from this kit.
 These exercises follow a deliberate progression to help you understand **which component to use for and when**:
@@ -580,7 +620,7 @@ This is the real-world workflow — a single command that triggers scaffolding, 
 > /add-feature User profile management — users can update their name, avatar, and preferences. Backend API + Angular settings page + Flutter profile screen
 ```
 
-## 11. Claude Code Power Features
+## 12. Claude Code Power Features
 
 ### Keyboard Shortcuts (Inside Claude Code)
 
@@ -669,7 +709,7 @@ Configure in `.claude/settings.json`:
 
 This repo's `settings.json` comes pre-configured with sensible defaults.
 
-## 12. Tips & Best Practices
+## 13. Tips & Best Practices
 
 ### Prompting Best Practices
 
@@ -842,7 +882,7 @@ E-commerce platform — Spring Boot API + Angular SPA + Flutter mobile.
 - Use `CLAUDE.local.md` for personal preferences (auto-gitignored)
 - Use `.claude/rules/` for conditional rules scoped to specific directories
 
-## 13. Troubleshooting
+## 14. Troubleshooting
 
 ### `command not found: claude`
 
@@ -916,7 +956,7 @@ claude --debug             # Full debug logging
 claude --debug "mcp"       # Debug a specific category
 ```
 
-## 14. Resources
+## 15. Resources
 
 | Resource | Link |
 |----------|------|
