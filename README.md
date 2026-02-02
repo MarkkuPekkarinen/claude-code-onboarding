@@ -560,14 +560,17 @@ This repo's `settings.json` comes pre-configured with sensible defaults.
 
 ### Prompting Best Practices
 
+### Prompting Best Practices
+
 1. **Be specific** — The more context you give Claude, the better the output:
+
 | ❌ Vague | ✅ Specific |
-|---------------|----------|
-| "Add tests" | "Write Jest tests for `src/utils/date.ts` covering: formatDate with valid dates, invalid inputs, and timezone handling" |
+|---|---|
+| "Add tests" | "Write Jest tests for `src/utils/date.ts` covering formatDate with valid dates, invalid inputs, and timezone handling" |
 | "Fix the bug" | "Login fails when email contains `+`. Fix `src/auth/validate.ts:23` to handle plus signs in email addresses" |
-| "Review this" | "Review `src/api/users.ts` for: N+1 queries, missing error handling, and SQL injection risks" |
+| "Review this" | "Review `src/api/users.ts` for N+1 queries, missing error handling, and SQL injection risks" |
 | "Make it faster" | "Profile the `/api/products` endpoint. Identify the slowest operation. Target: < 100ms response" |
-| "Add auth" | "Add JWT authentication to the Express API: login/register endpoints, middleware for protected routes, refresh tokens with 7-day expiry" |
+| "Add auth" | "Add JWT auth to the Express API: login/register endpoints, middleware for protected routes, refresh tokens with 7-day expiry" |
 
 2. **Use agents for focused work** — `@java-spring-api` gives you a specialized backend expert instead of a generalist
 
