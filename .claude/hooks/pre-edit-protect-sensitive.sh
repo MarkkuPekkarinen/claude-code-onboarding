@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # PreToolUse → Write|Edit|MultiEdit: Block modifications to sensitive files.
 # Exit 0 = allow, Exit 2 = block (reason sent to Claude via stderr).
-set -euo pipefail
+set -uo pipefail
 
 # Read the tool input JSON from stdin
 input=$(cat)
-file=$(echo "$input" | jq -r '.tool_input.file_path // .tool_input.path // ""')
+file=$(echo "$input" | jq -r '.tool_input.file_path // .tool_input.path // ""' 2>/dev/null) || file=""
 
 # Skip if no file path detected
 [ -z "$file" ] && exit 0

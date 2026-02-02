@@ -32,7 +32,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/pre-bash-guard.sh"
+            "command": ".claude/hooks/pre-bash-guard.sh",
+            "timeout": 10
           }
         ]
       },
@@ -41,7 +42,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/pre-edit-protect-sensitive.sh"
+            "command": ".claude/hooks/pre-edit-protect-sensitive.sh",
+            "timeout": 10
           }
         ]
       }
@@ -52,7 +54,19 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/post-edit-format.sh"
+            "command": ".claude/hooks/post-edit-format.sh",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/stop-secret-scan.sh",
+            "timeout": 15
           }
         ]
       }

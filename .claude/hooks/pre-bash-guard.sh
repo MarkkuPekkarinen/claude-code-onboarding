@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # PreToolUse → Bash: Block destructive commands before they run.
 # Exit 0 = allow, Exit 2 = block (reason sent to Claude via stderr).
-set -euo pipefail
+set -uo pipefail
 
 # Read the tool input JSON from stdin
 input=$(cat)
-cmd=$(echo "$input" | jq -r '.tool_input.command // ""')
+cmd=$(echo "$input" | jq -r '.tool_input.command // ""' 2>/dev/null) || cmd=""
 
 # --- Destructive filesystem commands ---
 if echo "$cmd" | grep -qE 'rm\s+-rf\s+/'; then

@@ -4,6 +4,9 @@
 # Exit 0 always (warnings only, never blocks).
 set -uo pipefail
 
+# Read and discard stdin (hook protocol sends JSON, but we don't need it)
+cat > /dev/null 2>&1 || true
+
 # Get list of files changed in the working tree (staged + unstaged)
 changed=$(git diff --name-only HEAD 2>/dev/null || git diff --name-only 2>/dev/null || true)
 
@@ -24,7 +27,7 @@ while IFS= read -r file; do
   [ -f "$file" ] || continue
   # Skip binary files and common non-source files
   echo "$file" | grep -qE '\.(png|jpg|jpeg|gif|ico|woff|woff2|ttf|eot|lock|map)$' && continue
-  if grep -lqE "$patterns" "$file" 2>/dev/null; then
+  if grep -qE "$patterns" "$file" 2>/dev/null; then
     hits="$hits  - $file"$'\n'
   fi
 done <<< "$changed"
