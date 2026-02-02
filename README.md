@@ -280,7 +280,6 @@ This repo comes pre-configured with:
 | **Filesystem** | Secure file search and manipulation with configurable directory permissions |
 | **LangChain Docs** | Live LangChain documentation lookup |
 
-
 ### Hooks — Automated Guardrails
 
 **What:** Shell scripts that run automatically at specific lifecycle events (before/after tool use, on session start/end). Think of them as **middleware for Claude Code** — deterministic, always execute the same way.
@@ -460,24 +459,6 @@ Then iterate:
 ```
 
 ## 9. Claude Code Power Features
-
-### Thinking Mode
-
-Claude Code supports extended thinking for complex reasoning. Opus 4.5 has thinking enabled by default.
-
-| Trigger | Thinking Budget | When to Use |
-|---------|----------------|-------------|
-| `think` | Standard | General reasoning, code analysis |
-| `think harder` | Extended | Complex debugging, multiple approaches |
-| `ultrathink` | Maximum | Critical architecture decisions, deep security review |
-
-```
-> think about how to restructure the auth module
-> think harder about why this race condition occurs
-> ultrathink about the migration strategy from monolith to microservices
-```
-
-Toggle thinking: `Alt+T` (Win/Linux) or `Option+T` (macOS). `Tab` makes it sticky across prompts.
 
 ### Essential CLI Flags
 
