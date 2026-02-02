@@ -54,15 +54,15 @@ git clone https://github.com/kumaran-is/claude-code-onboarding.git
 cd claude-code-onboarding
 ```
 
-## 3. Install VS Code
+## 3. Set Up Your Editor (Install VS Code)
 
-We recommend open source **[Visual Studio Code](https://code.visualstudio.com/)** as your IDE, though Claude Code works from any terminal. Download and install **[Visual Studio Code](https://code.visualstudio.com/)** from the official site:
+We recommend open source **[Visual Studio Code](https://code.visualstudio.com/)** as your IDE, though Claude Code works from any terminal — no specific editor is required. Download and install **[Visual Studio Code](https://code.visualstudio.com/)** from the official site:
 
-After installing, open the cloned project `claude-code-onboarding` with **[Visual Studio Code](https://code.visualstudio.com/)** and use the **integrated terminal** 
+After installing, open the cloned project `claude-code-onboarding` with **[Visual Studio Code](https://code.visualstudio.com/)** and use the **integrated terminal** for the remaining steps.
 
 ## 4. Install Claude Code
 
-Open the **[Visual Studio Code](https://code.visualstudio.com/)** and run the following:
+Open the **[Visual Studio Code](https://code.visualstudio.com/)** integrated terminal and run the following:
 
 ### Native Binary (Recommended)
 
@@ -78,34 +78,34 @@ curl -fsSL https://claude.ai/install.sh | bash
 source ~/.bashrc   # or: source ~/.zshrc
 ```
 
-3. Close and repone the **[Visual Studio Code](https://code.visualstudio.com/)**
-
-4. Verify installation
+3. After installation, **restart VS Code(Close and repone the  VS Code)** so the terminal picks up the new PATH, then verify installation
 
 ```bash
 claude --version
 ```
 
-### 5. First-time Using Claude Code
+> For Windows, see the [official installation docs](https://code.claude.com/docs/en/quickstart).
 
-**Note:** First time Claude Code user should login using our **Claude Pro/Max subscription**.
+## 5. First-time Using Claude Code
 
-From vscode terminal run below command to launch Claude Code CLI
+> **Note:** First-time users will be prompted to authenticate with a Claude Pro/Max subscription or an Anthropic API key.
+
+From the VS Code terminal, launch the CLI:
 
 ```bash
 claude
 ```
 
-First time Claude Code user will be prompted to login. You'll authenticate with your **Claude Pro/Max subscription** or **Anthropic Console API key**.
-
-🔗 **Official Docs:** [https://code.claude.com/docs/en/quickstart](https://code.claude.com/docs/en/quickstart)
+Follow the on-screen prompts to log in. Once authenticated with your **Claude Pro/Max subscription** or **Anthropic Console API key**. Claude Code automatically detects and loads the project configuration:
 
 That's it! Claude Code will automatically detect and load:
-- `CLAUDE.md` — project context and conventions
-- `.mcp.json` — MCP server configurations
-- `.claude/agents/` — specialized AI agents
-- `.claude/skills/` — domain knowledge and templates
-- `.claude/commands/` — slash commands
+| File / Directory | Purpose |
+|---|---|
+| `CLAUDE.md` | Project context and conventions |
+| `.mcp.json` | MCP server configurations |
+| `.claude/agents/` | Specialized AI agents |
+| `.claude/skills/` | Domain knowledge and templates |
+| `.claude/commands/` | Slash commands |
 
 Try these right away:
 
@@ -115,11 +115,11 @@ Try these right away:
 > Explain the tech stack from CLAUDE.md
 ```
 
-## 5. Install Claude-Mem (Persistent Memory)
+🔗 **Official Docs:** [https://code.claude.com/docs/en/quickstart](https://code.claude.com/docs/en/quickstart)
+
+## 6. Install Claude-Mem (Persistent Memory) *(Optional)*
 
 Claude Code forgets everything between sessions. **[Claude-Mem](https://github.com/thedotmack/claude-me)** gives Claude persistent memory across sessions. 
-
-### Install
 
 Inside a Claude Code CLI session, run:
 
@@ -128,36 +128,34 @@ Inside a Claude Code CLI session, run:
 > /plugin install claude-mem
 ```
 
-Then **restart Claude Code** (`/exit`) or restart(close and reopen) the vscode.
+Then **restart Claude Code** (`/exit`) or restart (close and reopen) the vscode.
 
-### What It Does
+### What Claude-Mem Does
 
-- **Automatically captures** what Claude does (file edits, decisions, tool usage)
+- **Automatically captures** what Claude Code does (file edits, decisions, tool usage)
 - **Compresses** sessions into searchable memory using AI
 - **Injects relevant context** at the start of new sessions
 - **Web viewer** at `http://localhost:37777` to browse memory
 
-### Verify
+Verify with: Inside a Claude Code CLI session, run:
 
 ```
 > Do you have any memory from previous sessions?
 ```
 
-## 6. Understanding Claude Code Components
+## 7. Understanding Claude Code Components
 
-Here's a quick reference for every building block. Knowing *when to use what* is the key to being productive.
+Knowing *when to use what* is the key to being productive with Claude Code. Here's a quick reference:
 
-### Quick Overview
-
-| # | Component | What It Does | Location | Invoked By |
-|---|-----------|-------------|----------|------------|
-| 1 | **CLAUDE.md** | Markdown files Claude reads at startup for project context — tech stack, coding standards, commands, architecture, workflows | `./CLAUDE.md` (project), `~/.claude/CLAUDE.md` (global), `.claude/rules/` (conditional) | Auto-loaded at startup |
-| 2 | **settings.json** | JSON configuration for permissions, hooks, and environment — allow/deny/ask permission rules, hooks config, env vars | `.claude/settings.json` (project), `~/.claude/settings.json` (user) | Auto-loaded at startup |
-| 3 | **Skills** | Modular expertise Claude uses **automatically** based on context — lazy-loaded when needed, not user-invoked. Best for complex, recurring workflows (code review, API design patterns) | `.claude/skills/<skill-name>/SKILL.md` | Claude decides (auto) |
-| 4 | **Slash Commands** | `/command` shortcuts for repeatable prompts — quick actions you trigger manually | `.claude/commands/<command-name>.md` | You type `/command` |
-| 5 | **Sub-agents** | Specialized AI with isolated context for complex tasks — parallel processing, focused expertise, preserves main context | `.claude/agents/<agent-name>.md` | You type `@agent` |
-| 6 | **Hooks** | Scripts that run at lifecycle events (pre/post tool use, session start/stop) — auto-formatting, validation, notifications | Defined in `settings.json` → `"hooks"` | Automatic on events |
-| 7 | **MCP Servers** | Tool connections to external services — GitHub, Slack, databases, live docs, APIs | `.mcp.json` (project root) | Claude uses as needed |
+| Component | What It Does | Location | How It's Invoked |
+|---|---|---|---|
+| **CLAUDE.md** | Project context Claude reads at startup — tech stack, coding standards, architecture, workflows | `./CLAUDE.md`, `~/.claude/CLAUDE.md`, `.claude/rules/` | Auto-loaded at startup |
+| **settings.json** | JSON configuration for permissions, hooks, and environment — allow/deny/ask permission rules, hooks config, env vars for Claude Code | `.claude/settings.json` (project), `~/.claude/settings.json` (user) | Auto-loaded at startup |
+| **Skills** | Modular expertise Claude applies automatically based on context — lazy-loaded when needed, not user-invoked. Best for complex, recurring workflows (code review, API design patterns)  | `.claude/skills/<name>/SKILL.md` | Auto (Claude decides) |
+| **Slash Commands** | `/command` shortcuts for repeatable prompts — quick actions you trigger manually | `.claude/commands/<name>.md` | You type `/command` |
+| **Sub-agents** | Specialized AI with isolated context for complex tasks — parallel processing, focused expertise | `.claude/agents/<name>.md` | You type `@agent` or Auto (Claude decides|
+| **Hooks** | Scripts that run at lifecycle events (pre/post tool use, session start/stop) auto-formatting, linting, validation, notifications | Defined in `settings.json` → `"hooks"` | Automatic on events |
+| **MCP Servers** | Tool connections to external services — GitHub, Slack, databases, docs, APIs | `.mcp.json` (project root) | Claude uses as needed |
 
 ### The Golden Formula
 
