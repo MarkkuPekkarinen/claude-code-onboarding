@@ -360,14 +360,18 @@ This repo comes pre-configured with:
 
 **When to use:** When you need hard rules enforced every time, like **run linter before commit** or **block commits without passing tests** or **block destructive commands** or **auto-format after every edit**.
 
-| Hook Type | Fires When | Common Uses |
+| Hook Event | Fires When | Common Uses |
 |-----------|-----------|-------------|
-| `PreToolUse` | Before a tool executes | Validation, tmux reminders for long commands, block risky operations |
-| `PostToolUse` | After a tool finishes | Auto-format with Prettier/ruff, type-check, warn about `console.log` |
-| `UserPromptSubmit` | When you send a message | Input validation, context injection |
-| `Stop` | When Claude finishes responding | Audit modified files, run linter on changes |
-| `PreCompact` | Before context compaction | Save important state before context is compressed |
-| `Notification` | On permission requests | Custom notification routing |
+| **PreToolUse** | Before a tool executes | Block risky commands, protect sensitive files, validate inputs |
+| **PostToolUse** | After a tool completes | Auto-format code, type-check, lint |
+| **PermissionRequest** | When Claude shows a permission dialog | Auto-approve safe commands, deny risky ones |
+| **UserPromptSubmit** | When you send a message | Input validation, context injection |
+| **Stop** | When Claude finishes responding | Audit changed files, secret scanning |
+| **SubagentStop** | When a sub-agent finishes | Validate sub-agent output |
+| **PreCompact** | Before context compaction | Save important state |
+| **SessionStart** | When a session starts or resumes | Load env vars, install dependencies |
+| **SessionEnd** | When a session ends | Cleanup, logging |
+| **Notification** | On permission prompts or idle | Custom notification routing |
 
 **Where:** `.claude/settings.json` → `hooks` section, scripts in `.claude/hooks/`
 
