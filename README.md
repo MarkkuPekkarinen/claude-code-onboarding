@@ -30,27 +30,28 @@ Clone it, install Claude Code, and start building.
 
 ## What is Claude Code?
 
-**[Claude Code](https://code.claude.com/docs/en/overview)** is an **agentic AI coding assistant that lives in your terminal**. It understands your codebase, edits files directly, runs commands, and helps you code faster through natural language conversation.
+**[Claude Code](https://code.claude.com/docs/en/overview)** is an **agentic AI coding assistant that lives in your terminal**. It understands your codebase, edits files, runs commands, and writes code — all through natural language.
 
-Think of it as a senior developer sitting in your terminal who knows your entire project, follows your team's conventions, and never gets tired.
+Think of it as a senior developer pair-programming with you who knows your entire project, follows your team's conventions, and never gets tired.
 
 ## 1. Prerequisites
 
 Before you begin, make sure you have:
-- **A Claude subscription** — Claude Pro or Max at [claude.ai](https://claude.ai), OR an Anthropic API key from the [Console](https://console.anthropic.com)
 
-**Optional for Quick Start: But Required for MCP server**
-- **[Install Node.js v24.13](https://nodejs.org/en/download)**
-- **[Install Python v3.14](https://www.python.org/downloads/)**
+- **A Claude subscription** — Claude Pro or Max at [claude.ai](https://claude.ai), or an Anthropic API key from the [Console](https://console.anthropic.com)
+
+**Optional for Quick Start (required for MCP servers):**
+
+- [Node.js v22+](https://nodejs.org/en/download)
+- [Python v3.12+](https://www.python.org/downloads/)
 
 ## 2. Clone This Repo
 
-Clone this Claude Code onboarding kit Repo
+This repo is your playground — use it to learn and practice Claude Code (Agentic AI coding assistant) and get familiar with its components (agents, skills, slash commands, MCP servers) so you can automate your development workflow.
 
 ```bash
 git clone https://github.com/kumaran-is/claude-code-onboarding.git
 cd claude-code-onboarding
-
 ```
 
 ## 3. Install VS Code
@@ -78,10 +79,6 @@ source ~/.bashrc   # or: source ~/.zshrc
 ```
 
 3. Close and repone the **[Visual Studio Code](https://code.visualstudio.com/)**
-
-```bash
-source ~/.bashrc   # or: source ~/.zshrc
-```
 
 4. Verify installation
 
