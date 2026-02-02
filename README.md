@@ -40,7 +40,7 @@ Before you begin, make sure you have:
 
 ## 2. Clone This Repo
 
-- Clone this Claude Code onboarding kit Repo
+Clone this Claude Code onboarding kit Repo
 
 ```bash
 git clone https://github.com/kumaran-is/claude-code-onboarding.git
