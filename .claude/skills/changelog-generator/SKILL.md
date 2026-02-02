@@ -6,7 +6,38 @@ allowed-tools: Bash, Read, Write, Edit
 
 # Changelog Generator Skill
 
-Transform git commit history into polished, user-friendly changelogs.
+Transform git commit history into polished, user-friendly changelogs. Works with any tech stack by auto-detecting the project structure.
+
+## Step 0 — Detect Project Structure
+
+Before processing commits, scan the repo to understand what's in it. This makes platform labels and commit rewrites accurate regardless of stack.
+
+```bash
+# Detect project modules / platforms by presence of key files
+echo "=== Project Detection ==="
+[ -f pom.xml ] || [ -f build.gradle.kts ] && echo "JAVA_BACKEND=true"
+[ -f package.json ] && grep -q '"express"\|"fastify"\|"hono"\|"koa"' package.json 2>/dev/null && echo "NODE_BACKEND=true"
+[ -f pyproject.toml ] || [ -f requirements.txt ] && echo "PYTHON_BACKEND=true"
+[ -f angular.json ] && echo "ANGULAR_FRONTEND=true"
+[ -f next.config.* ] 2>/dev/null && echo "NEXT_FRONTEND=true"
+[ -f vite.config.* ] 2>/dev/null && echo "VITE_FRONTEND=true"
+[ -f pubspec.yaml ] && echo "FLUTTER_MOBILE=true"
+[ -f Cargo.toml ] && echo "RUST_PROJECT=true"
+[ -f go.mod ] && echo "GO_PROJECT=true"
+
+# Detect monorepo structure
+[ -f lerna.json ] || [ -f pnpm-workspace.yaml ] || [ -d packages/ ] && echo "MONOREPO=true"
+
+# Read CLAUDE.md for additional context if available
+[ -f CLAUDE.md ] && echo "--- CLAUDE.md available for project context ---"
+```
+
+**Use detection results to:**
+1. Build a platform label map (e.g. `lib/` → **Mobile App**, `src/app/` → **Web App**)
+2. Identify the right path filters for monorepo/multi-module changelogs
+3. Translate framework-specific jargon accurately (e.g. "state provider" → state management, "reactive stream" → async endpoint, "API router" → API endpoint)
+
+If `CLAUDE.md` exists, read it first — it describes the project's tech stack, conventions, and folder structure which will improve rewrite accuracy.
 
 ## Workflow
 
@@ -76,11 +107,21 @@ Map prefixes to user-facing categories:
 
 | Raw Commit | User-Facing Entry |
 |------------|-------------------|
-| `feat(auth): add OAuth2 PKCE flow for mobile` | **Social Login on Mobile** — Sign in with Google and Apple on iOS and Android |
-| `fix: resolve race condition in WebSocket reconnect` | Fixed intermittent disconnections during real-time collaboration |
-| `perf: add Redis caching layer to /api/products` | Product pages now load 2x faster |
-| `fix(ui): correct z-index stacking on modal overlay` | Fixed issue where popups appeared behind other elements |
-| `feat: implement batch export endpoint` | **Bulk Export** — Download all your data at once from Settings → Export |
+| `feat(api): add OAuth2 PKCE flow to AuthController` | **Backend** — Social login now supports Google and Apple sign-in |
+| `fix(web): resolve state update race in DashboardComponent` | **Web App** — Fixed dashboard widgets occasionally showing stale data |
+| `perf: add caching layer to /api/v1/products endpoint` | **Backend** — Product listing API responds 2x faster |
+| `feat(mobile): implement offline-first data sync` | **Mobile App** — App now works offline and syncs when reconnected |
+| `fix(db): correct migration column default for preferences` | Fixed user preferences resetting after account update |
+| `feat: add batch processing endpoint` | Bulk operations now available via a single API call |
+| `fix(mobile): correct auth state lifecycle on app resume` | **Mobile App** — Fixed intermittent logout on app resume |
+
+**Rewriting rules:**
+- Strip file paths, class names, function names, and framework internals
+- Lead with the **user benefit**, not the code change
+- Use active voice: "You can now..." or just state the improvement
+- Keep each entry to 1–2 sentences max
+- Use the platform label from Step 0 when the release spans multiple platforms
+- For single-platform repos, skip the label entirely
 
 ### Step 5 — Assemble the Changelog
 
@@ -91,23 +132,24 @@ Map prefixes to user-facing categories:
 _Released: 2025-03-15_
 
 ## 🚨 Breaking Changes
-- **API v1 Retired** — All integrations must upgrade to API v2 by April 1
+- **API v1 Retired** — All integrations must migrate to API v2 by April 1. See migration guide.
 
 ## ✨ New Features
-- **Team Workspaces** — Create separate workspaces per project, invite members, and control access
-- **Keyboard Shortcuts** — Press `?` to see all shortcuts. Navigate without touching your mouse
+- **Mobile App** — Offline mode: the app now works without internet and syncs when reconnected
+- **Web App** — Team Workspaces: create separate workspaces per project with role-based access
+- **Backend** — Bulk export endpoint: download all your data at once from Settings → Export
 
 ## ⚡ Performance
-- File sync is now 2x faster across devices
-- Dashboard loads 40% quicker on first visit
+- **Backend** — Product listing API responds 2x faster (Redis caching)
+- **Web App** — Dashboard initial load reduced by 40%
 
 ## 🐛 Bug Fixes
-- Fixed large image uploads failing silently
-- Resolved timezone offset in scheduled posts
-- Corrected notification badge showing wrong count
+- **Mobile App** — Fixed intermittent logout when resuming the app
+- **Web App** — Fixed dashboard widgets showing stale data after navigation
+- **Backend** — Resolved timezone offset in scheduled notification delivery
 
 ## 🔒 Security
-- Upgraded authentication tokens to use short-lived JWTs with automatic rotation
+- **Backend** — Authentication tokens now use short-lived JWTs with automatic rotation
 ```
 
 ### Step 6 — Output
@@ -165,7 +207,11 @@ What's New in 2.5.0:
 ## Edge Cases
 
 - **Squash merges** — read PR titles from merge commits: `git log --merges --pretty=format:"%h|%s"`
-- **Monorepo** — filter by path: `git log --oneline -- packages/api/`
+- **Monorepo / multi-module** — use the paths detected in Step 0 to filter. Example:
+  ```bash
+  # Filter commits to a specific module (paths vary per project)
+  git log --oneline -- path/to/module/
+  ```
 - **No conventional commits** — read each message, categorize by intent, note to user that adopting conventional commits would improve future changelogs
 - **Empty range** — inform user: "No commits found in this range"
 - **Very large range (100+ commits)** — group by week or sprint, summarize instead of listing every item
