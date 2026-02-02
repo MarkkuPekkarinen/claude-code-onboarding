@@ -452,7 +452,109 @@ Then iterate:
 > /add-feature User profile management — users can update their name, avatar, and preferences. Backend API + Angular settings page + Flutter profile screen
 ```
 
-## 9. Tips & Best Practices
+## 9. Claude Code Power Features
+
+### Thinking Mode
+
+Claude Code supports extended thinking for complex reasoning. Opus 4.5 has thinking enabled by default.
+
+| Trigger | Thinking Budget | When to Use |
+|---------|----------------|-------------|
+| `think` | Standard | General reasoning, code analysis |
+| `think harder` | Extended | Complex debugging, multiple approaches |
+| `ultrathink` | Maximum | Critical architecture decisions, deep security review |
+
+```
+> think about how to restructure the auth module
+> think harder about why this race condition occurs
+> ultrathink about the migration strategy from monolith to microservices
+```
+
+Toggle thinking: `Alt+T` (Win/Linux) or `Option+T` (macOS). `Tab` makes it sticky across prompts.
+
+### Essential CLI Flags
+
+| Flag | What It Does | Example |
+|------|-------------|---------|
+| `claude` | Start interactive session | `claude` |
+| `claude -p "task"` | Print mode — non-interactive, prints result and exits | `claude -p "explain this codebase"` |
+| `claude --continue` | Continue last session | `claude --continue` |
+| `claude --resume <id>` | Resume specific session by ID or name | `claude --resume auth-refactor` |
+| `claude --model <name>` | Use specific model (sonnet, opus, haiku) | `claude --model opus` |
+| `claude --output-format json` | JSON output (great for CI/CD) | `claude -p "run tests" --output-format json` |
+| `claude --max-turns N` | Limit agentic turns (print mode) | `claude -p --max-turns 3 "fix lint errors"` |
+| `claude --max-budget-usd N` | Cap API spend (print mode) | `claude -p --max-budget-usd 5.00 "run tests"` |
+| `claude --add-dir <path>` | Add extra working directories | `claude --add-dir ../frontend ../shared` |
+| `claude --dangerously-skip-permissions` | Skip all permission prompts ⚠️ | Use with extreme caution |
+| `claude --debug` | Enable debug logging | `claude --debug "api,mcp"` |
+
+### Core Tools
+
+Every tool Claude Code has access to:
+
+| Tool | Purpose | Needs Permission? |
+|------|---------|:-:|
+| **Read** | Read files, images, PDFs | No |
+| **Write** | Create new files | Yes |
+| **Edit** | Modify existing files (exact string replacement) | Yes |
+| **Bash** | Execute shell commands | Yes |
+| **Grep** | Search content with regex (ripgrep) | No |
+| **Glob** | Find files by pattern | No |
+| **Task** | Launch sub-agents | No |
+| **TodoWrite** | Track multi-step task progress | No |
+| **WebFetch** | Fetch and analyze web pages | Yes |
+| **WebSearch** | Search the web | Yes |
+| **LSP** | Go-to-definition, find references, hover docs | No |
+| **NotebookRead/Edit** | Read/edit Jupyter notebooks | Read: No, Edit: Yes |
+
+### @ File References
+
+Reference files directly in prompts with `@` — Claude reads them automatically:
+
+```
+> Review @src/auth/login.ts for security issues
+> Compare @src/api/v1/users.ts and @src/api/v2/users.ts — what changed?
+> Generate tests for @src/utils/validator.ts
+> This bug is in @src/services/auth.ts, check @logs/error.log for clues
+```
+
+Works in both regular prompts and slash command arguments. Reduces token usage compared to reading entire directories.
+
+### Prompting Best Practices
+
+| Instead of... | Write... |
+|---------------|----------|
+| "Add tests" | "Write Jest tests for `src/utils/date.ts` covering: formatDate with valid dates, invalid inputs, and timezone handling" |
+| "Fix the bug" | "Login fails when email contains `+`. Fix `src/auth/validate.ts:23` to handle plus signs in email addresses" |
+| "Review this" | "Review `src/api/users.ts` for: N+1 queries, missing error handling, and SQL injection risks" |
+| "Make it faster" | "Profile the `/api/products` endpoint. Identify the slowest operation. Target: < 100ms response" |
+| "Add auth" | "Add JWT authentication to the Express API: login/register endpoints, middleware for protected routes, refresh tokens with 7-day expiry" |
+
+### Permission Model
+
+Claude Code uses an allow / deny / ask system. Configure in `.claude/settings.json`:
+
+```json
+{
+  "permissions": {
+    "allow": {
+      "Bash": ["git status", "git diff", "git log", "npm test", "npm run*"],
+      "Read": {},
+      "Edit": {}
+    },
+    "deny": {
+      "Write": ["*.env", ".env.*", ".git/*"],
+      "Edit": ["*.env", ".env.*"]
+    }
+  }
+}
+```
+
+This lets common safe commands run without asking, blocks sensitive file edits entirely, and asks for everything else. The kit's `settings.json` comes pre-configured with sensible defaults.
+
+---
+
+## 10. Tips & Best Practices
 
 ### Getting the Best Results
 
@@ -572,6 +674,55 @@ Beyond Claude-Mem, there's a growing plugin ecosystem. Plugins bundle tools, ski
 | `context7` | Live documentation for any library |
 | `commit-commands` | Streamlined git workflow commands |
 
+> ⚠️ **Same context warning as MCPs** — each enabled plugin adds tool definitions. Install many, enable few.
+
+### Keyboard Shortcuts
+
+**Slash Commands:**
+
+| Command | Action |
+|---------|--------|
+| `/help` | Show all available commands |
+| `/clear` | Clear conversation context |
+| `/compact [focus]` | Compact context (optionally specify what to keep) |
+| `/fork` | Fork conversation for parallel work |
+| `/rewind` | Go back to a previous state (undo code changes) |
+| `/checkpoints` | File-level undo points |
+| `/statusline` | Customize status bar (branch, context %, model, todos) |
+| `/context` | View context usage as a colored grid |
+| `/cost` | Show token usage statistics |
+| `/stats` | Usage stats with date range (7/30/all-time) |
+| `/usage` | View plan limits and usage |
+| `/exit` | Exit Claude Code |
+| `/memory` | Open CLAUDE.md in your editor |
+| `/agents` | List / create agents |
+| `/mcp` | Check MCP server status |
+| `/model` | Switch between models |
+| `/plan` | Enter plan mode (Opus plans, Sonnet executes) |
+| `/rename <name>` | Name the current session |
+| `/resume <name>` | Resume a previous session by name or ID |
+| `/review` | Request code review |
+| `/doctor` | Run diagnostics |
+
+**Keyboard:**
+
+| Shortcut | Action |
+|----------|--------|
+| `!` | Quick bash command prefix |
+| `@` | Search for files (include in prompts too) |
+| `Tab` | Toggle thinking mode (sticky) |
+| `Shift+Enter` | Multi-line input |
+| `Ctrl+U` | Delete entire line |
+| `Ctrl+R` | Search command history |
+| `Ctrl+O` | View transcript (shows thinking blocks) |
+| `Ctrl+G` | Edit prompt in system text editor |
+| `Ctrl+B` | Background current command / agent |
+| `Ctrl+Z` | Suspend / Undo |
+| `Alt+T` / `Option+T` | Toggle thinking mode |
+| `Alt+P` / `Option+P` | Switch models while typing |
+| `Esc` | Cancel current generation |
+| `Esc Esc` | Interrupt Claude / restore code |
+
 ### Writing a Good CLAUDE.md
 
 Your `CLAUDE.md` is the **highest-leverage file** in the entire setup — it goes into every session and shapes every task. A bad line here ripples into every plan, every implementation, every artifact Claude produces. Invest time crafting it carefully.
@@ -627,7 +778,7 @@ E-commerce platform — Spring Boot API + Angular SPA + Flutter mobile.
 
 ---
 
-## 10. Troubleshooting
+## 11. Troubleshooting
 
 ### "command not found: claude"
 ```bash
@@ -635,6 +786,20 @@ E-commerce platform — Spring Boot API + Angular SPA + Flutter mobile.
 echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
 source ~/.bashrc
 ```
+
+### "Context too large" error
+```
+> /compact                          # Quick reset
+> /compact "keep the auth work"     # Smart cleanup — preserves specified context
+```
+Prevention: use `/compact` every ~50 operations in long sessions, or start fresh for new features.
+
+### Edit tool fails with "string not found"
+Claude's Edit tool requires an exact string match including whitespace and indentation. Fix:
+```
+> Read the file again to see exact content
+```
+If the string appears multiple times, provide more surrounding context for uniqueness.
 
 ### MCP server not connecting
 ```
@@ -644,32 +809,54 @@ Check the status output. Common fixes:
 - Make sure `npx` is available (Node.js installed)
 - For GitHub MCP, set your token: `export GITHUB_TOKEN=ghp_your_token_here`
 - Restart Claude Code after changing `.mcp.json`
+- On Windows, MCP servers need `cmd /c` wrapper: `"command": "cmd", "args": ["/c", "npx", "-y", "package-name"]`
 
 ### Claude isn't using skills or agents
 - Verify the files exist: `ls .claude/agents/` and `ls .claude/skills/`
 - Check YAML frontmatter in each file (needs `---` delimiters)
 - Try explicitly mentioning: "Use the java-spring-api skill"
 
+### Background task not responding
+```
+> /tasks          # or /bashes — check status
+> /kill <id>      # Stop the stuck task
+```
+
 ### Permission errors
 - Never use `sudo` with npm installs
 - Fix npm permissions: `npm config set prefix ~/.npm-global` and add to PATH
+- Pre-configure permissions in `.claude/settings.json` to avoid repeated prompts
 
 ### Run diagnostics
 ```bash
-claude doctor
+claude doctor          # General diagnostics
+claude --debug         # Debug mode with full logging
+claude --debug "mcp"   # Debug specific categories
 ```
 
-## 11. Resources
+---
+
+## 12. Resources
 
 | Resource | Link |
 |----------|------|
 | Claude Code Official Docs | [code.claude.com/docs](https://code.claude.com/docs) |
 | Claude Code GitHub | [github.com/anthropics/claude-code](https://github.com/anthropics/claude-code) |
 | Claude Code Quickstart | [code.claude.com/docs/en/quickstart](https://code.claude.com/docs/en/quickstart) |
+| CLI Reference | [code.claude.com/docs/en/cli-reference](https://code.claude.com/docs/en/cli-reference) |
+| Settings Reference | [code.claude.com/docs/en/settings](https://code.claude.com/docs/en/settings) |
+| Skills Documentation | [code.claude.com/docs/en/skills](https://code.claude.com/docs/en/skills) |
+| Hooks Documentation | [code.claude.com/docs/en/hooks](https://code.claude.com/docs/en/hooks) |
+| Plugins Reference | [code.claude.com/docs/en/plugins](https://code.claude.com/docs/en/plugins) |
+| Sub-agents Guide | [code.claude.com/docs/en/sub-agents](https://code.claude.com/docs/en/sub-agents) |
+| MCP Documentation | [code.claude.com/docs/en/mcp](https://code.claude.com/docs/en/mcp) |
+| Memory System | [code.claude.com/docs/en/memory](https://code.claude.com/docs/en/memory) |
+| SDK Overview | [code.claude.com/docs/en/sdk](https://code.claude.com/docs/en/sdk) |
+| Desktop App | [code.claude.com/docs/en/desktop](https://code.claude.com/docs/en/desktop) |
 | Claude-Mem Plugin | [github.com/thedotmack/claude-mem](https://github.com/thedotmack/claude-mem) |
 | Context7 MCP | [github.com/upstash/context7](https://github.com/upstash/context7) |
 | VS Code Download | [code.visualstudio.com/download](https://code.visualstudio.com/download) |
 | Awesome Claude Code (Community) | [github.com/hesreallyhim/awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code) |
+| Awesome Claude Skills | [github.com/travisvn/awesome-claude-skills](https://github.com/travisvn/awesome-claude-skills) |
 | MCP Specification | [modelcontextprotocol.io](https://modelcontextprotocol.io) |
 | Prompting Guide | [docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview) |
-
