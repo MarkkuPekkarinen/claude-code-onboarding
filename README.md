@@ -228,7 +228,7 @@ Knowing *when to use what* is the key to being productive with Claude Code. Here
 | **Skills** | Modular expertise Claude applies automatically based on context — lazy-loaded when needed, not user-invoked. Best for complex, recurring workflows (code review, API design patterns)  | `.claude/skills/<name>/SKILL.md` | Auto (Claude decides) |
 | **Slash Commands** | `/command` shortcuts for repeatable prompts — quick actions you trigger manually | `.claude/commands/<name>.md` | You type `/command` |
 | **Sub-agents** | Specialized AI with isolated context for complex tasks — parallel processing, focused expertise | `.claude/agents/<name>.md` | You type `@agent` or Auto (Claude decides|
-| **Hooks** | Scripts that run at lifecycle events (pre/post tool use, session start/stop) auto-formatting, linting, validation, notifications | Defined in `settings.json` → `"hooks"` | Automatic on events |
+| **Hooks** | Scripts that run at lifecycle events — auto-formatting, validation, notifications. Types: `PreToolUse`, `PostToolUse`, `UserPromptSubmit`, `Stop`, `PreCompact`, `Notification`  | Defined in `settings.json` → `"hooks"` | Automatic on events |
 | **MCP Servers** | Tool connections to external services — GitHub, Slack, databases, docs, APIs | `.mcp.json` (project root) | Claude uses as needed |
 
 ### How They Fit Together
@@ -358,7 +358,7 @@ This repo comes pre-configured with:
 
 **What:** Shell scripts that run automatically at specific lifecycle events (before/after tool use, on session start/end). Think of them as **middleware for Claude Code** — deterministic, always execute the same way.
 
-**When to use:** When you need hard rules enforced every time, like "run linter before commit" or "block commits without passing tests."
+**When to use:** When you need hard rules enforced every time, like **run linter before commit** or **block commits without passing tests** or **block destructive commands** or **auto-format after every edit**.
 
 | Hook Type | Fires When | Common Uses |
 |-----------|-----------|-------------|
@@ -369,28 +369,18 @@ This repo comes pre-configured with:
 | `PreCompact` | Before context compaction | Save important state before context is compressed |
 | `Notification` | On permission requests | Custom notification routing |
 
-**Where:** `.claude/settings.json` → `hooks` section
+**Where:** `.claude/settings.json` → `hooks` section, scripts in `.claude/hooks/`
 
-```json
-{
-  "hooks": {
-    "PostToolUse": [{
-      "matcher": "Edit && .ts/.tsx",
-      "hooks": [{
-        "type": "command",
-        "command": "npx prettier --write $FILEPATH && npx tsc --noEmit"
-      }]
-    }],
-    "Stop": [{
-      "matcher": "*",
-      "hooks": [{
-        "type": "command",
-        "command": "git diff --name-only | xargs grep -l 'console.log' && echo '[Hook] console.log detected in changes' >&2"
-      }]
-    }]
-  }
-}
-```
+This repo includes 4 hooks out of the box:
+
+| Hook | Script | Event | What It Does |
+|------|--------|-------|-------------|
+| **Bash Guard** | `pre-bash-guard.sh` | `PreToolUse` → Bash | Blocks `rm -rf /`, `rm -rf .`, force-push to main, `DROP DATABASE` |
+| **Protect Sensitive Files** | `pre-edit-protect-sensitive.sh` | `PreToolUse` → Write/Edit | Blocks edits to `.env`, credentials, private keys, lock files |
+| **Auto-Format** | `post-edit-format.sh` | `PostToolUse` → Write/Edit | Runs Prettier (TS/JS/HTML/CSS), `dart format`, ruff/black (Python) |
+| **Secret Scan** | `stop-secret-scan.sh` | `Stop` | Warns if changed files contain AWS/GCP/GitHub/OpenAI API keys |
+
+> After cloning: `chmod +x .claude/hooks/*.sh`
 
 > **Tip:** Install the `hookify` plugin to create hooks conversationally — run `/hookify` and describe what you want in plain English.
 
