@@ -384,8 +384,12 @@ claude-code-onboarding/
 ## 8. Hands-On Exercises
 
 Work through these exercises to get familiar with Claude Code. Each one uses different components from this kit.
+These exercises follow a deliberate progression to help you understand **which component to use for and when**:
 
 ### Exercise 1: Scaffold a Flutter Fitness App
+
+**Components used:** Slash Command → Skill (auto) → Sub-agent
+> **How it works:** The slash command kicks off scaffolding. Based on task context, Claude automatically activates relevant skills and sub-agents as needed — you just keep prompting naturally.
 
 ```
 > /scaffold-flutter-app fitness tracker
@@ -401,6 +405,10 @@ Then iterate:
 
 ### Exercise 2: Build a Weather REST API (Java)
 
+**Components used:** Slash Command → Sub-agent → Skill (auto)
+
+Scaffold first, then use the `@java-spring-api` agent for domain-specific implementation:
+
 ```
 > /scaffold-spring-api weather-service
 > @java-spring-api Add a WeatherController that accepts a city name and returns mock weather data with temperature, humidity, and condition
@@ -408,6 +416,8 @@ Then iterate:
 ```
 
 ### Exercise 3: Build a Todo API (Node.js/TypeScript)
+
+**Components used:** Slash Command → Sub-agent
 
 ```
 > /scaffold-node-api todo-service
@@ -418,6 +428,8 @@ Then iterate:
 
 ### Exercise 4: Build an Analytics API (Python)
 
+**Components used:** Slash Command → Sub-agent
+
 ```
 > /scaffold-python-api analytics-service
 > @python-dev Add an async endpoint that accepts event data and stores it with timestamps
@@ -427,6 +439,10 @@ Then iterate:
 
 ### Exercise 5: Design a Full-Stack E-Commerce System
 
+**Components used:** Slash Command → Sub-agent → Skill (auto) → MCP Server
+
+This exercise chains multiple components together — architecture design, database schema, API scaffolding, and implementation:
+
 ```
 > /design-architecture An e-commerce platform with product catalog, shopping cart, checkout, and order tracking. Angular SPA for web, Flutter for mobile, Spring Boot backend.
 > /design-database e-commerce platform with products, categories, users, orders, order items, payments, and shipping
@@ -434,7 +450,11 @@ Then iterate:
 > @java-spring-api Create CRUD endpoints for Products with name, description, price, category, and image URL
 ```
 
-### Exercise 6: Use Context7 for Latest Docs
+### Exercise 6: Pull Live Docs with Context7 (MCP)
+
+**Components used:** MCP Server (Context7)
+
+Append `use context7` to any prompt to fetch up-to-date, version-specific documentation instead of relying on Claude's training data:
 
 ```
 > Create a Spring Boot WebFlux endpoint that uses Spring Security with JWT. use context7
@@ -446,6 +466,10 @@ Then iterate:
 
 ### Exercise 7: Design & Review Architecture
 
+**Components used:** Sub-agents (`@architect`, `@database-designer`)
+
+Use specialized agents for design and review tasks that benefit from isolated, focused context:
+
 ```
 > @architect Review the current project structure and suggest improvements
 > @architect Design a real-time notification system that works across Angular web and Flutter mobile using Firebase Cloud Messaging
@@ -453,6 +477,10 @@ Then iterate:
 ```
 
 ### Exercise 8: Add a Feature End-to-End
+
+**Components used:** Slash Command → all components in action
+
+This is the real-world workflow — a single command that triggers scaffolding, skills, agents, and MCP servers working together:
 
 ```
 > /add-feature User profile management — users can update their name, avatar, and preferences. Backend API + Angular settings page + Flutter profile screen
