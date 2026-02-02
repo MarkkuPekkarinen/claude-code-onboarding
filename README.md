@@ -227,7 +227,6 @@ Use `$ARGUMENTS` in the command file to accept parameters.
 
 ### Agents (Subagents) — Specialist AI Personas
 
-
 **What:** Specialized Claude instances with their own system prompt and tool restrictions. They run in a **separate context window**, so they don't pollute your main conversation.
 
 **When to use:** When you need deep expertise in a specific domain — a dedicated backend developer, database architect, or codereviewer.
@@ -278,16 +277,32 @@ This repo comes with:
 
 **When to use:** When you need hard rules enforced every time, like "run linter before commit" or "block commits without passing tests."
 
+| Hook Type | Fires When | Common Uses |
+|-----------|-----------|-------------|
+| `PreToolUse` | Before a tool executes | Validation, tmux reminders for long commands, block risky operations |
+| `PostToolUse` | After a tool finishes | Auto-format with Prettier/ruff, type-check, warn about `console.log` |
+| `UserPromptSubmit` | When you send a message | Input validation, context injection |
+| `Stop` | When Claude finishes responding | Audit modified files, run linter on changes |
+| `PreCompact` | Before context compaction | Save important state before context is compressed |
+| `Notification` | On permission requests | Custom notification routing |
+
 **Where:** `.claude/settings.json` → `hooks` section
 
 ```json
 {
   "hooks": {
-    "PreToolUse": [{
-      "matcher": "Bash(git commit:*)",
+    "PostToolUse": [{
+      "matcher": "Edit && .ts/.tsx",
       "hooks": [{
         "type": "command",
-        "command": "./scripts/pre-commit-check.sh"
+        "command": "npx prettier --write $FILEPATH && npx tsc --noEmit"
+      }]
+    }],
+    "Stop": [{
+      "matcher": "*",
+      "hooks": [{
+        "type": "command",
+        "command": "git diff --name-only | xargs grep -l 'console.log' && echo '[Hook] console.log detected in changes' >&2"
       }]
     }]
   }
@@ -300,12 +315,22 @@ This repo comes with:
 |----------|--------|
 | `/help` | Show all available commands |
 | `/clear` | Clear conversation context |
+| `/compact` | Manually trigger context compaction |
+| `/rewind` | Go back to a previous state |
+| `/checkpoints` | File-level undo points |
+| `/statusline` | Customize status bar (branch, context %, model, todos) |
 | `/exit` | Exit Claude Code |
 | `/memory` | Open CLAUDE.md in your editor |
 | `/agents` | List / create agents |
 | `/mcp` | Check MCP server status |
-| `Tab` | Auto-complete commands |
+| `!` | Quick bash command prefix |
+| `@` | Search for files |
+| `Tab` | Toggle thinking display |
+| `Shift+Enter` | Multi-line input |
+| `Ctrl+U` | Delete entire line (faster than backspace) |
 | `Esc` | Cancel current generation |
+| `Esc Esc` | Interrupt Claude / restore code |
+
 
 
 ## 7. What's in This Repo
@@ -437,9 +462,115 @@ Then iterate:
 
 3. **Add `use context7`** to any prompt when you need current library documentation — it fetches live docs and prevents hallucinated APIs
 
-4. **Use `/init`** to auto-generate a `CLAUDE.md` for existing projects
+4. **Use `/init` as a starting point** — it auto-generates a `CLAUDE.md` from your codebase, but always trim and curate the result by hand (see "Writing a Good CLAUDE.md" below)
 
 5. **Resume sessions** — `claude -c` continues your last conversation, `claude --resume` lets you pick from recent sessions
+
+6. **Chain commands in one prompt** — you can combine commands and natural language: `/scaffold-spring-api order-service then @java-spring-api add CRUD for Orders with items, totals, and status`
+
+7. **Use sandbox mode** for risky operations — Claude runs in a restricted environment without affecting your system. Conversely, `--dangerously-skip-permissions` removes all guardrails (use with extreme caution)
+
+### Context Window Management
+
+Your 200K context window is your most precious resource. Mismanaging it is the #1 cause of degraded performance.
+
+| Problem | Impact | Fix |
+|---------|--------|-----|
+| Too many MCPs enabled | Each MCP's tool definitions eat context before you even start. 20+ MCPs can cut usable context from 200K to ~70K | Keep MCPs in config but disable unused ones — enable ≤ 10 servers / ≤ 80 tools at a time |
+| Too many plugins active | Same issue — each plugin adds tool definitions | Install many, enable only 4–5 per project |
+| Long sessions without compacting | Context fills up, Claude loses track of earlier work | Use `/compact` to manually trigger compaction, or let auto-compact handle it |
+| Huge CLAUDE.md | Goes into every prompt, crowding out actual task context | Keep < 300 lines, use progressive disclosure |
+
+**Check your current state anytime:**
+
+```
+> /mcp                  # See MCP status and tool count
+> /plugins              # See enabled plugins
+> /statusline           # Shows context remaining %
+```
+
+### Parallel Workflows
+
+Don't queue tasks — run them simultaneously:
+
+| Technique | When to Use | How |
+|-----------|-------------|-----|
+| `/fork` | Non-overlapping tasks in the same repo | Type `/fork` to branch the conversation — each fork works independently |
+| **Git worktrees** | Overlapping tasks that touch the same files | Each worktree is an independent checkout with its own Claude instance |
+| **tmux** | Long-running commands (servers, test suites) | Claude runs in a tmux session you can detach/reattach to monitor |
+
+```bash
+# Git worktrees — parallel Claudes without conflicts
+git worktree add ../feature-auth feature/auth
+git worktree add ../feature-dashboard feature/dashboard
+# Run separate `claude` instances in each directory
+
+# tmux — monitor long-running commands
+tmux new -s dev          # Start named session
+# Claude runs servers here, you can detach (Ctrl+B, D) and reattach:
+tmux attach -t dev
+```
+
+### Hooks Quick Reference
+
+Hooks automate guardrails and formatting. Define them in `settings.json` under `"hooks"`:
+
+| Hook Type | Fires When | Common Uses |
+|-----------|-----------|-------------|
+| `PreToolUse` | Before a tool executes | Validation, tmux reminders for long commands, block risky operations |
+| `PostToolUse` | After a tool finishes | Auto-format with Prettier/ruff, type-check, warn about `console.log` |
+| `UserPromptSubmit` | When you send a message | Input validation, context injection |
+| `Stop` | When Claude finishes responding | Audit modified files, run linter on changes |
+| `PreCompact` | Before context compaction | Save important state before context is compressed |
+| `Notification` | On permission requests | Custom notification routing |
+
+**Example:** Auto-format TypeScript after every edit + block `console.log`:
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [{
+      "matcher": "Edit && .ts/.tsx",
+      "hooks": [{
+        "type": "command",
+        "command": "npx prettier --write $FILEPATH && npx tsc --noEmit"
+      }]
+    }],
+    "Stop": [{
+      "matcher": "*",
+      "hooks": [{
+        "type": "command",
+        "command": "git diff --name-only | xargs grep -l 'console.log' && echo '[Hook] console.log detected in changes' >&2"
+      }]
+    }]
+  }
+}
+```
+
+> 💡 **Tip:** Install the `hookify` plugin to create hooks conversationally — run `/hookify` and describe what you want in plain English.
+
+### Plugins Ecosystem
+
+Beyond Claude-Mem, there's a growing plugin ecosystem. Plugins bundle tools, skills, hooks, or MCP integrations for easy install.
+
+```bash
+# Install a plugin marketplace
+> /plugin marketplace add <github-user/repo>
+
+# Browse and install from /plugins menu
+> /plugins
+```
+
+**Worth exploring:**
+
+| Plugin | What It Does |
+|--------|-------------|
+| `typescript-lsp` | Real-time type checking + go-to-definition without an IDE |
+| `pyright-lsp` | Python type checking (useful if running Claude outside an editor) |
+| `hookify` | Create hooks by describing them in natural language |
+| `mgrep` | Better code search than ripgrep — supports local + web search |
+| `context7` | Live documentation for any library |
+| `commit-commands` | Streamlined git workflow commands |
 
 ### Writing a Good CLAUDE.md
 
@@ -527,8 +658,6 @@ Check the status output. Common fixes:
 ```bash
 claude doctor
 ```
-
----
 
 ## 11. Resources
 
