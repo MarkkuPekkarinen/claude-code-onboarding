@@ -18,59 +18,74 @@ Clone it, install Claude Code, and start building.
 
 ## Table of Contents
 
-- [What is Claude Code?](#what-is-claude-code)
-- [1. Prerequisites](#1-prerequisites)
-- [2. Clone This Repo](#2-clone-this-repo)
-- [3. Set Up Your Editor (Install VS Code)](#3-set-up-your-editor-install-vs-code)
-- [4. Install Claude Code](#4-install-claude-code)
-  - [Native Binary (Recommended)](#native-binary-recommended)
-- [5. First-time Using Claude Code](#5-first-time-using-claude-code)
-- [6. Install Claude-Mem (Persistent Memory)](#6-install-claude-mem-persistent-memory-optional)
-  - [What Claude-Mem Does](#what-claude-mem-does)
-- [7. Try It Out — Your First 5 Minutes](#7-try-it-out--your-first-5-minutes)
-  - [Ask about the project](#ask-about-the-project)
-  - [Scaffold something](#scaffold-something)
-  - [Use a sub-agent](#use-a-sub-agent)
-  - [Pull live docs with MCP](#pull-live-docs-with-mcp)
-  - [Check what's loaded](#check-whats-loaded)
-  - [A note on permissions](#a-note-on-permissions)
-- [8. Understanding Claude Code Components](#8-understanding-claude-code-components)
-  - [How They Fit Together](#how-they-fit-together)
-  - [Decision Matrix - When to Use What](#decision-matrix---when-to-use-what)
-  - [CLAUDE.md](#claudemd)
-  - [Slash Commands — Reusable Prompt Shortcuts](#slash-commands--reusable-prompt-shortcuts)
-  - [Agents (Subagents) — Specialist AI Personas](#agents-subagents--specialist-ai-personas)
-  - [Skills — Auto-Activated Knowledge](#skills--auto-activated-knowledge)
-  - [MCP Servers — External Tool Integrations](#mcp-servers--external-tool-integrations)
-  - [Hooks — Automated Guardrails](#hooks--automated-guardrails)
-- [9. What Gets Sent to the LLM?](#9-what-gets-sent-to-the-llm)
-  - [Context Window Anatomy](#context-window-anatomy)
-  - [What Each Layer Contains](#what-each-layer-contains)
-  - [Key Takeaways](#key-takeaways)
-- [10. What's in This Repo](#10-whats-in-this-repo)
-- [11. Hands-On Exercises](#11-hands-on-exercises)
-  - [Exercise 1: Scaffold a Flutter Fitness App](#exercise-1-scaffold-a-flutter-fitness-app)
-  - [Exercise 2: Build a Weather REST API (Java)](#exercise-2-build-a-weather-rest-api-java)
-  - [Exercise 3: Build a Todo API (Node.js/TypeScript)](#exercise-3-build-a-todo-api-nodejstypescript)
-  - [Exercise 4: Build an Analytics API (Python)](#exercise-4-build-an-analytics-api-python)
-  - [Exercise 5: Design a Full-Stack E-Commerce System](#exercise-5-design-a-full-stack-e-commerce-system)
-  - [Exercise 6: Pull Live Docs with Context7 (MCP)](#exercise-6-pull-live-docs-with-context7-mcp)
-  - [Exercise 7: Design & Review Architecture](#exercise-7-design--review-architecture)
-  - [Exercise 8: Add a Feature End-to-End](#exercise-8-add-a-feature-end-to-end)
-- [12. Claude Code Power Features](#12-claude-code-power-features)
-  - [Keyboard Shortcuts (Inside Claude Code)](#keyboard-shortcuts-inside-claude-code)
-  - [Essential CLI Flags](#essential-cli-flags)
-  - [Core Tools](#core-tools)
-  - [Permission Model](#permission-model)
-- [13. Tips & Best Practices](#13-tips--best-practices)
-  - [Prompting Best Practices](#prompting-best-practices)
-  - [@ File References](#-file-references)
-  - [Context Window Management](#context-window-management)
-  - [Parallel Workflows](#parallel-workflows)
-  - [Plugins Ecosystem](#plugins-ecosystem)
-  - [Writing a Good CLAUDE.md](#writing-a-good-claudemd)
-- [14. Troubleshooting](#14-troubleshooting)
-- [15. Resources](#15-resources)
+- [Claude Code — Team Onboarding Kit](#claude-code--team-onboarding-kit)
+  - [Table of Contents](#table-of-contents)
+  - [What is Claude Code?](#what-is-claude-code)
+  - [1. Prerequisites](#1-prerequisites)
+  - [2. Clone This Repo](#2-clone-this-repo)
+  - [3. Set Up Your Editor (Install VS Code)](#3-set-up-your-editor-install-vs-code)
+  - [4. Install Claude Code](#4-install-claude-code)
+    - [Native Binary (Recommended)](#native-binary-recommended)
+  - [5. First-time Using Claude Code](#5-first-time-using-claude-code)
+  - [6. Install Claude-Mem (Persistent Memory) *(Optional)*](#6-install-claude-mem-persistent-memory-optional)
+    - [What Claude-Mem Does](#what-claude-mem-does)
+  - [7. Try It Out — Your First 5 Minutes](#7-try-it-out--your-first-5-minutes)
+    - [Ask about the project](#ask-about-the-project)
+    - [Scaffold something](#scaffold-something)
+    - [Use a sub-agent](#use-a-sub-agent)
+    - [Pull live docs with MCP](#pull-live-docs-with-mcp)
+    - [Check what's loaded](#check-whats-loaded)
+    - [A note on permissions](#a-note-on-permissions)
+  - [8. Understanding Claude Code Components](#8-understanding-claude-code-components)
+    - [How They Fit Together](#how-they-fit-together)
+    - [Decision Matrix - When to Use What](#decision-matrix---when-to-use-what)
+    - [CLAUDE.md (Project Context)](#claudemd-project-context)
+    - [Slash Commands — Reusable Prompt Shortcuts](#slash-commands--reusable-prompt-shortcuts)
+    - [Agents (Subagents) — Specialist AI Personas](#agents-subagents--specialist-ai-personas)
+    - [Skills — Auto-Activated Knowledge](#skills--auto-activated-knowledge)
+    - [MCP Servers — External Tool Integrations](#mcp-servers--external-tool-integrations)
+    - [settings.json Configuration](#settingsjson-configuration)
+    - [Hooks — Automated Guardrails](#hooks--automated-guardrails)
+  - [9. What Gets Sent to the LLM?](#9-what-gets-sent-to-the-llm)
+    - [Context Window Anatomy](#context-window-anatomy)
+    - [What Each Layer Contains](#what-each-layer-contains)
+    - [Key Takeaways](#key-takeaways)
+  - [10. What's in This Repo](#10-whats-in-this-repo)
+  - [11. Hands-On Exercises](#11-hands-on-exercises)
+    - [Exercise 1: Scaffold a Flutter Fitness App](#exercise-1-scaffold-a-flutter-fitness-app)
+    - [Exercise 2: Build a Weather REST API (Java)](#exercise-2-build-a-weather-rest-api-java)
+    - [Exercise 3: Build a Todo API (Node.js/TypeScript)](#exercise-3-build-a-todo-api-nodejstypescript)
+    - [Exercise 4: Build an Analytics API (Python)](#exercise-4-build-an-analytics-api-python)
+    - [Exercise 5: Design a Full-Stack E-Commerce System](#exercise-5-design-a-full-stack-e-commerce-system)
+    - [Exercise 6: Pull Live Docs with Context7 (MCP)](#exercise-6-pull-live-docs-with-context7-mcp)
+    - [Exercise 7: Design \& Review Architecture](#exercise-7-design--review-architecture)
+    - [Exercise 8: Add a Feature End-to-End](#exercise-8-add-a-feature-end-to-end)
+  - [12. Claude Code Power Features](#12-claude-code-power-features)
+    - [Keyboard Shortcuts (Inside Claude Code)](#keyboard-shortcuts-inside-claude-code)
+    - [Essential CLI Flags](#essential-cli-flags)
+    - [Core Tools](#core-tools)
+    - [Permission Model](#permission-model)
+  - [13. Tips \& Best Practices](#13-tips--best-practices)
+    - [Prompting Best Practices](#prompting-best-practices)
+    - [@ File References](#-file-references)
+    - [Context Window Management](#context-window-management)
+    - [Parallel Workflows](#parallel-workflows)
+    - [Plugins Ecosystem](#plugins-ecosystem)
+    - [Writing a Good CLAUDE.md](#writing-a-good-claudemd)
+      - [The Basics: WHAT → WHY → HOW](#the-basics-what--why--how)
+      - [Key Principles](#key-principles)
+      - [Progressive Disclosure Example](#progressive-disclosure-example)
+      - [Quick Rules of Thumb](#quick-rules-of-thumb)
+  - [14. Troubleshooting](#14-troubleshooting)
+    - [`command not found: claude`](#command-not-found-claude)
+    - ["Context too large" error](#context-too-large-error)
+    - [Edit tool fails with "string not found"](#edit-tool-fails-with-string-not-found)
+    - [MCP server not connecting](#mcp-server-not-connecting)
+    - [Claude isn't using skills or agents](#claude-isnt-using-skills-or-agents)
+    - [Background task not responding](#background-task-not-responding)
+    - [Permission errors](#permission-errors)
+    - [Run diagnostics](#run-diagnostics)
+  - [15. Resources](#15-resources)
 
 ---
 
@@ -304,9 +319,9 @@ Knowing *when to use what* is the key to being productive with Claude Code. Here
 | **MCP Server** | Connect to external services | GitHub PRs, Context7 live docs, Firebase |
 | **Claude-Mem plugin** | Remember things across sessions | Persistent memory of past decisions |
 
-### CLAUDE.md
+### CLAUDE.md (Project Context)
 
-**What:** A Markdown file at the project root that gives Claude Code, context about your project — tech stack, conventions, common commands, and rules.
+**What:** A Markdown file at the project root that gives Claude Code, context about your project — tech stack, conventions, common commands, architecture, and rules.
 
 **When to use:** Every project should have one. It's the first thing Claude reads at startup.
 
@@ -325,6 +340,18 @@ claude
 - Keep it under 40KB — too much context overloads the LLM's 200K token window
 - Put the most important rules at the top
 - Use imports for large docs: `@docs/api-reference.md`
+
+**File Locations & Priority**
+
+| Type | Location | Scope | Git |
+|------|----------|-------|-----|
+| Enterprise | `/Library/Application Support/ClaudeCode/CLAUDE.md` (macOS) | All users in org | N/A |
+| User Global | `~/.claude/CLAUDE.md` | All your projects | No |
+| Project | `./CLAUDE.md` | Team-shared | Yes |
+| Project Local | `./CLAUDE.local.md` | Personal (your machine) | No (auto-ignored) |
+| Directory-specific | `./src/api/CLAUDE.md` | Subdirectory scope | Yes |
+| Rules Directory | `.claude/rules/*.md` | Conditional rules | Yes |
+
 
 ### Slash Commands — Reusable Prompt Shortcuts
 
@@ -345,7 +372,7 @@ Use `$ARGUMENTS` in the command file (`.claude/commands/scaffold-spring-api.md`)
 
 ### Agents (Subagents) — Specialist AI Personas
 
-**What:** Specialized Claude instances with their own system prompt and tool restrictions. They run in a **separate context window**, so they don't pollute your main conversation.
+**What:** Specialized AI with isolated context for complex tasks with their own system prompt and tool restrictions. They run in a **separate context window**, so they don't pollute your main conversation.
 
 **When to use:** When you need deep expertise in a specific domain — a dedicated backend developer, database architect, or codereviewer.
 
@@ -399,6 +426,28 @@ This repo comes pre-configured with:
 | **Dart** | Dart language server integration |
 | **Filesystem** | Secure file search and manipulation with configurable directory permissions |
 | **LangChain Docs** | Live LangChain documentation lookup |
+
+### settings.json Configuration
+
+**Purpose**: Permissions, environment variables, hooks, and tool behavior.
+
+**File Locations & Priority**
+
+| Type | Location | Scope |
+|------|----------|-------|
+| User | `~/.claude/settings.json` | All projects |
+| Project (shared) | `.claude/settings.json` | Team-shared |
+| Project (local) | `.claude/settings.local.json` | Personal |
+| Enterprise | OS-specific managed location | Organization |
+
+**Permission Rule Syntax**
+
+| Pattern | Example | Description |
+|---------|---------|-------------|
+| Exact match | `Bash(npm run test)` | Only this exact command |
+| Wildcard suffix | `Bash(npm run:*)` | npm run followed by anything |
+| Glob patterns | `Read(./src/**/*.ts)` | All .ts files recursively |
+| Tool types | `Read`, `Write`, `Edit`, `Bash`, `WebFetch`, `WebSearch` | Tool categories |
 
 ### Hooks — Automated Guardrails
 
