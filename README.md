@@ -312,7 +312,7 @@ Knowing *when to use what* is the key to being productive with Claude Code. Here
 |---|---|---|
 | **CLAUDE.md** | Set project conventions and context | Project Overview, Project Context, Tech Stack, Coding Standards, Rules |
 | **settings.json** | Control what Claude can do | Allow `git` commands, deny `sudo` |
-| **Skill** | Auto-apply patterns for a domain | Always use Riverpod when building Flutter |
+| **Skill** | Auto-apply patterns for a domain | Always use Riverpod State Management when building Flutter |
 | **Slash Command** | Run a repeatable prompt yourself(manual) | `/scaffold-spring-api weather-service` |
 | **Sub-agent** | Get deep domain expertise in isolation, can be manual or auto | `@database-designer Design schema for…` |
 | **Hook** | Enforce hard rules every time | Block commits without passing tests |
@@ -355,7 +355,7 @@ claude
 
 ### Slash Commands — Reusable Prompt Shortcuts
 
-**What:** Saved prompts you trigger with `/command-name`. Think of them as reusable prompt shortcuts.
+**What:** Prompts you trigger with `/command-name`. Think of them as reusable prompt shortcuts.
 
 **When to use:** When you have a repeatable workflow you run often — scaffolding, reviewing, deploying.
 
@@ -388,7 +388,7 @@ Use `$ARGUMENTS` in the command file (`.claude/commands/scaffold-spring-api.md`)
 
 ### Skills — Auto-Activated Knowledge
 
-**What:** Markdown files with domain knowledge, templates, and code patterns. Unlike commands, **Claude decides when to use them** based on the task context — you don't invoke them explicitly.
+**What:** Markdown files with domain knowledge, templates, and code patterns. Unlike commands, Skills are *lazy-loaded* and only brought into context when needed. **Claude decides when to use them** based on the task context — you don't invoke them explicitly.
 
 **When to use:** When you want Claude to **automatically** apply certain patterns whenever a matching task comes up (e.g., always use your team's DTO pattern when creating Spring entities).
 
