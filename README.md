@@ -365,13 +365,13 @@ This repo comes pre-configured with:
 | **PreToolUse** | Before a tool executes | 🛑 *Stop something dangerous from happening* | Block `git push` to main/master, prevent `rm -rf /` or `DROP DATABASE`, protect `.env` files from edits |
 | **PostToolUse** | After a tool completes | 🔧 *Fix/check what just happened to a single file* | Auto-format with Prettier/ruff after edits, run ESLint on the changed file, type-check with `tsc --noEmit` |
 | **Stop** | When Claude finishes responding | ✅ *Validate the whole result before calling it done* | Run unit tests once at the end (not per-file), audit all changed files, scan for leaked secrets |
-| **PermissionRequest** | When Claude shows a permission dialog | Auto-approve safe commands, deny risky ones | Auto-approve `git status`, deny `sudo` commands |
-| **UserPromptSubmit** | When you send a message | Input validation, context injection | Inject project-specific context, validate prompt format |
-| **SubagentStop** | When a sub-agent finishes | Validate sub-agent output | Check generated code compiles, verify output format |
-| **PreCompact** | Before context compaction | Save important state | Export TODO list, save working notes to a file |
-| **SessionStart** | When a session starts or resumes | Load environment and dependencies | Source `.env` files, verify toolchain is installed |
-| **SessionEnd** | When a session ends | Cleanup and logging | Log session summary, clean up temp files |
-| **Notification** | On permission prompts or idle | Custom notification routing | Send Slack alert on long-running tasks, desktop notifications |
+| **PermissionRequest** | When Claude shows a permission dialog | 🔐 *Auto-decide on permission prompts* | Auto-approve `git status`, deny `sudo` commands |
+| **UserPromptSubmit** | When you send a message | 📥 *Intercept and enrich your input* | Auto-prepend "use context7" to all prompts, inject current git branch name, Inject project-specific context, validate prompt format|
+| **SubagentStop** | When a sub-agent finishes | 🔍 *Quality-check delegated work* | Check generated code compiles, verify output format |
+| **PreCompact** | Before context compaction | 💾 *Save state before memory shrinks* | Export TODO list, save working notes to a file |
+| **SessionStart** | When a session starts or resumes | 🚀 *Set up the environment* | Source `.env` files, verify toolchain is installed |
+| **SessionEnd** | When a session ends | 🧹 *Clean up after yourself* | Log session summary, clean up temp files |
+| **Notification** | On permission prompts or idle | 📢 *Route alerts externally* | Send Slack alert on long-running tasks, desktop notifications |
 
 **Where:** `.claude/settings.json` → `hooks` section, scripts in `.claude/hooks/`
 
