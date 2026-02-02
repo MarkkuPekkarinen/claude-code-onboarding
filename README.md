@@ -143,7 +143,81 @@ Verify with: Inside a Claude Code CLI session, run:
 > Do you have any memory from previous sessions?
 ```
 
-## 7. Understanding Claude Code Components
+## 7. Try It Out — Your First 5 Minutes
+
+You're set up. Before diving into components and theory, take Claude Code for a spin. Run these inside your Claude Code session:
+
+### Ask about the project
+
+```
+> What is this project? Summarize the tech stack and structure
+```
+
+```
+> /project-status
+```
+
+### Scaffold something
+
+```
+> /scaffold-spring-api hello-world
+```
+
+Watch how Claude creates the full project structure, files, and boilerplate — all from a single command.
+
+### Use a sub-agent
+
+```
+> @architect What improvements would you suggest for this project's structure?
+```
+
+Notice how the agent runs in its own context without cluttering your main conversation.
+
+### Pull live docs with MCP
+
+```
+> Explain how to set up Spring Security with JWT. use context7
+```
+
+The `context7` MCP server fetches current, version-specific documentation instead of relying on training data.
+
+### Check what's loaded
+
+```
+> What agents, skills, and slash commands are available in this project?
+```
+
+```
+> /mcp
+```
+
+```
+> /agents
+```
+
+That's the core workflow: **slash commands** to scaffold, **agents** for expertise, **MCP servers** for external tools, and **skills** that activate automatically in the background. The next section breaks down each component in detail.
+
+### A note on permissions
+
+Claude Code will ask for permission before accessing files or running commands. You'll see prompts like:
+
+```
+Do you want to proceed?
+  1. Yes
+❯ 2. Yes, allow reading from claude-code-onboarding/ from this project
+  3. No
+```
+
+This can get annoying quickly since it triggers on nearly every action. Alternatively, to skip all permission prompts entirely for this Claude Code Session:
+
+```bash
+claude --dangerously-skip-permissions
+```
+
+> ⚠️ **Use with caution** — this disables all guardrails. Only use it in trusted environments or during local experimentation.
+
+
+## 8. Understanding Claude Code Components
 
 Knowing *when to use what* is the key to being productive with Claude Code. Here's a quick reference:
 
@@ -320,7 +394,7 @@ This repo comes pre-configured with:
 
 > **Tip:** Install the `hookify` plugin to create hooks conversationally — run `/hookify` and describe what you want in plain English.
 
-## 7. What's in This Repo
+## 9. What's in This Repo
 
 ```
 claude-code-onboarding/
@@ -401,7 +475,7 @@ claude-code-onboarding/
                 └── helpers.js
 ```
 
-## 8. Hands-On Exercises
+## 10. Hands-On Exercises
 
 Work through these exercises to get familiar with Claude Code. Each one uses different components from this kit.
 These exercises follow a deliberate progression to help you understand **which component to use for and when**:
@@ -506,7 +580,7 @@ This is the real-world workflow — a single command that triggers scaffolding, 
 > /add-feature User profile management — users can update their name, avatar, and preferences. Backend API + Angular settings page + Flutter profile screen
 ```
 
-## 9. Claude Code Power Features
+## 11. Claude Code Power Features
 
 ### Keyboard Shortcuts (Inside Claude Code)
 
@@ -595,7 +669,7 @@ Configure in `.claude/settings.json`:
 
 This repo's `settings.json` comes pre-configured with sensible defaults.
 
-## 10. Tips & Best Practices
+## 12. Tips & Best Practices
 
 ### Prompting Best Practices
 
@@ -768,7 +842,7 @@ E-commerce platform — Spring Boot API + Angular SPA + Flutter mobile.
 - Use `CLAUDE.local.md` for personal preferences (auto-gitignored)
 - Use `.claude/rules/` for conditional rules scoped to specific directories
 
-## 11. Troubleshooting
+## 13. Troubleshooting
 
 ### `command not found: claude`
 
@@ -842,7 +916,7 @@ claude --debug             # Full debug logging
 claude --debug "mcp"       # Debug a specific category
 ```
 
-## 12. Resources
+## 14. Resources
 
 | Resource | Link |
 |----------|------|
