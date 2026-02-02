@@ -14,19 +14,65 @@ This repository is a pre-configured starter kit packed with agents, skills, slas
 
 Clone it, install Claude Code, and start building.
 
+---
+
 ## Table of Contents
 
+- [What is Claude Code?](#what-is-claude-code)
 - [1. Prerequisites](#1-prerequisites)
-- [2. Install VS Code](#2-install-vs-code)
-- [3. Install Claude Code](#3-install-claude-code)
-- [4. Clone This Repo & Launch](#4-clone-this-repo--launch)
-- [5. Install Claude-Mem (Persistent Memory)](#5-install-claude-mem-persistent-memory)
-- [6. Understanding Claude Code Components](#6-understanding-claude-code-components)
-- [7. What's in This Repo](#7-whats-in-this-repo)
-- [8. Hands-On Exercises](#8-hands-on-exercises)
-- [9. Tips & Best Practices](#9-tips--best-practices)
-- [10. Troubleshooting](#10-troubleshooting)
-- [11. Resources](#11-resources)
+- [2. Clone This Repo](#2-clone-this-repo)
+- [3. Set Up Your Editor (Install VS Code)](#3-set-up-your-editor-install-vs-code)
+- [4. Install Claude Code](#4-install-claude-code)
+  - [Native Binary (Recommended)](#native-binary-recommended)
+- [5. First-time Using Claude Code](#5-first-time-using-claude-code)
+- [6. Install Claude-Mem (Persistent Memory)](#6-install-claude-mem-persistent-memory-optional)
+  - [What Claude-Mem Does](#what-claude-mem-does)
+- [7. Try It Out — Your First 5 Minutes](#7-try-it-out--your-first-5-minutes)
+  - [Ask about the project](#ask-about-the-project)
+  - [Scaffold something](#scaffold-something)
+  - [Use a sub-agent](#use-a-sub-agent)
+  - [Pull live docs with MCP](#pull-live-docs-with-mcp)
+  - [Check what's loaded](#check-whats-loaded)
+  - [A note on permissions](#a-note-on-permissions)
+- [8. Understanding Claude Code Components](#8-understanding-claude-code-components)
+  - [How They Fit Together](#how-they-fit-together)
+  - [Decision Matrix - When to Use What](#decision-matrix---when-to-use-what)
+  - [CLAUDE.md](#claudemd)
+  - [Slash Commands — Reusable Prompt Shortcuts](#slash-commands--reusable-prompt-shortcuts)
+  - [Agents (Subagents) — Specialist AI Personas](#agents-subagents--specialist-ai-personas)
+  - [Skills — Auto-Activated Knowledge](#skills--auto-activated-knowledge)
+  - [MCP Servers — External Tool Integrations](#mcp-servers--external-tool-integrations)
+  - [Hooks — Automated Guardrails](#hooks--automated-guardrails)
+- [9. What Gets Sent to the LLM?](#9-what-gets-sent-to-the-llm)
+  - [Context Window Anatomy](#context-window-anatomy)
+  - [What Each Layer Contains](#what-each-layer-contains)
+  - [Key Takeaways](#key-takeaways)
+- [10. What's in This Repo](#10-whats-in-this-repo)
+- [11. Hands-On Exercises](#11-hands-on-exercises)
+  - [Exercise 1: Scaffold a Flutter Fitness App](#exercise-1-scaffold-a-flutter-fitness-app)
+  - [Exercise 2: Build a Weather REST API (Java)](#exercise-2-build-a-weather-rest-api-java)
+  - [Exercise 3: Build a Todo API (Node.js/TypeScript)](#exercise-3-build-a-todo-api-nodejstypescript)
+  - [Exercise 4: Build an Analytics API (Python)](#exercise-4-build-an-analytics-api-python)
+  - [Exercise 5: Design a Full-Stack E-Commerce System](#exercise-5-design-a-full-stack-e-commerce-system)
+  - [Exercise 6: Pull Live Docs with Context7 (MCP)](#exercise-6-pull-live-docs-with-context7-mcp)
+  - [Exercise 7: Design & Review Architecture](#exercise-7-design--review-architecture)
+  - [Exercise 8: Add a Feature End-to-End](#exercise-8-add-a-feature-end-to-end)
+- [12. Claude Code Power Features](#12-claude-code-power-features)
+  - [Keyboard Shortcuts (Inside Claude Code)](#keyboard-shortcuts-inside-claude-code)
+  - [Essential CLI Flags](#essential-cli-flags)
+  - [Core Tools](#core-tools)
+  - [Permission Model](#permission-model)
+- [13. Tips & Best Practices](#13-tips--best-practices)
+  - [Prompting Best Practices](#prompting-best-practices)
+  - [@ File References](#-file-references)
+  - [Context Window Management](#context-window-management)
+  - [Parallel Workflows](#parallel-workflows)
+  - [Plugins Ecosystem](#plugins-ecosystem)
+  - [Writing a Good CLAUDE.md](#writing-a-good-claudemd)
+- [14. Troubleshooting](#14-troubleshooting)
+- [15. Resources](#15-resources)
+
+---
 
 ## What is Claude Code?
 
@@ -70,7 +116,7 @@ Open the **[Visual Studio Code](https://code.visualstudio.com/)** integrated ter
 
 ```bash
 curl -fsSL https://claude.ai/install.sh | bash
-``
+```
 
 2. Reload your shell
 
@@ -78,7 +124,7 @@ curl -fsSL https://claude.ai/install.sh | bash
 source ~/.bashrc   # or: source ~/.zshrc
 ```
 
-3. After installation, **restart VS Code(Close and repone the  VS Code)** so the terminal picks up the new PATH, then verify installation
+3. After installation, **restart VS Code(Close and reopen VS Code)** so the terminal picks up the new PATH, then verify installation
 
 ```bash
 claude --version
@@ -228,7 +274,7 @@ Knowing *when to use what* is the key to being productive with Claude Code. Here
 | **Skills** | Modular expertise Claude applies automatically based on context — lazy-loaded when needed, not user-invoked. Best for complex, recurring workflows (code review, API design patterns)  | `.claude/skills/<name>/SKILL.md` | Auto (Claude decides) |
 | **Slash Commands** | `/command` shortcuts for repeatable prompts — quick actions you trigger manually | `.claude/commands/<name>.md` | You type `/command` |
 | **Sub-agents** | Specialized AI with isolated context for complex tasks — parallel processing, focused expertise | `.claude/agents/<name>.md` | You type `@agent` or Auto (Claude decides|
-| **Hooks** | Scripts that run at lifecycle events — auto-formatting, validation, notifications. Types: `PreToolUse`, `PostToolUse`, `UserPromptSubmit`, `Stop`, `PreCompact`, `Notification`  | Defined in `settings.json` → `"hooks"` | Automatic on events |
+| **Hooks** | Scripts that run at lifecycle events — auto-formatting, validation, notifications. Types: `PreToolUse`, `PostToolUse`, `UserPromptSubmit`, `Stop`, `PreCompact`, `Notification`  | Defined in `settings.json` → `hooks` | Automatic on events |
 | **MCP Servers** | Tool connections to external services — GitHub, Slack, databases, docs, APIs | `.mcp.json` (project root) | Claude uses as needed |
 
 ### How They Fit Together
