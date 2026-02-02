@@ -5,8 +5,8 @@ This is a **team onboarding repository** for learning and practicing Claude Code
 It contains pre-configured agents, skills, slash commands, and MCP server integrations for our tech stack.
 
 ## Tech Stack
-- **Backend**: Java 21, Spring Boot 3.4 (WebFlux / Reactive), REST APIs
-- **Frontend**: Angular 19+ (SPA), TypeScript, RxJS, SCSS
+- **Backend**: Java 21, Spring Boot 3.5 (WebFlux / Reactive), REST APIs, Python 3.14.x
+- **Frontend**: Angular 21+ (SPA), TypeScript, RxJS, SCSS
 - **Mobile**: Flutter 3.x (Dart), cross-platform (iOS + Android)
 - **Database**: PostgreSQL (primary), Firebase Firestore (mobile real-time)
 - **Infrastructure**: Firebase (Auth, Firestore, Cloud Messaging), Docker
@@ -24,7 +24,7 @@ It contains pre-configured agents, skills, slash commands, and MCP server integr
 
 ### Angular
 - Standalone components (no NgModules unless legacy)
-- Signals for state management (Angular 17+ style)
+- Signals for state management (Angular 21+ style)
 - Lazy-loaded routes via `loadComponent`
 - Use `HttpClient` with RxJS operators
 - SCSS for styling, follow BEM naming

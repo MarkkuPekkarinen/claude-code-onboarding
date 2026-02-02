@@ -23,7 +23,7 @@ Clone it, install Claude Code, and start building.
 
 ## What is Claude Code?
 
-Claude Code is an **agentic AI coding assistant that lives in your terminal**. It understands your codebase, edits files directly, runs commands, and helps you code faster through natural language conversation.
+**[Claude Code](https://code.claude.com/docs/en/overview)** is an **agentic AI coding assistant that lives in your terminal**. It understands your codebase, edits files directly, runs commands, and helps you code faster through natural language conversation.
 
 Think of it as a senior developer sitting in your terminal who knows your entire project, follows your team's conventions, and never gets tired.
 
