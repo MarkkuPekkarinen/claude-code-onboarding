@@ -441,12 +441,58 @@ Then iterate:
 
 5. **Resume sessions** — `claude -c` continues your last conversation, `claude --resume` lets you pick from recent sessions
 
-### CLAUDE.md Tips
+### Writing a Good CLAUDE.md
 
-- Keep it under 20KB — too much drowns the signal
-- Put the most important rules at the top
-- Use imports for large docs: `@docs/api-reference.md`
+Your `CLAUDE.md` is the **highest-leverage file** in the entire setup — it goes into every session and shapes every task. A bad line here ripples into every plan, every implementation, every artifact Claude produces. Invest time crafting it carefully.
+
+#### The Basics: WHAT → WHY → HOW
+
+| Tell Claude... | Example |
+|----------------|---------|
+| **WHAT** — your tech, stack, project structure | "Monorepo: `apps/api` (Spring Boot), `apps/web` (Angular), `packages/shared`" |
+| **WHY** — the purpose of each part | "The `gateway` service handles auth + rate-limiting for all downstream APIs" |
+| **HOW** — how to work on the project | "Use `bun` not `npm`. Run tests with `./gradlew test`. Flyway migrations live in `db/migrations/`" |
+
+#### Key Principles
+
+| Principle | Why It Matters |
+|-----------|---------------|
+| **Less is more** | LLMs can reliably follow ~150–200 instructions. Claude Code's system prompt already uses ~50 of those. Every line you add competes for attention — keep only what's universally applicable. |
+| **Claude may ignore irrelevant content** | Claude Code wraps your CLAUDE.md in a system reminder saying *"this may or may not be relevant."* If your file is full of niche instructions, Claude is more likely to skip all of them — not just the niche ones. |
+| **Progressive disclosure** | Don't dump everything into CLAUDE.md. Keep domain-specific docs in separate files and reference them so Claude reads them only when needed (see example below). |
+| **Don't use it as a linter** | Never send an LLM to do a linter's job. Use deterministic tools (ruff, Biome, ESLint) via Hooks instead. Style guidelines bloat your context and degrade instruction-following. |
+| **Prefer pointers over copies** | Don't paste code snippets — they go stale. Point to `file:line` references so Claude reads the actual source of truth. |
+| **Craft it by hand** | Avoid auto-generating with `/init` for your primary CLAUDE.md. Auto-generated files tend to include too much irrelevant content. Use `/init` as a *starting point* only, then trim aggressively. |
+
+#### Progressive Disclosure Example
+
+Instead of a 500-line CLAUDE.md, keep it short and point to detail docs:
+
+```markdown
+# CLAUDE.md
+
+## Project
+E-commerce platform — Spring Boot API + Angular SPA + Flutter mobile.
+
+## Key Docs (read the relevant ones before starting a task)
+- `docs/building.md` — how to build, run, and deploy each service
+- `docs/testing.md` — test commands, fixtures, CI expectations
+- `docs/database.md` — schema overview, migration workflow
+- `docs/api-contracts.md` — OpenAPI specs and versioning rules
+- `docs/code-conventions.md` — naming, structure, PR standards
+
+## Universal Rules
+- All code must pass `./gradlew check` before committing
+- Use conventional commits: feat|fix|docs|refactor(scope): message
+- Never commit secrets or .env files
+```
+
+#### Quick Rules of Thumb
+
+- **< 300 lines** is the general consensus; shorter is better (some teams use < 60 lines)
+- Most important rules go **at the top and bottom** — LLMs attend most to the peripheries of the prompt
 - Use `CLAUDE.local.md` for personal preferences (auto-gitignored)
+- Use `.claude/rules/` for conditional rules that only apply in specific directories
 
 ---
 
@@ -498,6 +544,3 @@ claude doctor
 | MCP Specification | [modelcontextprotocol.io](https://modelcontextprotocol.io) |
 | Prompting Guide | [docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview) |
 
----
-
-**Happy coding! 🎉** Start with Exercise 1, and within an hour you'll be building real features with Claude Code as your AI pair programmer.
