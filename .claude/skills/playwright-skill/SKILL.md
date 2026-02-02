@@ -7,7 +7,7 @@ description: Playwright browser automation. Use for website testing, UX validati
 
 General-purpose browser automation skill. Write custom Playwright code for any automation task and execute it via the universal executor.
 
-For installation and path resolution details -> Read [reference/playwright-setup.md](reference/playwright-setup.md)
+For installation and path resolution details -> Read [reference/playwright-patterns.md](reference/playwright-patterns.md)
 
 ## Critical Workflow
 
@@ -53,7 +53,7 @@ const TARGET_URL = 'http://localhost:3001'; // Auto-detected or from user
 
 - For automation code examples (responsive testing, login flows, forms, link checking, screenshots, inline execution, helpers, custom headers) -> Read [reference/playwright-patterns.md](reference/playwright-patterns.md)
 - For complete Playwright API details (selectors, network interception, auth, visual regression, mobile emulation, performance, CI/CD) -> Read [API_REFERENCE.md](API_REFERENCE.md)
-- For setup, installation, path resolution, and troubleshooting -> Read [reference/playwright-setup.md](reference/playwright-setup.md)
+- For setup, installation, path resolution, and troubleshooting -> Read [reference/playwright-patterns.md](reference/playwright-patterns.md)
 
 ## Tips
 

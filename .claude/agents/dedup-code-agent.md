@@ -1,7 +1,7 @@
 ---
 name: dedup-code-agent
 description: "Agent that detects code duplication, unused code, and dependency bloat in Flutter + Supabase codebases. Specializes in technical debt identification and cleanup."
-tools: ["Read", "Glob", "Grep", "Bash"]
+tools: Read, Glob, Grep, Bash
 model: sonnet
 ---
 

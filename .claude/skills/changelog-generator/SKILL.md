@@ -20,7 +20,7 @@ Transform git commit history into polished, user-friendly changelogs. Works with
 
 For detailed step-by-step workflow (project detection scripts, commit parsing, categorization table, rewriting rules, assembly format) -> Read [reference/changelog-workflow.md](reference/changelog-workflow.md)
 
-For output format examples (App Store, Keep a Changelog, internal/technical, Slack/email) -> Read [reference/changelog-output-formats.md](reference/changelog-output-formats.md)
+For output format examples (App Store, Keep a Changelog, internal/technical, Slack/email) -> Read [reference/changelog-workflow.md](reference/changelog-workflow.md)
 
 ## Key Rules
 

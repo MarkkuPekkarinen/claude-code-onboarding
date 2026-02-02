@@ -1,7 +1,7 @@
 ---
 name: "accessibility-auditor"
 description: "Agent that performs WCAG 2.1 compliance validation for Flutter applications. Specializes in Semantics widgets, focus management, and color contrast analysis."
-tools: ["Read", "Glob", "Grep"]
+tools: Read, Glob, Grep
 model: inherit
 ---
 

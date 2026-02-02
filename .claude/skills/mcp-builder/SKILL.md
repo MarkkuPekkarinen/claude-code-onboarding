@@ -15,7 +15,7 @@ Create MCP servers that enable LLMs to interact with external services through w
 Research the target API, study the MCP protocol, and plan tool coverage.
 
 - Study MCP spec starting from sitemap: `https://modelcontextprotocol.io/sitemap.xml` (append `.md` for markdown format)
-- For MCP design principles and guidelines -> Read [reference/mcp_best_practices.md](reference/mcp_best_practices.md)
+- For MCP design principles -> Read [reference/mcp-design-principles.md](reference/mcp-design-principles.md) and [reference/mcp-quality-standards.md](reference/mcp-quality-standards.md)
 - For TypeScript SDK docs -> Fetch `https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/main/README.md`
 - For Python SDK docs -> Fetch `https://raw.githubusercontent.com/modelcontextprotocol/python-sdk/main/README.md`
 - Prioritize comprehensive API coverage over workflow-specific tools
@@ -26,7 +26,7 @@ Research the target API, study the MCP protocol, and plan tool coverage.
 Set up project structure, implement core infrastructure, then build tools.
 
 - For TypeScript project setup and patterns -> Read [reference/node_mcp_server.md](reference/node_mcp_server.md)
-- For Python project setup and patterns -> Read [reference/python_mcp_server.md](reference/python_mcp_server.md)
+- For Python project setup -> Read [reference/python-mcp-setup.md](reference/python-mcp-setup.md), [reference/python-mcp-patterns.md](reference/python-mcp-patterns.md), and [reference/python-mcp-advanced.md](reference/python-mcp-advanced.md)
 - **Recommended stack**: TypeScript with streamable HTTP (remote) or stdio (local)
 - Create shared utilities: API client, error handling, response formatting, pagination
 - For each tool: define input schema (Zod/Pydantic), output schema, description, annotations, and async implementation
@@ -64,9 +64,12 @@ Load these as needed during development:
 
 | Resource | When to Load |
 |----------|-------------|
-| [MCP Best Practices](reference/mcp_best_practices.md) | Phase 1 - design principles |
+| [MCP Design Principles](reference/mcp-design-principles.md) | Phase 1 - naming, tool design, response formats |
+| [MCP Quality Standards](reference/mcp-quality-standards.md) | Phase 1 - security, annotations, testing |
 | [TypeScript Guide](reference/node_mcp_server.md) | Phase 2 - TypeScript implementation |
-| [Python Guide](reference/python_mcp_server.md) | Phase 2 - Python implementation |
+| [Python Setup](reference/python-mcp-setup.md) | Phase 2 - Python SDK, tool structure, Pydantic |
+| [Python Patterns](reference/python-mcp-patterns.md) | Phase 2 - pagination, errors, complete example |
+| [Python Advanced](reference/python-mcp-advanced.md) | Phase 2 - context, resources, lifespan, quality |
 | [Evaluation Guide](reference/evaluation.md) | Phase 4 - creating evaluations |
 | MCP Protocol Spec | Phase 1 - fetch from `modelcontextprotocol.io` |
 | TypeScript SDK README | Phase 1 - fetch from GitHub |

@@ -1,7 +1,7 @@
 ---
 name: "riverpod-reviewer"
 description: "Agent that performs Riverpod pattern verification for Flutter applications. Specializes in provider types, ref usage, AsyncValue handling, and lifecycle analysis."
-tools: ["Read", "Glob", "Grep"]
+tools: Read, Glob, Grep
 model: inherit
 ---
 
