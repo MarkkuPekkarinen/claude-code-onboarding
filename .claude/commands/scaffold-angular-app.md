@@ -1,11 +1,11 @@
 ---
-description: Scaffold a new Angular 21+ SPA with standalone components, lazy routing, and a sample feature module
+description: Scaffold a new Angular 21.x SPA with standalone components, lazy routing, and a sample feature module
 allowed-tools: Bash, Read, Write, Edit
 ---
 
 # Scaffold Angular SPA
 
-Create a new Angular 19+ SPA project with the following:
+Create a new Angular 21.x SPA project with the following:
 
 **App name:** $ARGUMENTS (default to "my-app" if not provided)
 

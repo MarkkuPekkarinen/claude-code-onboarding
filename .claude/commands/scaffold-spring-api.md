@@ -1,11 +1,11 @@
 ---
-description: Scaffold a new Spring Boot 3.5 WebFlux REST API project with standard structure, build config, and sample endpoint
+description: Scaffold a new Spring Boot 3.5.x WebFlux REST API project with standard structure, build config, and sample endpoint
 allowed-tools: Bash, Read, Write, Edit
 ---
 
 # Scaffold Spring Boot WebFlux API
 
-Create a new Java 21 / Spring Boot 3.5 WebFlux project with the following:
+Create a new Java 21 / Spring Boot 3.5.x WebFlux project with the following:
 
 **Project name:** $ARGUMENTS (default to "my-api" if not provided)
 
