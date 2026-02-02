@@ -360,18 +360,18 @@ This repo comes pre-configured with:
 
 **When to use:** When you need hard rules enforced every time, like **run linter before commit** or **block commits without passing tests** or **block destructive commands** or **auto-format after every edit**.
 
-| Hook Event | Fires When | Common Uses |
-|-----------|-----------|-------------|
-| **PreToolUse** | Before a tool executes | Block risky commands, protect sensitive files, validate inputs |
-| **PostToolUse** | After a tool completes | Auto-format code, type-check, lint |
-| **PermissionRequest** | When Claude shows a permission dialog | Auto-approve safe commands, deny risky ones |
-| **UserPromptSubmit** | When you send a message | Input validation, context injection |
-| **Stop** | When Claude finishes responding | Audit changed files, secret scanning |
-| **SubagentStop** | When a sub-agent finishes | Validate sub-agent output |
-| **PreCompact** | Before context compaction | Save important state |
-| **SessionStart** | When a session starts or resumes | Load env vars, install dependencies |
-| **SessionEnd** | When a session ends | Cleanup, logging |
-| **Notification** | On permission prompts or idle | Custom notification routing |
+| Hook Event | Fires When | Mental Model | Real-World Examples |
+|---|---|---|---|
+| **PreToolUse** | Before a tool executes | 🛑 *Stop something dangerous from happening* | Block `git push` to main/master, prevent `rm -rf /` or `DROP DATABASE`, protect `.env` files from edits |
+| **PostToolUse** | After a tool completes | 🔧 *Fix/check what just happened to a single file* | Auto-format with Prettier/ruff after edits, run ESLint on the changed file, type-check with `tsc --noEmit` |
+| **Stop** | When Claude finishes responding | ✅ *Validate the whole result before calling it done* | Run unit tests once at the end (not per-file), audit all changed files, scan for leaked secrets |
+| **PermissionRequest** | When Claude shows a permission dialog | Auto-approve safe commands, deny risky ones | Auto-approve `git status`, deny `sudo` commands |
+| **UserPromptSubmit** | When you send a message | Input validation, context injection | Inject project-specific context, validate prompt format |
+| **SubagentStop** | When a sub-agent finishes | Validate sub-agent output | Check generated code compiles, verify output format |
+| **PreCompact** | Before context compaction | Save important state | Export TODO list, save working notes to a file |
+| **SessionStart** | When a session starts or resumes | Load environment and dependencies | Source `.env` files, verify toolchain is installed |
+| **SessionEnd** | When a session ends | Cleanup and logging | Log session summary, clean up temp files |
+| **Notification** | On permission prompts or idle | Custom notification routing | Send Slack alert on long-running tasks, desktop notifications |
 
 **Where:** `.claude/settings.json` → `hooks` section, scripts in `.claude/hooks/`
 
