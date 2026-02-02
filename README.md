@@ -71,6 +71,7 @@ Clone it, install Claude Code, and start building.
     - [Context Window Management](#context-window-management)
     - [Parallel Workflows](#parallel-workflows)
     - [Plugins Ecosystem](#plugins-ecosystem)
+    - [Skills — Best Practices](#skills--best-practices)
     - [Writing a Good CLAUDE.md](#writing-a-good-claudemd)
       - [The Basics: WHAT → WHY → HOW](#the-basics-what--why--how)
       - [Key Principles](#key-principles)
@@ -923,6 +924,41 @@ Beyond Claude-Mem, there's a growing plugin ecosystem. Plugins bundle tools, ski
 | `context7` | Live documentation for any library |
 
 > ⚠️ **Same context warning as MCPs** — each enabled plugin adds tool definitions. Install many, enable few.
+
+### Skills — Best Practices
+
+**Keep skills lean:**
+- Target 3–5KB for the SKILL.md file
+- If your skill exceeds 10KB, you're probably embedding too much documentation
+
+**Use lazy loading for large skills:**
+Instead of embedding all documentation in SKILL.md, put detailed references in separate files and load them on-demand:
+```
+.claude/skills/my-skill/
+├── SKILL.md                    # 3KB — routing logic only
+└── reference/
+    ├── use_case_1.md           # Loaded when needed
+    ├── use_case_2.md           # Loaded when needed
+    └── use_case_3.md           # Loaded when needed
+```
+
+In your SKILL.md, instruct Claude to load the right reference:
+```markdown
+**When user asks about use case 1:**
+  → Read reference/use_case_1.md, then proceed
+```
+
+This can reduce token usage by 80–95% for complex skills.
+
+**SKILL.md frontmatter:**
+```yaml
+---
+name: my-skill                    # Required: hyphen-case, max 64 chars
+description: |                    # Required: when to activate (max 1024 chars)
+  This skill should be used when the user asks to...
+allowed-tools: Read, Bash(npm:*)  # Optional: restrict available tools
+---
+```
 
 ### Writing a Good CLAUDE.md
 
