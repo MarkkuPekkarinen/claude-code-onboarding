@@ -6,137 +6,35 @@ allowed-tools: Bash, Read, Write, Edit
 
 # Architecture Design Skill
 
-## Architecture Decision Record (ADR) Template
-```markdown
-# ADR-001: <Title>
+Design system architecture, API contracts, deployment topologies, and technology decisions for full-stack applications.
 
-**Status:** Proposed | Accepted | Deprecated | Superseded
-**Date:** YYYY-MM-DD
-**Decision Makers:** <names>
+**Supported Design Artifacts:**
+- System context diagrams (C4 model, Mermaid)
+- Sequence diagrams (service interactions)
+- API contracts (OpenAPI 3.x)
+- Deployment topologies (Docker Compose)
+- Architecture Decision Records (ADRs)
 
-## Context
-What is the issue we are facing?
+**Process:**
 
-## Decision
-What is the change we are proposing?
+1. **Analyze Request**
+   - Identify which artifacts the user needs
+   - Determine scope: single service, multi-service, full system
 
-## Consequences
-### Positive
-- ...
-### Negative
-- ...
-### Risks
-- ...
-```
+2. **Load Templates**
+   - Read [reference/architecture-templates.md](reference/architecture-templates.md) for diagram and deployment templates
+   - For detailed ADR workflows: delegate to the `architecture-decision-records` skill
+   - For full OpenAPI spec generation: delegate to the `openapi-spec-generation` skill
 
-## API Contract Template (OpenAPI snippet)
-```yaml
-openapi: 3.0.3
-info:
-  title: My Service API
-  version: 1.0.0
-paths:
-  /api/v1/users:
-    get:
-      summary: List all users
-      parameters:
-        - name: page
-          in: query
-          schema: { type: integer, default: 0 }
-        - name: size
-          in: query
-          schema: { type: integer, default: 20 }
-      responses:
-        '200':
-          description: Paginated list of users
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                    items: { $ref: '#/components/schemas/User' }
-                  pagination:
-                    $ref: '#/components/schemas/Pagination'
-    post:
-      summary: Create a user
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/CreateUserRequest' }
-      responses:
-        '201':
-          description: User created
-```
+3. **Generate Artifacts**
+   - Use loaded templates as starting points
+   - Adapt to the project's tech stack (Spring Boot, Node.js, Angular, Flutter, PostgreSQL, Firebase)
+   - Follow conventions from CLAUDE.md (package structure, naming, reactive patterns)
 
-## Sequence Diagram Template (Mermaid)
-```mermaid
-sequenceDiagram
-    participant C as Client (Angular/Flutter)
-    participant G as API Gateway
-    participant S as Spring Boot Service
-    participant DB as PostgreSQL
-    participant FB as Firebase
+4. **Present and Iterate**
+   - Show generated artifacts with explanations
+   - Offer refinement options (add services, change patterns, adjust topology)
 
-    C->>G: POST /api/v1/users
-    G->>S: Forward request
-    S->>S: Validate input
-    S->>DB: INSERT user (R2DBC)
-    DB-->>S: User entity
-    S->>FB: Sync to Firestore
-    FB-->>S: Ack
-    S-->>G: 201 Created + UserResponse
-    G-->>C: 201 Created
-```
-
-## Docker Compose — Dev Environment
-```yaml
-version: '3.9'
-services:
-  postgres:
-    image: postgres:16-alpine
-    environment:
-      POSTGRES_DB: mydb
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports: ['5432:5432']
-    volumes: ['pgdata:/var/lib/postgresql/data']
-
-  redis:
-    image: redis:7-alpine
-    ports: ['6379:6379']
-
-  backend:
-    build: ./backend
-    ports: ['8080:8080']
-    environment:
-      SPRING_R2DBC_URL: r2dbc:postgresql://postgres:5432/mydb
-      SPRING_FLYWAY_URL: jdbc:postgresql://postgres:5432/mydb
-    depends_on: [postgres, redis]
-
-volumes:
-  pgdata:
-```
-
-## C4 Diagram — System Context (Mermaid)
-```mermaid
-graph TB
-    User[fa:fa-user End User]
-    Angular[Angular SPA<br/>Browser]
-    Flutter[Flutter App<br/>iOS / Android]
-    Backend[Spring Boot API<br/>Java 21 / WebFlux]
-    PG[(PostgreSQL)]
-    Firebase[Firebase<br/>Auth + Firestore]
-    Redis[(Redis Cache)]
-
-    User --> Angular
-    User --> Flutter
-    Angular -->|REST API| Backend
-    Flutter -->|REST API| Backend
-    Flutter -->|Real-time| Firebase
-    Backend -->|R2DBC| PG
-    Backend -->|Cache| Redis
-    Backend -->|Sync| Firebase
-```
+**Error Handling:**
+- If artifact type is unclear: ask user to specify (diagram, API contract, deployment, ADR)
+- If tech stack is ambiguous: default to project conventions in CLAUDE.md

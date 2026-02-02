@@ -25,7 +25,9 @@ Research the target API, study the MCP protocol, and plan tool coverage.
 
 Set up project structure, implement core infrastructure, then build tools.
 
-- For TypeScript project setup and patterns -> Read [reference/node_mcp_server.md](reference/node_mcp_server.md)
+- For TypeScript project setup -> Read [reference/node-mcp-setup.md](reference/node-mcp-setup.md)
+- For TypeScript implementation patterns -> Read [reference/node-mcp-patterns.md](reference/node-mcp-patterns.md)
+- For TypeScript advanced features and complete example -> Read [reference/node-mcp-advanced.md](reference/node-mcp-advanced.md)
 - For Python project setup -> Read [reference/python-mcp-setup.md](reference/python-mcp-setup.md), [reference/python-mcp-patterns.md](reference/python-mcp-patterns.md), and [reference/python-mcp-advanced.md](reference/python-mcp-advanced.md)
 - **Recommended stack**: TypeScript with streamable HTTP (remote) or stdio (local)
 - Create shared utilities: API client, error handling, response formatting, pagination
@@ -44,7 +46,8 @@ Verify code quality and test the server.
 
 Build 10 evaluation questions to test server effectiveness.
 
-- For complete evaluation guidelines -> Read [reference/evaluation.md](reference/evaluation.md)
+- For evaluation question design and criteria -> Read [reference/evaluation-criteria.md](reference/evaluation-criteria.md)
+- For running evaluations (CLI, setup, troubleshooting) -> Read [reference/evaluation-running.md](reference/evaluation-running.md)
 - Create 10 complex, realistic questions requiring multiple tool calls
 - Each question must be: independent, read-only, complex, realistic, verifiable, stable
 - Output as XML with `<evaluation>` root containing `<qa_pair>` elements
@@ -66,11 +69,14 @@ Load these as needed during development:
 |----------|-------------|
 | [MCP Design Principles](reference/mcp-design-principles.md) | Phase 1 - naming, tool design, response formats |
 | [MCP Quality Standards](reference/mcp-quality-standards.md) | Phase 1 - security, annotations, testing |
-| [TypeScript Guide](reference/node_mcp_server.md) | Phase 2 - TypeScript implementation |
+| [TypeScript Setup](reference/node-mcp-setup.md) | Phase 2 - project structure, package config, build |
+| [TypeScript Patterns](reference/node-mcp-patterns.md) | Phase 2 - tools, Zod, pagination, errors |
+| [TypeScript Advanced](reference/node-mcp-advanced.md) | Phase 2 - complete example, resources, transport |
 | [Python Setup](reference/python-mcp-setup.md) | Phase 2 - Python SDK, tool structure, Pydantic |
 | [Python Patterns](reference/python-mcp-patterns.md) | Phase 2 - pagination, errors, complete example |
 | [Python Advanced](reference/python-mcp-advanced.md) | Phase 2 - context, resources, lifespan, quality |
-| [Evaluation Guide](reference/evaluation.md) | Phase 4 - creating evaluations |
+| [Evaluation Criteria](reference/evaluation-criteria.md) | Phase 4 - question/answer design |
+| [Evaluation Running](reference/evaluation-running.md) | Phase 4 - CLI, setup, troubleshooting |
 | MCP Protocol Spec | Phase 1 - fetch from `modelcontextprotocol.io` |
 | TypeScript SDK README | Phase 1 - fetch from GitHub |
 | Python SDK README | Phase 1 - fetch from GitHub |
