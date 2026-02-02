@@ -2,7 +2,15 @@
 
 **Get your team from zero to productive with Claude Code in under 30 minutes.**
 
-This repository is a pre-configured basic starter kit with agents, skills, slash commands, and MCP integrations for tech stack: **Java v21**, **Spring Boot Reactive Web(Web Flux) v3.5x**, **Node.sj v24.13**, **TypeScript 5.x**, **Angular 21.x**, **Python v3.14**, **Flutter v3.38**, **Dartv3.11**, **PostgreSQL**, and **Firebase**.
+This repository is a pre-configured starter kit packed with agents, skills, slash commands, and MCP integrations — ready to go for the following tech stack:
+
+| Layer | Technologies |
+|---|---|
+| **Backend** | Java 21, Spring Boot WebFlux 3.5.x, Python 3.12+ |
+| **Frontend** | Angular 21.x, TypeScript 5.x |
+| **Mobile** | Flutter 3.38, Dart 3.11 |
+| **Data & Infra** | PostgreSQL, Firebase |
+| **AI Tooling** | Claude Code, MCP servers |
 
 Clone it, install Claude Code, and start building.
 
@@ -20,13 +28,11 @@ Clone it, install Claude Code, and start building.
 - [10. Troubleshooting](#10-troubleshooting)
 - [11. Resources](#11-resources)
 
-
 ## What is Claude Code?
 
 **[Claude Code](https://code.claude.com/docs/en/overview)** is an **agentic AI coding assistant that lives in your terminal**. It understands your codebase, edits files directly, runs commands, and helps you code faster through natural language conversation.
 
 Think of it as a senior developer sitting in your terminal who knows your entire project, follows your team's conventions, and never gets tired.
-
 
 ## 1. Prerequisites
 
@@ -36,7 +42,6 @@ Before you begin, make sure you have:
 **Optional for Quick Start: But Required for MCP server**
 - **[Install Node.js v24.13](https://nodejs.org/en/download)**
 - **[Install Python v3.14](https://www.python.org/downloads/)**
-
 
 ## 2. Clone This Repo
 
@@ -50,27 +55,35 @@ cd claude-code-onboarding
 
 ## 3. Install VS Code
 
-We use **[Visual Studio Code](https://code.visualstudio.com/)** as IDE. Download and install **[Visual Studio Code](https://code.visualstudio.com/)** from the official site:
+We recommend open source **[Visual Studio Code](https://code.visualstudio.com/)** as your IDE, though Claude Code works from any terminal. Download and install **[Visual Studio Code](https://code.visualstudio.com/)** from the official site:
 
-After installing, open the cloned project `claude-code-onboarding` with VS Code and go the **integrated terminal** 
+After installing, open the cloned project `claude-code-onboarding` with **[Visual Studio Code](https://code.visualstudio.com/)** and use the **integrated terminal** 
 
 ## 4. Install Claude Code
 
-Open the VS Code terminal and run the following:
+Open the **[Visual Studio Code](https://code.visualstudio.com/)** and run the following:
 
 ### Native Binary (Recommended)
 
 1. For macOS / Linux
 
 ```bash
-]curl -fsSL https://claude.ai/install.sh | bash
+curl -fsSL https://claude.ai/install.sh | bash
 ``
+
 2. Reload your shell
 
 ```bash
 source ~/.bashrc   # or: source ~/.zshrc
 ```
-3. Verify installation
+
+3. Close and repone the **[Visual Studio Code](https://code.visualstudio.com/)**
+
+```bash
+source ~/.bashrc   # or: source ~/.zshrc
+```
+
+4. Verify installation
 
 ```bash
 claude --version
@@ -136,7 +149,6 @@ Then **restart Claude Code** (`/exit`) or restart(close and reopen) the vscode.
 ## 6. Understanding Claude Code Components
 
 Here's a quick reference for every building block. Knowing *when to use what* is the key to being productive.
-
 
 ### Quick Overview
 
@@ -208,7 +220,6 @@ claude
 - Put the most important rules at the top
 - Use imports for large docs: `@docs/api-reference.md`
 
-
 ### Slash Commands — Quick-Fire Actions
 
 **What:** Saved prompts you trigger with `/command-name`. Think of them as reusable prompt shortcuts.
@@ -271,7 +282,6 @@ This repo comes with:
 - **Filesystem** — advanced file search and manipulation
 - **Firebase** — Firestore and Auth operations
 
-
 ### Hooks — Automated Guardrails
 
 **What:** Shell scripts that run automatically at specific lifecycle events (before/after tool use, on session start/end). They're **deterministic** — they always run the same way.
@@ -331,7 +341,6 @@ This repo comes with:
 | `Ctrl+U` | Delete entire line (faster than backspace) |
 | `Esc` | Cancel current generation |
 | `Esc Esc` | Interrupt Claude / restore code |
-
 
 
 ## 7. What's in This Repo
@@ -552,8 +561,6 @@ Claude Code uses an allow / deny / ask system. Configure in `.claude/settings.js
 ```
 
 This lets common safe commands run without asking, blocks sensitive file edits entirely, and asks for everything else. The kit's `settings.json` comes pre-configured with sensible defaults.
-
----
 
 ## 10. Tips & Best Practices
 
@@ -777,8 +784,6 @@ E-commerce platform — Spring Boot API + Angular SPA + Flutter mobile.
 - Use `CLAUDE.local.md` for personal preferences (auto-gitignored)
 - Use `.claude/rules/` for conditional rules that only apply in specific directories
 
----
-
 ## 11. Troubleshooting
 
 ### "command not found: claude"
@@ -834,8 +839,6 @@ claude doctor          # General diagnostics
 claude --debug         # Debug mode with full logging
 claude --debug "mcp"   # Debug specific categories
 ```
-
----
 
 ## 12. Resources
 
