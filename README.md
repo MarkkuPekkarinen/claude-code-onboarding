@@ -157,7 +157,7 @@ Knowing *when to use what* is the key to being productive with Claude Code. Here
 | **Hooks** | Scripts that run at lifecycle events (pre/post tool use, session start/stop) auto-formatting, linting, validation, notifications | Defined in `settings.json` → `"hooks"` | Automatic on events |
 | **MCP Servers** | Tool connections to external services — GitHub, Slack, databases, docs, APIs | `.mcp.json` (project root) | Claude uses as needed |
 
-### The Golden Formula
+### How They Fit Together
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
@@ -171,51 +171,42 @@ Knowing *when to use what* is the key to being productive with Claude Code. Here
 └──────────────────────────────────────────────────────────────┘
 ```
 
-### When to Use What — Decision Matrix
+### Decision Matrix - When to Use What
 
-| You Need To... | Use | Example |
-|-----------------|-----|---------|
-| Set project conventions & context | `CLAUDE.md` | Tech stack, coding standards, git workflow |
-| Control what Claude can do | `settings.json` | Allow `git` commands, deny `sudo` |
-| Auto-apply patterns for a domain | Skill | Always use Riverpod when building Flutter |
-| Run a repeatable prompt yourself | Slash Command | `/scaffold-spring-api weather-service` |
-| Get deep domain expertise in isolation | Sub-agent | `@database-designer Design schema for...` |
-| Enforce hard rules every time | Hook | Block commits without passing tests |
-| Connect to external services | MCP Server | GitHub PRs, Context7 live docs, Firebase |
-| Remember things across sessions | Claude-Mem plugin | Persistent memory of past decisions |
+| Use | You Need To… | Example |
+|---|---|---|
+| **CLAUDE.md** | Set project conventions and context | Project Overview, Project Context, Tech Stack, Coding Standards, Rules |
+| **settings.json** | Control what Claude can do | Allow `git` commands, deny `sudo` |
+| **Skill** | Auto-apply patterns for a domain | Always use Riverpod when building Flutter |
+| **Slash Command** | Run a repeatable prompt yourself(manual) | `/scaffold-spring-api weather-service` |
+| **Sub-agent** | Get deep domain expertise in isolation, can be manual or auto | `@database-designer Design schema for…` |
+| **Hook** | Enforce hard rules every time | Block commits without passing tests |
+| **MCP Server** | Connect to external services | GitHub PRs, Context7 live docs, Firebase |
+| **Claude-Mem plugin** | Remember things across sessions | Persistent memory of past decisions |
 
-### MCP Servers in This Repo
+### CLAUDE.md
 
-| Server | What It Does |
-|--------|-------------|
-| **Context7** | Live, up-to-date documentation for any library — add `use context7` to prompts |
-| **GitHub** | Create issues, PRs, browse repos, review code |
-| **Filesystem** | Advanced file search and manipulation |
-| **Firebase** | Firestore and Auth operations |
+**What:** A Markdown file at the project root that gives Claude Code, context about your project — tech stack, conventions, common commands, and rules.
 
-
-### CLAUDE.md — Project Memory
-
-**What:** A Markdown file at the project root that gives Claude persistent context about your project — tech stack, conventions, common commands, and rules.
-
-**When to use:** Every project should have one. It's the first thing Claude reads.
+**When to use:** Every project should have one. It's the first thing Claude reads at startup.
 
 **Where:** `./CLAUDE.md` (project root) or `~/.claude/CLAUDE.md` (global, all projects)
 
-You can create CLAUDE.md by running the command `/init` inside Claude Code session. Since we already have one we don't need it. 
+You can auto-generate one by running `/init` inside a Claude Code session. This repo already includes one, so you can skip this step.
+
 ```bash
 # Auto-generate one from your codebase
 claude
 > /init
 ```
 
-#### CLAUDE.md Tips
+**Tips:**
 
-- Keep it under 20KB — too much will overload the LLM Context Window. 200K is Max token capacity for Anthropic LLM.
+- Keep it under 40KB — too much context overloads the LLM's 200K token window
 - Put the most important rules at the top
 - Use imports for large docs: `@docs/api-reference.md`
 
-### Slash Commands — Quick-Fire Actions
+### Slash Commands — Reusable Prompt Shortcuts
 
 **What:** Saved prompts you trigger with `/command-name`. Think of them as reusable prompt shortcuts.
 
@@ -223,14 +214,14 @@ claude
 
 **Where:** `.claude/commands/my-command.md` (project) or `~/.claude/commands/` (global)
 
+**Examples: Try running below commands inside Claude Code Session**
 ```
 > /scaffold-spring-api weather-service
 > /scaffold-flutter-app fitness-tracker
 > /design-database fitness tracking with users, workouts, and goals
 ```
 
-Use `$ARGUMENTS` in the command file to accept parameters.
-
+Use `$ARGUMENTS` in the command file (`.claude/commands/scaffold-spring-api.md`) to accept parameters.
 
 ### Agents (Subagents) — Specialist AI Personas
 
@@ -240,6 +231,7 @@ Use `$ARGUMENTS` in the command file to accept parameters.
 
 **Where:** `.claude/agents/my-agent.md` (project) or `~/.claude/agents/` (global)
 
+**Examples: Try running below commands inside Claude Code Session**
 ```
 > @java-spring-api Create a CRUD API for a Product entity with name, price, and category
 > @flutter-mobile Build a login screen with Firebase Auth
@@ -251,35 +243,47 @@ Use `$ARGUMENTS` in the command file to accept parameters.
 
 **What:** Markdown files with domain knowledge, templates, and code patterns. Unlike commands, **Claude decides when to use them** based on the task context — you don't invoke them explicitly.
 
-**When to use:** When you want Claude to *automatically* apply certain patterns whenever a matching task comes up (e.g., always use your team's DTO pattern when creating Spring entities).
+**When to use:** When you want Claude to **automatically** apply certain patterns whenever a matching task comes up (e.g., always use your team's DTO pattern when creating Spring entities).
 
 **Where:** `.claude/skills/my-skill/SKILL.md`
 
-The skills in this repo auto-activate when:
-- You ask about Spring Boot → `java-spring-api` skill activates
-- You build Angular components → `angular-spa` skill activates
-- You create Flutter screens → `flutter-mobile` skill activates
-- You design schemas → `database-design` skill activates
-- You design architecture → `architecture-design` skill activates
+The skills in this repo auto-activate based on context:
+
+| When You Ask About… | Skill That Activates |
+|---|---|
+| Spring Boot | `java-spring-api` |
+| Angular components | `angular-spa` |
+| Flutter screens | `flutter-mobile` |
+| Database schemas | `database-design` |
+| System architecture | `architecture-design` |
 
 
 ### MCP Servers — External Tool Integrations
 
-**What:** The Model Context Protocol connects Claude Code to external services (GitHub, databases, documentation servers) so Claude can use them as tools.
+**What:** The Model Context Protocol connects Claude Code to external services (GitHub, databases, documentation servers, gmail, slack, APIs) so Claude can use them as tools.
 
-**When to use:** When Claude needs to interact with services beyond the local filesystem — creating GitHub PRs, querying live databases, fetching up-to-date documentation.
+**When to use:** When Claude needs to interact with services beyond the local filesystem — creating GitHub PRs, querying live databases, fetching up-to-date documentation, invoking APIs.
 
 **Where:** `.mcp.json` (project root)
 
-This repo comes with:
-- **Context7** — live, up-to-date documentation for any library
-- **GitHub** — create issues, PRs, browse repos
-- **Filesystem** — advanced file search and manipulation
-- **Firebase** — Firestore and Auth operations
+This repo comes pre-configured with:
+
+| Server | What It Does |
+|---|---|
+| **Context7** | Live, version-specific documentation for any library — add `use context7` to prompts |
+| **GitHub** | Create issues, PRs, browse repos, review code via GitHub Copilot MCP |
+| **Angular CLI** | Angular schematics, builds, and project scaffolding directly from Claude |
+| **Chrome DevTools** | Browser debugging and inspection |
+| **Firebase** | Firestore and Auth operations |
+| **Sequential Thinking** | Step-by-step reasoning for complex multi-step problems |
+| **Dart** | Dart language server integration |
+| **Filesystem** | Secure file search and manipulation with configurable directory permissions |
+| **LangChain Docs** | Live LangChain documentation lookup |
+
 
 ### Hooks — Automated Guardrails
 
-**What:** Shell scripts that run automatically at specific lifecycle events (before/after tool use, on session start/end). They're **deterministic** — they always run the same way.
+**What:** Shell scripts that run automatically at specific lifecycle events (before/after tool use, on session start/end). Think of them as **middleware for Claude Code** — deterministic, always execute the same way.
 
 **When to use:** When you need hard rules enforced every time, like "run linter before commit" or "block commits without passing tests."
 
@@ -324,9 +328,7 @@ This repo comes with:
 | `/compact` | Manually trigger context compaction |
 | `/rewind` | Go back to a previous state |
 | `/checkpoints` | File-level undo points |
-| `/statusline` | Customize status bar (branch, context %, model, todos) |
 | `/exit` | Exit Claude Code |
-| `/memory` | Open CLAUDE.md in your editor |
 | `/agents` | List / create agents |
 | `/mcp` | Check MCP server status |
 | `!` | Quick bash command prefix |
