@@ -20,7 +20,7 @@ Standards for readable, maintainable Java (21+) code in Spring Boot Reactive Web
 | Rule | Standard |
 |------|----------|
 | **Naming** | Classes: `PascalCase`, methods/fields: `camelCase`, constants: `UPPER_SNAKE_CASE` |
-| **Immutability** | Favor records and final fields; getters only, no setters |
+| **Immutability** | Favor records and final fields; getters only, no setters. Exception: R2DBC entities require setters for framework binding |
 | **Optional** | Return `Optional` from `find*` methods; use `map`/`flatMap`, never `.get()`. In reactive code, `Mono<T>` replaces `Optional<T>` — use `switchIfEmpty()` instead |
 | **Streams** | Short pipelines for transforms; prefer loops for complex logic |
 | **Exceptions** | Unchecked domain exceptions; avoid broad `catch (Exception)` |

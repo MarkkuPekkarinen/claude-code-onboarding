@@ -47,7 +47,11 @@ public class UserService {
     public Mono<UserResponse> findById(UUID id) {
         return userRepository.findById(id)
                 .map(this::toResponse)
-                .switchIfEmpty(Mono.error(new NotFoundException("User not found")));
+                .switchIfEmpty(Mono.error(new ResourceNotFoundException("User not found")));
+    }
+
+    public Flux<UserResponse> findAll() {
+        return userRepository.findAll().map(this::toResponse);
     }
 
     public Mono<UserResponse> create(CreateUserRequest request) {
@@ -120,8 +124,8 @@ class UserControllerTest {
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ProblemDetail> handleNotFound(NotFoundException ex) {
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handleNotFound(ResourceNotFoundException ex) {
         ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(pd);
     }

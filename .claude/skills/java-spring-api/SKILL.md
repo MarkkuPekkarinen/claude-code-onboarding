@@ -47,7 +47,7 @@ curl https://start.spring.io/starter.zip \
 ## Package Layout
 
 ```
-com.company.service/
+com.company.<service>/
 ├── controller/     # REST controllers
 ├── service/        # Business logic
 ├── repository/     # R2DBC repositories
@@ -63,8 +63,8 @@ com.company.service/
 - NEVER call `.block()` inside a reactive chain
 - Use `Mono.zip()` for parallel calls
 - Use `switchIfEmpty()` with `Mono.error()` for not-found cases
-- Always return `Mono<ResponseEntity<T>>` or annotate with `@ResponseStatus`
-- Use `@Validated` on controller params, `jakarta.validation` on DTOs
+- Use `@ResponseStatus` for non-200 responses (e.g., `201 Created`); default 200 OK is implicit for GET endpoints
+- Use `@Valid` on `@RequestBody` params, `@Validated` on controller class for path/query param validation, `jakarta.validation` on DTOs
 
 ## Reference Files
 
@@ -83,6 +83,6 @@ com.company.service/
 
 **Validation errors**: Use `jakarta.validation` annotations on DTO records. Handle via `@ControllerAdvice` returning `ProblemDetail` with `HttpStatus.BAD_REQUEST` (400).
 
-**Not-found errors**: Use `switchIfEmpty(Mono.error(new NotFoundException(...)))` in services.
+**Not-found errors**: Use `switchIfEmpty(Mono.error(new ResourceNotFoundException(...)))` in services.
 
 **Duplicate errors**: Catch `DataIntegrityViolationException` in services and convert to `409 Conflict`.

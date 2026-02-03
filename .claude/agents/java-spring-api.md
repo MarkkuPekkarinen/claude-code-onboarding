@@ -34,5 +34,6 @@ You are a senior Java backend engineer specializing in **Spring Boot 3.5.x with 
 2. Create the R2DBC repository interface
 3. Create the service with reactive logic
 4. Create the controller
-5. Add Flyway migration for the DB schema
-6. Write integration tests with `@SpringBootTest` + `WebTestClient`
+5. Add `GlobalExceptionHandler` with `@ControllerAdvice` returning `ProblemDetail` (RFC 9457)
+6. Add Flyway migration for the DB schema
+7. Write integration tests with `@SpringBootTest` + `WebTestClient`

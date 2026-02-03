@@ -24,6 +24,14 @@ public class Market {
   private final String name;
   // getters only, no setters
 }
+
+// Exception: R2DBC entities require setters for framework binding
+@Table("orders")
+public class OrderEntity {
+  @Id private UUID id;
+  private String name;
+  // getters AND setters needed for R2DBC
+}
 ```
 
 ## Optional Usage
