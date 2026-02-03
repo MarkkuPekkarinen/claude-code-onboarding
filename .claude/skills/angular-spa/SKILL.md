@@ -2,13 +2,6 @@
 name: angular-spa
 description: This skill provides patterns and templates for Angular 21.x SPA development. It should be activated when building Angular standalone components, services, lazy-loaded routes, or unit tests.
 allowed-tools: Bash, Read, Write, Edit
-globs:
-  - angular.json
-  - "**/angular.json"
-triggers:
-  - "angular component"
-  - "angular service"
-  - "angular route"
 ---
 
 # Angular 21.x SPA Development Skill

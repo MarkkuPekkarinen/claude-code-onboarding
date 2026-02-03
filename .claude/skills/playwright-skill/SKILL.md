@@ -2,13 +2,6 @@
 name: playwright-skill
 description: This skill should be used for browser automation tasks including website testing, UX validation, responsive design checks, or any Playwright-based automation.
 allowed-tools: Bash, Read
-globs:
-  - "**/playwright.config.*"
-  - "**/e2e/**/*.spec.ts"
-triggers:
-  - "browser test"
-  - "e2e test"
-  - "playwright test"
 ---
 
 # Playwright Browser Automation

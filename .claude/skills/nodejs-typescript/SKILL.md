@@ -2,13 +2,6 @@
 name: nodejs-typescript
 description: This skill provides patterns and templates for Node.js 24 / TypeScript 5.x development. It should be activated when creating Express/Fastify APIs, TypeScript utilities, npm packages, or Vitest tests.
 allowed-tools: Bash, Read, Write, Edit
-globs:
-  - tsconfig.json
-  - "**/tsconfig.json"
-triggers:
-  - "node api"
-  - "express route"
-  - "typescript service"
 ---
 
 # Node.js 24 + TypeScript 5.x Development Skill

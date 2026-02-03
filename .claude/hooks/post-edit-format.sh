@@ -6,7 +6,7 @@ set -uo pipefail
 
 # Read the tool input JSON from stdin
 input=$(cat)
-file=$(echo "$input" | jq -r '.tool_input.file_path // .tool_input.path // ""')
+file=$(echo "$input" | jq -r '.tool_input.file_path // .tool_input.path // ""' 2>/dev/null) || file=""
 
 # Skip if no file path or file doesn't exist
 [ -z "$file" ] && exit 0

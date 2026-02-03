@@ -2,15 +2,6 @@
 name: database-schema-designer
 description: This skill should be used when designing database schemas for SQL or NoSQL databases. It provides normalization guidelines, indexing strategies, migration patterns, and performance optimization.
 allowed-tools: Read
-license: MIT
-globs:
-  - "**/migrations/**/*.sql"
-  - "**/flyway/**/*.sql"
-  - "**/schema.sql"
-triggers:
-  - "design database schema"
-  - "create migration"
-  - "database table design"
 ---
 
 # Database Schema Designer
