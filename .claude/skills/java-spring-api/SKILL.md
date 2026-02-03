@@ -76,6 +76,8 @@ com.company.service/
 | `reference/spring-boot-rest-service-guide.md` | OpenAPI+DDL driven workflow, MapStruct mapping, External service clients, WireMock testing |
 | `reference/spring-boot-testing-guide.md` | BlockHound, Resilience4j testing, test data builders, Testcontainers, contract testing |
 | `reference/spring-boot-reactive-debugging.md` | Reactor Hooks (onOperatorError, onNextDropped, onErrorDropped), checkpoint patterns, debug mode control |
+| `reference/spring-boot-security-hardening.md` | OWASP dependency scanning, static analysis patterns, HSTS, JWT role extraction, secure logging |
+| `reference/spring-boot-reactive-patterns.md` | Resilience4j operators, Redis reactive, SSE, Spring Cloud Stream, custom operators, threading anti-patterns |
 
 ## Error Handling
 

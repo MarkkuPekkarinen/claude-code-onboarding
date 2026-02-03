@@ -142,3 +142,6 @@ For code patterns and correct implementations, read the `java-spring-api` skill 
 - `reference/spring-boot-enterprise.md` — exception hierarchy, security, Resilience4j config
 - `reference/spring-boot-rest-service-guide.md` — REST service patterns, external integrations
 - `reference/spring-boot-testing-guide.md` — BlockHound, resilience testing, Testcontainers
+- `reference/spring-boot-reactive-debugging.md` — Reactor Hooks, checkpoint patterns, debug mode
+- `reference/spring-boot-security-hardening.md` — OWASP scanning, static analysis, secure logging
+- `reference/spring-boot-reactive-patterns.md` — Resilience4j operators, Redis, SSE, Cloud Stream
