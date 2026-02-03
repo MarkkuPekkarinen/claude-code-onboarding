@@ -113,3 +113,30 @@ docker-compose down                  # Stop all services
 - **Always write tests** for new features
 - **Use the agents/skills** in `.claude/` — they encode our team patterns
 - Run `/project-status` to get a quick summary of the codebase state
+
+## Working Standards
+
+### Verify Before Claiming
+- Before saying something is "missing" or "implemented", read the actual code — not just file names
+- Trace the full chain: UI component, service/logic, data connection
+- Cite `file:line` as evidence. No guessing, no "I believe it's..."
+- If challenged, re-verify from source — don't flip your answer without re-reading
+
+### Status Reporting
+- Binary: "works" or "doesn't work" — no percentages, no "mostly functional"
+- Details must match the summary — never say "works" then list why it doesn't
+- Use `/status-check` for structured reports
+
+### Plan Execution
+- If a plan is approved, implement 100% of it before saying "done"
+- If an item can't be completed, stop and explain why — don't silently skip it
+
+### Error Handling
+- Every catch block must log the error AND either rethrow or return an error state
+- Never return empty list/null/default to hide a failure
+- Never swallow exceptions silently
+- No mock data or fallback data unless explicitly requested
+
+### Documentation Freshness
+- Use `Context7` MCP or `Dart MCP server` to verify current API signatures when unsure
+- Never use deprecated methods, classes, or patterns — check docs if in doubt
