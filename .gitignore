@@ -1,20 +1,6 @@
-# Miscellaneous
-*.class
-*.lock
-*.log
-*.pyc
-*.swp
-.buildlog/
-.history
-
-# Environment
-.env
-.env.local
-*.env
-
-# Claude Code local settings
-.claude/settings.local.json
-CLAUDE.local.md
+# OS files
+.DS_Store
+Thumbs.db
 
 # IDE
 .idea/
@@ -23,17 +9,68 @@ CLAUDE.local.md
 !.vscode/settings.json
 *.iml
 
-# OS
-.DS_Store
-Thumbs.db
+# Environment files
+.env
+.env.local
+.env*.local
+*.env
 
-# Flutter repo-specific
+# Claude Code
+.claude/settings.local.json
+.claude/temp/
+CLAUDE.local.md
+
+# Credentials & secrets
+*-credentials.json
+*-credentials-*.json
+sheets-mcp-credentials.json
+
+# Miscellaneous
+*.log
+*.swp
+.buildlog/
+.history
+
+# Java / Maven
+target/
+*.class
+*.jar
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Node / Angular
+node_modules/
+dist/
+.angular/
+
+# Flutter / Dart / Pub
 app/.dart_tool/
 app/.packages
 app/build/
 app/.flutter-plugins
 app/.flutter-plugins-dependencies
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+**/generated_plugin_registrant.dart
+.packages
+.packages.generated
+.pub-preload-cache/
+.pub/
+*.g.dart
+*.freezed.dart
+flutter_*.png
+linked_*.ds
+unlinked.ds
+unlinked_spec.ds
+**/doc/api/
 
+# Flutter repo-specific
 /bin/cache/
 /bin/internal/bootstrap.bat
 /bin/internal/bootstrap.sh
@@ -52,51 +89,7 @@ app/.flutter-plugins-dependencies
 version
 analysis_benchmark.json
 
-# Claude temp files
-.claude/temp/
-
-# Python
-__pycache__/
-*.pyc
-*.pyo
-.venv/
-venv/
-
-# Node
-node_modules/
-
-# Generated
-*.g.dart
-*.freezed.dart
-
-# Build outputs
-*.apk
-*.aab
-*.ipa
-*.app
-
-# Coverage
-coverage/
-
-# packages file containing multi-root paths
-.packages.generated
-
-# Flutter/Dart/Pub related
-**/doc/api/
-.dart_tool/
-.flutter-plugins
-.flutter-plugins-dependencies
-**/generated_plugin_registrant.dart
-.packages
-.pub-preload-cache/
-.pub/
-build/
-flutter_*.png
-linked_*.ds
-unlinked.ds
-unlinked_spec.ds
-
-# Android related
+# Android
 **/android/**/gradle-wrapper.jar
 .gradle/
 **/android/captures/
@@ -107,56 +100,18 @@ unlinked_spec.ds
 **/android/key.properties
 *.jks
 
-# MCP & API keys
-
-.env
-.env.local
-.env*.local
-*-credentials.json
-*-credentials-*.json
-
-# Claude
-.claude/settings.local.json
-
-sheets-mcp-credentials.json
-
-.firebase/**/*
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# IDE
-.idea/
-.vscode/
-*.iml
-
-# Claude Code local overrides
-.claude/settings.local.json
-CLAUDE.local.md
-
-# Environment files
-.env
-.env.local
-
-# Java / Maven
-target/
-*.class
-*.jar
-
-# Angular / Node
-node_modules/
-dist/
-.angular/
-
-# Flutter
-.dart_tool/
-.packages
+# Build outputs
 build/
-*.g.dart
-*.freezed.dart
+*.apk
+*.aab
+*.ipa
+*.app
+
+# Coverage
+coverage/
 
 # Firebase
+.firebase/**/*
 firebase-debug.log
 
 # Docker

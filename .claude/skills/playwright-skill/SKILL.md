@@ -1,6 +1,7 @@
 ---
 name: playwright-skill
-description: Playwright browser automation. Use for website testing, UX validation, browser task automation, or responsive design.
+description: This skill should be used for browser automation tasks including website testing, UX validation, responsive design checks, or any Playwright-based automation.
+allowed-tools: Bash, Read
 globs:
   - "**/playwright.config.*"
   - "**/e2e/**/*.spec.ts"
@@ -59,7 +60,8 @@ const TARGET_URL = 'http://localhost:3001'; // Auto-detected or from user
 ## Reference Files
 
 - For automation code examples (responsive testing, login flows, forms, link checking, screenshots, inline execution, helpers, custom headers) -> Read [reference/playwright-patterns.md](reference/playwright-patterns.md)
-- For complete Playwright API details (selectors, network interception, auth, visual regression, mobile emulation, performance, CI/CD) -> Read [API_REFERENCE.md](API_REFERENCE.md)
+- For Playwright API core (selectors, actions, waiting, assertions) -> Read [reference/playwright-api-core.md](reference/playwright-api-core.md)
+- For advanced patterns (POM, network mocking, mobile, visual testing, CI/CD) -> Read [reference/playwright-api-advanced.md](reference/playwright-api-advanced.md)
 - For setup, installation, path resolution, and troubleshooting -> Read [reference/playwright-patterns.md](reference/playwright-patterns.md)
 
 ## Tips

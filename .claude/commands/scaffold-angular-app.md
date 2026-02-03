@@ -1,6 +1,7 @@
 ---
 description: Scaffold a new Angular 21.x SPA with standalone components, lazy routing, and a sample feature module
 allowed-tools: Bash, Read, Write, Edit
+disable-model-invocation: true
 ---
 
 # Scaffold Angular SPA

@@ -1,6 +1,6 @@
 ---
 name: architecture-design
-description: System and solution architecture patterns for full-stack applications. Activate when designing APIs, system diagrams, deployment topologies, or making technology decisions.
+description: This skill should be used when designing system architecture, API contracts, deployment topologies, or making technology decisions for full-stack applications.
 allowed-tools: Bash, Read, Write, Edit
 ---
 

@@ -1,6 +1,7 @@
 ---
 name: architecture-decision-records
-description: Write and maintain Architecture Decision Records (ADRs) following best practices for technical decision documentation. Use when documenting significant technical decisions, reviewing past architectural choices, or establishing decision processes.
+description: This skill should be used when documenting significant technical decisions, reviewing past architectural choices, or establishing decision processes. It provides ADR templates and best practices.
+allowed-tools: Read
 globs:
   - docs/adr/**/*.md
   - "**/ADR-*.md"

@@ -1,6 +1,6 @@
 ---
 name: flutter-mobile
-description: Patterns and templates for Flutter 3.38 / Dart 3.11 cross-platform mobile development with Riverpod, clean architecture, and Firebase. Activate when building Flutter screens, providers, models, or tests.
+description: This skill provides patterns and templates for Flutter 3.38 / Dart 3.11 cross-platform mobile development. It should be activated when building Flutter screens, Riverpod providers, Freezed models, or widget tests.
 allowed-tools: Bash, Read, Write, Edit
 globs:
   - pubspec.yaml
@@ -69,4 +69,4 @@ dart run build_runner build --delete-conflicting-outputs
 
 For all code templates (pubspec.yaml, Freezed models, Riverpod providers, screen widgets, GoRouter config, widget tests, Firebase integration, repository patterns):
 
-Read `/Users/kumaraniyyasamysrinivasan/mydrive/personal/claude-code-onboarding/.claude/skills/flutter-mobile/reference/flutter-templates.md`
+Read `reference/flutter-templates.md`

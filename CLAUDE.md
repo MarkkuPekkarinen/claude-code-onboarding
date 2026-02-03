@@ -105,7 +105,7 @@ docker-compose down                  # Stop all services
 ## Git Workflow
 - Branch naming: `feature/<ticket>-<description>`, `bugfix/<ticket>-<description>`
 - Commit messages: conventional commits (`feat:`, `fix:`, `docs:`, `refactor:`)
-- Always create PR — no direct push to `main`
+- Always create PR — no direct push to `develop`
 - Squash merge to keep history clean
 
 ## Important Rules

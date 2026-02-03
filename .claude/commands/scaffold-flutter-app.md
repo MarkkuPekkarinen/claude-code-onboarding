@@ -1,6 +1,7 @@
 ---
 description: Scaffold a new Flutter app with Riverpod, clean architecture, GoRouter, and Firebase setup
 allowed-tools: Bash, Read, Write, Edit
+disable-model-invocation: true
 ---
 
 # Scaffold Flutter App

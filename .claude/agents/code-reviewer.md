@@ -42,6 +42,8 @@ Include specific examples of how to fix issues.
 - CSRF vulnerabilities
 - Authentication bypasses
 
+> For deep security analysis (OWASP Top 10, secrets detection, dependency CVEs, financial transaction security), delegate to the `security-reviewer` agent.
+
 ## Code Quality (HIGH)
 
 - Large functions (>50 lines)

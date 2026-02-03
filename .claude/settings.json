@@ -12,13 +12,10 @@
       "Bash(git:*)",
       "Bash(docker:*)",
       "Bash(docker-compose:*)",
-      "Bash(cat:*)",
       "Bash(ls:*)",
       "Bash(find:*)",
       "Bash(grep:*)",
       "Bash(mkdir:*)",
-      "Bash(cp:*)",
-      "Bash(mv:*)",
       "Bash(uv:*)",
       "Bash(pip:*)",
       "Bash(python:*)",
@@ -27,6 +24,9 @@
       "Bash(mypy:*)"
     ],
     "ask": [
+      "Bash(cat:*)",
+      "Bash(cp:*)",
+      "Bash(mv:*)",
       "Bash(curl:*)",
       "Bash(wget:*)",
       "Bash(rm:*)"

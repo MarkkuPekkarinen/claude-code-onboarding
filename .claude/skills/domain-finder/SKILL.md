@@ -1,6 +1,6 @@
 ---
 name: domain-finder
-description: Brainstorm creative domain names and check real availability using DNS/WHOIS lookups. Use when starting a new project, product, or brand and need to find a registrable domain.
+description: This skill should be used when starting a new project or brand and needing to find a registrable domain. It brainstorms creative domain names and checks real availability via DNS/WHOIS.
 allowed-tools: Bash, WebFetch, WebSearch
 ---
 

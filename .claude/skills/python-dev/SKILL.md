@@ -1,6 +1,6 @@
 ---
 name: python-dev
-description: Patterns and templates for Python 3.14 development with FastAPI, pytest, Pydantic, and modern tooling. Activate when creating Python APIs, scripts, data processing, or tests.
+description: This skill provides patterns and templates for Python 3.14 development with FastAPI and modern tooling. It should be activated when creating Python APIs, scripts, data processing pipelines, or pytest tests.
 allowed-tools: Bash, Read, Write, Edit
 globs:
   - pyproject.toml

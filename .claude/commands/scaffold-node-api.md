@@ -1,6 +1,7 @@
 ---
 description: Scaffold a new Node.js 24 / TypeScript 5.x REST API project with Express, Zod validation, and proper structure
 allowed-tools: Bash, Read, Write, Edit
+disable-model-invocation: true
 ---
 
 # Scaffold Node.js TypeScript API

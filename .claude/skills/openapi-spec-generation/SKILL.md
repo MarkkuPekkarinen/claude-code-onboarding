@@ -1,6 +1,7 @@
 ---
 name: openapi-spec-generation
-description: Generate and maintain OpenAPI 3.1 specifications from code, design-first specs, and validation patterns. Use when creating API documentation, generating SDKs, or ensuring API contract compliance.
+description: This skill should be used when creating API documentation, generating SDKs, or ensuring API contract compliance. It generates and maintains OpenAPI 3.1 specifications.
+allowed-tools: Read
 globs:
   - "**/openapi.yaml"
   - "**/openapi.yml"
