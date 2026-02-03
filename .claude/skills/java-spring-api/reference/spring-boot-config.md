@@ -78,6 +78,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/mydb
     user: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:postgres}
+    enabled: ${FLYWAY_ENABLED:false}
   webflux:
     base-path: /
 

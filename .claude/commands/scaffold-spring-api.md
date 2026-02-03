@@ -15,7 +15,7 @@ Create a new Java 21 / Spring Boot 3.5.x WebFlux project with the following:
 2. Set up package: `com.company.<projectname>`
 3. Create directory structure:
    - `controller/`, `service/`, `repository/`, `model/entity/`, `model/dto/`, `config/`, `exception/`
-4. Add `application.yml` with R2DBC + Flyway config (PostgreSQL)
+4. Add `application.yml` with R2DBC + Flyway config (PostgreSQL, Flyway disabled by default via `enabled: ${FLYWAY_ENABLED:false}`)
 5. Create a sample `HealthController` at `GET /api/v1/health`
 6. Create a sample entity, DTO (record), repository, service, and controller for a "hello world" resource
 7. Add a `GlobalExceptionHandler` with `@ControllerAdvice` returning `ProblemDetail` (RFC 9457)

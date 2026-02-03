@@ -79,9 +79,9 @@ It contains pre-configured agents, skills, slash commands, and MCP server integr
 ## Common Commands
 ```bash
 # Java / Spring Boot
-./mvnw spring-boot:run               # Run backend
-./mvnw test                          # Run tests
-./mvnw package                       # Build JAR
+mvn spring-boot:run                  # Run backend
+mvn test                             # Run tests
+mvn package                          # Build JAR
 
 # Node.js / TypeScript
 npm run dev                          # Dev server with hot reload (tsx)

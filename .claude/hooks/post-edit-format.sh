@@ -42,6 +42,6 @@ fi
 # --- Java (Spring uses Google Java Format or spotless via Maven) ---
 # Skipped: Java formatting is typically handled by Maven plugins (spotless)
 # and running the full Maven formatter on each file edit is too slow.
-# Use './mvnw spotless:apply' manually or in CI instead.
+# Use 'mvn spotless:apply' manually or in CI instead.
 
 exit 0

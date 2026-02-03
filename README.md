@@ -970,7 +970,7 @@ Your `CLAUDE.md` is the **highest-leverage file** in the entire setup — it goe
 |----------------|---------|
 | **WHAT** — your project context, tech stack, rules, project structure | "Monorepo: `apps/api` (Spring Boot), `apps/web` (Angular), `packages/shared`" |
 | **WHY** — the purpose of each part | "The `auth + gateway` service handles auth + rate-limiting for all downstream APIs" |
-| **HOW** — how to work on the project | "Use `bun` not `npm`. Run tests with `./mvnw test`. Flyway migrations live in `db/migrations/`" |
+| **HOW** — how to work on the project | "Use `bun` not `npm`. Run tests with `mvn test`. Flyway migrations live in `db/migrations/`" |
 
 #### Key Principles
 
@@ -1001,7 +1001,7 @@ E-commerce platform — Spring Boot API + Angular SPA + Flutter mobile.
 - `docs/code-conventions.md` — naming, structure, PR standards
 
 ## Universal Rules
-- All code must pass `./mvnw verify` before committing
+- All code must pass `mvn verify` before committing
 - Use conventional commits: feat|fix|docs|refactor(scope): message
 - Never commit secrets or .env files
 ```

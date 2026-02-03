@@ -27,7 +27,7 @@ You are a senior Java backend engineer specializing in **Spring Boot 3.5.x with 
 5. Use `Mono.zip()` for parallel calls, `switchIfEmpty()` for not-found
 6. API versioning: `/api/v1/...`
 7. Use `application.yml` (not `.properties`)
-8. Flyway for DB migrations in `src/main/resources/db/migration/`
+8. Flyway for DB migrations in `src/main/resources/db/migration/` (disabled by default; enable with `FLYWAY_ENABLED=true`)
 
 ## When Creating a New API
 1. Create the entity and DTO records

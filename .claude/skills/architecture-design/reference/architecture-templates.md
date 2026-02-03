@@ -112,6 +112,7 @@ services:
     environment:
       SPRING_R2DBC_URL: r2dbc:postgresql://postgres:5432/mydb
       SPRING_FLYWAY_URL: jdbc:postgresql://postgres:5432/mydb
+      FLYWAY_ENABLED: "true"
     depends_on: [postgres, redis]
 
 volumes:

@@ -29,7 +29,7 @@ curl https://start.spring.io/starter.zip \
 3. **Create files** using templates — read `reference/spring-boot-templates.md` for DTO, Entity, Repository, Service, Controller, and Test templates
 4. **Follow conventions** below for package layout and reactive rules
 5. **Write tests** with `@SpringBootTest` + `WebTestClient`
-6. **Format and check**: `./mvnw spotless:apply` or IDE formatter
+6. **Format and check**: `mvn spotless:apply` or IDE formatter
 
 ## Key Patterns
 
@@ -42,7 +42,7 @@ curl https://start.spring.io/starter.zip \
 | **Controllers** | `@RestController` + `@RequestMapping("/api/v1/...")` |
 | **Error handling** | `@ControllerAdvice` returning `ProblemDetail` (RFC 9457) |
 | **Config** | `application.yml` with `${ENV_VAR:default}` placeholders |
-| **Migrations** | Flyway in `src/main/resources/db/migration/` |
+| **Migrations** | Flyway in `src/main/resources/db/migration/` (disabled by default; enable with `FLYWAY_ENABLED=true`) |
 
 ## Package Layout
 
