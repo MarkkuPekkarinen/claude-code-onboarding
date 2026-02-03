@@ -74,6 +74,7 @@ com.company.service/
 | `reference/spring-boot-templates.md` | DTO, Entity, Repository, Service, Controller, Test, Error Handler templates |
 | `reference/spring-boot-enterprise.md` | Exception hierarchy, Security (OAuth2/JWT), Resilience4j, WebClient pool, Health indicators, Swagger |
 | `reference/spring-boot-rest-service-guide.md` | OpenAPI+DDL driven workflow, MapStruct mapping, External service clients, WireMock testing |
+| `reference/spring-boot-testing-guide.md` | BlockHound, Resilience4j testing, test data builders, Testcontainers, contract testing |
 
 ## Error Handling
 
