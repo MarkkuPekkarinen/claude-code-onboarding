@@ -2,6 +2,13 @@
 name: nodejs-typescript
 description: Patterns and templates for Node.js 24 / TypeScript 5.x development. Activate when creating Node.js services, Express/Fastify APIs, TypeScript utilities, npm packages, or tests.
 allowed-tools: Bash, Read, Write, Edit
+globs:
+  - tsconfig.json
+  - "**/tsconfig.json"
+triggers:
+  - "node api"
+  - "express route"
+  - "typescript service"
 ---
 
 # Node.js 24 + TypeScript 5.x Development Skill

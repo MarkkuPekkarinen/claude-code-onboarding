@@ -2,6 +2,13 @@
 name: changelog-generator
 description: Generate user-facing changelogs from git commit history. Parses conventional commits, categorizes changes, filters noise, and outputs polished release notes. Use when preparing releases, writing app store updates, or maintaining a CHANGELOG.md.
 allowed-tools: Bash, Read, Write, Edit
+globs:
+  - CHANGELOG.md
+  - "**/CHANGELOG.md"
+triggers:
+  - "generate changelog"
+  - "release notes"
+  - "write changelog"
 ---
 
 # Changelog Generator Skill

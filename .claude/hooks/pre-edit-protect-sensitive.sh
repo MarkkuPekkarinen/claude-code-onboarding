@@ -28,8 +28,11 @@ if echo "$file" | grep -qE '\.(pem|key|p12|pfx|jks|keystore)$'; then
 fi
 
 # --- Lock files (prevent accidental corruption) ---
-if echo "$file" | grep -qE '(package-lock\.json|pnpm-lock\.yaml|yarn\.lock|pubspec\.lock|poetry\.lock)$'; then
-  echo "BLOCKED: Cannot directly edit lock files. Use the package manager (npm install, flutter pub get, etc.) instead." >&2
+# NOTE: This hook only fires on Write/Edit tools, NOT on Bash.
+# Running package managers via Bash (npm install, flutter pub get, pip install, etc.)
+# correctly updates lock files without triggering this guard.
+if echo "$file" | grep -qE '(package-lock\.json|pnpm-lock\.yaml|yarn\.lock|pubspec\.lock|poetry\.lock|uv\.lock)$'; then
+  echo "BLOCKED: Cannot directly edit lock files via Write/Edit. Use the package manager through Bash instead (e.g., npm install, flutter pub get, pip install, uv sync)." >&2
   exit 2
 fi
 

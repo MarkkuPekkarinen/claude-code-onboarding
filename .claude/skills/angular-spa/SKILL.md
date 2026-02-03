@@ -2,6 +2,13 @@
 name: angular-spa
 description: Patterns and templates for Angular 21.x SPA development with standalone components, signals, and lazy routing. Activate when building Angular components, services, routes, or tests.
 allowed-tools: Bash, Read, Write, Edit
+globs:
+  - angular.json
+  - "**/angular.json"
+triggers:
+  - "angular component"
+  - "angular service"
+  - "angular route"
 ---
 
 # Angular 21.x SPA Development Skill

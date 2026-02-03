@@ -1,6 +1,13 @@
 ---
 name: playwright-skill
 description: Playwright browser automation. Use for website testing, UX validation, browser task automation, or responsive design.
+globs:
+  - "**/playwright.config.*"
+  - "**/e2e/**/*.spec.ts"
+triggers:
+  - "browser test"
+  - "e2e test"
+  - "playwright test"
 ---
 
 # Playwright Browser Automation

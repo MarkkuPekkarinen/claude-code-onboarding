@@ -2,6 +2,13 @@
 name: flutter-mobile
 description: Patterns and templates for Flutter 3.38 / Dart 3.11 cross-platform mobile development with Riverpod, clean architecture, and Firebase. Activate when building Flutter screens, providers, models, or tests.
 allowed-tools: Bash, Read, Write, Edit
+globs:
+  - pubspec.yaml
+  - "**/pubspec.yaml"
+triggers:
+  - "flutter screen"
+  - "flutter provider"
+  - "riverpod provider"
 ---
 
 # Flutter Mobile Development Skill
