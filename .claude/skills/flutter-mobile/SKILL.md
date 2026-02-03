@@ -44,6 +44,43 @@ dart run build_runner build --delete-conflicting-outputs
 | Firebase Auth | Stream-based auth state with `authStateChanges()` |
 | Firestore snapshots | Real-time data with `.snapshots()` streams |
 
+## Modern Flutter Architecture (2025/2026)
+
+### Architecture Patterns
+- **Riverpod 3.x:** Use `@riverpod` annotations, `AsyncNotifier`, `Notifier`
+- **Sealed Classes:** Use `sealed` for state modeling (Dart 3+)
+- **Functional Error Handling:** Use `Result` types or `fpdart`
+- **Code Generation:** Use `freezed`, `riverpod_generator`, `json_serializable`
+- **Repository Pattern:** Abstract data sources behind repository interfaces
+
+### Accessibility (A11y) — MANDATORY
+- **Semantic Labels:** All interactive elements have `Semantics` or `semanticLabel`
+- **Touch Targets:** Minimum 48x48 dp for all tappable elements
+- **Color Contrast:** WCAG AA compliant (4.5:1 for text)
+- **Screen Reader Support:** Logical focus order, meaningful announcements
+- **Dynamic Text:** Support for system font scaling
+
+### Performance
+- **Efficient Queries:** Indexed Hive queries, paginated lists
+- **Image Optimization:** `cached_network_image`, proper `cacheWidth`/`cacheHeight`
+- **Animated Transitions:** `Hero`, `AnimatedSwitcher`, `PageRouteBuilder`
+- **Avoid Rebuilds:** `const` constructors, `select()` in Riverpod, `RepaintBoundary`
+
+### User Experience (UX)
+- **Haptic Feedback:** `HapticFeedback.lightImpact()` on key interactions
+- **Visual Validation:** Real-time form validation with clear indicators
+- **Smooth Animations:** 60fps, `Curves.easeOutCubic`, meaningful motion
+- **Loading States:** Skeleton loaders, shimmer effects (never empty screens)
+- **Optimistic UI:** Update UI immediately, sync in background
+
+### Premium Polish & Design
+- **Glassmorphism:** Frosted glass effects with `BackdropFilter`
+- **Premium Badges:** Visual distinction for premium features
+- **Modern Styling:** Rounded corners (16-24dp), soft shadows, gradient accents
+- **Dark/Light Themes:** Full theme support with `ThemeExtension`
+
+For detailed code templates for all patterns above, read `reference/flutter-modern-architecture.md`
+
 ## Error Handling
 
 **Build runner fails**: Delete `.dart_tool/build/`, run `flutter clean`, retry codegen
