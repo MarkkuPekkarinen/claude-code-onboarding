@@ -19,5 +19,5 @@ Design a complete database schema for the following domain:
 7. Provide Firestore security rules if applicable
 8. Summarize the design decisions
 
-Use the database-design skill for conventions and templates.
+Use the database-schema-designer skill for conventions and templates.
 Save output files to a `docs/database/` directory.

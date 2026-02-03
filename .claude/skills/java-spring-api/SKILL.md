@@ -22,127 +22,61 @@ curl https://start.spring.io/starter.zip \
   -o my-service.zip && unzip my-service.zip -d my-service
 ```
 
-## pom.xml and Configuration
+## Process
 
-Read `reference/spring-boot-config.md` for the pom.xml template and application.yml configuration.
+1. **Scaffold** using Spring Initializr or the command above
+2. **Configure** pom.xml and application.yml — read `reference/spring-boot-config.md`
+3. **Create files** using templates — read `reference/spring-boot-templates.md` for DTO, Entity, Repository, Service, Controller, and Test templates
+4. **Follow conventions** below for package layout and reactive rules
+5. **Write tests** with `@SpringBootTest` + `WebTestClient`
+6. **Format and check**: `./mvnw spotless:apply` or IDE formatter
 
-## File Templates
+## Key Patterns
 
-### DTO (record)
-```java
-public record CreateUserRequest(
-    @NotBlank String email,
-    @NotBlank @Size(max = 100) String firstName,
-    @NotBlank @Size(max = 100) String lastName
-) {}
+| Pattern | Implementation |
+|---------|---------------|
+| **DTOs** | Java records with `jakarta.validation` annotations |
+| **Entities** | Classes with `@Table`, `@Id` R2DBC annotations |
+| **Repositories** | Extend `ReactiveCrudRepository<T, UUID>` |
+| **Services** | `@Service` + `@RequiredArgsConstructor`, return `Mono`/`Flux` |
+| **Controllers** | `@RestController` + `@RequestMapping("/api/v1/...")` |
+| **Error handling** | `@ControllerAdvice` returning `ProblemDetail` (RFC 9457) |
+| **Config** | `application.yml` with `${ENV_VAR:default}` placeholders |
+| **Migrations** | Flyway in `src/main/resources/db/migration/` |
 
-public record UserResponse(
-    UUID id, String email, String firstName, String lastName, Instant createdAt
-) {}
+## Package Layout
+
+```
+com.company.service/
+├── controller/     # REST controllers
+├── service/        # Business logic
+├── repository/     # R2DBC repositories
+├── model/
+│   ├── entity/     # Database entities
+│   └── dto/        # Request/response DTOs (records)
+├── config/         # Spring config, security, CORS
+└── exception/      # Global error handling
 ```
 
-### R2DBC Entity
-```java
-@Table("users")
-public class UserEntity {
-    @Id private UUID id;
-    private String email;
-    private String firstName;
-    private String lastName;
-    private Instant createdAt;
-    private Instant updatedAt;
-    // getters, setters, builder
-}
-```
+## Reactive Rules
 
-### Repository
-```java
-public interface UserRepository extends ReactiveCrudRepository<UserEntity, UUID> {
-    Mono<UserEntity> findByEmail(String email);
-    Flux<UserEntity> findByLastName(String lastName);
-}
-```
+- NEVER call `.block()` inside a reactive chain
+- Use `Mono.zip()` for parallel calls
+- Use `switchIfEmpty()` with `Mono.error()` for not-found cases
+- Always return `Mono<ResponseEntity<T>>` or annotate with `@ResponseStatus`
+- Use `@Validated` on controller params, `jakarta.validation` on DTOs
 
-### Service
-```java
-@Service
-@RequiredArgsConstructor
-public class UserService {
-    private final UserRepository userRepository;
+## Reference Files
 
-    public Mono<UserResponse> findById(UUID id) {
-        return userRepository.findById(id)
-                .map(this::toResponse)
-                .switchIfEmpty(Mono.error(new NotFoundException("User not found")));
-    }
+| File | Content |
+|------|---------|
+| `reference/spring-boot-config.md` | pom.xml template, application.yml configuration |
+| `reference/spring-boot-templates.md` | DTO, Entity, Repository, Service, Controller, Test, Error Handler templates |
 
-    public Mono<UserResponse> create(CreateUserRequest request) {
-        var entity = new UserEntity();
-        entity.setEmail(request.email());
-        entity.setFirstName(request.firstName());
-        entity.setLastName(request.lastName());
-        entity.setCreatedAt(Instant.now());
-        entity.setUpdatedAt(Instant.now());
-        return userRepository.save(entity).map(this::toResponse);
-    }
+## Error Handling
 
-    private UserResponse toResponse(UserEntity e) {
-        return new UserResponse(e.getId(), e.getEmail(), e.getFirstName(), e.getLastName(), e.getCreatedAt());
-    }
-}
-```
+**Validation errors**: Use `jakarta.validation` annotations on DTO records. Spring auto-returns 422 with details.
 
-### Controller
-```java
-@RestController
-@RequestMapping("/api/v1/users")
-@RequiredArgsConstructor
-public class UserController {
-    private final UserService userService;
+**Not-found errors**: Use `switchIfEmpty(Mono.error(new NotFoundException(...)))` in services.
 
-    @GetMapping("/{id}")
-    public Mono<ResponseEntity<UserResponse>> getById(@PathVariable UUID id) {
-        return userService.findById(id)
-                .map(ResponseEntity::ok)
-                .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
-    }
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Mono<UserResponse> create(@Valid @RequestBody CreateUserRequest request) {
-        return userService.create(request);
-    }
-
-    @GetMapping
-    public Flux<UserResponse> getAll() {
-        return userService.findAll();
-    }
-}
-```
-
-### Test
-```java
-@SpringBootTest
-@AutoConfigureWebTestClient
-class UserControllerTest {
-
-    @Autowired WebTestClient webTestClient;
-
-    @Test
-    void createUser_shouldReturn201() {
-        var request = new CreateUserRequest("john@example.com", "John", "Doe");
-
-        webTestClient.post().uri("/api/v1/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(request)
-                .exchange()
-                .expectStatus().isCreated()
-                .expectBody()
-                .jsonPath("$.email").isEqualTo("john@example.com");
-    }
-}
-```
-
-## application.yml
-
-See `reference/spring-boot-config.md` for the application.yml template.
+**Duplicate errors**: Catch `DataIntegrityViolationException` in services and convert to `409 Conflict`.

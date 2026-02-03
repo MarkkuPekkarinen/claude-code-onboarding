@@ -1,6 +1,6 @@
 ---
 name: java-coding-standard
-description: Java coding standards for Spring Boot services: naming, immutability, Optional usage, streams, exceptions, generics, and project layout.
+description: Java coding standards for Spring Boot services. Activate when reviewing Java code, enforcing naming conventions, immutability patterns, Optional usage, stream best practices, exception handling, or project layout.
 ---
 
 # Java Coding Standards

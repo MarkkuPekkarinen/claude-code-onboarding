@@ -55,7 +55,7 @@ Include specific examples of how to fix issues.
 ## Performance (MEDIUM)
 
 - Inefficient algorithms (O(n²) when O(n log n) possible)
-- Unnecessary re-renders in React
+- Unnecessary re-renders in Angular (missing OnPush, unoptimized signals)
 - Missing memoization
 - Large bundle sizes
 - Unoptimized images

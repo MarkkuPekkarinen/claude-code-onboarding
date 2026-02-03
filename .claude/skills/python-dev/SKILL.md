@@ -25,9 +25,7 @@ pip install -e ".[dev]"
 
 ## Reference Files
 
-**Project configuration and tooling**: Read `reference/python-project-config.md` for pyproject.toml template, Docker configuration, and common commands.
-
-**Code templates**: Read `reference/fastapi-templates.md` for FastAPI app structure, Pydantic models, route handlers, SQLAlchemy models, and pytest fixtures.
+**Code templates and project config**: Read `reference/fastapi-templates.md` for FastAPI app structure, Pydantic models, route handlers, SQLAlchemy models, pytest fixtures, pyproject.toml template, Docker configuration, and common commands.
 
 ## Process
 

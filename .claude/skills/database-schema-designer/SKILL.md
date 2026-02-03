@@ -43,14 +43,14 @@ Design production-ready database schemas with best practices built-in.
 
 - Normalize to 3NF (SQL) or determine embed/reference strategy (NoSQL)
 - Define primary keys and foreign keys
-- Choose appropriate data types -- read `references/data-types-reference.md` for type guides
-- Add constraints -- read `references/constraints-and-relationships.md` for patterns
+- Choose appropriate data types -- read `reference/data-types-reference.md` for type guides
+- Add constraints -- read `reference/constraints-and-relationships.md` for patterns
 
-Read `references/normalization-guide.md` for 1NF/2NF/3NF rules and examples.
+Read `reference/normalization-guide.md` for 1NF/2NF/3NF rules and examples.
 
 ### Phase 3: Optimize
 
-- Plan indexing strategy -- read `references/indexing-strategy.md` for when to index and composite index rules
+- Plan indexing strategy -- read `reference/indexing-strategy.md` for when to index and composite index rules
 - Consider denormalization for read-heavy queries
 - Add timestamps (created_at, updated_at)
 
@@ -60,11 +60,11 @@ Read `references/normalization-guide.md` for 1NF/2NF/3NF rules and examples.
 - Ensure backward compatibility
 - Plan zero-downtime deployment
 
-Read `references/migration-patterns.md` for zero-downtime patterns and rollback strategies.
+Read `reference/migration-patterns.md` for zero-downtime patterns and rollback strategies.
 
 ### NoSQL Design
 
-For MongoDB, Firestore, and other document databases, read `references/nosql-design-patterns.md` for embedding vs referencing patterns and Firestore-specific design rules.
+For MongoDB, Firestore, and other document databases, read `reference/nosql-design-patterns.md` for embedding vs referencing patterns and Firestore-specific design rules.
 
 ## Commands
 
@@ -89,17 +89,17 @@ For MongoDB, Firestore, and other document databases, read `references/nosql-des
 
 ## Verification
 
-After designing a schema, run through `references/schema-design-checklist.md` to verify completeness.
+After designing a schema, run through `reference/schema-design-checklist.md` to verify completeness.
 
 ## Reference Files
 
 | File | Contents |
 |------|----------|
-| `references/schema-design-checklist.md` | Pre-design, table design, and deployment checklist |
-| `references/normalization-guide.md` | 1NF/2NF/3NF explanations, examples, denormalization guide |
-| `references/data-types-reference.md` | String, numeric, date/time, JSON type guides |
-| `references/indexing-strategy.md` | When to index, composite indexes, B-tree vs hash, EXPLAIN |
-| `references/constraints-and-relationships.md` | PKs, FKs, CHECK, UNIQUE, relationship patterns |
-| `references/nosql-design-patterns.md` | MongoDB/Firestore embedding vs referencing |
-| `references/migration-patterns.md` | Zero-downtime migrations, rollback strategies |
+| `reference/schema-design-checklist.md` | Pre-design, table design, and deployment checklist |
+| `reference/normalization-guide.md` | 1NF/2NF/3NF explanations, examples, denormalization guide |
+| `reference/data-types-reference.md` | String, numeric, date/time, JSON type guides |
+| `reference/indexing-strategy.md` | When to index, composite indexes, B-tree vs hash, EXPLAIN |
+| `reference/constraints-and-relationships.md` | PKs, FKs, CHECK, UNIQUE, relationship patterns |
+| `reference/nosql-design-patterns.md` | MongoDB/Firestore embedding vs referencing |
+| `reference/migration-patterns.md` | Zero-downtime migrations, rollback strategies |
 | `assets/templates/migration-template.sql` | SQL migration file template |

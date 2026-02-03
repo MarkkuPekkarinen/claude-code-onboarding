@@ -91,13 +91,9 @@ Read `reference/sdk-and-cicd.md` for:
 |------|---------|------|
 | `reference/openapi-skeleton-template.md` | Minimal starter skeleton, structure overview, customization checklist | ~5KB |
 | `reference/code-first-patterns.md` | Java/Spring, Python/FastAPI, TypeScript/tsoa annotated examples | ~10KB |
-| `reference/validation-and-linting.md` | Spectral rules, Redocly config, validation commands | ~4KB |
+| `reference/validation-and-linting.md` | Spectral rules, Redocly config, validation commands, common mistakes and best practices | ~5KB |
 | `reference/sdk-and-cicd.md` | SDK generation commands, GitHub Actions workflows | ~5KB |
 | `reference/complete-api-example.md` | Full User Management API with all OpenAPI features | ~10KB |
-
-## Common Mistakes and Best Practices
-
-Read `reference/common-mistakes-and-practices.md` for common OpenAPI mistakes and best practices.
 
 ## Resources
 

@@ -11,18 +11,33 @@
       "Bash(git:*)",
       "Bash(docker:*)",
       "Bash(docker-compose:*)",
-      "Bash(curl:*)",
       "Bash(cat:*)",
       "Bash(ls:*)",
       "Bash(find:*)",
       "Bash(grep:*)",
       "Bash(mkdir:*)",
       "Bash(cp:*)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(uv:*)",
+      "Bash(pip:*)",
+      "Bash(python:*)",
+      "Bash(pytest:*)",
+      "Bash(ruff:*)",
+      "Bash(mypy:*)"
+    ],
+    "ask": [
+      "Bash(curl:*)",
+      "Bash(wget:*)",
+      "Bash(rm:*)"
     ],
     "deny": [
       "Bash(rm -rf /)",
-      "Bash(sudo:*)"
+      "Bash(rm -rf ~)",
+      "Bash(rm -rf .)",
+      "Bash(sudo:*)",
+      "Bash(chmod 777:*)",
+      "Bash(eval:*)",
+      "Bash(ssh:*)"
     ]
   },
   "hooks": {
@@ -32,17 +47,17 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/pre-bash-guard.sh",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/pre-bash-guard.sh",
             "timeout": 10
           }
         ]
       },
       {
-        "matcher": "Write|Edit|MultiEdit",
+        "matcher": "Write|Edit",
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/pre-edit-protect-sensitive.sh",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/pre-edit-protect-sensitive.sh",
             "timeout": 10
           }
         ]
@@ -50,11 +65,11 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "Write|Edit|MultiEdit",
+        "matcher": "Write|Edit",
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/post-edit-format.sh",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/post-edit-format.sh",
             "timeout": 30
           }
         ]
@@ -65,7 +80,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/stop-secret-scan.sh",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/stop-secret-scan.sh",
             "timeout": 15
           }
         ]
