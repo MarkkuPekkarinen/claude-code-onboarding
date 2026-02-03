@@ -86,14 +86,13 @@ Before generating any code, you MUST:
    ```bash
    npm install tailwindcss @tailwindcss/postcss daisyui@latest
    ```
-   Create `postcss.config.js`:
-   ```js
-   export default { plugins: { '@tailwindcss/postcss': {} } }
+   Create `.postcssrc.json` in the project root (**NOT** `postcss.config.js` — Angular's `@angular/build:application` builder only reads `.postcssrc.json`):
+   ```json
+   { "plugins": { "@tailwindcss/postcss": {} } }
    ```
-   Update `src/styles.scss` (or rename to `src/styles.css` and update `angular.json`):
+   Create `src/styles.css` (NOT `.scss` — TailwindCSS 4.x uses CSS-native directives that conflict with Sass) and update `angular.json` to reference `src/styles.css`:
    ```css
    @import "tailwindcss";
-   @import "daisyui";
 
    @theme {
      --font-sans: "Inter", "system-ui", sans-serif;
@@ -103,6 +102,7 @@ Before generating any code, you MUST:
      themes: light --default, dark --prefersdark;
    }
    ```
+   Do NOT add `@import "daisyui"` — daisyUI is loaded via the `@plugin` directive in TailwindCSS 4.x.
    Use daisyUI semantic colors only — never hardcode hex values. Use BEM naming for custom CSS classes (`.block__element--modifier`).
 
 3. **Set up folder structure** inside `src/app/`:

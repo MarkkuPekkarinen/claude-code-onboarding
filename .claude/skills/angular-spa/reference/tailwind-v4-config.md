@@ -5,9 +5,8 @@
 TailwindCSS v4 is a complete rewrite using CSS-native configuration:
 
 ```css
-/* src/styles.css */
+/* src/styles.css (NOT .scss — TailwindCSS 4.x directives conflict with Sass) */
 @import "tailwindcss";
-@import "daisyui";
 
 @theme {
   /* Typography */
@@ -31,6 +30,7 @@ TailwindCSS v4 is a complete rewrite using CSS-native configuration:
   themes: light --default, dark --prefersdark, corporate, business;
 }
 ```
+> **Note:** Do NOT add `@import "daisyui"` — daisyUI is loaded via the `@plugin` directive in TailwindCSS 4.x. The global stylesheet must be `.css` (not `.scss`) to avoid Sass intercepting CSS-native directives like `@import`, `@theme`, and `@plugin`.
 
 ## Breaking Changes from v3
 
@@ -44,11 +44,13 @@ TailwindCSS v4 is a complete rewrite using CSS-native configuration:
 
 ## PostCSS Configuration
 
-```js
-// postcss.config.js
-export default {
-  plugins: {
-    '@tailwindcss/postcss': {}
+> **CRITICAL:** Angular's `@angular/build:application` builder only reads `.postcssrc.json`. It **ignores** `postcss.config.js` / `.mjs` / `.cjs`. If you use the wrong file name, PostCSS plugins will not run and TailwindCSS utilities + daisyUI components will be missing from the output CSS.
+
+```json
+// .postcssrc.json (in project root, next to angular.json)
+{
+  "plugins": {
+    "@tailwindcss/postcss": {}
   }
 }
 ```

@@ -5,9 +5,8 @@
 ### TailwindCSS 4.x Setup
 
 ```css
-/* src/styles.css */
+/* src/styles.css (NOT .scss — TailwindCSS 4.x directives conflict with Sass) */
 @import "tailwindcss";
-@import "daisyui";
 
 @theme {
   --font-sans: "Inter", "system-ui", sans-serif;
@@ -17,6 +16,7 @@
   themes: light --default, dark --prefersdark, corporate, business;
 }
 ```
+> **Note:** Do NOT add `@import "daisyui"` — daisyUI is loaded via the `@plugin` directive in TailwindCSS 4.x.
 
 ### daisyUI v5.5.5 Modal (required pattern)
 

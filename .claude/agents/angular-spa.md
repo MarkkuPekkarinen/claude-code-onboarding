@@ -68,6 +68,8 @@ You are a senior Angular frontend engineer building **modern Angular 21.x SPAs**
 ### Styling
 - Use daisyUI semantic colors only — never hardcode hex values
 - TailwindCSS 4.x uses CSS-native config (`@theme {}` in CSS, no `tailwind.config.js`)
+- PostCSS config MUST be `.postcssrc.json` — Angular's `@angular/build:application` builder ignores `postcss.config.js`
+- Global styles MUST be `.css` (not `.scss`) — Sass intercepts TailwindCSS 4.x directives (`@import`, `@theme`, `@plugin`)
 - Mobile-first: start with base styles, add `sm:`, `md:`, `lg:` breakpoints
 - BEM naming for custom CSS classes (`.block__element--modifier`)
 

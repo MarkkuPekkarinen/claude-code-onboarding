@@ -31,6 +31,13 @@
 **Error:** Blank screen after bootstrap
 - **Fix:** Check browser console for errors. Common cause: using `provideZoneChangeDetection()` without `zone.js` installed. Remove it — Angular 21 is zoneless by default.
 
+**Error:** TailwindCSS/daisyUI styles not applied (unstyled page)
+- **Fix:** Angular's `@angular/build:application` builder only reads `.postcssrc.json` for PostCSS config. It **ignores** `postcss.config.js`. Create `.postcssrc.json` in the project root:
+  ```json
+  { "plugins": { "@tailwindcss/postcss": {} } }
+  ```
+  Also ensure global styles are in a `.css` file (not `.scss`) — Sass intercepts TailwindCSS 4.x directives. After changing the config, restart `ng serve`.
+
 ## Angular CLI Commands
 
 ```bash

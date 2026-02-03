@@ -86,6 +86,8 @@ Before generating any code, you MUST fetch the latest Angular documentation to v
 
 - **daisyUI semantic colors only** — never hardcode hex values (`bg-primary`, not `bg-[#3b82f6]`)
 - **TailwindCSS 4.x** uses CSS-native config (`@theme {}` in CSS, no `tailwind.config.js`)
+- **PostCSS config** must be `.postcssrc.json` — Angular's `@angular/build:application` builder ignores `postcss.config.js`
+- **Global styles** must be `.css` (not `.scss`) — Sass intercepts TailwindCSS 4.x directives (`@import`, `@theme`, `@plugin`)
 - **Mobile-first** — start with base styles, add `sm:`, `md:`, `lg:` breakpoints
 - **Spacing**: 4px base unit (4, 8, 12, 16, 24, 32, 48, 64)
 - **BEM Naming** for custom CSS: `.block__element--modifier`
