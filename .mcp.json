@@ -2,6 +2,7 @@
   "mcpServers": {
     "github": {
       "type": "http",
+      "disabled": false,
       "url": "https://api.githubcopilot.com/mcp/",
       "headers": {
         "Authorization": "Bearer ${GITHUB_PERSONAL_ACCESS_TOKEN}"
@@ -11,6 +12,7 @@
     },
     "angular-cli": {
       "type": "stdio",
+      "disabled": false,
       "command": "npx",
       "args": [
         "-y",
@@ -21,6 +23,7 @@
     },
     "chrome-devtools": {
       "type": "stdio",
+      "disabled": false,
       "command": "npx",
       "args": [
         "-y",
@@ -30,6 +33,7 @@
     },
     "firebase": {
       "type": "stdio",
+      "disabled": false,
       "command": "npx",
       "args": [
         "-y",
@@ -40,6 +44,7 @@
     },
     "context7": {
       "type": "stdio",
+      "disabled": false,
       "description": "Context7 MCP pulls up-to-date, version-specific documentation and code examples straight from the source — and places them directly into your prompt.",
       "command": "npx",
       "timeout": 60000,
@@ -50,6 +55,7 @@
     },
     "sequential-thinking": {
       "type": "stdio",
+      "disabled": false,
       "command": "npx",
       "args": [
         "-y",
@@ -60,6 +66,7 @@
     },
     "dart-mcp-server": {
       "type": "stdio",
+      "disabled": false,
       "command": "dart",
       "args": [
         "mcp-server",
@@ -69,6 +76,7 @@
     },
     "filesystem": {
       "type": "stdio",
+      "disabled": false,
       "description": "Secure filesystem access for Claude Code with configurable directory permissions and file operations.",
       "command": "npx",
       "args": [
@@ -79,11 +87,13 @@
     },
     "langchain-docs": {
       "type": "http",
+      "disabled": false,
       "url": "https://docs.langchain.com/mcp",
       "timeout": 60000
     },
     "postgres": {
       "type": "stdio",
+      "disabled": false,
       "description": "PostgreSQL MCP server for schema inspection and read-only query execution.",
       "command": "npx",
       "args": [
@@ -95,6 +105,7 @@
     },
     "playwright": {
       "type": "stdio",
+      "disabled": false,
       "description": "Playwright MCP server for browser automation, E2E testing, and accessibility snapshots.",
       "command": "npx",
       "args": [
@@ -105,6 +116,7 @@
     },
     "docker": {
       "type": "stdio",
+      "disabled": false,
       "description": "Docker MCP server for container and image management.",
       "command": "npx",
       "args": [
@@ -115,6 +127,7 @@
     },
     "ios-simulator": {
       "type": "stdio",
+      "disabled": false,
       "description": "iOS Simulator MCP server for UI interaction, screenshots, and app testing on iOS simulators.",
       "command": "npx",
       "args": [
@@ -125,6 +138,7 @@
     },
     "maestro": {
       "type": "stdio",
+      "disabled": false,
       "description": "Maestro MCP server for cross-platform mobile E2E testing on iOS and Android.",
       "command": "uvx",
       "args": [
