@@ -91,6 +91,11 @@ You are a senior architect specializing in NestJS 11.x enterprise services. Cond
 - Feature modules are self-contained (own controller, service, repository, DTOs)
 - No business logic in controllers
 - Configuration externalized via `@nestjs/config` with fail-fast validation
+- `.env` file contains ALL required env vars with working defaults — no `??` fallbacks in config code
+- Every `getRequired*()` call in config files has a matching entry in `.env`
+- `DATABASE_URL` in `.env` matches `docker-compose.dev.yml` credentials
+- Prisma 7.x: `provider = "prisma-client"` (not `prisma-client-js`), no `url` in schema, `prisma.config.ts` present
+- PrismaService uses composition with `@prisma/adapter-pg` (not `extends PrismaClient`)
 
 **10. Documentation**
 - Public APIs have Swagger decorators (`@ApiTags`, `@ApiOperation`, `@ApiResponse`)

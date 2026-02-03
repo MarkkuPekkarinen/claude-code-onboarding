@@ -57,13 +57,29 @@ src/
 
 - Use decorator-based DI (`@Injectable()`, `@Module()`, `@Controller()`)
 - Module aggregation pattern: ConfigModule → CommonModule → CoreModule → FeaturesModule
-- Fail-fast configuration: app crashes at startup if env vars are missing
+- Fail-fast configuration: app crashes at startup if env vars are missing — all required values live in `.env`, never as `??` defaults in code
 - Use class-validator + class-transformer for DTO validation
-- Use Prisma Client for database access (not TypeORM or Sequelize)
+- Use Prisma 7.x Client for database access (not TypeORM or Sequelize)
 - Return structured responses via interceptors (TransformInterceptor)
 - Global exception filter produces RFC 9457 ProblemDetail responses
 - All external calls wrapped in circuit breaker pattern
 - Request context via AsyncLocalStorage for correlation ID propagation
+
+## Prisma 7.x Rules
+
+- Generator: `provider = "prisma-client"` (not `prisma-client-js`), with explicit `output` path
+- Datasource: **no `url`** in `schema.prisma` — connection URL goes in `prisma.config.ts`
+- PrismaService: Use **composition** (not inheritance) — `new PrismaClient({ adapter })` with `@prisma/adapter-pg`
+- Generated client output (e.g., `src/generated/`) must be in `.gitignore`
+- Keep `prisma.config.ts` at project root — Prisma CLI reads it for migrations
+
+## Environment File Rules
+
+- `.env` must be populated with working defaults at scaffold time so the app boots immediately
+- **Write `.env` via Bash** (not Write/Edit tools) — hooks block direct `.env` modifications
+- `DATABASE_URL` must match credentials in `docker-compose.dev.yml`
+- All `getRequired*()` env vars must have corresponding entries in `.env`
+- After scaffolding, `npm run start:dev` → Swagger UI must be accessible with zero manual config
 
 ## Reference Files
 

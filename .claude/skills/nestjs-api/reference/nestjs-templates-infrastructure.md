@@ -92,39 +92,12 @@ CMD ["node", "dist/main.js"]
 version: '3.9'
 
 services:
-  # Application
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: builder
-    container_name: my-service-dev
-    ports:
-      - "3000:3000"
-    environment:
-      NODE_ENV: development
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/myservice?schema=public
-      REDIS_URL: redis://redis:6379
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      LOG_LEVEL: debug
-    volumes:
-      - ./src:/app/src
-      - ./prisma:/app/prisma
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    command: pnpm run start:dev
-    restart: unless-stopped
-    networks:
-      - my-service-network
-
   # PostgreSQL Database
+  # NOTE: Credentials here must match DATABASE_URL in .env
+  # .env: DATABASE_URL="postgresql://postgres:postgres@localhost:5432/{project_name}?schema=public"
   postgres:
     image: postgres:17-alpine
-    container_name: my-service-postgres-dev
+    container_name: {project_name}-postgres
     ports:
       - "5432:5432"
     environment:
@@ -139,13 +112,11 @@ services:
       timeout: 5s
       retries: 5
     restart: unless-stopped
-    networks:
-      - my-service-network
 
   # Redis Cache
   redis:
     image: redis:7-alpine
-    container_name: my-service-redis-dev
+    container_name: {project_name}-redis
     ports:
       - "6379:6379"
     volumes:
@@ -156,32 +127,6 @@ services:
       timeout: 3s
       retries: 5
     restart: unless-stopped
-    networks:
-      - my-service-network
-
-  # Prisma Studio (Database GUI)
-  prisma-studio:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: builder
-    container_name: my-service-prisma-studio
-    ports:
-      - "5555:5555"
-    environment:
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/myservice?schema=public
-    volumes:
-      - ./prisma:/app/prisma
-    depends_on:
-      - postgres
-    command: pnpm prisma studio --port 5555 --browser none
-    restart: unless-stopped
-    networks:
-      - my-service-network
-
-networks:
-  my-service-network:
-    driver: bridge
 
 volumes:
   postgres-data:

@@ -29,6 +29,8 @@ Standards for readable, maintainable TypeScript code in NestJS 11.x + Fastify se
 | **Testing** | AAA pattern (Arrange-Act-Assert); one assertion focus per test |
 | **Null Handling** | Use `null` over `undefined` for explicit absence; validate with DTOs |
 | **Generics** | Explicit return types on public methods; use type inference for locals |
+| **Environment** | All required env vars in `.env` with working defaults; no `??` fallbacks in config code; `.env` written via Bash (hooks block Write/Edit) |
+| **Prisma 7.x** | `provider = "prisma-client"` with `output` path; no `url` in schema; use `prisma.config.ts`; PrismaService via composition (not inheritance) with `@prisma/adapter-pg` |
 
 ## Project Structure
 
