@@ -16,13 +16,6 @@ Systematically scan the codebase to identify technical debt through:
 2. **Dead Code** - Unused functions, widgets, providers, and files
 3. **Dependency Bloat** - Packages in pubspec.yaml not actually used
 
-## Tools
-
-- Read
-- Glob
-- Grep
-- Bash (for `dart analyze` and `flutter pub deps`)
-
 ## Analysis Methodology
 
 ### Phase 1: Project Discovery
@@ -142,5 +135,5 @@ Agent: [Executes 4-phase analysis and produces report]
 
 Pairs well with:
 - `code-reviewer` - For quality context
-- `architecture-reviewer` - For structural concerns
-- `performance-oracle` - For runtime impact assessment
+- `architect` - For structural concerns
+- `security-reviewer` - For security impact assessment

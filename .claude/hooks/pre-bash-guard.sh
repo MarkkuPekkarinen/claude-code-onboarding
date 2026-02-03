@@ -19,7 +19,7 @@ if echo "$cmd" | grep -qE 'rm\s+-rf\s+\.(\s|$)'; then
 fi
 
 # --- Dangerous git commands on main/master ---
-if echo "$cmd" | grep -qE 'git\s+push\s+--force\s+origin\s+(main|master)'; then
+if echo "$cmd" | grep -qE 'git\s+push\s+.*(--force|-f)\s.*origin\s+(main|master)|git\s+push\s+(--force|-f)\s+origin\s+(main|master)'; then
   echo "BLOCKED: Force-pushing to main/master is not allowed. Use a feature branch." >&2
   exit 2
 fi
