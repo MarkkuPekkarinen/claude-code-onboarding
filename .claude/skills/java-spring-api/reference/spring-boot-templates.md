@@ -75,10 +75,8 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<UserResponse>> getById(@PathVariable UUID id) {
-        return userService.findById(id)
-                .map(ResponseEntity::ok)
-                .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
+    public Mono<UserResponse> getById(@PathVariable UUID id) {
+        return userService.findById(id);
     }
 
     @PostMapping

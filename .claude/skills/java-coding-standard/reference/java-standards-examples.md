@@ -28,13 +28,18 @@ public class Market {
 
 ## Optional Usage
 ```java
-// Return Optional from find* methods
+// Return Optional from find* methods (blocking code)
 Optional<Market> market = marketRepository.findBySlug(slug);
 
 // Map/flatMap instead of get()
 return market
     .map(MarketResponse::from)
     .orElseThrow(() -> new EntityNotFoundException("Market not found"));
+
+// In reactive code, Mono<T> replaces Optional<T>
+return marketRepository.findBySlug(slug)
+    .map(MarketResponse::from)
+    .switchIfEmpty(Mono.error(new EntityNotFoundException("Market not found")));
 ```
 
 ## Streams Best Practices
@@ -74,14 +79,15 @@ log.error("failed_fetch_market slug={}", slug, ex);
 
 ## Project Structure (Maven/Gradle)
 ```
-src/main/java/com/example/app/
+src/main/java/com/company/<service>/
   config/
   controller/
   service/
   repository/
-  domain/
-  dto/
-  util/
+  model/
+    entity/
+    dto/
+  exception/
 src/main/resources/
   application.yml
 src/test/java/... (mirrors main)
@@ -111,4 +117,5 @@ src/test/java/... (mirrors main)
 
 - JUnit 5 + AssertJ for fluent assertions
 - Mockito for mocking; avoid partial mocks where possible
+- `WebTestClient` for reactive endpoint integration tests (`@SpringBootTest` + `@AutoConfigureWebTestClient`)
 - Favor deterministic tests; no hidden sleeps

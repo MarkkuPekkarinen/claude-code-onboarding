@@ -21,19 +21,19 @@ Standards for readable, maintainable Java (21+) code in Spring Boot Reactive Web
 |------|----------|
 | **Naming** | Classes: `PascalCase`, methods/fields: `camelCase`, constants: `UPPER_SNAKE_CASE` |
 | **Immutability** | Favor records and final fields; getters only, no setters |
-| **Optional** | Return `Optional` from `find*` methods; use `map`/`flatMap`, never `.get()` |
+| **Optional** | Return `Optional` from `find*` methods; use `map`/`flatMap`, never `.get()`. In reactive code, `Mono<T>` replaces `Optional<T>` — use `switchIfEmpty()` instead |
 | **Streams** | Short pipelines for transforms; prefer loops for complex logic |
 | **Exceptions** | Unchecked domain exceptions; avoid broad `catch (Exception)` |
 | **Generics** | No raw types; prefer bounded generics for reusable utilities |
 | **Null handling** | `@NonNull` by default; Bean Validation on inputs |
 | **Logging** | SLF4J with structured key=value pairs |
-| **Testing** | JUnit 5 + AssertJ + Mockito; deterministic, no sleeps |
+| **Testing** | JUnit 5 + AssertJ + Mockito + `WebTestClient` for reactive; deterministic, no sleeps |
 
 ## Project Structure
 
 ```
-src/main/java/com/example/app/
-  config/ → controller/ → service/ → repository/ → domain/ → dto/ → util/
+src/main/java/com/company/<service>/
+  config/ → controller/ → service/ → repository/ → model/entity/ → model/dto/ → exception/
 src/main/resources/application.yml
 src/test/java/... (mirrors main)
 ```

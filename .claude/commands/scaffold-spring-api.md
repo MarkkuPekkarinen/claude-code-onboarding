@@ -23,4 +23,4 @@ Create a new Java 21 / Spring Boot 3.5.x WebFlux project with the following:
 9. Add a `Dockerfile` and `docker-compose.yml` with PostgreSQL
 10. Print a summary of created files and next steps
 
-Use the java-spring-api skill for patterns and templates.
+Use the java-spring-api skill for patterns and templates, and the java-coding-standard skill for naming, immutability, and style rules.

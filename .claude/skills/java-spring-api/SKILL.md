@@ -81,7 +81,7 @@ com.company.service/
 
 ## Error Handling
 
-**Validation errors**: Use `jakarta.validation` annotations on DTO records. Spring auto-returns 422 with details.
+**Validation errors**: Use `jakarta.validation` annotations on DTO records. Handle via `@ControllerAdvice` returning `ProblemDetail` with `HttpStatus.BAD_REQUEST` (400).
 
 **Not-found errors**: Use `switchIfEmpty(Mono.error(new NotFoundException(...)))` in services.
 
