@@ -10,7 +10,7 @@ import { Component, ChangeDetectionStrategy, input, computed } from '@angular/co
 
 @Component({
   selector: 'app-form-field',
-  standalone: true,
+
   template: `
     <div class="form-control w-full">
       <label class="label" [for]="inputId()">
@@ -63,7 +63,7 @@ import { FormFieldComponent } from './form-field.component';
 
 @Component({
   selector: 'app-contact-form',
-  standalone: true,
+
   imports: [ReactiveFormsModule, FormFieldComponent],
   template: `
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">

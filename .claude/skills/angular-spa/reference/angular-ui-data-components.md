@@ -13,7 +13,7 @@ import {
 
 @Component({
   selector: 'app-example-card',
-  standalone: true,
+
   template: `
     <article class="card bg-base-100 shadow-xl">
       <div class="card-body">
@@ -62,7 +62,7 @@ import { Component, ChangeDetectionStrategy, input, output } from '@angular/core
 
 @Component({
   selector: 'app-empty-state',
-  standalone: true,
+
   template: `
     <div class="hero min-h-[300px] bg-base-200 rounded-box">
       <div class="hero-content text-center">
@@ -97,7 +97,7 @@ import { Component, ChangeDetectionStrategy, input } from '@angular/core';
 
 @Component({
   selector: 'app-skeleton',
-  standalone: true,
+
   template: `
     <div class="animate-pulse" role="status" aria-label="Loading content">
       @for (row of rowsArray(); track $index) {
@@ -141,7 +141,7 @@ export interface TableColumn<T> {
 
 @Component({
   selector: 'app-data-table',
-  standalone: true,
+
   imports: [EmptyStateComponent],
   template: `
     <div class="overflow-x-auto rounded-box border border-base-300">
@@ -233,7 +233,7 @@ interface NavItem { label: string; path: string; icon?: string; }
 
 @Component({
   selector: 'app-responsive-nav',
-  standalone: true,
+
   imports: [RouterLink, RouterLinkActive],
   template: `
     <div class="drawer lg:drawer-open">
@@ -296,7 +296,7 @@ import { Component, ChangeDetectionStrategy, input, signal } from '@angular/core
 
 @Component({
   selector: 'app-expandable-section',
-  standalone: true,
+
   template: `
     <div class="collapse collapse-arrow bg-base-200 rounded-box">
       <input type="checkbox" [checked]="isExpanded()" (change)="isExpanded.update(v => !v)"

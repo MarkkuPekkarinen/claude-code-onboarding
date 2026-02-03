@@ -41,7 +41,7 @@ import { ToastService } from './toast.service';
 
 @Component({
   selector: 'app-toast-container',
-  standalone: true,
+
   template: `
     <div class="toast toast-end toast-bottom z-50">
       @for (toast of toastService.toasts(); track toast.id) {
@@ -78,7 +78,7 @@ import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-theme-toggle',
-  standalone: true,
+
   template: `
     <label class="swap swap-rotate">
       <input type="checkbox" class="theme-controller" value="dark"
@@ -221,7 +221,7 @@ import { ConfirmDialogService } from './confirm-dialog.service';
 
 @Component({
   selector: 'app-confirm-dialog',
-  standalone: true,
+
   template: `
     <dialog #dialogEl class="modal" (close)="service.handleCancel()">
       <div class="modal-box">
@@ -266,7 +266,7 @@ import { Component, ChangeDetectionStrategy, input, signal, output } from '@angu
 
 @Component({
   selector: 'app-error-boundary',
-  standalone: true,
+
   template: `
     @if (hasError()) {
       <div class="alert alert-error shadow-lg">
@@ -300,7 +300,7 @@ export class ErrorBoundaryComponent {
 ```typescript
 import { Directive, ElementRef, inject, input, output, afterNextRender, OnDestroy } from '@angular/core';
 
-@Directive({ selector: '[appInfiniteScroll]', standalone: true })
+@Directive({ selector: '[appInfiniteScroll]' })
 export class InfiniteScrollDirective implements OnDestroy {
   private readonly el = inject(ElementRef);
   threshold = input<number>(100);

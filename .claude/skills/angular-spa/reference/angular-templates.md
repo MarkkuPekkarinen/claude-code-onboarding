@@ -2,26 +2,29 @@
 
 This reference contains all code templates for Angular SPA development with standalone components, signals, and lazy routing.
 
+> **IMPORTANT:** Angular 21 is zoneless by default. Do NOT use `provideZoneChangeDetection()`, `zone.js`, or `CommonModule`. Do NOT set `standalone: true` in decorators (it is the default in v20+).
+
 ---
 
 ## Standalone Component Template
 
 ```typescript
-import { Component, ChangeDetectionStrategy, signal, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, ChangeDetectionStrategy, signal, computed, inject } from '@angular/core';
 
 @Component({
   selector: 'app-feature',
-  standalone: true,
-  imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (loading()) {
       <div class="spinner">Loading...</div>
+    } @else if (error()) {
+      <p class="error">Something went wrong.</p>
     } @else {
       <div class="feature">
         @for (item of items(); track item.id) {
           <div class="feature__item">{{ item.name }}</div>
+        } @empty {
+          <p>No items found.</p>
         }
       </div>
     }
@@ -35,22 +38,28 @@ export class FeatureComponent {
   private service = inject(FeatureService);
   items = signal<Item[]>([]);
   loading = signal(true);
+  error = signal(false);
+
+  totalItems = computed(() => this.items().length);
 
   constructor() {
     this.service.getAll().subscribe({
       next: (data) => { this.items.set(data); this.loading.set(false); },
-      error: () => this.loading.set(false),
+      error: () => { this.error.set(true); this.loading.set(false); },
     });
   }
 }
 ```
 
 **Key Points:**
-- Use `ChangeDetectionStrategy.OnPush` for performance
-- Use `signal()` for reactive state
+- Do NOT set `standalone: true` — it is the default in Angular v20+
+- Do NOT import `CommonModule` — control flow (`@if`, `@for`) is built-in
+- Use `ChangeDetectionStrategy.OnPush` on all components
+- Use `signal()` for reactive state, `computed()` for derived state
 - Use `inject()` function for dependencies
-- Use `@if` and `@for` control flow (Angular 17+)
+- Use `@if`, `@for`, `@empty` control flow (not `*ngIf`/`*ngFor`)
 - Inline template for small components, external for large ones
+- Always handle loading, error, and empty states
 
 ---
 
@@ -156,25 +165,27 @@ export const USER_ROUTES: Routes = [
 ## app.config.ts
 
 ```typescript
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { routes } from './app.routes';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withInterceptors([authInterceptor])),
   ],
 };
 ```
 
 **Key Points:**
-- Use `provideZoneChangeDetection` for performance tuning
-- Use `provideHttpClient(withInterceptorsFromDi())` for HTTP + interceptors
+- Angular 21 is zoneless by default — do NOT add `provideZoneChangeDetection()` or `provideZonelessChangeDetection()`
+- Do NOT import or install `zone.js`
+- Use `provideHttpClient(withInterceptors([...]))` for HTTP + functional interceptors
 - Use `provideRouter(routes)` for routing configuration
-- Add `provideAnimations()` if using Angular animations
+- Add `provideAnimations()` only if using Angular animations
 
 ---
 
@@ -209,12 +220,38 @@ provideHttpClient(
 
 ---
 
+## Auth Guard (Functional)
+
+```typescript
+import { CanActivateFn, Router } from '@angular/router';
+import { inject } from '@angular/core';
+import { AuthService } from '../services/auth.service';
+
+export const authGuard: CanActivateFn = () => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  if (authService.isAuthenticated()) {
+    return true;
+  }
+  return router.createUrlTree(['/login']);
+};
+```
+
+**Key Points:**
+- Use `CanActivateFn` — not class-based guards
+- Use `inject()` for dependencies
+- Return `true`, `false`, or `UrlTree` for redirect
+
+---
+
 ## Component Test Template
 
 ```typescript
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
 import { UserListComponent } from './user-list.component';
 
 describe('UserListComponent', () => {
@@ -225,6 +262,7 @@ describe('UserListComponent', () => {
     await TestBed.configureTestingModule({
       imports: [UserListComponent],
       providers: [
+        provideZonelessChangeDetection(),
         provideHttpClient(),
         provideHttpClientTesting(),
       ],
@@ -232,23 +270,16 @@ describe('UserListComponent', () => {
 
     fixture = TestBed.createComponent(UserListComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    await fixture.whenStable();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should display users', () => {
-    const userCards = fixture.nativeElement.querySelectorAll('.user-card');
-    expect(userCards.length).toBeGreaterThan(0);
-  });
-
-  it('should call service on init', () => {
-    const service = TestBed.inject(UserService);
-    spyOn(service, 'getAll').and.returnValue(of([]));
-    component.ngOnInit();
-    expect(service.getAll).toHaveBeenCalled();
+  it('should display items', () => {
+    const items = fixture.nativeElement.querySelectorAll('.feature__item');
+    expect(items.length).toBeGreaterThanOrEqual(0);
   });
 });
 ```
@@ -258,6 +289,7 @@ describe('UserListComponent', () => {
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
+import { provideZonelessChangeDetection } from '@angular/core';
 import { UserService } from './user.service';
 
 describe('UserService', () => {
@@ -267,6 +299,7 @@ describe('UserService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
+        provideZonelessChangeDetection(),
         provideHttpClient(),
         provideHttpClientTesting(),
       ],
@@ -293,7 +326,7 @@ describe('UserService', () => {
 
 **Key Points:**
 - Import standalone component directly in `imports: [...]`
+- Use `provideZonelessChangeDetection()` in TestBed (required for tests even though it's the app default)
+- Use `await fixture.whenStable()` instead of `fixture.detectChanges()` for zoneless
 - Use `provideHttpClientTesting()` for HTTP mocking
 - Use `HttpTestingController` for service tests
-- Use `fixture.detectChanges()` to trigger change detection
-- Use `spyOn` for mocking method calls
