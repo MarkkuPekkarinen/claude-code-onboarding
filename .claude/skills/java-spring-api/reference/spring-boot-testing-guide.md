@@ -35,7 +35,7 @@ class OrderIntegrationTest { }
 
 ## BlockHound — Blocking Detection
 
-BlockHound detects blocking calls on reactive threads during tests. Test scope only — never deploy to production.
+BlockHound is a Java agent that detects blocking calls from non-blocking threads in reactive applications. Test scope only — never deploy to production.
 
 ### Setup
 
@@ -47,58 +47,124 @@ BlockHound detects blocking calls on reactive threads during tests. Test scope o
 </dependency>
 ```
 
+### Environment Configuration
+
+Control BlockHound activation per environment using `@ConfigurationProperties`:
+
+```java
+@Configuration
+@ConfigurationProperties(prefix = "blockhound")
+public class BlockHoundProperties {
+    private boolean enabled = false;
+
+    public boolean isEnabled() { return enabled; }
+    public void setEnabled(boolean enabled) { this.enabled = enabled; }
+}
+```
+
+```yaml
+# application.yml (base) — disabled by default
+blockhound:
+  enabled: false
+
+# application-test.yml — always enabled for tests
+blockhound:
+  enabled: true
+```
+
 ### Base Test Class
+
+All test classes should extend `BlockHoundTestBase` for automatic blocking detection.
 
 ```java
 public abstract class BlockHoundTestBase {
 
+    private static boolean blockHoundInstalled = false;
+
     @BeforeAll
-    static void installBlockHound() {
-        BlockHound.install();
+    static void setUpBlockHound() {
+        if (!blockHoundInstalled) {
+            BlockHound.builder()
+                // Load third-party BlockHound integrations via ServiceLoader
+                .with(ServiceLoader.load(BlockHoundIntegration.class).stream()
+                    .map(ServiceLoader.Provider::get)
+                    .toArray(BlockHoundIntegration[]::new))
+                // Cryptographic operations — SecureRandom uses native OS calls
+                .allowBlockingCallsInside("java.security.SecureRandom", "nextBytes")
+                // Jackson — ObjectMapper may block during stream deserialization
+                .allowBlockingCallsInside("com.fasterxml.jackson.databind.ObjectMapper", "readValue")
+                .allowBlockingCallsInside("com.fasterxml.jackson.databind.ObjectMapper", "writeValueAsString")
+                // JUnit lifecycle — test framework internals
+                .allowBlockingCallsInside("org.junit.platform.launcher.core.DefaultLauncher", "execute")
+                // Log4j2 async — blocking queues in async appenders
+                .allowBlockingCallsInside("org.apache.logging.log4j.core.async.AsyncLogger", "logMessage")
+                .install();
+            blockHoundInstalled = true;
+        }
+    }
+
+    protected static boolean isBlockHoundInstalled() {
+        return blockHoundInstalled;
     }
 }
 ```
 
-All test classes should extend `BlockHoundTestBase` for automatic blocking detection.
+Document every allowlist entry with a comment explaining why it's needed. Add project-specific entries as necessary.
 
-### What BlockHound Catches
-
-- `.block()`, `.blockFirst()`, `.blockLast()` in reactive chains
-- `Thread.sleep()` on reactive threads
-- Synchronous I/O (file reads, JDBC calls)
-- `synchronized` blocks, locks
-
-### Custom Allowlists
-
-For legitimate blocking that cannot be avoided (e.g., cryptographic operations):
+### Verification Tests
 
 ```java
-@BeforeAll
-static void installBlockHound() {
-    BlockHound.builder()
-        .allowBlockingCallsInside("java.security.SecureRandom", "nextBytes")
-        .install();
+class BlockHoundVerificationTest extends BlockHoundTestBase {
+
+    @Test
+    @DisplayName("BlockHound should be installed and active")
+    void shouldVerifyBlockHoundIsInstalled() {
+        assertThat(isBlockHoundInstalled()).isTrue();
+    }
+
+    @Test
+    @DisplayName("Should detect Thread.sleep() in reactive chain")
+    void shouldDetectThreadSleep() {
+        Mono<String> blocking = Mono.fromCallable(() -> {
+            Thread.sleep(10);
+            return "result";
+        });
+
+        StepVerifier.create(blocking)
+            .expectError(BlockingOperationError.class)
+            .verify();
+    }
+
+    @Test
+    @DisplayName("Should allow non-blocking operations")
+    void shouldAllowNonBlockingOperations() {
+        StepVerifier.create(Mono.just("result").map(String::toUpperCase))
+            .expectNext("RESULT")
+            .verifyComplete();
+    }
 }
 ```
 
-Document every allowlist entry with a comment explaining why it's needed.
+### CI/CD Integration
 
-### Verifying Detection Works
+Run tests with BlockHound enabled in the pipeline:
 
-```java
-@Test
-@DisplayName("BlockHound should detect blocking calls")
-void shouldDetectBlockingCall() {
-    Mono<String> blocking = Mono.fromCallable(() -> {
-        Thread.sleep(10);
-        return "result";
-    });
+```bash
+# Maven — activate test profile for BlockHound
+mvn clean test -Dspring.profiles.active=test
 
-    StepVerifier.create(blocking)
-        .expectError(BlockingOperationError.class)
-        .verify();
-}
+# JVM arg if needed for Java 21 bytecode instrumentation
+mvn test -DargLine="-XX:+AllowRedefinitionToAddDeleteMethods"
 ```
+
+### Troubleshooting
+
+| Issue | Symptom | Fix |
+|-------|---------|-----|
+| False positive | Blocking detected in legitimate operation | Add to allowlist with justification comment |
+| Third-party conflict | Library causes BlockHound errors | Check for library-provided `BlockHoundIntegration` via ServiceLoader, or add allowlist |
+| JVM compatibility | Instrumentation errors on startup | Add `-XX:+AllowRedefinitionToAddDeleteMethods` JVM arg |
+| Duplicate install | `BlockHound already installed` warning | Use the `blockHoundInstalled` guard in base class |
 
 ## Resilience4j Programmatic Testing
 
