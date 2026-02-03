@@ -1,5 +1,4 @@
 ---
-name: status-check
 description: Binary status report showing what works, what's broken, and what's not implemented. No percentages, no hedging.
 allowed-tools: Bash, Read, Glob, Grep
 ---

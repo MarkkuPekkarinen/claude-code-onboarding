@@ -42,10 +42,13 @@ It contains pre-configured agents, skills, slash commands, and MCP server integr
 
 ### Angular
 - Standalone components (no NgModules unless legacy)
-- Signals for state management (Angular 17+ style)
+- Signals for state management: `signal()`, `computed()`, `input()`, `output()`
+- Control flow: `@if`, `@for`, `@switch`, `@defer` — no `*ngIf`/`*ngFor`
+- `ChangeDetectionStrategy.OnPush` on all components
 - Lazy-loaded routes via `loadComponent`
 - Use `HttpClient` with RxJS operators
-- SCSS for styling, follow BEM naming
+- **TailwindCSS 4.x** + **daisyUI 5.5.5** for styling (CSS-native config, no `tailwind.config.js`)
+- Use daisyUI semantic colors only — never hardcode hex values
 - Folder structure: `features/ → shared/ → core/`
 
 ### Flutter
