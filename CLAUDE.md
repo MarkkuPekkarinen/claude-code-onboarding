@@ -6,13 +6,13 @@ It contains pre-configured agents, skills, slash commands, and MCP server integr
 
 ## Tech Stack
 - **Backend (Java)**: Java 21, Spring Boot 3.5.x (WebFlux / Reactive), REST APIs
-- **Backend (Node.js)**: Node.js 24.13, TypeScript 5.x, Express/Fastify
+- **Backend (Node.js/NestJS)**: Node.js 24.13, NestJS 11.x, Fastify, Prisma ORM, TypeScript 5.x
 - **Backend (Python)**: Python 3.14, FastAPI, Pydantic v2, SQLAlchemy async
 - **Frontend**: Angular 21.x (SPA), TypeScript 5.x, RxJS, SCSS
 - **Mobile**: Flutter 3.38 (Dart 3.11), cross-platform (iOS + Android)
 - **Database**: PostgreSQL (primary), Firebase Firestore (mobile real-time)
 - **Infrastructure**: Firebase (Auth, Firestore, Cloud Messaging), Docker
-- **Build Tools**: Maven (Java), npm (Node.js/Angular), uv/pip (Python), flutter CLI
+- **Build Tools**: Maven (Java), npm (NestJS/Angular), uv/pip (Python), flutter CLI
 
 ## Code Conventions
 
@@ -23,14 +23,6 @@ It contains pre-configured agents, skills, slash commands, and MCP server integr
 - Use `@RestController` with `@RequestMapping("/api/v1/...")`
 - DTOs as Java records, entities as classes with JPA/R2DBC annotations
 - Tests: JUnit 5 + WebTestClient for reactive endpoints
-
-### Node.js / TypeScript
-- Use **Node.js 24** with **TypeScript 5.x**, ESM (`"type": "module"`)
-- `strict: true` in tsconfig, target `ES2024`, module `NodeNext`
-- Use `zod` for runtime validation and type inference
-- Express or Fastify for REST APIs
-- Folder structure: `routes/ → services/ → models/ → middleware/`
-- Tests: Vitest + supertest
 
 ### NestJS
 - Use **NestJS 11.x** with **Fastify** adapter (not Express)
@@ -83,12 +75,14 @@ mvn spring-boot:run                  # Run backend
 mvn test                             # Run tests
 mvn package                          # Build JAR
 
-# Node.js / TypeScript
-npm run dev                          # Dev server with hot reload (tsx)
+# NestJS
+npm run start:dev                    # Dev server with hot reload
 npm run build                        # Compile TypeScript
-npm run start                        # Run compiled JS
+npm run start:prod                   # Run compiled JS
 npm test                             # Run Vitest tests
 npx tsc --noEmit                     # Type check only
+npx prisma generate                  # Generate Prisma client
+npx prisma migrate dev               # Run DB migrations
 
 # Python / FastAPI
 uvicorn src.my_service.main:app --reload  # Dev server

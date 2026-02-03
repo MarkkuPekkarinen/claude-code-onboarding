@@ -6,7 +6,7 @@ This repository is a pre-configured starter kit packed with agents, skills, slas
 
 | Layer | Technologies |
 |---|---|
-| **Backend** | Java 21, Spring Boot WebFlux 3.5.x, Python 3.12+ |
+| **Backend** | Java 21, Spring Boot WebFlux v3.5.x, Nodejs v24.13, Python v3.12+, Nestjs v11.1.x|
 | **Frontend** | Angular 21.x, TypeScript 5.x |
 | **Mobile** | Flutter 3.38, Dart 3.11 |
 | **Data & Infra** | PostgreSQL, Firebase |
@@ -54,7 +54,7 @@ Clone it, install Claude Code, and start building.
   - [11. Hands-On Exercises](#11-hands-on-exercises)
     - [Exercise 1: Scaffold a Flutter Fitness App](#exercise-1-scaffold-a-flutter-fitness-app)
     - [Exercise 2: Build a Weather REST API (Java)](#exercise-2-build-a-weather-rest-api-java)
-    - [Exercise 3: Build a Todo API (Node.js/TypeScript)](#exercise-3-build-a-todo-api-nodejstypescript)
+    - [Exercise 3: Build a Todo API (NestJS)](#exercise-3-build-a-todo-api-nestjs)
     - [Exercise 4: Build an Analytics API (Python)](#exercise-4-build-an-analytics-api-python)
     - [Exercise 5: Design a Full-Stack E-Commerce System](#exercise-5-design-a-full-stack-e-commerce-system)
     - [Exercise 6: Pull Live Docs with Context7 (MCP)](#exercise-6-pull-live-docs-with-context7-mcp)
@@ -104,8 +104,8 @@ Before you begin, make sure you have:
 
 **Optional for Quick Start (required for MCP servers):**
 
-- [Node.js v22+](https://nodejs.org/en/download)
-- [Python v3.12+](https://www.python.org/downloads/)
+- [Node.js v24+](https://nodejs.org/en/download)
+- [Python v3.13+](https://www.python.org/downloads/)
 
 ## 2. Clone This Repo
 
@@ -545,7 +545,8 @@ claude-code-onboarding/
     │
     ├── agents/                          # Specialist AI personas (invoke with @name)
     │   ├── java-spring-api.md           # Spring Boot WebFlux expert
-    │   ├── nodejs-typescript.md         # Node.js / TypeScript expert
+    │   ├── nestjs-api.md               # NestJS / Fastify / Prisma expert
+    │   ├── nestjs-reviewer.md          # NestJS code review specialist
     │   ├── python-dev.md                # Python / FastAPI expert
     │   ├── angular-spa.md               # Angular frontend expert
     │   ├── flutter-mobile.md            # Flutter mobile expert
@@ -563,7 +564,7 @@ claude-code-onboarding/
     │
     ├── commands/                         # Slash commands (triggered with /name)
     │   ├── scaffold-spring-api.md       # /scaffold-spring-api <name>
-    │   ├── scaffold-node-api.md         # /scaffold-node-api <name>
+    │   ├── scaffold-nestjs-api.md       # /scaffold-nestjs-api <name>
     │   ├── scaffold-python-api.md       # /scaffold-python-api <name>
     │   ├── scaffold-angular-app.md      # /scaffold-angular-app <name>
     │   ├── scaffold-flutter-app.md      # /scaffold-flutter-app <name>
@@ -576,7 +577,8 @@ claude-code-onboarding/
     └── skills/                           # Auto-activated domain knowledge
         ├── java-spring-api/SKILL.md     # Spring Boot patterns & templates
         ├── java-coding-standard/SKILL.md # Java coding standards & conventions
-        ├── nodejs-typescript/SKILL.md   # Node.js / TypeScript patterns & templates
+        ├── nestjs-api/SKILL.md          # NestJS patterns, templates & enterprise patterns
+        ├── nestjs-coding-standard/SKILL.md # NestJS coding standards & conventions
         ├── python-dev/SKILL.md          # Python / FastAPI patterns & templates
         ├── angular-spa/SKILL.md         # Angular patterns & templates
         ├── flutter-mobile/SKILL.md      # Flutter patterns & templates
@@ -645,15 +647,15 @@ Scaffold first, then use the `@java-spring-api` agent for domain-specific implem
 > Add integration tests for the weather endpoint
 ```
 
-### Exercise 3: Build a Todo API (Node.js/TypeScript)
+### Exercise 3: Build a Todo API (NestJS)
 
 **Components used:** Slash Command → Sub-agent
 
 ```
-> /scaffold-node-api todo-service
-> @nodejs-typescript Add a Todo model with Zod, a CRUD router, and an in-memory store
-> Add Vitest tests for create and list endpoints
-> Add a PUT endpoint to mark todos as complete
+> /scaffold-nestjs-api todo-service
+> @nestjs-api Add a Todo feature module with CRUD endpoints, Prisma model, DTO validation, and service
+> Add Vitest integration tests for create and list endpoints
+> Add a PATCH endpoint to mark todos as complete
 ```
 
 ### Exercise 4: Build an Analytics API (Python)
@@ -691,7 +693,7 @@ Append `use context7` to any prompt to fetch up-to-date, version-specific docume
 > Build an Angular component using the new Angular signals API. use context7
 > Set up Firebase App Check in Flutter. use context7
 > Create a FastAPI endpoint with async SQLAlchemy. use context7
-> Build an Express middleware with Zod request validation. use context7
+> Create a NestJS guard with JWT validation using @nestjs/passport. use context7
 ```
 
 ### Exercise 7: Design & Review Architecture
