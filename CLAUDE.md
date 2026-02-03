@@ -32,6 +32,17 @@ It contains pre-configured agents, skills, slash commands, and MCP server integr
 - Folder structure: `routes/ → services/ → models/ → middleware/`
 - Tests: Vitest + supertest
 
+### NestJS
+- Use **NestJS 11.x** with **Fastify** adapter (not Express)
+- **Prisma ORM** for database access with PostgreSQL
+- Module aggregation: `ConfigModule → CommonModule → CoreModule → FeaturesModule`
+- Fail-fast configuration: app crashes at startup if env vars are missing
+- `class-validator` + `class-transformer` for DTO validation
+- Feature-first modules: `src/features/{entity}/` with module, controller, service, dto, repository
+- Circuit breaker pattern for all external calls
+- Request context via `AsyncLocalStorage` for correlation ID propagation
+- Tests: Vitest + supertest for API integration tests
+
 ### Python
 - Use **Python 3.14** with type hints everywhere
 - **FastAPI** for REST APIs, **Pydantic v2** for validation

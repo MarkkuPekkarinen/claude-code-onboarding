@@ -1,0 +1,51 @@
+---
+name: nestjs-coding-standard
+description: This skill should be activated when reviewing NestJS/TypeScript code or enforcing coding standards in NestJS 11.x services. It covers naming conventions, TypeScript strictness, DTO patterns, module organization, and error handling.
+allowed-tools: Read
+---
+
+# NestJS + TypeScript Coding Standards
+
+Standards for readable, maintainable TypeScript code in NestJS 11.x + Fastify services.
+
+## Core Principles
+
+- Prefer clarity over cleverness
+- Immutable by default; minimize shared mutable state
+- Fail fast with meaningful exceptions
+- Consistent naming and module structure
+
+## Key Rules
+
+| Rule | Standard |
+|------|----------|
+| **Naming** | Classes: `PascalCase`, files: `kebab-case`, constants: `UPPER_SNAKE_CASE` |
+| **TypeScript Strictness** | `strict: true` always; no `any`, use `unknown` with type guards |
+| **Immutability** | `readonly` on injected dependencies; spread for updates, never mutate |
+| **Error Handling** | Custom exceptions extend `BaseException`; log + rethrow, never swallow |
+| **DTOs** | `class-validator` on every field; separate Create/Update/Response DTOs |
+| **Modules** | Feature-first modules; explicit imports/exports, no implicit dependencies |
+| **Logging** | Logger per class with structured key-value pairs; never log PII |
+| **Testing** | AAA pattern (Arrange-Act-Assert); one assertion focus per test |
+| **Null Handling** | Use `null` over `undefined` for explicit absence; validate with DTOs |
+| **Generics** | Explicit return types on public methods; use type inference for locals |
+
+## Project Structure
+
+```
+src/
+  main.ts → app.module.ts
+  config/ → common/ → core/ → features/
+    features/<entity>/
+      <entity>.module.ts
+      <entity>.controller.ts
+      <entity>.service.ts
+      dto/
+      repository/
+```
+
+## Code Examples & Detailed Patterns
+
+For naming examples, TypeScript strictness, immutability patterns, DTO validation, module organization, error handling, service patterns, controller patterns, logging, formatting, code smells, and testing expectations, Read `reference/nestjs-standards-examples.md`.
+
+**Remember**: Keep code intentional, typed, and observable. Optimize for maintainability over micro-optimizations unless proven necessary.
