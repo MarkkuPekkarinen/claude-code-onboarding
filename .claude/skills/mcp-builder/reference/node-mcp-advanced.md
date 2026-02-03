@@ -230,6 +230,88 @@ server.notification({ method: "notifications/resources/list_changed" });
 
 Use notifications sparingly -- only when server capabilities genuinely change.
 
+### Prompt Registration
+
+Expose reusable prompt templates for common workflows:
+
+```typescript
+server.registerPrompt(
+  "analyze_data",
+  {
+    title: "Data Analysis",
+    description: "Generate a structured analysis of the provided dataset",
+    argsSchema: {
+      dataset: z.string().describe("Dataset name or URI"),
+      analysisType: z.enum(["summary", "anomaly", "trend", "comparison"]),
+      timeRange: z.string().optional().describe("Time range (e.g., '7d', '30d', '1y')"),
+    },
+  },
+  async ({ dataset, analysisType, timeRange }) => ({
+    messages: [{
+      role: "user",
+      content: {
+        type: "text",
+        text: `Analyze the dataset "${dataset}" with ${analysisType} analysis${timeRange ? ` for the last ${timeRange}` : ''}.\n\nProvide:\n1. Key findings\n2. Statistical summary\n3. Recommendations\n4. Confidence level for each finding`,
+      },
+    }],
+  })
+);
+```
+
+**When to use Prompts vs Tools:**
+- **Prompts**: Reusable templates for common analysis/review workflows (user-triggered)
+- **Tools**: Operations with side effects, complex validation, or API calls (model-invoked)
+- **Resources**: Read-only data access via URI (app-controlled)
+
+### Streaming Progress (SSE)
+
+For long-running operations, emit progress updates:
+
+```typescript
+import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
+
+interface StreamingToolResponse {
+  type: 'progress' | 'partial' | 'complete' | 'error';
+  progress?: number;        // 0-100
+  partialData?: unknown;
+  finalData?: unknown;
+  error?: string;
+}
+
+// Example: Tool with progress streaming
+server.registerTool(
+  "bulk_export_data",
+  {
+    title: "Bulk Data Export",
+    description: "Export large datasets with progress updates",
+    inputSchema: {
+      query: z.string(),
+      format: z.enum(["json", "csv", "parquet"]),
+      chunkSize: z.number().default(1000),
+    },
+    annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true }
+  },
+  async ({ query, format, chunkSize }) => {
+    const totalRecords = await dataService.count(query);
+    let processed = 0;
+
+    for await (const chunk of dataService.streamQuery(query, chunkSize)) {
+      processed += chunk.length;
+      // Progress is tracked internally; final result includes summary
+    }
+
+    return {
+      content: [{ type: "text", text: JSON.stringify({
+        success: true,
+        data: { totalRecords: processed, format },
+        next_actions: ["download_export", "verify_data_integrity", "schedule_recurring_export"],
+        suggestion: `Export complete with ${processed} records. Download or verify data integrity.`,
+      })}]
+    };
+  }
+);
+```
+
 ---
 
 ## Quality Checklist
@@ -255,8 +337,21 @@ Use notifications sparingly -- only when server capabilities genuinely change.
 
 ### Advanced Features (where applicable)
 - [ ] Resources registered for appropriate data endpoints
+- [ ] Prompts registered for reusable workflow templates
 - [ ] Appropriate transport configured (stdio or streamable HTTP)
+- [ ] Streaming progress for long-running operations
 - [ ] Notifications implemented for dynamic server capabilities
+
+### Production Readiness (where applicable)
+- [ ] Agent-directive responses with `next_actions` and `suggestion` in every tool
+- [ ] Error taxonomy with `MCPErrorCode` and recovery actions
+- [ ] Resilience stack (circuit breaker, rate limiter, retry) for external API calls
+- [ ] Input sanitization and attack pattern detection
+- [ ] Audit logging with correlation IDs
+- [ ] Kubernetes health probes (liveness/readiness)
+- [ ] Graceful shutdown handling (SIGTERM/SIGINT)
+- [ ] `escalate_to_human` tool for life-safety/fraud/high-value operations
+- [ ] ≤25 intent-based tools (no endpoint-mapped CRUD explosion)
 
 ### Project Configuration
 - [ ] Package.json includes all necessary dependencies

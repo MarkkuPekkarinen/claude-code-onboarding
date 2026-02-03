@@ -13,8 +13,10 @@ Node/TypeScript-specific setup for MCP servers using the MCP TypeScript SDK. Cov
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import express from "express";
+import Fastify from "fastify";
 import { z } from "zod";
+import { Pool } from "undici";
+import pino from "pino";
 ```
 
 ### Server Initialization
@@ -89,6 +91,42 @@ The name should be:
 └── dist/                 # Built JavaScript files (entry point: dist/index.js)
 ```
 
+### Production Structure (3-Layer Architecture)
+
+For production MCP servers, use a 3-layer architecture that separates transport, protocol, and business logic:
+
+```
+{service}-mcp-server/
+├── src/
+│   ├── transport/              # Layer 1: Transport
+│   │   ├── stdio.ts            # stdio transport for local AI assistants
+│   │   ├── http.ts             # HTTP streamable transport (production)
+│   │   ├── session.ts          # Session management with UUID
+│   │   └── health.ts           # Health check endpoints
+│   ├── protocol/               # Layer 2: Protocol
+│   │   ├── mcp-server.ts       # McpServer configuration + registration
+│   │   ├── tool-registry.ts    # Centralized tool definitions
+│   │   ├── resource-registry.ts # Resource management
+│   │   ├── prompt-registry.ts  # Prompt management
+│   │   └── schemas/            # Zod schemas for all tools
+│   ├── business/               # Layer 3: Business Logic
+│   │   ├── services/           # Core business services
+│   │   ├── clients/            # External API clients (undici)
+│   │   ├── cache/              # Caching layer
+│   │   └── transformers/       # Data transformers
+│   ├── config/                 # Zod-validated config loader
+│   ├── errors/                 # Error taxonomy (MCPErrorCode)
+│   ├── types/                  # TypeScript types + branded types
+│   └── utils/                  # Logger (pino), correlation IDs
+├── docker/
+│   └── Dockerfile              # Multi-stage production build
+├── package.json
+├── tsconfig.json
+└── vitest.config.ts
+```
+
+See [production-deployment.md](production-deployment.md) for the full production structure with auth, security, observability, and K8s support.
+
 ## Package Configuration
 
 ### package.json
@@ -110,14 +148,16 @@ The name should be:
     "node": ">=18"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.6.1",
-    "axios": "^1.7.9",
-    "zod": "^3.23.8"
+    "@modelcontextprotocol/sdk": "~1.17.5",
+    "zod": "~3.25.76",
+    "undici": "~7.16.0",
+    "pino": "~9.9.4"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.2"
+    "typescript": "~5.9.2",
+    "vitest": "~3.2.4"
   }
 }
 ```
@@ -127,10 +167,10 @@ The name should be:
 ```json
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "Node16",
-    "moduleResolution": "Node16",
-    "lib": ["ES2022"],
+    "target": "ES2024",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2024"],
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,

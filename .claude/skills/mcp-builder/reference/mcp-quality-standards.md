@@ -4,10 +4,14 @@
 
 ### Authentication and Authorization
 
-**OAuth 2.1**:
-- Use secure OAuth 2.1 with certificates from recognized authorities
+**OAuth 2.1 with PKCE** (Production Auth):
+- Use OAuth 2.1 with PKCE (Proof Key for Code Exchange) — required for all clients
 - Validate access tokens before processing requests
 - Only accept tokens specifically intended for your server
+- Implement token refresh with `refresh_token` grant type
+- Use Redis-backed token storage for production (TTL-based expiry)
+- Require `code_challenge` with S256 method for all authorization requests
+- See [production-deployment.md](production-deployment.md) for full OAuth implementation
 
 **API Keys**:
 - Store API keys in environment variables, never in code
@@ -98,3 +102,58 @@ Comprehensive testing should cover:
 - Document security considerations
 - Specify required permissions and access levels
 - Document rate limits and performance characteristics
+
+---
+
+## Audit Logging Requirements
+
+Every MCP server MUST implement audit logging:
+
+- Generate a `correlation_id` for every incoming request
+- Log tool invocations with: tool name, input hash (not raw input), output status, duration
+- Include tenant context if multi-tenant (tenant_id, organization_id)
+- Track the full tool chain for multi-step operations
+- Log all security-relevant events (auth failures, attack pattern detections, escalations)
+- See [error-taxonomy.md](error-taxonomy.md) for AuditLogger implementation
+
+---
+
+## MCP Protocol Primitives
+
+MCP has THREE core primitives — implement all three:
+
+| Primitive | Purpose | Control | Registration |
+|-----------|---------|---------|-------------|
+| **Tools** | Actions with side effects | Model-invoked | `server.registerTool()` |
+| **Resources** | Read-only data access | App-controlled | `server.registerResource()` |
+| **Prompts** | Reusable templates | User-triggered | `server.registerPrompt()` |
+
+### Prompts Registration
+
+Prompts are reusable templates that users can trigger:
+
+```typescript
+server.registerPrompt(
+  "code_review",
+  {
+    title: "Code Review",
+    description: "Generate a structured code review for the given code",
+    argsSchema: {
+      code: z.string().describe("Code to review"),
+      language: z.string().describe("Programming language"),
+      focus: z.enum(["security", "performance", "readability"]).optional(),
+    },
+  },
+  async ({ code, language, focus }) => ({
+    messages: [{
+      role: "user",
+      content: {
+        type: "text",
+        text: `Review this ${language} code${focus ? ` with focus on ${focus}` : ''}:\n\n\`\`\`${language}\n${code}\n\`\`\`\n\nProvide:\n1. Summary\n2. Issues found (with severity)\n3. Suggested improvements\n4. Security considerations`,
+      },
+    }],
+  })
+);
+```
+
+Always register Prompts for common workflows that agents or users frequently need.

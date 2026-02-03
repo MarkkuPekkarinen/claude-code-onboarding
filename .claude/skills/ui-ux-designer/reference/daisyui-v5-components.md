@@ -1,5 +1,62 @@
 # daisyUI v5.5.5 Component Reference
 
+## Quick Reference
+
+### TailwindCSS 4.x Setup
+
+```css
+/* src/styles.css */
+@import "tailwindcss";
+@import "daisyui";
+
+@theme {
+  --font-sans: "Inter", "system-ui", sans-serif;
+}
+
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark, corporate, business;
+}
+```
+
+### daisyUI v5.5.5 Modal (required pattern)
+
+```html
+<dialog id="my_modal" class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">Title</h3>
+    <p class="py-4">Content</p>
+    <div class="modal-action">
+      <form method="dialog"><button class="btn">Close</button></form>
+    </div>
+  </div>
+  <form method="dialog" class="modal-backdrop"><button>close</button></form>
+</dialog>
+```
+
+### daisyUI v5.5.5 Drawer (required pattern)
+
+```html
+<div class="drawer lg:drawer-open">
+  <input id="drawer" type="checkbox" class="drawer-toggle" />
+  <div class="drawer-content"><!-- page content --></div>
+  <div class="drawer-side">
+    <label for="drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+    <ul class="menu bg-base-200 min-h-full w-80 p-4"><!-- nav items --></ul>
+  </div>
+</div>
+```
+
+### Color System Quick Reference
+
+```
+bg-base-100/200/300     — backgrounds
+bg-primary/secondary/accent — brand colors
+bg-info/success/warning/error — states
+text-base-content       — primary text
+text-base-content/60    — secondary text
+border-base-300         — default borders
+```
+
 ## Theme System
 
 ```html

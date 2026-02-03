@@ -43,63 +43,16 @@ Activate when: creating UI mockups, scaffolding Angular SPAs, building reusable 
 
 ## Key Patterns
 
-### TailwindCSS 4.x Setup
-```css
-/* src/styles.css */
-@import "tailwindcss";
-@import "daisyui";
-
-@theme {
-  --font-sans: "Inter", "system-ui", sans-serif;
-}
-
-@plugin "daisyui" {
-  themes: light --default, dark --prefersdark, corporate, business;
-}
-```
-
-### daisyUI v5.5.5 Modal (required pattern)
-```html
-<dialog id="my_modal" class="modal">
-  <div class="modal-box">
-    <h3 class="text-lg font-bold">Title</h3>
-    <p class="py-4">Content</p>
-    <div class="modal-action">
-      <form method="dialog"><button class="btn">Close</button></form>
-    </div>
-  </div>
-  <form method="dialog" class="modal-backdrop"><button>close</button></form>
-</dialog>
-```
-
-### daisyUI v5.5.5 Drawer (required pattern)
-```html
-<div class="drawer lg:drawer-open">
-  <input id="drawer" type="checkbox" class="drawer-toggle" />
-  <div class="drawer-content"><!-- page content --></div>
-  <div class="drawer-side">
-    <label for="drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-    <ul class="menu bg-base-200 min-h-full w-80 p-4"><!-- nav items --></ul>
-  </div>
-</div>
-```
-
-### Color System
-```
-bg-base-100/200/300     — backgrounds
-bg-primary/secondary/accent — brand colors
-bg-info/success/warning/error — states
-text-base-content       — primary text
-text-base-content/60    — secondary text
-border-base-300         — default borders
-```
+For TailwindCSS 4.x setup, modal, drawer, and color system patterns, Read `reference/daisyui-v5-components.md` (Quick Reference section at the top).
 
 ## Reference Files
 
 Detailed patterns are in `reference/`:
 - `tailwind-v4-config.md` — TailwindCSS 4.x setup, breaking changes from v3
-- `daisyui-v5-components.md` — Full component reference, color system, themes
-- `angular-ui-components.md` — Reusable component code (form-field, data-table, toast, theme, etc.)
+- `daisyui-v5-components.md` — Full component reference, color system, themes, quick setup patterns
+- `angular-ui-form-components.md` — Form fields and validation components
+- `angular-ui-data-components.md` — Cards, tables, skeletons, empty states, navigation
+- `angular-ui-feedback-components.md` — Toasts, dialogs, themes, error handling, utilities
 - `accessibility-checklist.md` — WCAG 2.1 AA checklist, ARIA patterns, test protocol
 - `animations.md` — Timing standards, keyframes, utility classes
 - `user-research.md` — Persona templates, journey mapping, usability testing, SUS survey

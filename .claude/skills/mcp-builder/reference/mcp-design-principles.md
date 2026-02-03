@@ -21,6 +21,17 @@
 - Return `has_more`, `next_offset`, `total_count`
 - Default to 20-50 items
 
+### Agent-Directive Responses
+- Every tool response MUST include `next_actions` (machine-readable) and `suggestion` (human-readable)
+- Use `formatAgentResponse<T>()` helper (see agent-design-patterns.md)
+- Include `context` for state chaining between tool calls
+
+### Tool Count Limits
+- IDEAL: 10-15 tools — optimal agent performance
+- ACCEPTABLE: 16-25 tools — manageable with good descriptions
+- WARNING: 26-30 tools — consider consolidation
+- CRITICAL: 31+ tools — agent decision paralysis
+
 ### Transport
 - **Streamable HTTP**: For remote servers, multi-client scenarios
 - **stdio**: For local integrations, command-line tools
@@ -59,6 +70,64 @@ The name should be general, descriptive of the service being integrated, easy to
 - Descriptions must precisely match actual functionality
 - Provide tool annotations (readOnlyHint, destructiveHint, idempotentHint, openWorldHint)
 - Keep tool operations focused and atomic
+
+### Intent-Based Tool Consolidation
+
+Consolidate CRUD operations into intent-based tools to reduce agent cognitive load:
+
+```typescript
+// WRONG: 6 separate tools (decision paralysis for agents)
+tools: ["createUser", "readUser", "updateUser", "deleteUser", "getUserById", "searchUsers"]
+
+// RIGHT: 2 intent-based tools (clear purpose)
+tools: ["manageUser", "searchUsers"]
+
+// manageUser tool definition
+{
+  name: "manageUser",
+  description: "Unified user management (create/read/update/delete)",
+  inputSchema: z.object({
+    action: z.enum(["create", "read", "update", "delete"]),
+    userId: z.string().optional(),
+    data: z.record(z.any()).optional(),
+  }),
+}
+```
+
+### escalate_to_human Tool (Mandatory)
+
+Every MCP server MUST include an `escalate_to_human` tool for:
+- Life-safety decisions
+- Fraud detection requiring human review
+- High-value operations above threshold
+- Ambiguous situations where confidence is low
+
+```typescript
+server.registerTool(
+  "escalate_to_human",
+  {
+    title: "Escalate to Human",
+    description: "Escalate to human operator for review. MUST be used for life-safety, fraud, or high-value decisions.",
+    inputSchema: {
+      reason: z.string().describe("Why human review is needed"),
+      severity: z.enum(["low", "medium", "high", "critical"]),
+      context: z.record(z.any()).describe("Relevant context for the human reviewer"),
+    },
+    annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false }
+  },
+  async ({ reason, severity, context }) => {
+    // Log escalation and notify human operator
+    return {
+      content: [{ type: "text", text: JSON.stringify({
+        success: true,
+        data: { escalation_id: generateId(), status: "pending_review" },
+        next_actions: ["check_escalation_status"],
+        suggestion: "Escalation submitted. Wait for human review before proceeding.",
+      })}]
+    };
+  }
+);
+```
 
 ---
 
