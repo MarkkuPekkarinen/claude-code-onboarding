@@ -53,17 +53,6 @@
         "@upstash/context7-mcp"
       ]
     },
-    "sequential-thinking": {
-      "type": "stdio",
-      "disabled": false,
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-sequential-thinking"
-      ],
-      "timeout": 60000,
-      "description": "Sequential thinking MCP server for step-by-step reasoning"
-    },
     "dart-mcp-server": {
       "type": "stdio",
       "disabled": false,
@@ -73,17 +62,6 @@
         "--force-roots-fallback"
       ],
       "timeout": 60000
-    },
-    "filesystem": {
-      "type": "stdio",
-      "disabled": false,
-      "description": "Secure filesystem access for Claude Code with configurable directory permissions and file operations.",
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-filesystem",
-        "."
-      ]
     },
     "langchain-docs": {
       "type": "http",
