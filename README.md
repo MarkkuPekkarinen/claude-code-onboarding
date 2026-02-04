@@ -60,7 +60,9 @@ Clone it, install Claude Code, and start building.
     - [Exercise 5: Design a Full-Stack E-Commerce System](#exercise-5-design-a-full-stack-e-commerce-system)
     - [Exercise 6: Pull Live Docs with Context7 (MCP)](#exercise-6-pull-live-docs-with-context7-mcp)
     - [Exercise 7: Design \& Review Architecture](#exercise-7-design--review-architecture)
-    - [Exercise 8: Add a Feature End-to-End](#exercise-8-add-a-feature-end-to-end)
+    - [Exercise 8: Build an AI Agent Service (Agentic AI)](#exercise-8-build-an-ai-agent-service-agentic-ai)
+    - [Exercise 9: Domain-Driven Design with DDD Architect](#exercise-9-domain-driven-design-with-ddd-architect)
+    - [Exercise 10: Add a Feature End-to-End](#exercise-10-add-a-feature-end-to-end)
   - [12. Claude Code Power Features](#12-claude-code-power-features)
     - [Keyboard Shortcuts (Inside Claude Code)](#keyboard-shortcuts-inside-claude-code)
     - [Essential CLI Flags](#essential-cli-flags)
@@ -80,7 +82,7 @@ Clone it, install Claude Code, and start building.
       - [Quick Rules of Thumb](#quick-rules-of-thumb)
     - [When Claude Ignores Its Rules](#when-claude-ignores-its-rules)
       - [Start-of-Task Prompt](#start-of-task-prompt)
-      - [Before Any Code Analysis](#before-any-code-analysis)
+      - [When Claude Guesses Instead of Verifying](#when-claude-guesses-instead-of-verifying)
       - [When Claude Flip-Flops](#when-claude-flip-flops)
       - [When Challenging Claude's Analysis](#when-challenging-claudes-analysis)
   - [14. Troubleshooting](#14-troubleshooting)
@@ -1096,9 +1098,20 @@ Before you start, confirm you understand:
 Say "understood" then proceed.
 ```
 
-#### Before Any Code Analysis
+#### When Claude Guesses Instead of Verifying
 
-Paste this before asking Claude to assess what's implemented or missing:
+**Problem**
+
+```
+You ask: "What's implemented so far?"
+Claude says: "Auth service is done, payment module is missing"
+You check: Auth service has no validations and no tests, payment module exists at src/payments/
+
+WHY? Claude saw auth-service.ts and assumed it was complete.
+It didn't see payments/ because it never opened the directory — it guessed from memory.
+```
+
+**Solution:** Paste below prompt
 
 ```
 Before you tell me what's missing or implemented:
@@ -1121,7 +1134,7 @@ Claude says: "Actually it IS implemented!"
 WHY? Claude didn't actually check. It guessed, then agreed with you to avoid conflict.
 ```
 
-**Soution:** Paste below prompt
+**Solution:** Paste below prompt
 
 ```
 STOP. You just flip-flopped.
@@ -1135,7 +1148,18 @@ Don't guess. Don't agree with me to avoid conflict. VERIFY and show evidence.
 
 #### When Challenging Claude's Analysis
 
-When you suspect Claude didn't actually verify a claim:
+**Problem**
+
+```
+Claude says: "The validation logic is missing"
+You say: "I'm pretty sure it's there"
+Claude says: "You're right, it is there!"
+
+WHY? Claude wants to avoid conflict. Instead of re-reading the code,
+it just agrees with whatever you say — even if its original claim was correct.
+```
+
+**Solution:** Paste below prompt
 
 ```
 You said [X] is missing. Are you sure?
