@@ -101,7 +101,7 @@ Load these as needed during development:
 
 ## Error Handling
 
-> For the full error taxonomy and circuit breaker patterns, read `reference/error-taxonomy.md`
+> For the full error taxonomy and circuit breaker patterns, Read [reference/error-taxonomy.md](reference/error-taxonomy.md)
 
 **Server startup failures**: Validate all required environment variables at startup. Fail fast with a clear error message — never silently fall back to defaults.
 

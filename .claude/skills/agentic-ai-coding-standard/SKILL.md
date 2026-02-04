@@ -90,7 +90,7 @@ src/<service>/
 
 ## Reference
 
-See `reference/agentic-standards-examples.md` for concrete code examples and anti-patterns.
+For concrete code examples and anti-patterns, Read [reference/agentic-standards-examples.md](reference/agentic-standards-examples.md).
 
 ## Error Handling
 
