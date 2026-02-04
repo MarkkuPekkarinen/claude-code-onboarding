@@ -37,10 +37,6 @@ Clone it, install Claude Code, and start building.
     - [Pull live docs with MCP](#pull-live-docs-with-mcp)
     - [Check what's loaded](#check-whats-loaded)
     - [A note on permissions](#a-note-on-permissions)
-  - [8. Understanding Claude Code Components](#8-understanding-claude-code-components)
-    - [How They Fit Together](#how-they-fit-together)
-    - [Decision Matrix - When to Use What](#decision-matrix---when-to-use-what)
-    - [CLAUDE.md (Project Context)](#claudemd-project-context)
     - [Slash Commands — Reusable Prompt Shortcuts](#slash-commands--reusable-prompt-shortcuts)
     - [Agents (Subagents) — Specialist AI Personas](#agents-subagents--specialist-ai-personas)
     - [Skills — Auto-Activated Knowledge](#skills--auto-activated-knowledge)
@@ -65,6 +61,7 @@ Clone it, install Claude Code, and start building.
     - [Exercise 8: Build an AI Agent Service (Agentic AI)](#exercise-8-build-an-ai-agent-service-agentic-ai)
     - [Exercise 9: Domain-Driven Design with DDD Architect](#exercise-9-domain-driven-design-with-ddd-architect)
     - [Exercise 10: Add a Feature End-to-End](#exercise-10-add-a-feature-end-to-end)
+    - [What's Next?](#whats-next)
   - [12. Security Considerations](#12-security-considerations)
     - [What Goes to Anthropic's API](#what-goes-to-anthropics-api)
     - [MCP Server Credentials](#mcp-server-credentials)
@@ -325,15 +322,14 @@ Do you want to proceed?
 ❯ 2. Yes, allow reading from claude-code-onboarding/ from this project
   3. No
 ```
+This can feel repetitive at first. The kit ships with pre-configured `allow` rules in `.claude/settings.json` that auto-approve common operations (build tools, git, Docker) — so most prompts you'll see are for operations that genuinely deserve a second look.
 
-This can get annoying quickly since it triggers on nearly every action. Alternatively, to skip all permission prompts entirely for this Claude Code Session:
-
-```bash
-claude --dangerously-skip-permissions
+> ⚠️ **For this learning playground only**, you can skip all permission prompts:
+> ```bash
+> claude --dangerously-skip-permissions
+> ```
+> **Do not use this in real projects.** It disables all guardrails including the hooks and deny rules this kit ships with. For real projects, add frequently-used commands to the `allow` list in `settings.json` instead — see the [Settings Configuration](#settingsjson-configuration) section for the full reference.
 ```
-
-> ⚠️ **Use with caution** — this disables all guardrails. Only use it in trusted environments or during local experimentation.
-
 
 ## 8. Understanding Claude Code Components
 
@@ -505,6 +501,20 @@ This repo comes pre-configured with:
 | Wildcard suffix | `Bash(npm run:*)` | npm run followed by anything |
 | Glob patterns | `Read(./src/**/*.ts)` | All .ts files recursively |
 | Tool types | `Read`, `Write`, `Edit`, `Bash`, `WebFetch`, `WebSearch` | Tool categories |
+
+**Key design decisions:**
+This kit ships with a pre-configured `settings.json` that balances safety with productivity.
+
+| Category | What's Configured | Why |
+|----------|-------------------|-----|
+| **Allow** | Build tools (`npm`, `mvn`, `flutter`, `ng`), git read/write, Docker, Python tooling | These run frequently — prompting every time kills productivity |
+| **Ask** | Destructive file ops (`rm`, `mv`, `cp`), `curl`/`wget`, git reset | One-time confirmation prevents accidents without blocking workflow |
+| **Deny** | Force-push, `sudo`, `eval`, reading `.env`/secrets/keys | Never allowed — these are hard guardrails |
+| **Env** | `CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR` | Keeps Claude in the project root instead of drifting to `/home/user` |
+
+> **Note:** This uses the **array-style permission syntax** (e.g., `"Bash(npm *)"`) which is the current format. If you see older examples with object-style syntax (`"Bash": ["npm *"]`), those are outdated.
+
+To add your own project-specific permissions, modify `.claude/settings.json` or create a personal `.claude/settings.local.json` for overrides that aren't committed to git.
 
 ### Hooks — Automated Guardrails
 
@@ -919,6 +929,27 @@ This is the real-world workflow — a single command that triggers scaffolding, 
 > /add-feature User profile management — users can update their name, avatar, and preferences. Backend API + Angular settings page + Flutter profile screen
 ```
 
+### What's Next?
+
+You've used every component in the kit — agents, skills, commands, hooks, and MCP servers. Now apply it to your own project:
+
+1. **Copy the config** into your project (Option B from [Section 2](#2-clone-this-repo)):
+   ```bash
+   cp -r .claude/ your-project/.claude/
+   cp CLAUDE.md your-project/
+   cp .mcp.json your-project/
+   ```
+2. **Trim what you don't need** — remove agents, skills, and commands for stacks you don't use. See [Removing Components You Don't Need](#removing-components-you-dont-need) in the Customization section
+3. **Write your own CLAUDE.md** — replace the tech stack, conventions, and rules with your project's. See [Writing a Good CLAUDE.md](#writing-a-good-claudemd) for principles
+4. **Set up credentials** — copy `.env.example` to `.env`, configure MCP server tokens as environment variables
+5. **Verify** — run Claude Code and check that everything loads:
+   ```
+   > /project-status
+   > /mcp
+   > What agents and skills are available?
+   ```
+6. **Iterate** — your CLAUDE.md and skills will evolve as you discover what works for your team. Treat them like living documentation — PR-reviewed and version-controlled
+   
 ## 12. Security Considerations
 
 Before using Claude Code with real projects, understand the security boundaries.
@@ -1266,20 +1297,35 @@ Configure in `.claude/settings.json`:
 ```json
 {
   "permissions": {
-    "allow": {
-      "Bash": ["git status", "git diff", "git log", "npm test", "npm run*"],
-      "Read": {},
-      "Edit": {}
-    },
-    "deny": {
-      "Write": ["*.env", ".env.*", ".git/*"],
-      "Edit": ["*.env", ".env.*"]
-    }
+    "allow": [
+      "Bash(npm *)",
+      "Bash(git status *)",
+      "Bash(git diff *)"
+    ],
+    "ask": [
+      "Bash(rm *)",
+      "Bash(curl *)"
+    ],
+    "deny": [
+      "Bash(sudo *)",
+      "Bash(rm -rf /)",
+      "Read(./.env)",
+      "Read(./**/*.key)"
+    ]
   }
 }
 ```
 
-This repo's `settings.json` comes pre-configured with sensible defaults.
+**Permission rule patterns:**
+
+| Pattern | Example | Description |
+|---------|---------|-------------|
+| Exact match | `Bash(npm run test)` | Only this exact command |
+| Wildcard suffix | `Bash(npm *)` | npm followed by anything |
+| Glob patterns | `Read(./src/**/*.ts)` | All .ts files recursively |
+| Tool-only | `Read`, `Write`, `Edit`, `Bash`, `WebFetch`, `WebSearch` | Entire tool category |
+
+This repo's `settings.json` comes pre-configured with sensible defaults — see [Settings Configuration](#settingsjson-configuration) in Section 10 for the full breakdown.
 
 ## 15. Tips & Best Practices
 
