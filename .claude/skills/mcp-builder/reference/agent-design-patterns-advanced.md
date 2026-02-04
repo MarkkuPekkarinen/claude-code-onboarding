@@ -314,12 +314,12 @@ escalate_to_human: MANDATORY for trades >$10k, margin calls, unusual volatility
 
 ```typescript
 // BAD: 6 tools for basic user operations
-server.tool("create_user", ...);
-server.tool("get_user", ...);
-server.tool("update_user", ...);
-server.tool("delete_user", ...);
-server.tool("list_users", ...);
-server.tool("search_users", ...);
+server.registerTool("create_user", ...);
+server.registerTool("get_user", ...);
+server.registerTool("update_user", ...);
+server.registerTool("delete_user", ...);
+server.registerTool("list_users", ...);
+server.registerTool("search_users", ...);
 ```
 
 **Problems:**
@@ -332,17 +332,21 @@ server.tool("search_users", ...);
 
 ```typescript
 // GOOD: 2 intent-based tools
-server.tool(
+server.registerTool(
   "manage_user",
-  "Create, update, or delete a user",
   {
-    action: z.enum(["create", "update", "delete"]).describe("The action to perform"),
-    user_id: z.string().optional().describe("Required for update/delete"),
-    user_data: z.object({
-      name: z.string().optional(),
-      email: z.string().email().optional(),
-      role: z.enum(["user", "admin"]).optional()
-    }).optional().describe("Required for create/update")
+    title: "Manage User",
+    description: "Create, update, or delete a user",
+    inputSchema: {
+      action: z.enum(["create", "update", "delete"]).describe("The action to perform"),
+      user_id: z.string().optional().describe("Required for update/delete"),
+      user_data: z.object({
+        name: z.string().optional(),
+        email: z.string().email().optional(),
+        role: z.enum(["user", "admin"]).optional()
+      }).optional().describe("Required for create/update")
+    },
+    annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: false }
   },
   async ({ action, user_id, user_data }) => {
     // Single handler with consolidated logic
@@ -357,14 +361,18 @@ server.tool(
   }
 );
 
-server.tool(
+server.registerTool(
   "query_users",
-  "Search or list users with filters",
   {
-    search_term: z.string().optional(),
-    role: z.enum(["user", "admin"]).optional(),
-    limit: z.number().default(50),
-    offset: z.number().default(0)
+    title: "Query Users",
+    description: "Search or list users with filters",
+    inputSchema: {
+      search_term: z.string().optional(),
+      role: z.enum(["user", "admin"]).optional(),
+      limit: z.number().default(50),
+      offset: z.number().default(0)
+    },
+    annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true }
   },
   async ({ search_term, role, limit, offset }) => {
     return queryUsers({ search_term, role, limit, offset });
@@ -391,7 +399,7 @@ server.tool(
 
 ## `escalate_to_human` Tool Requirement
 
-For high-risk domains, MCP servers MUST implement an `escalate_to_human` tool.
+For high-risk domains, MCP servers SHOULD implement an `escalate_to_human` tool.
 
 ### When Required
 
@@ -404,14 +412,18 @@ For high-risk domains, MCP servers MUST implement an `escalate_to_human` tool.
 ### Implementation Example
 
 ```typescript
-server.tool(
+server.registerTool(
   "escalate_to_human",
-  "Escalate decision to human operator",
   {
-    reason: z.string().describe("Why escalation is needed"),
-    context: z.record(z.unknown()).describe("Relevant context for human reviewer"),
-    urgency: z.enum(["low", "medium", "high", "critical"]),
-    suggested_action: z.string().optional()
+    title: "Escalate to Human",
+    description: "Escalate decision to human operator",
+    inputSchema: {
+      reason: z.string().describe("Why escalation is needed"),
+      context: z.record(z.unknown()).describe("Relevant context for human reviewer"),
+      urgency: z.enum(["low", "medium", "high", "critical"]),
+      suggested_action: z.string().optional()
+    },
+    annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false }
   },
   async ({ reason, context, urgency, suggested_action }) => {
     const ticket = await createEscalationTicket({
@@ -459,6 +471,6 @@ server.tool(
 
 **Next Steps:**
 1. Read `mcp-server-template.md` for modern SDK implementation examples
-2. Use `server.tool()` API (NOT deprecated `setRequestHandler`)
+2. Use `server.registerTool()` API (NOT deprecated `server.tool()` or `setRequestHandler`)
 3. Return responses in `{ content: [{ type: "text", text: JSON.stringify(...) }] }` format
 4. Test with autonomous agent workflows, not just single tool calls

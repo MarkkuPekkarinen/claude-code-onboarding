@@ -39,6 +39,70 @@
 
 ---
 
+## Primitives Decision Framework
+
+MCP has three core primitives. Choosing the right one affects agent performance:
+
+| Primitive | Controlled By | Best For | Examples |
+|-----------|---------------|----------|----------|
+| **Tools** | Model (LLM invokes) | Actions, dynamic queries, side effects | `create_issue`, `search_users`, `send_email` |
+| **Resources** | Application (context injection) | Static data, docs, configuration | `file://config.json`, `db://schema`, API docs |
+| **Prompts** | User (explicit trigger) | Workflow templates, analysis recipes | `code_review`, `summarize_data`, `debug_error` |
+
+**Decision guide:**
+- Does it *do* something or *change* state? -> **Tool**
+- Does it *provide* context the model should see? -> **Resource**
+- Is it a *reusable workflow* a user triggers? -> **Prompt**
+
+---
+
+## Intent-First Design
+
+### The 25-Tool Performance Cliff
+
+Agent performance degrades significantly beyond 25 tools. Research shows:
+- **10-15 tools**: Optimal agent decision accuracy
+- **16-25 tools**: Acceptable with clear, distinct descriptions
+- **26-30 tools**: Noticeable degradation in tool selection accuracy
+- **31+ tools**: Severe decision paralysis — agents pick wrong tools or fail to act
+
+### The 3-Step Rule
+
+If accomplishing a single user intent requires more than 3 sequential tool calls, the tool design is too granular. Consolidate related operations into higher-level intent-based tools.
+
+### 7 MCP Anti-Patterns
+
+| Anti-Pattern | What Happens | Fix |
+|---|---|---|
+| **Tool Explosion** | One tool per API endpoint (50+ tools) | Consolidate by user intent |
+| **Atomic Obsession** | Every field is a separate tool call | Bundle related operations |
+| **Developer-First Descriptions** | "Executes POST /api/v1/users" | "Create a new user account with name and email" |
+| **Missing Examples** | No usage examples in descriptions | Add 1-2 example inputs/outputs per tool |
+| **Auto-Generation Without Curation** | OpenAPI -> tools without review | Curate: merge, rename, add context |
+| **REST Trap** | CRUD maps 1:1 to tools | Design around user workflows, not endpoints |
+| **Context Window Neglect** | Tools return 50KB JSON blobs | Paginate, summarize, progressive disclosure |
+
+### Agent Stories Framework
+
+Design tools by mapping user intent:
+
+1. **Map intent**: "As an agent, I need to ___"
+2. **Consolidate by intent**: Group API calls that serve one intent into one tool
+3. **Write agent-directive responses**: Every response tells the agent what to do next
+
+### When to Split vs Combine Tools
+
+Split a tool into multiple when:
+- **Safety Boundary**: Read vs write operations need different authorization
+- **Context Boundary**: Tool would need >5 unrelated parameters
+- **Logic Boundary**: Handler exceeds ~200 lines or has completely different error paths
+
+### The "3 AM Test"
+
+Imagine an on-call engineer debugging agent behavior at 3 AM. Can they tell from the tool name and description what it does, without reading the code? If not, rename or add clarity.
+
+---
+
 ## Server Naming Conventions
 
 Follow these standardized naming patterns:
@@ -94,13 +158,20 @@ tools: ["manageUser", "searchUsers"]
 }
 ```
 
-### escalate_to_human Tool (Mandatory)
+### escalate_to_human Tool
 
-Every MCP server MUST include an `escalate_to_human` tool for:
-- Life-safety decisions
-- Fraud detection requiring human review
-- High-value operations above threshold
-- Ambiguous situations where confidence is low
+MCP servers SHOULD include an `escalate_to_human` tool for high-risk domains:
+
+**Required for:**
+- Life-safety decisions (healthcare, autonomous systems)
+- Fraud detection and account security
+- Financial operations >$1,000 (or domain-specific threshold)
+- Legal/compliance decisions
+
+**Not required for:**
+- Read-only or public-data servers (weather, documentation, search)
+- Low-risk CRUD operations with no financial or safety impact
+- Development/testing tools
 
 ```typescript
 server.registerTool(

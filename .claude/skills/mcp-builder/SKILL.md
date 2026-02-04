@@ -1,7 +1,7 @@
 ---
 name: mcp-builder
 description: This skill should be used when building MCP (Model Context Protocol) servers to integrate external APIs or services. It provides guides for Python (FastMCP) and Node/TypeScript (MCP SDK) implementations.
-allowed-tools: Read
+allowed-tools: Read, Write, Edit, Bash, Glob, Grep, WebFetch, WebSearch
 ---
 
 # MCP Server Development Guide
@@ -77,7 +77,7 @@ Load these as needed during development:
 
 | Resource | When to Load |
 |----------|-------------|
-| [MCP Design Principles](reference/mcp-design-principles.md) | Phase 1 - naming, tool design, response formats |
+| [MCP Design Principles](reference/mcp-design-principles.md) | Phase 1 - naming, tool design, response formats, intent-first design, primitives framework |
 | [MCP Quality Standards](reference/mcp-quality-standards.md) | Phase 1 - security, annotations, testing |
 | [TypeScript Setup](reference/node-mcp-setup.md) | Phase 2 - project structure, package config, build |
 | [TypeScript Patterns](reference/node-mcp-patterns.md) | Phase 2 - tools, Zod, pagination, errors |
@@ -89,9 +89,9 @@ Load these as needed during development:
 | [Evaluation Running](reference/evaluation-running.md) | Phase 4 - CLI, setup, troubleshooting |
 | [Agent Design Patterns — Core](reference/agent-design-patterns.md) | Phase 1 - patterns 1-5: directive, confidence, error, disclosure, linking |
 | [Agent Design Patterns — Advanced](reference/agent-design-patterns-advanced.md) | Phase 1/2 - patterns 6-10: idempotency, context, capability, circuit, audit + domain presets + tool design |
-| [Error Taxonomy](reference/error-taxonomy.md) | Phase 1 - error codes, branded types, audit logging |
+| [Error Taxonomy](reference/error-taxonomy.md) | Phase 1 - error codes, branded types, audit logging, recovery hints, no-fake-empty-data |
 | [Resilience Patterns](reference/resilience-patterns.md) | Phase 2 - circuit breaker, bulkhead, rate limiter, retry |
-| [Security Architecture](reference/security-architecture.md) | Phase 2 - DOMPurify, attack detection, security headers |
+| [Security Architecture](reference/security-architecture.md) | Phase 2 - input sanitization, attack detection, security headers |
 | [Observability Patterns](reference/observability-patterns.md) | Phase 2 - OpenTelemetry tracing, metrics, sampling |
 | [Production Runtime](reference/production-deployment-runtime.md) | Phase 2 - graceful shutdown, health checks, multi-tenant |
 | [Production Infrastructure](reference/production-deployment-infra.md) | Phase 2 - Docker, K8s manifests, CI/CD |

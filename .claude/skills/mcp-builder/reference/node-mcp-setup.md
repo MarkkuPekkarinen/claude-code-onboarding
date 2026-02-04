@@ -131,6 +131,8 @@ See [production-deployment.md](production-deployment.md) for the full production
 
 ### package.json
 
+Version numbers below reflect the latest at time of writing. Always check npm for the current version before starting a new project.
+
 ```json
 {
   "name": "{service}-mcp-server",
@@ -148,7 +150,7 @@ See [production-deployment.md](production-deployment.md) for the full production
     "node": ">=18"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "~1.17.5",
+    "@modelcontextprotocol/sdk": "~1.17.5", // Check latest: https://www.npmjs.com/package/@modelcontextprotocol/sdk
     "zod": "~3.25.76",
     "undici": "~7.16.0",
     "pino": "~9.9.4"

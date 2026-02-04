@@ -93,6 +93,116 @@ Comprehensive testing should cover:
 - **Performance testing**: Check behavior under load, timeouts
 - **Error handling**: Ensure proper error reporting and cleanup
 
+### Testing Patterns
+
+#### Unit Testing Tools (Vitest)
+
+Test tool handlers with mocked API clients:
+
+```typescript
+import { describe, it, expect, vi } from 'vitest';
+import { handleSearchUsers } from './tools/users.js';
+
+describe('search_users tool', () => {
+  const mockApiClient = {
+    searchUsers: vi.fn(),
+  };
+
+  it('should return formatted results for valid query', async () => {
+    mockApiClient.searchUsers.mockResolvedValue({
+      users: [{ id: 'usr_1', name: 'Alice', email: 'alice@example.com' }],
+      total: 1,
+    });
+
+    const result = await handleSearchUsers(
+      { query: 'Alice', limit: 10, offset: 0 },
+      mockApiClient
+    );
+
+    expect(result.content[0].text).toContain('Alice');
+    expect(mockApiClient.searchUsers).toHaveBeenCalledWith({
+      q: 'Alice', limit: 10, offset: 0,
+    });
+  });
+
+  it('should return error response for API failure', async () => {
+    mockApiClient.searchUsers.mockRejectedValue(new Error('Service unavailable'));
+
+    const result = await handleSearchUsers(
+      { query: 'Alice', limit: 10, offset: 0 },
+      mockApiClient
+    );
+
+    expect(result.isError).toBe(true);
+    expect(result.content[0].text).toContain('SERVICE_UNAVAILABLE');
+  });
+});
+```
+
+#### Integration Testing with MCP Inspector
+
+Use MCP Inspector to validate tool registration and end-to-end behavior:
+
+```bash
+# Build and test with MCP Inspector
+npm run build
+npx @modelcontextprotocol/inspector dist/index.js
+```
+
+Verify in Inspector:
+- All tools listed with correct names, descriptions, and schemas
+- Tool annotations (readOnlyHint, destructiveHint) are accurate
+- Input validation rejects malformed inputs with helpful errors
+- Responses include `next_actions` and `suggestion` fields
+
+#### Testing Resilience Patterns
+
+```typescript
+describe('circuit breaker', () => {
+  it('should open after threshold failures', async () => {
+    const breaker = new CircuitBreaker({ failureThreshold: 3, resetTimeout: 1000 });
+
+    // Trigger 3 failures
+    for (let i = 0; i < 3; i++) {
+      await breaker.execute(() => Promise.reject(new Error('fail'))).catch(() => {});
+    }
+
+    expect(breaker.getState()).toBe('open');
+  });
+
+  it('should transition to half-open after reset timeout', async () => {
+    const breaker = new CircuitBreaker({ failureThreshold: 1, resetTimeout: 100 });
+    await breaker.execute(() => Promise.reject(new Error('fail'))).catch(() => {});
+
+    await new Promise(resolve => setTimeout(resolve, 150));
+    expect(breaker.getState()).toBe('half-open');
+  });
+});
+```
+
+#### Testing Security Middleware
+
+```typescript
+describe('security middleware', () => {
+  it('should reject SQL injection attempts', async () => {
+    const result = await callTool('search_users', {
+      query: "admin' OR '1'='1",
+    });
+
+    expect(result.isError).toBe(true);
+    expect(result.content[0].text).toContain('attack pattern detected');
+  });
+
+  it('should sanitize XSS in string inputs', async () => {
+    const result = await callTool('create_note', {
+      title: '<script>alert("xss")</script>My Note',
+    });
+
+    expect(result.content[0].text).not.toContain('<script>');
+  });
+});
+```
+
 ---
 
 ## Documentation Requirements

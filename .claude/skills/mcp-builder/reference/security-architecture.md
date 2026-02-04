@@ -7,7 +7,7 @@ External Request
     ↓
 Security Headers
     ↓
-Input Sanitization (DOMPurify)
+Input Sanitization (Schema Validation)
     ↓
 Attack Pattern Detection
     ↓
@@ -138,15 +138,15 @@ export class SecurityManager {
         /c:\\windows/i,
       ] : []),
 
-      // Command Injection patterns
+      // Command Injection patterns (context-aware to reduce false positives on "Q&A", "$100", etc.)
       ...(this.config.commandInjectionDetection ? [
-        /[|&;`$()]/,
-        /\$\{.*\}/,
-        /\$\(.*\)/,
-        /&&/,
-        /\|\|/,
-        />\s*&/,
-        /<\s*&/,
+        /;\s*(rm|cat|ls|wget|curl|bash|sh|python|node)\b/i,
+        /\|\s*(bash|sh|nc|netcat)\b/i,
+        /`[^`]+`/,
+        /\$\([^)]+\)/,
+        /\$\{[^}]+\}/,
+        /&&\s*(rm|cat|ls|wget|curl|bash|sh|python|node)\b/i,
+        /\|\|\s*(rm|cat|ls|wget|curl|bash|sh|python|node)\b/i,
       ] : []),
     ];
 
@@ -290,96 +290,80 @@ export class SecureMCPServer {
 ### HTTP Response Headers
 
 ```typescript
-import express from 'express';
+import Fastify from 'fastify';
 import { SecurityManager, DEFAULT_SECURITY_CONFIG } from './security-manager.js';
 
-const app = express();
+const app = Fastify({ logger: true });
 const securityManager = new SecurityManager(DEFAULT_SECURITY_CONFIG);
 
 // Apply security headers to all responses
-app.use((req, res, next) => {
+app.addHook('onSend', async (request, reply) => {
   const headers = securityManager.getSecurityHeaders();
-  Object.entries(headers).forEach(([key, value]) => {
-    res.setHeader(key, value);
-  });
-  next();
+  for (const [key, value] of Object.entries(headers)) {
+    reply.header(key, value);
+  }
 });
 ```
 
 ### Complete Integration Example
 
 ```typescript
-import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { SecurityManager, DEFAULT_SECURITY_CONFIG } from './security-manager.js';
+import { z } from 'zod';
 
 export class ProductionMCPServer {
-  private server: Server;
+  private server: McpServer;
   private securityManager: SecurityManager;
 
   constructor() {
-    this.server = new Server(
-      { name: 'secure-mcp-server', version: '1.0.0' },
-      { capabilities: { tools: {} } }
-    );
-
+    this.server = new McpServer({ name: 'secure-mcp-server', version: '1.0.0' });
     this.securityManager = new SecurityManager(DEFAULT_SECURITY_CONFIG);
     this.setupSecureTools();
   }
 
-  private setupSecureTools() {
-    this.server.setRequestHandler('tools/list', async () => ({
-      tools: [
-        {
-          name: 'example_tool',
-          description: 'Example secure tool',
-          inputSchema: {
-            type: 'object',
-            properties: {
-              query: { type: 'string' },
-            },
+  /**
+   * Wrap a tool handler with security validation and sanitization
+   */
+  private secureHandler<T>(handler: (args: T) => Promise<any>) {
+    return async (args: T) => {
+      // Security layer: validate and sanitize
+      const sanitizedArgs = this.securityManager.validateInput(args);
+
+      // Execute tool with sanitized arguments
+      const result = await handler(sanitizedArgs);
+
+      // Sanitize output
+      const sanitizedResult = this.securityManager.sanitizeInput(result);
+
+      return {
+        content: [
+          {
+            type: 'text' as const,
+            text: JSON.stringify(sanitizedResult),
           },
-        },
-      ],
-    }));
-
-    this.server.setRequestHandler('tools/call', async (request) => {
-      const { name, arguments: args } = request.params;
-
-      try {
-        // Security layer: validate and sanitize
-        const sanitizedArgs = this.securityManager.validateInput(args);
-
-        // Execute tool
-        const result = await this.executeTool(name, sanitizedArgs);
-
-        // Sanitize output
-        const sanitizedResult = this.securityManager.sanitizeInput(result);
-
-        return {
-          content: [
-            {
-              type: 'text',
-              text: JSON.stringify(sanitizedResult),
-            },
-          ],
-        };
-      } catch (error) {
-        // Audit log security failures
-        console.error('[SECURITY]', {
-          tool: name,
-          error: error.message,
-          timestamp: new Date().toISOString(),
-        });
-
-        throw error;
-      }
-    });
+        ],
+      };
+    };
   }
 
-  private async executeTool(name: string, args: any): Promise<any> {
-    // Tool implementation here
-    return { status: 'success' };
+  private setupSecureTools() {
+    this.server.registerTool(
+      'example_tool',
+      {
+        title: 'Example Secure Tool',
+        description: 'Example secure tool with input sanitization',
+        inputSchema: {
+          query: z.string().describe('Search query'),
+        },
+        annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
+      },
+      this.secureHandler(async ({ query }) => {
+        // Tool implementation here
+        return { status: 'success', query };
+      })
+    );
   }
 
   async start() {
@@ -440,7 +424,13 @@ describe('SecurityManager', () => {
   it('should detect command injection patterns', () => {
     expect(manager.containsAttackPatterns("file.txt; rm -rf /")).toBe(true);
     expect(manager.containsAttackPatterns("$(whoami)")).toBe(true);
-    expect(manager.containsAttackPatterns("file.txt | cat")).toBe(true);
+    expect(manager.containsAttackPatterns("file.txt | bash -c 'cat /etc/passwd'")).toBe(true);
+  });
+
+  it('should not flag legitimate text as command injection', () => {
+    expect(manager.containsAttackPatterns("Q&A session")).toBe(false);
+    expect(manager.containsAttackPatterns("C++ (advanced)")).toBe(false);
+    expect(manager.containsAttackPatterns("Price: $100")).toBe(false);
   });
 
   it('should sanitize HTML from strings', () => {
@@ -480,4 +470,4 @@ describe('SecurityManager', () => {
 - [ ] Rate-limit tool calls (not shown here, use library like `express-rate-limit`)
 - [ ] Implement authentication/authorization before security layer
 - [ ] Monitor logs for repeated security violations
-- [ ] Keep DOMPurify and dependencies updated
+- [ ] Keep dependencies updated (DOMPurify only needed if responses contain user-generated HTML content; for JSON-RPC, Zod/Pydantic schema validation is the primary defense)

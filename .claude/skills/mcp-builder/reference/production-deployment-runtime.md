@@ -6,7 +6,7 @@ Graceful shutdown, health checks, and multi-tenant context management for produc
 
 ```typescript
 // src/lifecycle/graceful-shutdown.ts
-import { Server as McpServer } from '@modelcontextprotocol/sdk/server/index.js';
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { Server as HttpServer } from 'http';
 
 export class GracefulShutdown {

@@ -11,7 +11,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
-import express from "express";
+import Fastify from "fastify";
 import { z } from "zod";
 import axios, { AxiosError } from "axios";
 
@@ -123,18 +123,21 @@ async function runHTTP() {
     console.error("ERROR: EXAMPLE_API_KEY environment variable is required");
     process.exit(1);
   }
-  const app = express();
-  app.use(express.json());
-  app.post('/mcp', async (req, res) => {
+  const app = Fastify({ logger: true });
+  app.addContentTypeParser('application/json', { parseAs: 'string' }, (req, body, done) => {
+    try { done(null, JSON.parse(body as string)); } catch (e) { done(e as Error); }
+  });
+  app.post('/mcp', async (req, reply) => {
     const transport = new StreamableHTTPServerTransport({
       sessionIdGenerator: undefined, enableJsonResponse: true
     });
-    res.on('close', () => transport.close());
+    reply.raw.on('close', () => transport.close());
     await server.connect(transport);
-    await transport.handleRequest(req, res, req.body);
+    await transport.handleRequest(req.raw, reply.raw, req.body);
   });
   const port = parseInt(process.env.PORT || '3000');
-  app.listen(port, () => console.error(`MCP server running on http://localhost:${port}/mcp`));
+  await app.listen({ port, host: '0.0.0.0' });
+  console.error(`MCP server running on http://localhost:${port}/mcp`);
 }
 
 const transport = process.env.TRANSPORT || 'stdio';
@@ -194,19 +197,18 @@ server.registerResourceList(async () => {
 
 ```typescript
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
-import express from "express";
+import Fastify from "fastify";
 
-const app = express();
-app.use(express.json());
-app.post('/mcp', async (req, res) => {
+const app = Fastify({ logger: true });
+app.post('/mcp', async (req, reply) => {
   const transport = new StreamableHTTPServerTransport({
     sessionIdGenerator: undefined, enableJsonResponse: true
   });
-  res.on('close', () => transport.close());
+  reply.raw.on('close', () => transport.close());
   await server.connect(transport);
-  await transport.handleRequest(req, res, req.body);
+  await transport.handleRequest(req.raw, reply.raw, req.body);
 });
-app.listen(3000);
+await app.listen({ port: 3000 });
 ```
 
 #### stdio (For Local Integrations)
@@ -263,13 +265,11 @@ server.registerPrompt(
 - **Tools**: Operations with side effects, complex validation, or API calls (model-invoked)
 - **Resources**: Read-only data access via URI (app-controlled)
 
-### Streaming Progress (SSE)
+### Streaming Progress
 
-For long-running operations, emit progress updates:
+For long-running operations, emit progress updates via streamable HTTP transport (SSE transport is deprecated in favor of streamable HTTP):
 
 ```typescript
-import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
-
 interface StreamingToolResponse {
   type: 'progress' | 'partial' | 'complete' | 'error';
   progress?: number;        // 0-100

@@ -98,6 +98,77 @@ export class MCPErrorFactory {
 }
 ```
 
+### Recovery Hints
+
+Recovery hints tell the LLM *how* to recover, not just *what* went wrong. Add a `RecoveryHint` enum and `userMessage` to every error:
+
+```typescript
+export enum RecoveryHint {
+  RETRY_LATER = 'RETRY_LATER',       // Transient failure — retry after delay
+  CHECK_INPUT = 'CHECK_INPUT',       // Input was malformed — fix and retry
+  TRY_ALTERNATIVE = 'TRY_ALTERNATIVE', // Use a different tool or approach
+  REPORT_TO_USER = 'REPORT_TO_USER',  // Cannot be auto-resolved — tell the user
+}
+
+export interface MCPErrorWithRecovery extends MCPError {
+  recovery_hint: RecoveryHint;
+  userMessage: string;  // Plain language for end users (separate from technical `message`)
+}
+```
+
+**Recovery hint mapping:**
+
+| Hint | When to Use | Agent Behavior |
+|------|-------------|----------------|
+| `RETRY_LATER` | Rate limits, temporary outages, timeouts | Wait `retry_after_ms`, then retry same call |
+| `CHECK_INPUT` | Validation failures, bad formats, missing fields | Fix parameters using `corrective_params`, retry |
+| `TRY_ALTERNATIVE` | Feature not available, permission denied for this approach | Use `fallback_tool` or different strategy |
+| `REPORT_TO_USER` | Account issues, billing problems, data not found | Surface `userMessage` to the human |
+
+**Example with recovery hint:**
+
+```typescript
+MCPErrorFactory.create(
+  MCPErrorCode.RATE_LIMITED,
+  'GitHub API rate limit exceeded (5000/hour)',
+  {
+    retry_after_ms: 60000,
+    recovery_hint: RecoveryHint.RETRY_LATER,
+    userMessage: 'GitHub API rate limit reached. Will retry automatically in 1 minute.',
+  }
+);
+```
+
+### No-FAKE-EMPTY-Data Principle
+
+Never bridge a technical failure with fake or empty data. The agent (and user) must be able to distinguish between:
+
+- **"API failed, returned empty fallback"** — an error that should be surfaced
+- **"Genuinely empty result"** — the query succeeded but found nothing
+
+```typescript
+// BAD: Silent fallback hides the real error
+try {
+  return await fetchOrders(userId);
+} catch (e) {
+  return { orders: [], total: 0 };  // Looks like "no orders" but was actually a failure
+}
+
+// GOOD: Errors are errors, empty results are empty results
+try {
+  const result = await fetchOrders(userId);
+  return { orders: result.orders, total: result.total, status: 'success' };
+} catch (e) {
+  return MCPErrorFactory.create(MCPErrorCode.DEPENDENCY_FAILED, 'Order service unavailable', {
+    recovery_hint: RecoveryHint.RETRY_LATER,
+    userMessage: 'Could not load orders. The order service is temporarily unavailable.',
+    retry_after_ms: 5000,
+  });
+}
+```
+
+**Rule:** If a tool handler catches an exception, it MUST return an error response — never an empty-but-successful-looking result.
+
 ### Usage Example
 
 ```typescript
