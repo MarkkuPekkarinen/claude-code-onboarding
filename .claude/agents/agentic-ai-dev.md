@@ -1,6 +1,6 @@
 ---
 name: agentic-ai-dev
-description: Expert Agentic AI developer with Python 3.13, LangChain v1.2.x, LangGraph v1.0.x, and FastAPI 0.128.x. Use for building AI agents, RAG systems, graph workflows, tools, memory, guardrails, and tests.
+description: Expert Agentic AI developer with Python 3.13, LangChain v1.2.8, LangGraph v1.0.7, and FastAPI 0.128.x. Use for building AI agents, RAG systems, graph workflows, tools, memory, guardrails, and tests.
 model: sonnet
 tools: Bash, Read, Write, Edit, Glob, Grep
 skills:

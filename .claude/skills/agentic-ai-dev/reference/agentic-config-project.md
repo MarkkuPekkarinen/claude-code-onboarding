@@ -12,10 +12,10 @@ description = "Production AI agent service"
 requires-python = ">=3.13"
 dependencies = [
     # LangChain / LangGraph
-    "langchain-core>=1.2.0",
+    "langchain-core>=1.2.8",
     "langchain-anthropic>=1.3.0",
     "langchain-openai>=1.1.0",
-    "langgraph>=1.0.0",
+    "langgraph>=1.0.7",
     "langgraph-checkpoint-postgres>=3.0.0",
 
     # API
