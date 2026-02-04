@@ -6,7 +6,7 @@ This repository is a pre-configured starter kit packed with agents, skills, slas
 
 | Layer | Technologies |
 |---|---|
-| **Backend** | Java 21, Spring Boot WebFlux v3.5.x, Nodejs v24.13, Python v3.12+, Nestjs v11.1.x|
+| **Backend** | Java 21, Spring Boot WebFlux v3.5.x, Nodejs v24.13, Python v3.13+, Nestjs v11.1.x|
 | **Frontend** | Angular 21.x, TypeScript 5.x |
 | **Mobile** | Flutter 3.38, Dart 3.11 |
 | **Data & Infra** | PostgreSQL, Firebase |
