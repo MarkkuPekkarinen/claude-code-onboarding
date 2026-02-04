@@ -14,6 +14,48 @@ It contains pre-configured agents, skills, slash commands, and MCP server integr
 - **Infrastructure**: Firebase (Auth, Firestore, Cloud Messaging), Docker
 - **Build Tools**: Maven (Java), npm (NestJS/Angular), uv/pip (Python), flutter CLI
 
+## Pre-Task Checklist
+
+```
+1. VERIFY before claiming — read actual code, show file:line evidence
+2. No flip-flopping — verify first; don't change when pushed back
+3. Implement 100% of the plan — no skipping items
+4. Modify existing files — don't create new ones without approval
+5. No mock data, no silent errors — failures must be visible
+6. Binary status: works or broken — no "95% done"
+Say "understood" then proceed.
+```
+
+## Documentation First
+
+Consult official docs via MCP before writing ANY code.
+
+| Technology     | MCP Server        |
+|----------------|-------------------|
+| Angular        | `angular-cli`     |
+| Flutter/Dart   | `Dart MCP server` |
+| Riverpod       | `Context7`        |
+| All other libs | `Context7`        |
+
+Fallback: official docs (docs.angular.dev, api.flutter.dev, fastapi.tiangolo.com). State source used. **Zero tolerance for deprecated code.**
+
+## Core Behaviors (detail in .claude/rules/)
+
+1. **Surface Assumptions** — state assumptions before implementing; never silently fill gaps
+2. **Manage Confusion** — STOP, name it, ask, wait for resolution
+3. **Push Back** — point out problems, propose alternatives, accept overrides
+4. **Enforce Simplicity** — no premature abstraction, no features beyond scope, DRY/KISS/YAGNI/SOLID
+5. **Scope Discipline** — touch only what's asked; every changed line traces to the request
+6. **Dead Code Hygiene** — list orphaned code, ask before removing
+7. **Think Before You Code** — edge cases, off-by-one, race conditions, type mismatches, error paths
+
+## Communication
+
+- Be direct. No filler ("Certainly!", "Of course!", "Great question!")
+- Binary status: "Works" or "Doesn't work" — no hedging
+- Quantify: "adds ~200ms latency" not "might be slower"
+- When stuck or unsure, say so
+
 ## Code Conventions
 
 ### Java / Spring Boot
@@ -147,4 +189,8 @@ docker-compose down                  # Stop all services
 
 ### Documentation Freshness
 - Use `Context7` MCP or `Dart MCP server` to verify current API signatures when unsure
-- Never use deprecated methods, classes, or patterns — check docs if in doubt
+- Never use deprecated methods, classes, or patterns — check doc
+
+## Meta
+
+The human monitors you in an IDE. Minimize mistakes they need to catch. You have unlimited stamina — the human does not. Loop on hard problems, not wrong problems.
