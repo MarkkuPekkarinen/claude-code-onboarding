@@ -65,19 +65,25 @@ Clone it, install Claude Code, and start building.
     - [Exercise 8: Build an AI Agent Service (Agentic AI)](#exercise-8-build-an-ai-agent-service-agentic-ai)
     - [Exercise 9: Domain-Driven Design with DDD Architect](#exercise-9-domain-driven-design-with-ddd-architect)
     - [Exercise 10: Add a Feature End-to-End](#exercise-10-add-a-feature-end-to-end)
-  - [12. Customizing the Kit](#12-customizing-the-kit)
+  - [12. Security Considerations](#12-security-considerations)
+    - [What Goes to Anthropic's API](#what-goes-to-anthropics-api)
+    - [MCP Server Credentials](#mcp-server-credentials)
+    - [The `--dangerously-skip-permissions` Flag](#the---dangerously-skip-permissions-flag)
+    - [Pre-configured Guardrails in This Kit](#pre-configured-guardrails-in-this-kit)
+    - [Checklist Before Using Claude Code on a Real Project](#checklist-before-using-claude-code-on-a-real-project)
+  - [13. Customizing the Kit](#13-customizing-the-kit)
     - [Adding a New Agent](#adding-a-new-agent)
     - [Adding a New Slash Command](#adding-a-new-slash-command)
     - [Adding a New Skill](#adding-a-new-skill)
     - [Adding a New Hook](#adding-a-new-hook)
     - [Removing Components You Don't Need](#removing-components-you-dont-need)
     - [Version Update Guide](#version-update-guide)
-  - [12. Claude Code Power Features](#12-claude-code-power-features)
+  - [14. Claude Code Power Features](#14-claude-code-power-features)
     - [Keyboard Shortcuts (Inside Claude Code)](#keyboard-shortcuts-inside-claude-code)
     - [Essential CLI Flags](#essential-cli-flags)
     - [Core Tools](#core-tools)
     - [Permission Model](#permission-model)
-  - [13. Tips \& Best Practices](#13-tips--best-practices)
+  - [15. Tips \& Best Practices](#15-tips--best-practices)
     - [Prompting Best Practices](#prompting-best-practices)
     - [Common Pitfalls — Avoid These](#common-pitfalls--avoid-these)
     - [@ File References](#-file-references)
@@ -96,7 +102,7 @@ Clone it, install Claude Code, and start building.
       - [When Claude Guesses Instead of Verifying](#when-claude-guesses-instead-of-verifying)
       - [When Claude Flip-Flops](#when-claude-flip-flops)
       - [When Challenging Claude's Analysis](#when-challenging-claudes-analysis)
-  - [14. Troubleshooting](#14-troubleshooting)
+  - [16. Troubleshooting](#16-troubleshooting)
     - [`command not found: claude`](#command-not-found-claude)
     - ["Context too large" error](#context-too-large-error)
     - [Edit tool fails with "string not found"](#edit-tool-fails-with-string-not-found)
@@ -106,14 +112,14 @@ Clone it, install Claude Code, and start building.
     - [Permission errors](#permission-errors)
     - [Windows-Specific Setup](#windows-specific-setup)
     - [Run diagnostics](#run-diagnostics)
-  - [15. Quick Reference Card](#15-quick-reference-card)
+  - [17. Quick Reference Card](#17-quick-reference-card)
     - [Commands You'll Use Every Day](#commands-youll-use-every-day)
     - [Scaffolding](#scaffolding)
     - [Design \& Review](#design--review)
     - [Agents (use @name)](#agents-use-name)
     - [Keyboard Shortcuts](#keyboard-shortcuts)
     - [MCP Tips](#mcp-tips)
-  - [16. Resources](#16-resources)
+  - [18. Resources](#18-resources)
 
 ---
 
@@ -913,7 +919,67 @@ This is the real-world workflow — a single command that triggers scaffolding, 
 > /add-feature User profile management — users can update their name, avatar, and preferences. Backend API + Angular settings page + Flutter profile screen
 ```
 
-## 12. Customizing the Kit
+## 12. Security Considerations
+
+Before using Claude Code with real projects, understand the security boundaries.
+
+### What Goes to Anthropic's API
+
+Every prompt, file content pulled via `@file` references, and tool outputs are sent to Anthropic's API for processing. This means:
+
+- **Never paste real API keys, passwords, or tokens into prompts** — they'll be transmitted to Anthropic's servers
+- **Be cautious with `@file` references to sensitive files** — the file contents are sent as part of the prompt
+- **Tool outputs (Bash, Read, etc.) are included in context** — if a command outputs secrets, they're sent too
+
+### MCP Server Credentials
+
+MCP servers like `postgres` and `github` require connection strings or tokens. Handle these safely:
+
+```bash
+# ✅ GOOD — credentials from environment variables
+# .mcp.json
+"args": ["${POSTGRES_CONNECTION_STRING}"]
+
+# ❌ BAD — credentials hardcoded in .mcp.json
+"args": ["postgresql://admin:password123@localhost:5432/mydb"]
+```
+
+Always use environment variable references (`${VAR_NAME}`) in `.mcp.json` — never hardcode credentials.
+
+### The `--dangerously-skip-permissions` Flag
+
+This flag disables all permission prompts. Rules for safe usage:
+
+| Environment | Safe to Use? | Why |
+|-------------|-------------|-----|
+| Local dev, throwaway project | ✅ Yes | Low risk, easy to reset |
+| Local dev, real project | ⚠️ Caution | Claude can modify/delete files without asking |
+| CI/CD pipeline | ❌ No | Automated environment with real credentials and deployment access |
+| Shared/team machine | ❌ No | Other users' files and credentials may be accessible |
+
+### Pre-configured Guardrails in This Kit
+
+This repo includes 4 hooks that enforce security automatically:
+
+| Hook | What It Prevents |
+|------|-----------------|
+| `pre-bash-guard.sh` | `rm -rf /`, force-push to main, `DROP DATABASE`, piping curl to shell |
+| `pre-edit-protect-sensitive.sh` | Direct edits to `.env`, private keys, credentials, lock files |
+| `stop-secret-scan.sh` | Warns if changed files contain AWS/GCP/GitHub/Stripe/Anthropic API key patterns |
+| `post-edit-format.sh` | Not security-related, but auto-formats to prevent malformed code commits |
+
+These hooks are **defense-in-depth** — they catch mistakes but aren't a substitute for proper secret management. Always use a secrets manager (AWS Secrets Manager, HashiCorp Vault, 1Password CLI) for production credentials.
+
+### Checklist Before Using Claude Code on a Real Project
+
+- [ ] No real secrets in `.mcp.json` — all use `${ENV_VAR}` references
+- [ ] `.env` files are in `.gitignore`
+- [ ] `settings.json` denies access to credential files (pre-configured in this kit)
+- [ ] Team members understand what gets sent to Anthropic's API
+- [ ] CI/CD pipelines do NOT use `--dangerously-skip-permissions`
+- [ ] Hook scripts are executable (`chmod +x .claude/hooks/*.sh`)
+
+## 13. Customizing the Kit
 
 This kit is a starting point — customize it for your team's stack and workflows.
 
@@ -1126,7 +1192,7 @@ When a framework releases a new major version, update these files:
 
 ---
 
-## 12. Claude Code Power Features
+## 14. Claude Code Power Features
 
 ### Keyboard Shortcuts (Inside Claude Code)
 
@@ -1215,7 +1281,7 @@ Configure in `.claude/settings.json`:
 
 This repo's `settings.json` comes pre-configured with sensible defaults.
 
-## 13. Tips & Best Practices
+## 15. Tips & Best Practices
 
 ### Prompting Best Practices
 
@@ -1594,7 +1660,7 @@ Don't just agree with me — RE-VERIFY by reading the actual code.
 Show me the file you checked and what you found or didn't find.
 ```
 
-## 14. Troubleshooting
+## 16. Troubleshooting
 
 ### `command not found: claude`
 
@@ -1696,7 +1762,7 @@ claude --debug             # Full debug logging
 claude --debug "mcp"       # Debug a specific category
 ```
 
-## 15. Quick Reference Card
+## 17. Quick Reference Card
 
 Print or bookmark this — it covers 90% of daily Claude Code usage.
 
@@ -1768,7 +1834,7 @@ use context7                        # Append to any prompt for live docs
 /mcp                                # Check MCP server status
 ```
 
-## 16. Resources
+## 18. Resources
 
 | Resource | Link |
 |----------|------|
