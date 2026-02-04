@@ -537,6 +537,8 @@ To add your own project-specific permissions, modify `.claude/settings.json` or 
 
 **Where:** `.claude/settings.json` → `hooks` section, scripts in `.claude/hooks/`
 
+> **Note:** `SessionStart`, `SessionEnd`, `SubagentStop`, `PreCompact`, and `PermissionRequest` hooks were added in recent Claude Code releases. If a hook event doesn't fire, verify your Claude Code version with `claude --version` and update if needed. The core events (`PreToolUse`, `PostToolUse`, `Stop`) are available in all versions.
+
 This repo includes 4 hooks out of the box:
 
 | Hook | Script | Event | What It Does |
