@@ -77,6 +77,11 @@ Clone it, install Claude Code, and start building.
       - [Key Principles](#key-principles)
       - [Progressive Disclosure Example](#progressive-disclosure-example)
       - [Quick Rules of Thumb](#quick-rules-of-thumb)
+    - [When Claude Ignores Its Rules](#when-claude-ignores-its-rules)
+      - [Start-of-Task Prompt](#start-of-task-prompt)
+      - [Before Any Code Analysis](#before-any-code-analysis)
+      - [When Claude Flip-Flops](#when-claude-flip-flops)
+      - [When Challenging Claude's Analysis](#when-challenging-claudes-analysis)
   - [14. Troubleshooting](#14-troubleshooting)
     - [`command not found: claude`](#command-not-found-claude)
     - ["Context too large" error](#context-too-large-error)
@@ -1014,6 +1019,71 @@ E-commerce platform — Spring Boot API + Angular SPA + Flutter mobile.
 - Most important rules go **at the top and bottom** — LLMs attend most to the start and end of context
 - Use `CLAUDE.local.md` for personal preferences (auto-gitignored)
 - Use `.claude/rules/` for conditional rules scoped to specific directories
+
+### When Claude Ignores Its Rules
+
+`CLAUDE.md` and `.claude/rules/` tell Claude how to behave — but they're guidance, not enforcement. Three deeply ingrained biases cause Claude to break its own rules:
+
+| Bias | What Happens | Example |
+|------|-------------|---------|
+| **Path of least resistance** | Creates new files instead of understanding existing code | Adds `utils-v2.ts` instead of modifying `utils.ts` |
+| **Safety instinct** | Returns empty/mock data instead of failing visibly | `catch (e) { return []; }` instead of rethrowing |
+| **Optimism bias** | Overstates progress to seem helpful | Says "done" when 2 of 5 items are implemented |
+
+**The fix:** `CLAUDE.md` is prevention. The prompts below are treatment — copy-paste them when Claude misbehaves.
+
+#### Start-of-Task Prompt
+
+Paste this at the beginning of any non-trivial task to set expectations:
+
+```
+Before you start, confirm you understand:
+1. VERIFY before claiming — read actual code, show file:line evidence
+2. No flip-flopping — if you say "missing", verify first, don't change when I push back
+3. Implement 100% of the plan — no skipping items
+4. Modify existing files — don't create new ones without approval
+5. No mock data, no silent errors — failures must be visible
+6. Binary status: works or broken — no "95% done"
+
+Say "understood" then proceed.
+```
+
+#### Before Any Code Analysis
+
+Paste this before asking Claude to assess what's implemented or missing:
+
+```
+Before you tell me what's missing or implemented:
+1. Actually READ the code files
+2. For each claim, show file:line as evidence
+3. Don't guess based on file names
+
+If you can't point to specific code, say "I haven't verified this yet."
+```
+
+#### When Claude Flip-Flops
+
+Claude says "Feature X is missing" — you ask "Are you sure?" — Claude says "Actually it IS implemented!" This happens because Claude guessed initially, then agreed with you to avoid conflict. Paste this:
+
+```
+STOP. You just flip-flopped.
+First you said [X] was missing. Now you say it's implemented.
+Which is it? Show me:
+1. The exact file and line number
+2. The actual code snippet
+
+Don't guess. Don't agree with me to avoid conflict. VERIFY and show evidence.
+```
+
+#### When Challenging Claude's Analysis
+
+When you suspect Claude didn't actually verify a claim:
+
+```
+You said [X] is missing. Are you sure?
+Don't just agree with me — RE-VERIFY by reading the actual code.
+Show me the file you checked and what you found or didn't find.
+```
 
 ## 14. Troubleshooting
 
