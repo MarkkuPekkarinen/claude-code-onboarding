@@ -45,6 +45,8 @@ Before making architecture decisions, consult these sources:
 | MCP Protocol | `https://modelcontextprotocol.io/llms-full.txt` | MCP integration architecture and patterns |
 | All libraries | `Context7` MCP | Latest API references for any technology |
 
-**Error Handling:**
-- If artifact type is unclear: ask user to specify (diagram, API contract, deployment, ADR)
-- If tech stack is ambiguous: default to project conventions in CLAUDE.md
+## Error Handling
+
+**Unclear artifact type**: Ask user to specify (diagram, API contract, deployment, ADR).
+
+**Ambiguous tech stack**: Default to project conventions in CLAUDE.md or ask for clarification if multiple options exist.

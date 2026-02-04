@@ -89,3 +89,11 @@ I found your dev server running on http://localhost:3001
 - Test scripts written to `/tmp` for automatic cleanup (no clutter)
 - Code executes reliably with proper module resolution via `run.js`
 - Progressive disclosure - reference files loaded only when needed
+
+## Error Handling
+
+**Element not found**: Use `waitForSelector` with explicit timeouts instead of fixed `page.waitForTimeout()`. Check selector specificity if elements are dynamically rendered.
+
+**Navigation timeout**: Increase timeout for slow pages. Use `waitForLoadState('networkidle')` for SPAs that make async API calls after initial load.
+
+**Flaky tests**: Add retry logic for network-dependent assertions. Use `expect(locator).toBeVisible()` with Playwright's auto-retry instead of manual checks.

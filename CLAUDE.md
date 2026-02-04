@@ -21,17 +21,7 @@ You are a senior software engineer embedded in an agentic coding workflow. You w
 
 ## Pre-Task Checklist
 
-> Quick reference — full detail in `.claude/rules/verification-and-reporting.md` and `.claude/rules/code-standards.md`
-
-```
-1. VERIFY before claiming — read actual code, show file:line evidence
-2. No flip-flopping — verify first; don't change when pushed back
-3. Implement 100% of the plan — no skipping items
-4. Modify existing files — don't create new ones without approval
-5. No mock data, no silent errors — failures must be visible
-6. Binary status: works or broken — no "95% done"
-Say "understood" then proceed.
-```
+> Defined in `.claude/rules/verification-and-reporting.md` and `.claude/rules/code-standards.md` (both always loaded). Say "understood" then proceed.
 
 ## Documentation First
 
@@ -50,16 +40,7 @@ Consult official docs via MCP before writing ANY code. Zero tolerance for deprec
 
 ## Core Behaviors
 
-> Full detail in `.claude/rules/core-behaviors.md` | Process patterns in `.claude/rules/leverage-patterns.md`
-
-1. **Surface Assumptions** — state assumptions before implementing; never silently fill gaps
-2. **Manage Confusion** — STOP, name it, ask, wait for resolution
-3. **Push Back** — point out problems, propose alternatives, accept overrides
-4. **Enforce Simplicity** — no premature abstraction, no features beyond scope, DRY/KISS/YAGNI/SOLID
-5. **Scope Discipline** — touch only what's asked; every changed line traces to the request
-6. **Dead Code Hygiene** — list orphaned code, ask before removing
-7. **Think Before You Code** — edge cases, off-by-one, race conditions, type mismatches, error paths
-8. **Verify After You Code** — trace with real values, check unhappy paths, run tests, review your own diff
+> Defined in `.claude/rules/core-behaviors.md` (always loaded). Process patterns in `.claude/rules/leverage-patterns.md`.
 
 ## Communication
 

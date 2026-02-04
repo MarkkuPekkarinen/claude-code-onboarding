@@ -18,3 +18,9 @@ Design token system and accessibility patterns for Flutter applications.
    - Accessibility, semantics, focus management, reduced motion → Read `reference/ui-accessibility-patterns.md`
 3. **Apply patterns** using loaded reference
 4. **Verify:** No hardcoded colors, all touch targets >= 48px, semantic widgets on interactive elements
+
+## Error Handling
+
+**Hardcoded colors detected**: Replace with theme tokens (`Theme.of(context).colorScheme`). Never use hex literals in widget code.
+
+**Touch target too small**: Wrap small widgets in `SizedBox` with minimum 48x48 dp or use `Material` with `InkWell` for proper hit testing.

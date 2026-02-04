@@ -112,3 +112,9 @@ Before generating schemas or queries, consult these sources:
 | `reference/nosql-design-patterns.md` | MongoDB/Firestore embedding vs referencing |
 | `reference/migration-patterns.md` | Zero-downtime migrations, rollback strategies |
 | `assets/templates/migration-template.sql` | SQL migration file template |
+
+## Error Handling
+
+**Migration conflicts**: When migrations fail, check for column type mismatches or missing dependent migrations. Never modify an applied migration — create a new corrective one.
+
+**Index creation failures**: Verify the column exists and data types support the index type. For large tables, use `CREATE INDEX CONCURRENTLY`.

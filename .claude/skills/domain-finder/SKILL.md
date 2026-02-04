@@ -50,3 +50,9 @@ Read `reference/domain-check-scripts.md` for social media handle checking script
 | File | Content |
 |------|---------|
 | `reference/domain-check-scripts.md` | DNS/WHOIS scripts, TLD reference, output template, social handle checks |
+
+## Error Handling
+
+**DNS lookup failures**: Retry with a different DNS resolver. Timeout does not mean the domain is available — treat timeouts as "status unknown."
+
+**WHOIS rate limiting**: Space queries at least 2 seconds apart. If rate-limited, report partial results and retry later.

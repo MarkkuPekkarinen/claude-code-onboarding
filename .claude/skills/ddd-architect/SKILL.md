@@ -118,3 +118,9 @@ Before marking any phase complete, verify:
 - **Events over coupling**: Prefer domain events between contexts over direct calls
 - **Ubiquitous language is mandatory**: Every document must use domain language, not technical jargon
 - **Diagrams**: Use Mermaid syntax for all diagrams (context maps, sequence, class, C4)
+
+## Error Handling
+
+**Ambiguous bounded contexts**: When domain boundaries are unclear, map the dependencies and ask for clarification before committing to a context map.
+
+**Conflicting ubiquitous language**: When the same term means different things in different contexts, document both meanings and define an anti-corruption layer.

@@ -16,3 +16,9 @@ Correct Riverpod patterns for Flutter state management with code_generation styl
 2. **Load reference:** Read `reference/riverpod-core-patterns.md` for code examples and rules
 3. **Apply patterns** using loaded reference
 4. **Verify:** Confirm ref.watch is only in build(), ref.read only in callbacks, all AsyncValue states handled visibly
+
+## Error Handling
+
+**Provider not found**: Ensure `ProviderScope` wraps the widget tree. Check that generated `.g.dart` files are up to date (`dart run build_runner build`).
+
+**AsyncValue stuck loading**: Verify the repository method returns data. Use `AsyncValue.guard()` to catch and surface errors instead of silent failures.

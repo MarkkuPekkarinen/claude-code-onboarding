@@ -134,3 +134,9 @@ docs/adr/
 - [MADR Template](https://adr.github.io/madr/)
 - [ADR GitHub Organization](https://adr.github.io/)
 - [adr-tools](https://github.com/npryce/adr-tools)
+
+## Error Handling
+
+**Conflicting ADRs**: When a new decision contradicts an existing ADR, create a superseding ADR that explicitly references and deprecates the old one.
+
+**Missing context**: If the decision rationale is unclear or incomplete, flag it and request clarification before recording.

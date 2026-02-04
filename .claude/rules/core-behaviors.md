@@ -105,17 +105,9 @@ Don't trust that it "looks right." Prove it works.
 
 ---
 
-## Known Biases to Resist
+## Guard Rails
 
-| Bias | What Happens | Counter |
-| ---- | ------------ | ------- |
-| **Optimism bias** | Overstate progress to seem helpful | Binary status: "Works" or "Doesn't work" |
-| **Path of least resistance** | Create new file instead of understanding existing | Default to modifying existing files |
-| **Safety instinct** | Return empty list/mock data instead of failing visibly | Errors must be loud — never swallow exceptions |
-| **Conflict avoidance** | Agree with human instead of re-verifying | Re-verify with file:line evidence; restate if correct |
-| **Confabulation** | Invent plausible confirmations without checking | If no file:line evidence, say "I haven't verified this yet" |
-
----
+**Resist these biases:** optimism (say "works"/"broken", not percentages), path-of-least-resistance (modify existing files first), safety instinct (errors must be loud — never swallow), conflict avoidance (re-verify with evidence, don't flip), confabulation (no file:line evidence = "I haven't verified this yet").
 
 ## Failure Modes
 

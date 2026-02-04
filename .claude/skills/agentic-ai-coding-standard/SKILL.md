@@ -91,3 +91,11 @@ src/<service>/
 ## Reference
 
 See `reference/agentic-standards-examples.md` for concrete code examples and anti-patterns.
+
+## Error Handling
+
+**Import errors**: Verify LangChain/LangGraph package versions match `pyproject.toml` constraints.
+
+**State type mismatches**: Ensure all graph state fields use `TypedDict` with proper `Annotated` types — never `dict[str, Any]`.
+
+**Graph recursion errors**: Check `recursion_limit` in config and verify `iteration_count` is incremented in routing functions.

@@ -89,3 +89,9 @@ Read `reference/sdk-and-cicd.md` for:
 - [Spectral](https://stoplight.io/open-source/spectral)
 - [OpenAPI Generator](https://openapi-generator.tech/)
 - [springdoc-openapi](https://springdoc.org/)
+
+## Error Handling
+
+**Schema validation failures**: Run the spec through an OpenAPI validator before committing. Fix all `$ref` resolution errors first.
+
+**Breaking changes detected**: When modifying existing endpoints, check for removed fields, changed types, or new required parameters. Document breaking changes in the spec description.

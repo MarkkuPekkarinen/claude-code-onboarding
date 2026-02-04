@@ -98,3 +98,11 @@ Load these as needed during development:
 | MCP Protocol Spec | Phase 1 - fetch from `modelcontextprotocol.io` |
 | TypeScript SDK README | Phase 1 - fetch from GitHub |
 | Python SDK README | Phase 1 - fetch from GitHub |
+
+## Error Handling
+
+> For the full error taxonomy and circuit breaker patterns, read `reference/error-taxonomy.md`
+
+**Server startup failures**: Validate all required environment variables at startup. Fail fast with a clear error message — never silently fall back to defaults.
+
+**Tool execution errors**: Return structured MCP error responses with error codes. Never let unhandled exceptions crash the server.

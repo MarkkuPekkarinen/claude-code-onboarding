@@ -44,3 +44,9 @@ For output format examples (App Store, Keep a Changelog, internal/technical, Sla
 ## Automation Tip
 
 Suggest to the user: add a `pre-release` hook or CI step that runs this skill automatically when tagging a new version. Pair with the `/changelog` command for quick manual runs.
+
+## Error Handling
+
+**No conventional commits found**: Verify commit messages follow `type:` prefix format. Fall back to manual changelog if history is inconsistent.
+
+**Ambiguous scope**: When a commit touches multiple features, split the changelog entry by affected area.

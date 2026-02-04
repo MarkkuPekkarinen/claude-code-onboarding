@@ -51,3 +51,9 @@ src/
 For naming examples, TypeScript strictness, immutability patterns, DTO validation, module organization, error handling, service patterns, controller patterns, logging, formatting, code smells, and testing expectations, Read `reference/nestjs-standards-examples.md`.
 
 **Remember**: Keep code intentional, typed, and observable. Optimize for maintainability over micro-optimizations unless proven necessary.
+
+## Error Handling
+
+**Exception hierarchy**: Use `HttpException` subclasses (`NotFoundException`, `BadRequestException`). Global exception filter returns RFC 9457 ProblemDetail.
+
+**Validation failures**: Use `class-validator` decorators on DTOs. Global `ValidationPipe` auto-returns 422 with field-level details.

@@ -43,3 +43,9 @@ src/test/java/... (mirrors main)
 For naming examples, immutability patterns, Optional usage, streams, exception handling, generics, logging, formatting, code smells, and testing expectations, Read `reference/java-standards-examples.md`.
 
 **Remember**: Keep code intentional, typed, and observable. Optimize for maintainability over micro-optimizations unless proven necessary.
+
+## Error Handling
+
+**Checked vs unchecked exceptions**: Use unchecked (`RuntimeException` subclasses) for programming errors. Use checked exceptions only for recoverable conditions the caller must handle.
+
+**Optional misuse**: Never call `.get()` without `.isPresent()` or use `.orElseThrow()`. Prefer `map`/`flatMap` chains.
