@@ -38,7 +38,12 @@
       "Bash(sudo *)",
       "Bash(chmod 777 *)",
       "Bash(eval *)",
-      "Bash(ssh *)"
+      "Bash(ssh *)",
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets/**)",
+      "Read(./**/*.pem)",
+      "Read(./**/*.key)"
     ]
   },
   "hooks": {
