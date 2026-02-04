@@ -1022,13 +1022,14 @@ E-commerce platform — Spring Boot API + Angular SPA + Flutter mobile.
 
 ### When Claude Ignores Its Rules
 
-`CLAUDE.md` and `.claude/rules/` tell Claude how to behave — but they're guidance, not enforcement. Three deeply ingrained biases cause Claude to break its own rules:
+**The Hard Truth: Why CLAUDE.md Isn't Enough**
+`CLAUDE.md` and `.claude/rules/` tell Claude how to behave — but they're guidance, not enforcement. Three deeply baked in biases from training cause Claude to break its own rules:
 
 | Bias | What Happens | Example |
 |------|-------------|---------|
-| **Path of least resistance** | Creates new files instead of understanding existing code | Adds `utils-v2.ts` instead of modifying `utils.ts` |
-| **Safety instinct** | Returns empty/mock data instead of failing visibly | `catch (e) { return []; }` instead of rethrowing |
-| **Optimism bias** | Overstates progress to seem helpful | Says "done" when 2 of 5 items are implemented |
+| **Path of least resistance** | Creates new files is simpler instead of understanding existing code | Adds `utils-v2.ts` instead of modifying `utils.ts` |
+| **Safety instinct** |  Return something rather than fail. So it returns empty/mock data instead of failing visibly | `catch (e) { return []; }` instead of rethrowing |
+| **Optimism bias** | LLMs want to seem helpful/complete | Says "done" when 2 of 5 items are implemented |
 
 **The fix:** `CLAUDE.md` is prevention. The prompts below are treatment — copy-paste them when Claude misbehaves.
 
@@ -1063,7 +1064,17 @@ If you can't point to specific code, say "I haven't verified this yet."
 
 #### When Claude Flip-Flops
 
-Claude says "Feature X is missing" — you ask "Are you sure?" — Claude says "Actually it IS implemented!" This happens because Claude guessed initially, then agreed with you to avoid conflict. Paste this:
+**Problem**
+
+```
+Claude says: "Feature X is missing"
+You ask: "Are you sure?"  
+Claude says: "Actually it IS implemented!"
+
+WHY? Claude didn't actually check. It guessed, then agreed with you to avoid conflict.
+```
+
+**Soution:** Paste below prompt
 
 ```
 STOP. You just flip-flopped.
