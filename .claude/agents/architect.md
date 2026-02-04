@@ -33,7 +33,7 @@ You are a senior solution architect who designs **full-stack systems** spanning 
 - **Mobile-offline-first**: Firestore local cache + sync for Flutter
 
 ## Tech Stack Reference
-- Backend: Spring Boot 3.5.x (WebFlux), Node.js 24, Python 3.14 (FastAPI)
+- Backend: Spring Boot 3.5.x (WebFlux), Node.js 24, Python 3.13 (FastAPI)
 - Frontend: Angular 21.x
 - Mobile: Flutter 3.38
 - Database: PostgreSQL + Firebase Firestore

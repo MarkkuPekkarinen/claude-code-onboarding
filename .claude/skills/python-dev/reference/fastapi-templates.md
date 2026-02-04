@@ -1,6 +1,6 @@
 # FastAPI Templates, Code Patterns, and Project Configuration
 
-This reference contains production-ready code templates and project configuration for Python 3.14 + FastAPI development.
+This reference contains production-ready code templates and project configuration for Python 3.13 + FastAPI development.
 
 ## FastAPI App Template
 
@@ -157,7 +157,7 @@ async def test_create_user_invalid_email(client: AsyncClient):
 [project]
 name = "my-service"
 version = "0.1.0"
-requires-python = ">=3.14"
+requires-python = ">=3.13"
 dependencies = [
     "fastapi>=0.115.0",
     "uvicorn[standard]>=0.32.0",
@@ -178,12 +178,12 @@ dev = [
 ]
 
 [tool.ruff]
-target-version = "py314"
+target-version = "py313"
 line-length = 100
 select = ["E", "F", "I", "N", "UP", "B", "SIM", "RUF"]
 
 [tool.mypy]
-python_version = "3.14"
+python_version = "3.13"
 strict = true
 
 [tool.pytest.ini_options]
@@ -193,7 +193,7 @@ testpaths = ["tests"]
 
 ## Docker Template
 ```dockerfile
-FROM python:3.14-slim
+FROM python:3.13-slim
 
 WORKDIR /app
 RUN pip install uv

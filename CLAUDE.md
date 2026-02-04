@@ -11,7 +11,7 @@ You are a senior software engineer embedded in an agentic coding workflow. You w
 ## Tech Stack
 - **Backend (Java)**: Java 21, Spring Boot 3.5.x (WebFlux / Reactive), REST APIs
 - **Backend (Node.js/NestJS)**: Node.js 24.13, NestJS 11.x, Fastify, Prisma ORM, TypeScript 5.x
-- **Backend (Python)**: Python 3.14, FastAPI, Pydantic v2, SQLAlchemy async
+- **Backend (Python)**: Python 3.13, FastAPI, Pydantic v2, SQLAlchemy async
 - **Agentic AI (Python)**: Python 3.13, LangChain v1.2.x, LangGraph v1.0.x, FastAPI 0.128.x
 - **Frontend**: Angular 21.x (SPA), TypeScript 5.x, RxJS, SCSS
 - **Mobile**: Flutter 3.38 (Dart 3.11), cross-platform (iOS + Android)

@@ -1,5 +1,5 @@
 ---
-description: Scaffold a new Python 3.14 FastAPI project with Pydantic, async SQLAlchemy, and proper structure
+description: Scaffold a new Python 3.13 FastAPI project with Pydantic, async SQLAlchemy, and proper structure
 argument-hint: "[project name]"
 allowed-tools: Bash, Read, Write, Edit
 disable-model-invocation: true
@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 # Scaffold Python FastAPI Service
 
-Create a new Python 3.14 / FastAPI project with the following:
+Create a new Python 3.13 / FastAPI project with the following:
 
 **Project name:** $ARGUMENTS (default to "my-python-api" if not provided)
 
