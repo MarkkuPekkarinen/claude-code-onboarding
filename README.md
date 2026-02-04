@@ -72,6 +72,11 @@ Clone it, install Claude Code, and start building.
     - [Adding a New Hook](#adding-a-new-hook)
     - [Removing Components You Don't Need](#removing-components-you-dont-need)
     - [Version Update Guide](#version-update-guide)
+  - [12. Claude Code Power Features](#12-claude-code-power-features)
+    - [Keyboard Shortcuts (Inside Claude Code)](#keyboard-shortcuts-inside-claude-code)
+    - [Essential CLI Flags](#essential-cli-flags)
+    - [Core Tools](#core-tools)
+    - [Permission Model](#permission-model)
   - [13. Tips \& Best Practices](#13-tips--best-practices)
     - [Prompting Best Practices](#prompting-best-practices)
     - [Common Pitfalls — Avoid These](#common-pitfalls--avoid-these)
@@ -1099,7 +1104,6 @@ When a framework releases a new major version, update these files:
 2. Update any changed API patterns in skill `reference/` files
 3. Test with a scaffold command to verify the generated code compiles
 4. Commit as `docs: update [framework] to vX.Y`
-```
 
 ---
 
