@@ -534,92 +534,129 @@ Every time you send a prompt in Claude Code, it assembles a **context window** �
 
 ## 10. What's in This Repo
 
+**76 components** — 20 skills, 13 commands, 20 agents, 4 rules, 4 hooks, 12 MCP servers, 2 settings files, 1 CLAUDE.md.
+
 ```
 claude-code-onboarding/
-├── CLAUDE.md                            # Project memory — tech stack, conventions, rules
-├── .mcp.json                            # MCP servers: Context7, GitHub, Filesystem, Firebase
+├── CLAUDE.md                            # Project instructions — tech stack, conventions, rules
+├── .mcp.json                            # 12 MCP servers (see table below)
 ├── .gitignore
 ├── README.md                            # ← You are here
 │
 └── .claude/
-    ├── settings.json                    # Permissions and hook configs
+    ├── settings.json                    # Permissions (allow/ask/deny) and hook configs
     ├── settings.local.json              # Personal overrides (gitignored)
     │
+    ├── rules/                            # Always-loaded behavioral guidelines
+    │   ├── code-standards.md             # Error handling, DRY, logging, output quality
+    │   ├── core-behaviors.md             # Assumptions, confusion management, simplicity
+    │   ├── leverage-patterns.md          # Task protocol, test-first, naive-then-optimize
+    │   └── verification-and-reporting.md # Verify before claiming, honest status reporting
+    │
     ├── hooks/                            # Lifecycle hook scripts (chmod +x after cloning)
-    │   ├── pre-bash-guard.sh             # Block destructive bash commands
-    │   ├── pre-edit-protect-sensitive.sh # Block edits to .env, keys, lock files
+    │   ├── pre-bash-guard.sh             # Block destructive bash commands (rm -rf, DROP, etc.)
+    │   ├── pre-edit-protect-sensitive.sh  # Block edits to .env, keys, lock files
     │   ├── post-edit-format.sh           # Auto-format TS/JS/Dart/Python after edits
-    │   └── stop-secret-scan.sh           # Scan changed files for leaked secrets
+    │   └── stop-secret-scan.sh           # Scan changed files for leaked secrets on stop
     │
-    ├── agents/                          # Specialist AI personas (invoke with @name)
-    │   ├── java-spring-api.md           # Spring Boot WebFlux expert
-    │   ├── nestjs-api.md               # NestJS / Fastify / Prisma expert
-    │   ├── nestjs-reviewer.md          # NestJS code review specialist
-    │   ├── python-dev.md                # Python / FastAPI expert
-    │   ├── angular-spa.md               # Angular frontend expert
-    │   ├── flutter-mobile.md            # Flutter mobile expert
-    │   ├── flutter-security-expert.md   # Security & privacy compliance
-    │   ├── frontend-design.md           # Creative UI/UX design specialist
-    │   ├── database-designer.md         # PostgreSQL + Firestore architect
-    │   ├── architect.md                 # Solution architect
-    │   ├── code-reviewer.md             # Code quality & review specialist
-    │   ├── security-reviewer.md         # Security vulnerability reviewer
-    │   ├── accessibility-auditor.md     # WCAG / a11y compliance auditor
+    ├── agents/                           # 20 specialist AI personas (invoke with @name)
+    │   │
+    │   │  # — Development agents (model: sonnet) —
+    │   ├── java-spring-api.md            # Spring Boot WebFlux expert
+    │   ├── nestjs-api.md                 # NestJS / Fastify / Prisma expert
+    │   ├── python-dev.md                 # Python / FastAPI expert
+    │   ├── agentic-ai-dev.md             # LangChain / LangGraph AI agent builder
+    │   ├── angular-spa.md                # Angular frontend expert
+    │   ├── flutter-mobile.md             # Flutter mobile expert
+    │   ├── frontend-design.md            # Creative UI/UX design specialist
+    │   ├── database-designer.md          # PostgreSQL + Firestore architect
+    │   ├── architect.md                  # Solution architect
+    │   ├── flutter-security-expert.md    # Mobile security & privacy compliance
+    │   │
+    │   │  # — Review agents (model: opus) —
+    │   ├── code-reviewer.md              # General code quality & review
+    │   ├── nestjs-reviewer.md            # NestJS code review specialist
+    │   ├── spring-reactive-reviewer.md   # Spring WebFlux review specialist
+    │   ├── agentic-ai-reviewer.md        # Agentic AI code review specialist
+    │   ├── security-reviewer.md          # Security vulnerability reviewer
     │   ├── postgresql-database-reviewer.md # PostgreSQL performance & schema reviewer
-    │   ├── riverpod-reviewer.md         # Flutter Riverpod state management reviewer
-    │   ├── dedup-code-agent.md          # Dead code & duplication detector
-    │   └── ui-standards-expert.md       # UI consistency & design system enforcement
+    │   │
+    │   │  # — Specialist agents —
+    │   ├── accessibility-auditor.md      # WCAG / a11y compliance auditor
+    │   ├── riverpod-reviewer.md          # Flutter Riverpod state management reviewer
+    │   ├── dedup-code-agent.md           # Dead code & duplication detector
+    │   └── ui-standards-expert.md        # UI consistency & design system enforcement
     │
-    ├── commands/                         # Slash commands (triggered with /name)
-    │   ├── scaffold-spring-api.md       # /scaffold-spring-api <name>
-    │   ├── scaffold-nestjs-api.md       # /scaffold-nestjs-api <name>
-    │   ├── scaffold-python-api.md       # /scaffold-python-api <name>
-    │   ├── scaffold-angular-app.md      # /scaffold-angular-app <name>
-    │   ├── scaffold-flutter-app.md      # /scaffold-flutter-app <name>
-    │   ├── design-database.md           # /design-database <domain description>
-    │   ├── design-architecture.md       # /design-architecture <system description>
-    │   ├── add-feature.md               # /add-feature <feature description>
-    │   ├── project-status.md            # /project-status
-    │   └── changelog.md                 # /changelog [version] — generate release notes
+    ├── commands/                          # 13 slash commands (triggered with /name)
+    │   │
+    │   │  # — Scaffolding —
+    │   ├── scaffold-spring-api.md        # /scaffold-spring-api <name>
+    │   ├── scaffold-nestjs-api.md        # /scaffold-nestjs-api <name>
+    │   ├── scaffold-python-api.md        # /scaffold-python-api <name>
+    │   ├── scaffold-agentic-ai.md        # /scaffold-agentic-ai <name>
+    │   ├── scaffold-angular-app.md       # /scaffold-angular-app <name>
+    │   ├── scaffold-flutter-app.md       # /scaffold-flutter-app <name>
+    │   │
+    │   │  # — Design —
+    │   ├── design-database.md            # /design-database <domain description>
+    │   ├── design-architecture.md        # /design-architecture <system description>
+    │   │
+    │   │  # — Workflow —
+    │   ├── add-feature.md                # /add-feature <feature description>
+    │   ├── review-code.md                # /review-code [focus area]
+    │   ├── audit-security.md             # /audit-security [scope]
+    │   ├── status-check.md               # /status-check — binary works/broken report
+    │   └── project-status.md             # /project-status — codebase summary
     │
-    └── skills/                           # Auto-activated domain knowledge
-        ├── java-spring-api/SKILL.md     # Spring Boot patterns & templates
-        ├── java-coding-standard/SKILL.md # Java coding standards & conventions
-        ├── nestjs-api/SKILL.md          # NestJS patterns, templates & enterprise patterns
-        ├── nestjs-coding-standard/SKILL.md # NestJS coding standards & conventions
-        ├── python-dev/SKILL.md          # Python / FastAPI patterns & templates
-        ├── angular-spa/SKILL.md         # Angular patterns & templates
-        ├── flutter-mobile/SKILL.md      # Flutter patterns & templates
-        ├── architecture-design/SKILL.md # Architecture patterns & templates
-        ├── domain-finder/SKILL.md       # Domain name brainstorming & availability
-        ├── changelog-generator/SKILL.md # Git history → user-facing release notes
-        ├── database-schema-designer/    # Database schema design (multi-file skill)
-        │   ├── SKILL.md                 # Core schema design patterns
-        │   ├── README.md                # Skill documentation
-        │   ├── assets/templates/
-        │   │   └── migration-template.sql
-        │   └── references/
-        │       └── schema-design-checklist.md
-        ├── mcp-builder/                 # MCP server development (multi-file skill)
-        │   ├── SKILL.md                 # Core MCP building patterns
-        │   ├── reference/               # Best practices & platform guides
-        │   │   ├── mcp_best_practices.md
-        │   │   ├── node_mcp_server.md
-        │   │   ├── python_mcp_server.md
-        │   │   └── evaluation.md
-        │   └── scripts/                 # Evaluation & connection utilities
-        │       ├── connections.py
-        │       ├── evaluation.py
-        │       ├── example_evaluation.xml
-        │       └── requirements.txt
-        └── playwright-skill/            # E2E testing with Playwright (multi-file skill)
-            ├── SKILL.md                 # Core Playwright patterns
-            ├── API_REFERENCE.md         # Playwright API quick reference
-            ├── package.json
-            ├── run.js
-            └── lib/
-                └── helpers.js
+    └── skills/                            # 20 auto-activated domain knowledge skills
+        │
+        │  # — Backend skills —
+        ├── java-spring-api/              # Spring Boot 3.5.x patterns (9 reference files)
+        ├── java-coding-standard/         # Java coding standards (1 reference file)
+        ├── nestjs-api/                   # NestJS 11.x patterns (23 reference files)
+        ├── nestjs-coding-standard/       # NestJS coding standards (1 reference file)
+        ├── python-dev/                   # Python 3.13 / FastAPI patterns (1 reference file)
+        │
+        │  # — Agentic AI skills —
+        ├── agentic-ai-dev/               # LangChain/LangGraph agent building (17 reference files)
+        ├── agentic-ai-coding-standard/   # Agentic AI coding standards (1 reference file)
+        │
+        │  # — Frontend & mobile skills —
+        ├── angular-spa/                  # Angular 21.x + TailwindCSS patterns (12 reference files)
+        ├── flutter-mobile/               # Flutter 3.38 / Dart 3.11 patterns (2 reference files)
+        ├── riverpod-patterns/            # Riverpod state management (1 reference file)
+        ├── ui-standards-tokens/          # Design tokens & UI standards (2 reference files)
+        │
+        │  # — Architecture & design skills —
+        ├── architecture-design/          # System architecture patterns (1 reference file)
+        ├── architecture-decision-records/ # ADR templates & lifecycle (3 reference files)
+        ├── database-schema-designer/     # Schema design + migrations (7 reference files)
+        ├── ddd-architect/                # Domain-Driven Design analysis (4 reference files)
+        ├── openapi-spec-generation/      # OpenAPI 3.1 spec generation (5 reference files)
+        │
+        │  # — Tooling skills —
+        ├── mcp-builder/                  # MCP server development (18 reference files + scripts)
+        ├── playwright-skill/             # E2E testing with Playwright (3 reference files + runtime)
+        ├── domain-finder/                # Domain name availability checker (1 reference file)
+        └── changelog-generator/          # Git history → release notes (1 reference file)
 ```
+
+### MCP Servers (`.mcp.json`)
+
+| Server | Transport | Purpose |
+|--------|-----------|---------|
+| `github` | HTTP | GitHub API — issues, PRs, code search |
+| `langchain-docs` | HTTP | LangChain documentation search |
+| `angular-cli` | stdio | Angular CLI operations |
+| `chrome-devtools` | stdio | Browser automation & DevTools |
+| `context7` | stdio | Live documentation for any library |
+| `dart-mcp-server` | stdio | Dart/Flutter tooling daemon |
+| `firebase` | stdio | Firebase CLI operations |
+| `postgres` | stdio | PostgreSQL query & schema tools |
+| `playwright` | stdio | Browser testing automation |
+| `docker` | stdio | Docker container management |
+| `ios-simulator` | stdio | iOS simulator control |
+| `maestro` | stdio | Mobile UI testing framework |
 
 ## 11. Hands-On Exercises
 
