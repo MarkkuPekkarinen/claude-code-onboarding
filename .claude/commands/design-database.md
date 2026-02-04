@@ -1,5 +1,6 @@
 ---
 description: Design a database schema with ERD, migrations, and indexes for a given domain
+argument-hint: "[domain or requirements]"
 allowed-tools: Bash, Read, Write, Edit
 ---
 

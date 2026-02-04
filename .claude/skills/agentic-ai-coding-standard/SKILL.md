@@ -1,6 +1,6 @@
 ---
 name: agentic-ai-coding-standard
-description: Coding standards for Python agentic AI services with LangChain/LangGraph. Covers state management, tool definitions, graph structure, error handling, and observability.
+description: "This skill provides coding standards for Python agentic AI services with LangChain/LangGraph. Use when reviewing or writing Python agentic AI code. Covers state management, tool definitions, graph structure, error handling, and observability."
 allowed-tools: Read
 ---
 

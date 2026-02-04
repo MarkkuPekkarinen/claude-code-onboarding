@@ -1,6 +1,6 @@
 ---
 name: agentic-ai-dev
-description: Patterns and templates for building production AI agents with Python 3.13, LangChain v1.2.x, LangGraph v1.0.x, and FastAPI 0.128.x. Activate when creating AI agents, RAG systems, graph workflows, tools, memory systems, or agent tests.
+description: "This skill provides patterns and templates for building production AI agents with Python 3.13, LangChain v1.2.x, LangGraph v1.0.x, and FastAPI 0.128.x. Use when creating AI agents, RAG systems, graph workflows, tools, memory systems, or agent tests."
 allowed-tools: Bash, Read, Write, Edit
 ---
 
@@ -124,59 +124,6 @@ src/<service_name>/
 | `agentic-debugging.md` | Debugging playbook, common issues | Troubleshooting agents |
 | `agentic-cost-optimization.md` | Cost management, budget caps, prompt optimization | Reducing LLM costs |
 | `agentic-prompt-engineering.md` | Advanced prompting, structured output, templates | Writing better prompts |
+| `agentic-error-handling.md` | Agent, tool, LLM provider, and API error handling patterns | Error handling in agents |
 
-## Error Handling
-
-### Agent Errors
-```python
-# In graph nodes — return error state, never raise
-def agent_node(state: AgentState) -> AgentState:
-    try:
-        response = llm.invoke(state["messages"])
-        return {"messages": [response], "iteration_count": state["iteration_count"] + 1}
-    except Exception as e:
-        logger.error("agent_node_failed", error=str(e), thread_id=state.get("thread_id"))
-        return {"messages": [AIMessage(content=f"I encountered an error: {e}")], "error_count": state.get("error_count", 0) + 1}
-```
-
-### Tool Errors
-```python
-@tool
-def search_database(query: str) -> str:
-    """Search the database for relevant records."""
-    try:
-        results = db.search(query)
-        return json.dumps(results)
-    except DatabaseError as e:
-        logger.error("tool_search_failed", error=str(e), query=query)
-        return f"Error searching database: {e}"
-```
-
-### LLM Provider Errors
-```python
-# Use fallback chain in provider factory
-async def invoke_with_fallback(messages: list, providers: list[BaseChatModel]) -> AIMessage:
-    for provider in providers:
-        try:
-            return await provider.ainvoke(messages)
-        except Exception as e:
-            logger.warning("provider_failed", provider=type(provider).__name__, error=str(e))
-    raise LLMProviderError("All providers failed")
-```
-
-### API Errors
-```python
-@router.post("/api/v1/agent/invoke")
-async def invoke_agent(request: AgentRequest, graph = Depends(get_graph)):
-    try:
-        result = await graph.ainvoke(
-            {"messages": [HumanMessage(content=request.message)]},
-            config={"configurable": {"thread_id": request.thread_id}},
-        )
-        return AgentResponse(message=result["messages"][-1].content)
-    except LLMProviderError as e:
-        raise HTTPException(status_code=502, detail=str(e))
-    except Exception as e:
-        logger.error("invoke_failed", error=str(e), thread_id=request.thread_id)
-        raise HTTPException(status_code=500, detail="Agent invocation failed")
-```
+> For error handling patterns and code examples, read reference/agentic-error-handling.md

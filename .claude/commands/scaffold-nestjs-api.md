@@ -1,5 +1,6 @@
 ---
 description: Scaffold a new NestJS 11.x REST API project with Fastify, Prisma, structured logging, and proper module structure
+argument-hint: "[project name]"
 allowed-tools: Bash, Read, Write, Edit
 disable-model-invocation: true
 ---

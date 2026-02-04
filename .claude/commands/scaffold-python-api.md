@@ -1,5 +1,6 @@
 ---
 description: Scaffold a new Python 3.14 FastAPI project with Pydantic, async SQLAlchemy, and proper structure
+argument-hint: "[project name]"
 allowed-tools: Bash, Read, Write, Edit
 disable-model-invocation: true
 ---

@@ -3,6 +3,7 @@ name: ui-standards-expert
 description: Agent specialized in UI excellence compliance including design tokens, theming, accessibility (WCAG AA), responsive layouts, and motion patterns.
 tools: Read, Write, Edit, Glob, Grep
 model: sonnet
+skills: [ui-standards-tokens]
 ---
 
 # UI Standards Expert Agent
@@ -51,7 +52,7 @@ You are a UI excellence specialist for Flutter applications with focus on design
 
 ## Design Tokens & Code Patterns
 
-For all design token definitions (spacing, radius, size), accessibility patterns (Semantics, reduced motion, touch targets), theme usage (colors, typography), and responsive layout patterns, Read `reference/ui-standards-tokens.md`.
+All design token definitions (spacing, radius, size), accessibility patterns (Semantics, reduced motion, touch targets), theme usage (colors, typography), and responsive layout patterns are available via the preloaded `ui-standards-tokens` skill.
 
 ## When Invoked
 

@@ -1,5 +1,6 @@
 ---
 description: Design system architecture with diagrams, API contracts, and deployment topology for a given feature or system
+argument-hint: "[system or feature requirements]"
 allowed-tools: Bash, Read, Write, Edit
 ---
 

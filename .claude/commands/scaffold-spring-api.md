@@ -1,5 +1,6 @@
 ---
 description: Scaffold a new Spring Boot 3.5.x WebFlux REST API project with standard structure, build config, and sample endpoint
+argument-hint: "[project name]"
 allowed-tools: Bash, Read, Write, Edit
 disable-model-invocation: true
 ---
