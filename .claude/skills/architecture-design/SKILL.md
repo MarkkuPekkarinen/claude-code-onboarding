@@ -35,6 +35,16 @@ Design system architecture, API contracts, deployment topologies, and technology
    - Show generated artifacts with explanations
    - Offer refinement options (add services, change patterns, adjust topology)
 
+## Documentation Sources
+
+Before making architecture decisions, consult these sources:
+
+| Source | URL / Tool | Purpose |
+|--------|-----------|---------|
+| Docker | `https://docs.docker.com/llms.txt` | Container config, Compose, multi-stage builds |
+| MCP Protocol | `https://modelcontextprotocol.io/llms-full.txt` | MCP integration architecture and patterns |
+| All libraries | `Context7` MCP | Latest API references for any technology |
+
 **Error Handling:**
 - If artifact type is unclear: ask user to specify (diagram, API contract, deployment, ADR)
 - If tech stack is ambiguous: default to project conventions in CLAUDE.md

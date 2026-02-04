@@ -33,56 +33,19 @@ You are a senior software engineer embedded in an agentic coding workflow. You w
 Say "understood" then proceed.
 ```
 
-## ⚠️ MANDATORY DOCUMENTATION REQUIREMENTS
+## Documentation First
 
-### 🔴 CRITICAL: Always Consult Official Documentation Sources
+Consult official docs via MCP before writing ANY code. Zero tolerance for deprecated code.
 
-Before generating ANY code, configuration, or making ANY technical decision, you MUST consult these official documentation sources to ensure accuracy, latest features, and best practices:
+- Each skill lists its MCP servers and documentation sources — **load the skill first**
+- When in doubt, **query the MCP server first**
+- Fallback: `Context7` MCP for any library not covered by a dedicated MCP server
 
-
-| Technology              | MCP Server(s)                                               | Purpose                                                                                                                                                   |
-| ----------------------- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Angular v21**         | `angular-cli (ng mcp)`                                      | Tool-based + workspace-aware help (projects, schematics, builds/tests/devserver), plus best-practices/examples; avoid deprecated features                 |
-| **Angular v21**         | `https://angular.dev/assets/context/llms-full.tx`           | Static docs bundle for RAG/prompting (knowledge only; no actions)                                                                                         |
-| **Daisyui v5.5.5**      | `https://daisyui.com/llms.txt`                              | Up-to-date Documentation, latest features, syntax, sample code, avoid deprecated features                                                                 |
-| **Flutter/Dart**        | `Dart MCP server`                                           | Up-to-date Documentation, latest features, syntax, sample code, avoid deprecated features                                                                 |
-| **Riverpod**            | `Context7`                                                  | Up-to-date Documentation, latest features, syntax, sample code, avoid deprecated features                                                                 |
-| **Prisma ORM**          | `https://www.prisma.io/docs/llms.txt`                       | Prisma ORM docs index for LLM-friendly retrieval                                                                                                          |
-| **LangChain/LangGraph** | https://langchain-ai.github.io/langgraph/llms-full.txt`     | Up-to-date LangChain  and  LangGraphdocs context; `mcpdoc` helps an IDE/agent browse the `llms.txt` index reliably                                        |
-| **Pydantic v2**         | `https://docs.pydantic.dev/latest/llms-full.txt`            | Full Pydantic docs bundle for RAG/prompting                                                                                                               |
-| **PostgreSQL**          | `postgres MCP server`                                       | Tool-based, schema-aware DB assistance (SQL, introspection, admin-safe workflows)                                                                         |
-| **Firebase Firestore**  | `firebase MCP server for Firbase and Firestore Databases`   | Tool-based Firebase and Firestore operations + rules validation via MCP                                                                                   |
-| **Docker**              | `https://docs.docker.com/llms.txt`                          | Docker docs index for LLM-friendly retrieval                                                                                                              |
-| **MCP client+server**   | `https://modelcontextprotocol.io/llms-full.txt`             | Official MCP documentation bundle (useful for implementing/maintaining MCP integrations)                                                                  |
-| **All other libraries** | `Context7`                                                  | Up-to-date Documentation, latest features, syntax, sample code, avoid deprecated features                                                                 |
-
-
-### 🔴 MANDATORY: No Deprecated or Outdated Code
-
+**No Deprecated or Outdated Code:**
 - **ALWAYS** use latest stable syntax and features from official documentation
 - **NEVER** generate deprecated methods, classes, or patterns
 - **ALWAYS** verify API signatures against current documentation before generating code
 - **ALWAYS** check for breaking changes in recent versions
-- When in doubt, **query the MCP server first**
-
-### 📌 Mandatory Workflow
-
-**BEFORE writing any code, Claude MUST:**
-1. **Query the relevant MCP server(s)** for the technology being used
-2. **Verify syntax is current** — no deprecated methods, classes, or patterns
-3. **Check for breaking changes** — especially for Supabase, Flutter, and Riverpod
-4. **Use official examples** as reference for implementation patterns
-
-### 🚦 PRE-CODE GENERATION GATE
-
-**STOP! Before writing ANY code, answer these questions:**
-1. ☐ Which MCP server(s) apply to this task?
-2. ☐ Have I queried the MCP server for current syntax?
-3. ☐ Am I using any deprecated patterns? (Check the table above)
-4. ☐ Does this follow `postgres-best-practices` if touching DB?
-5. ☐ Is this the simplest solution? (Section 2: Simplicity First)
-
-**If any answer is "No" or "Unsure" → Query MCP server first**
 
 
 ## Core Behaviors

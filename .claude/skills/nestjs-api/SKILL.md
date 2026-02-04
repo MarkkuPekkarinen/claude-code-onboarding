@@ -119,6 +119,15 @@ src/
 | `reference/nestjs-debugging-basics.md` | Prisma query logging, Fastify lifecycle, config debugging |
 | `reference/nestjs-debugging-advanced.md` | Memory leaks, performance profiling, production debugging, tracing |
 
+## Documentation Sources
+
+Before generating code, consult these sources for current syntax and APIs:
+
+| Source | URL / Tool | Purpose |
+|--------|-----------|---------|
+| Prisma ORM | `https://www.prisma.io/docs/llms.txt` | Prisma schema, migrations, client API |
+| NestJS / TypeScript | `Context7` MCP | Latest NestJS decorators, modules, patterns |
+
 ## Error Handling
 
 **Validation errors**: Use `class-validator` decorators on DTO classes. Global ValidationPipe auto-returns 422 with details.

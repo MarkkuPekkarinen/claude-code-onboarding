@@ -87,6 +87,15 @@ com.company.<service>/
 | `reference/spring-boot-security-hardening.md` | OWASP dependency scanning, static analysis patterns, HSTS, JWT role extraction, secure logging |
 | `reference/spring-boot-reactive-patterns.md` | Resilience4j operators, Redis reactive, SSE, Spring Cloud Stream, custom operators, threading anti-patterns |
 
+## Documentation Sources
+
+Before generating code, consult these sources for current syntax and APIs:
+
+| Source | URL / Tool | Purpose |
+|--------|-----------|---------|
+| Spring Boot | `Context7` MCP | Latest Spring Boot APIs, annotations, configuration |
+| Spring Initializr | `https://start.spring.io` | Project scaffolding with correct dependencies |
+
 ## Common Commands
 
 ```bash

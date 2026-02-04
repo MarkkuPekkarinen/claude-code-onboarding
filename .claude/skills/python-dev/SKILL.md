@@ -61,6 +61,15 @@ pip install -e ".[dev]"
 | **Database** | SQLAlchemy 2.0+ with async session and `Mapped[]` types |
 | **Testing** | pytest with fixtures, httpx AsyncClient, 80%+ coverage |
 
+## Documentation Sources
+
+Before generating code, consult these sources for current syntax and APIs:
+
+| Source | URL / Tool | Purpose |
+|--------|-----------|---------|
+| Pydantic v2 | `https://docs.pydantic.dev/latest/llms-full.txt` | Model validation, Field constraints, settings |
+| FastAPI / Python | `Context7` MCP | Latest FastAPI endpoints, dependencies, middleware |
+
 ## Error Handling
 
 **API errors**: Always raise `HTTPException` with descriptive detail messages.

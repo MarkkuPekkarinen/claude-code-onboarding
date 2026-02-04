@@ -23,13 +23,18 @@ allowed-tools: Read, Edit, Write, Glob, Grep, Bash, WebFetch, mcp__context7__res
 
 Activate when: building Angular standalone components, services, lazy-loaded routes, unit tests, creating UI mockups, scaffolding Angular SPAs, designing forms, running accessibility audits, or creating design systems with TailwindCSS + daisyUI.
 
-## Pre-requisites — Verify Angular 21.x Conventions
+## Documentation Sources
 
-Before generating any code, you MUST fetch the latest Angular documentation to verify current syntax, APIs, deprecated features, and best practices:
+Before generating code, consult these sources for current syntax and APIs:
 
-1. Fetch `https://angular.dev/assets/context/llms-full.txt` using WebFetch to get the latest Angular API reference, deprecated features, and current conventions.
-2. Use Context7 MCP (`resolve-library-id` then `query-docs`) to verify any APIs you are unsure about (e.g., `bootstrapApplication`, `provideRouter`, component decorator options, control flow syntax).
-3. Cross-check all Angular APIs and CLI flags against the fetched docs — do NOT use deprecated or removed features.
+| Source | URL / Tool | Purpose |
+|--------|-----------|---------|
+| Angular v21 | `angular-cli` MCP (ng mcp) | Workspace-aware help, schematics, builds, best practices |
+| Angular v21 | `https://angular.dev/assets/context/llms-full.txt` | Static docs bundle — API reference, deprecated features |
+| daisyUI v5.5.5 | `https://daisyui.com/llms.txt` | Component reference, color system, themes |
+| TailwindCSS / RxJS | `Context7` MCP | Latest syntax, utilities, operators |
+
+Cross-check all Angular APIs and CLI flags against fetched docs — do NOT use deprecated or removed features.
 
 > For Angular & TypeScript best practices, read reference/angular-best-practices.md
 

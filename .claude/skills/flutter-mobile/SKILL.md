@@ -88,6 +88,16 @@ dart run build_runner build --delete-conflicting-outputs
 
 For detailed code templates for all patterns above, read `reference/flutter-modern-architecture.md`
 
+## Documentation Sources
+
+Before generating code, consult these sources for current syntax and APIs:
+
+| Source | URL / Tool | Purpose |
+|--------|-----------|---------|
+| Flutter / Dart | `Dart MCP server` | Latest Flutter widgets, Dart syntax, platform APIs |
+| Riverpod | `Context7` MCP | Provider types, ref usage, AsyncValue patterns |
+| Firebase Firestore | `Firebase MCP server` | Firestore operations, rules validation, auth flows |
+
 ## Common Commands
 
 ```bash

@@ -91,6 +91,15 @@ For MongoDB, Firestore, and other document databases, read `reference/nosql-desi
 
 After designing a schema, run through `reference/schema-design-checklist.md` to verify completeness.
 
+## Documentation Sources
+
+Before generating schemas or queries, consult these sources:
+
+| Source | URL / Tool | Purpose |
+|--------|-----------|---------|
+| PostgreSQL | `PostgreSQL MCP server` | Schema-aware SQL, introspection, admin-safe workflows |
+| Firebase Firestore | `Firebase MCP server` | Document design, rules, indexes for NoSQL schemas |
+
 ## Reference Files
 
 | File | Contents |

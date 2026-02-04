@@ -105,6 +105,16 @@ src/<service_name>/
 4. **Include `/api/v1/health`** — ping LLM providers, DB, vector store
 5. **Propagate `thread_id`** from request to graph config — enables conversation continuity
 
+## Documentation Sources
+
+Before generating code, consult these sources for current syntax and APIs:
+
+| Source | URL / Tool | Purpose |
+|--------|-----------|---------|
+| LangGraph | `https://langchain-ai.github.io/langgraph/llms-full.txt` | StateGraph, nodes, edges, checkpointing APIs |
+| Pydantic v2 | `https://docs.pydantic.dev/latest/llms-full.txt` | Model validation, settings, Field constraints |
+| FastAPI / LangChain | `Context7` MCP | Latest LangChain tools, FastAPI patterns |
+
 ## Reference Files
 
 | File | Content | When to Use |
