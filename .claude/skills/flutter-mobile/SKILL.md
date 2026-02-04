@@ -88,6 +88,19 @@ dart run build_runner build --delete-conflicting-outputs
 
 For detailed code templates for all patterns above, read `reference/flutter-modern-architecture.md`
 
+## Common Commands
+
+```bash
+flutter run                          # Run on connected device/emulator
+flutter test                         # Run tests
+flutter build apk                    # Build Android APK
+flutter build ios                    # Build iOS
+flutter pub get                      # Install dependencies
+flutter clean                        # Clean build artifacts
+dart run build_runner build --delete-conflicting-outputs  # Run code generation
+flutter analyze                      # Static analysis
+```
+
 ## Error Handling
 
 **Build runner fails**: Delete `.dart_tool/build/`, run `flutter clean`, retry codegen

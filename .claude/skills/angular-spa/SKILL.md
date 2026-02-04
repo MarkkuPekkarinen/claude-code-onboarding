@@ -116,6 +116,18 @@ src/app/
 └── app.config.ts
 ```
 
+## Common Commands
+
+```bash
+ng serve                             # Dev server at localhost:4200
+ng build --configuration=production  # Production build
+ng test                              # Unit tests (Karma/Jest)
+ng generate component <name>         # Scaffold component
+ng generate service <name>           # Scaffold service
+ng lint                              # Run linter
+npx tsc --noEmit                     # Type check only
+```
+
 ## Reference Files
 
 Detailed patterns are in `reference/`:

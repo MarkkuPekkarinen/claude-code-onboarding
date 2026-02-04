@@ -96,43 +96,11 @@ Fallback: official docs (docs.angular.dev, api.flutter.dev, fastapi.tiangolo.com
 | Tech debt | `dedup-code-agent` |
 
 ## Common Commands
+
+> Stack-specific commands are lazy-loaded per skill. See `.claude/skills/<tech>/SKILL.md`.
+
 ```bash
-# Java / Spring Boot
-mvn spring-boot:run                  # Run backend
-mvn test                             # Run tests
-mvn package                          # Build JAR
-
-# NestJS
-npm run start:dev                    # Dev server with hot reload
-npm run build                        # Compile TypeScript
-npm run start:prod                   # Run compiled JS
-npm test                             # Run Vitest tests
-npx tsc --noEmit                     # Type check only
-npx prisma generate                  # Generate Prisma client
-npx prisma migrate dev               # Run DB migrations
-
-# Python / FastAPI
-uvicorn src.my_service.main:app --reload  # Dev server
-pytest -v                            # Run tests
-ruff check src/ --fix                # Lint and auto-fix
-ruff format src/                     # Format code
-mypy src/                            # Type check
-alembic upgrade head                 # Run DB migrations
-
-# Angular
-ng serve                             # Dev server at localhost:4200
-ng build --configuration=production  # Production build
-ng test                              # Unit tests
-ng generate component <name>         # Scaffold component
-
-# Flutter
-flutter run                          # Run on connected device/emulator
-flutter test                         # Run tests
-flutter build apk                    # Build Android APK
-flutter build ios                    # Build iOS
-flutter pub get                      # Install dependencies
-
-# Docker
+# Docker (cross-cutting)
 docker-compose up -d                 # Start all services
 docker-compose down                  # Stop all services
 ```

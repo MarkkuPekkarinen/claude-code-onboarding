@@ -87,6 +87,17 @@ com.company.<service>/
 | `reference/spring-boot-security-hardening.md` | OWASP dependency scanning, static analysis patterns, HSTS, JWT role extraction, secure logging |
 | `reference/spring-boot-reactive-patterns.md` | Resilience4j operators, Redis reactive, SSE, Spring Cloud Stream, custom operators, threading anti-patterns |
 
+## Common Commands
+
+```bash
+mvn spring-boot:run                  # Run backend
+mvn test                             # Run tests
+mvn package                          # Build JAR
+mvn spotless:apply                   # Format code
+mvn clean test -Dspring.profiles.active=test  # Run tests with test profile
+mvn dependency:tree                  # Show dependency tree
+```
+
 ## Error Handling
 
 **Validation errors**: Use `jakarta.validation` annotations on DTO records. Handle via `@ControllerAdvice` returning `ProblemDetail` with `HttpStatus.BAD_REQUEST` (400).
