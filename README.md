@@ -52,6 +52,7 @@ Clone it, install Claude Code, and start building.
     - [What Each Layer Contains](#what-each-layer-contains)
     - [Key Takeaways](#key-takeaways)
   - [10. What's in This Repo](#10-whats-in-this-repo)
+    - [MCP Servers (`.mcp.json`)](#mcp-servers-mcpjson)
   - [11. Hands-On Exercises](#11-hands-on-exercises)
     - [Exercise 1: Scaffold a Flutter Fitness App](#exercise-1-scaffold-a-flutter-fitness-app)
     - [Exercise 2: Build a Weather REST API (Java)](#exercise-2-build-a-weather-rest-api-java)
@@ -117,12 +118,35 @@ Before you begin, make sure you have:
 
 ## 2. Clone This Repo
 
-This repo is your playground — use it to learn and practice Claude Code (Agentic AI coding assistant) and get familiar with its components (agents, skills, slash commands, MCP servers) so you can automate your development workflow.
+This repo is your playground — use it to learn and practice Claude Code (Agentic AI coding assistant) and get familiar with its components (agents, skills, slash commands, hooks, MCP servers, memory) so you can automate your development workflow.
 
+**Option A: Learn & Explore (recommended for first-timers)**
+
+Clone the full repo and work through the exercises:
 ```bash
 git clone https://github.com/kumaran-is/claude-code-onboarding.git
 cd claude-code-onboarding
 ```
+
+**Option B: Adopt into an Existing Project**
+
+Already have a project? Copy just the Claude Code configuration into it:
+```bash
+# From the cloned repo, copy the config into your project
+cp -r claude-code-onboarding/.claude/ your-project/.claude/
+cp claude-code-onboarding/CLAUDE.md your-project/
+cp claude-code-onboarding/.mcp.json your-project/
+
+# Then customize for your project
+cd your-project
+```
+
+After copying, you'll want to:
+1. Edit `CLAUDE.md` — replace the tech stack and conventions with your project's
+2. Edit `.claude/settings.json` — adjust `permissions.allow` for your build tools (e.g., remove `flutter` if you don't use it)
+3. Edit `.mcp.json` — remove MCP servers you don't need, add project-specific ones
+4. Remove agents/skills/commands for stacks you don't use
+5. Run `chmod +x .claude/hooks/*.sh` to make hooks executable
 
 ## 3. Set Up Your Editor (Install VS Code)
 
