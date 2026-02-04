@@ -684,34 +684,53 @@ claude-code-onboarding/
     └── skills/                            # 20 auto-activated domain knowledge skills
         │
         │  # — Backend skills —
-        ├── java-spring-api/              # Spring Boot 3.5.x patterns (9 reference files)
-        ├── java-coding-standard/         # Java coding standards (1 reference file)
-        ├── nestjs-api/                   # NestJS 11.x patterns (23 reference files)
-        ├── nestjs-coding-standard/       # NestJS coding standards (1 reference file)
-        ├── python-dev/                   # Python 3.13 / FastAPI patterns (1 reference file)
+        ├── java-spring-api/              # Spring Boot 3.5.x: entity patterns, resilience (Resilience4j),
+        │                                 # testing (WebTestClient, Testcontainers), security hardening,
+        │                                 # reactive debugging, Redis/SSE patterns (9 reference files)
+        ├── java-coding-standard/         # Java naming, immutability, records, sealed types (1 reference file)
+        ├── nestjs-api/                   # NestJS 11.x: module structure, Prisma 7.x, config management,
+        │                                 # circuit breakers, feature flags, messaging (BullMQ/RabbitMQ/Kafka),
+        │                                 # REST controllers, security, debugging, testing (23 reference files)
+        ├── nestjs-coding-standard/       # NestJS naming, module patterns, DTO conventions (1 reference file)
+        ├── python-dev/                   # Python 3.13: FastAPI patterns, Pydantic v2, async SQLAlchemy,
+        │                                 # pytest fixtures, ruff/mypy config (1 reference file)
         │
         │  # — Agentic AI skills —
-        ├── agentic-ai-dev/               # LangChain/LangGraph agent building (17 reference files)
-        ├── agentic-ai-coding-standard/   # Agentic AI coding standards (1 reference file)
+        ├── agentic-ai-dev/               # LangChain/LangGraph: ReAct agents, RAG (standard/agentic/self-RAG),
+        │                                 # tool definitions, multi-provider LLM routing, guardrails,
+        │                                 # prompt injection detection, PII redaction (17 reference files)
+        ├── agentic-ai-coding-standard/   # Agentic AI naming, TypedDict state, async patterns (1 reference file)
         │
         │  # — Frontend & mobile skills —
-        ├── angular-spa/                  # Angular 21.x + TailwindCSS patterns (12 reference files)
-        ├── flutter-mobile/               # Flutter 3.38 / Dart 3.11 patterns (2 reference files)
-        ├── riverpod-patterns/            # Riverpod state management (1 reference file)
-        ├── ui-standards-tokens/          # Design tokens & UI standards (2 reference files)
+        ├── angular-spa/                  # Angular 21.x: standalone components, signals, control flow,
+        │                                 # TailwindCSS 4.x + daisyUI 5.x setup, zoneless testing,
+        │                                 # accessibility checklist, troubleshooting (12 reference files)
+        ├── flutter-mobile/               # Flutter 3.38: clean architecture layers, Riverpod 3.x,
+        │                                 # Freezed models, GoRouter, Firebase integration (2 reference files)
+        ├── riverpod-patterns/            # Riverpod: AsyncNotifier, AsyncValue.when, ref.watch vs ref.read,
+        │                                 # family providers, lifecycle management (1 reference file)
+        ├── ui-standards-tokens/          # Design tokens: spacing scale, color system, typography,
+        │                                 # elevation, touch targets, responsive breakpoints (2 reference files)
         │
         │  # — Architecture & design skills —
-        ├── architecture-design/          # System architecture patterns (1 reference file)
-        ├── architecture-decision-records/ # ADR templates & lifecycle (3 reference files)
-        ├── database-schema-designer/     # Schema design + migrations (7 reference files)
-        ├── ddd-architect/                # Domain-Driven Design analysis (4 reference files)
-        ├── openapi-spec-generation/      # OpenAPI 3.1 spec generation (5 reference files)
+        ├── architecture-design/          # C4 diagrams, API contracts, sequence diagrams,
+        │                                 # deployment topology, ADR templates (1 reference file)
+        ├── architecture-decision-records/ # ADR lifecycle, templates, status tracking (3 reference files)
+        ├── database-schema-designer/     # PostgreSQL schema: normalization, Flyway migrations,
+        │                                 # Firestore collections, indexing strategy, ERDs (7 reference files)
+        ├── ddd-architect/                # Domain-Driven Design: bounded contexts, aggregates,
+        │                                 # context mapping, event storming, strategic/tactical design (4 reference files)
+        ├── openapi-spec-generation/      # OpenAPI 3.1: schema generation, path definitions,
+        │                                 # security schemes, examples, validation (5 reference files)
         │
         │  # — Tooling skills —
-        ├── mcp-builder/                  # MCP server development (18 reference files + scripts)
-        ├── playwright-skill/             # E2E testing with Playwright (3 reference files + runtime)
-        ├── domain-finder/                # Domain name availability checker (1 reference file)
-        └── changelog-generator/          # Git history → release notes (1 reference file)
+        ├── mcp-builder/                  # MCP server development: Python (FastMCP) and Node.js (MCP SDK),
+        │                                 # tool definitions, transport config (18 reference files + scripts)
+        ├── playwright-skill/             # E2E testing: page objects, test fixtures, assertions,
+        │                                 # CI configuration (3 reference files + runtime)
+        ├── domain-finder/                # Domain name availability checking via WHOIS (1 reference file)
+        └── changelog-generator/          # Git history parsing, semantic versioning,
+                                          # release notes generation (1 reference file)
 ```
 
 ### MCP Servers (`.mcp.json`)
