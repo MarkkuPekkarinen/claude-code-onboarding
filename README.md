@@ -734,7 +734,33 @@ Then review your work:
 > @agentic-ai-reviewer Review the agent service for graph correctness, safety, cost, and production readiness
 ```
 
-### Exercise 9: Add a Feature End-to-End
+### Exercise 9: Domain-Driven Design with DDD Architect
+
+**Components used:** Skill (ddd-architect) → Sub-agents (`@architect`, `@database-designer`)
+
+Use the DDD Architect skill to decompose a complex domain into bounded contexts, aggregates, and integration patterns — then hand off to implementation agents:
+
+```
+> Perform a full DDD analysis for an online food delivery platform. The system handles restaurant menus, customer ordering, real-time delivery tracking, payments, ratings and reviews, and a loyalty program. Tech stack: Spring Boot microservices, Angular web, Flutter mobile, PostgreSQL, Firebase for real-time.
+```
+
+Claude activates the `ddd-architect` skill automatically and walks through strategic → tactical → technical phases. Follow up to drill deeper:
+
+```
+> Show me the context map with all integration patterns between Order, Delivery, and Payment contexts
+> Design the Order aggregate with invariants — what rules must hold when placing, modifying, or cancelling an order?
+> Which contexts should communicate via domain events vs. synchronous API calls? Justify each.
+> Generate the implementation roadmap — which bounded contexts should we build first and why?
+```
+
+Then use the outputs to drive implementation:
+
+```
+> @database-designer Design the PostgreSQL schema for the Order bounded context based on the DDD tactical design
+> @architect Design the event-driven integration between Order, Payment, and Delivery contexts using the context map
+```
+
+### Exercise 10: Add a Feature End-to-End
 
 **Components used:** Slash Command → all components in action
 
