@@ -1,5 +1,6 @@
 ---
 name: ddd-architect
+allowed-tools: Read, Write, Edit
 description: >
   Comprehensive Domain-Driven Design analysis and architecture generation.
   Use when asked to perform DDD analysis, design bounded contexts, create domain models,
@@ -19,10 +20,10 @@ This skill uses **progressive disclosure**. Read the reference files as needed:
 
 | Phase | Reference File | When to Load |
 |-------|---------------|--------------|
-| Strategic Design | `references/strategic-design.md` | Always — start here |
-| Tactical Design | `references/tactical-design.md` | After strategic phase |
-| Technical Architecture | `references/technical-architecture.md` | After tactical phase |
-| Implementation | `references/implementation-guidelines.md` | After architecture phase |
+| Strategic Design | `reference/strategic-design.md` | Always — start here |
+| Tactical Design | `reference/tactical-design.md` | After strategic phase |
+| Technical Architecture | `reference/technical-architecture.md` | After tactical phase |
+| Implementation | `reference/implementation-guidelines.md` | After architecture phase |
 | Output Templates | `assets/templates/` | When generating documents |
 
 ## Execution Protocol
@@ -42,7 +43,7 @@ If any are missing, ask before proceeding. Do NOT assume.
 
 ### Step 1: Strategic Design
 
-Read `references/strategic-design.md`, then:
+Read `reference/strategic-design.md`, then:
 
 1. Identify core, supporting, and generic subdomains
 2. Classify by strategic value and complexity
@@ -55,7 +56,7 @@ Read `references/strategic-design.md`, then:
 
 ### Step 2: Tactical Design
 
-Read `references/tactical-design.md`, then:
+Read `reference/tactical-design.md`, then:
 
 1. Design aggregates with invariants and consistency boundaries
 2. Identify entities, value objects, domain events
@@ -67,7 +68,7 @@ Read `references/tactical-design.md`, then:
 
 ### Step 3: Technical Architecture
 
-Read `references/technical-architecture.md`, then:
+Read `reference/technical-architecture.md`, then:
 
 1. API design aligned with aggregates
 2. Database schema per bounded context
@@ -78,7 +79,7 @@ Read `references/technical-architecture.md`, then:
 
 ### Step 4: Implementation Guidelines
 
-Read `references/implementation-guidelines.md`, then:
+Read `reference/implementation-guidelines.md`, then:
 
 1. Package/module structure following DDD layers
 2. Testing strategy (unit, integration, contract, E2E)

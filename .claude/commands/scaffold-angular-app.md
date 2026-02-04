@@ -1,6 +1,7 @@
 ---
 description: Scaffold a new Angular 21.x SPA with standalone components, lazy routing, TailwindCSS + daisyUI, and a sample feature module
 allowed-tools: Bash, Read, Write, Edit, Glob, Grep, WebFetch, mcp__context7__resolve-library-id, mcp__context7__query-docs
+disable-model-invocation: true
 ---
 
 # Scaffold Angular SPA
