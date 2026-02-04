@@ -6,6 +6,14 @@ allowed-tools: Bash, Read, Write, Edit
 
 # Java 21 + Spring Boot 3.5.x WebFlux REST API Skill
 
+## Code Conventions
+- Use **Java 21** features: records, sealed classes, pattern matching, virtual threads
+- Spring Boot 3.5.x Reactive stack: `WebFlux` + `Mono`/`Flux` — no blocking calls in reactive chains
+- Follow package structure: `controller → service → repository → model/dto`
+- Use `@RestController` with `@RequestMapping("/api/v1/...")`
+- DTOs as Java records, entities as classes with JPA/R2DBC annotations
+- Tests: JUnit 5 + WebTestClient for reactive endpoints
+
 ## Quick Scaffold — New Spring Boot Project
 
 ```bash
