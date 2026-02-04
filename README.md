@@ -714,7 +714,27 @@ Use specialized agents for design and review tasks that benefit from isolated, f
 > @database-designer Design the notification schema with PostgreSQL for persistence and Firestore for real-time delivery
 ```
 
-### Exercise 8: Add a Feature End-to-End
+### Exercise 8: Build an AI Agent Service (Agentic AI)
+
+**Components used:** Slash Command → Sub-agent → Skill (auto) → MCP Server
+
+Scaffold a production AI agent service, then build out a ReAct agent with RAG and tools:
+
+```
+> /scaffold-agentic-ai research-agent
+> @agentic-ai-dev Add a web search tool and a database query tool with Pydantic input validation
+> @agentic-ai-dev Build an Agentic RAG system with query routing, document grading, and web search fallback
+> @agentic-ai-dev Add guardrails — prompt injection detection, PII redaction, and output validation
+> @agentic-ai-dev Write tests for the ReAct agent: basic invoke, tool usage, iteration limit, and error recovery
+```
+
+Then review your work:
+
+```
+> @agentic-ai-reviewer Review the agent service for graph correctness, safety, cost, and production readiness
+```
+
+### Exercise 9: Add a Feature End-to-End
 
 **Components used:** Slash Command → all components in action
 
