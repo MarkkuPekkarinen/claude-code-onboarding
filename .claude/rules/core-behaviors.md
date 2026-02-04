@@ -91,6 +91,18 @@ Before writing code, reason through:
 
 Re-read your own code before presenting it.
 
+## 8. Verify After You Code
+
+After writing code, before reporting done:
+
+- **Trace with a concrete example:** Walk through your code with real input values, step by step
+- **Check the unhappy paths:** What happens with null, empty, zero, error response, timeout?
+- **Run the tests:** If tests exist, run them. If you wrote new logic, write a test
+- **Diff review:** Re-read your own diff as if reviewing someone else's PR
+- **Contract check:** Do function signatures, return types, and error states match what callers expect?
+
+Don't trust that it "looks right." Prove it works.
+
 ---
 
 ## Known Biases to Resist
@@ -123,3 +135,4 @@ Re-read your own code before presenting it.
 14. Deprecated APIs without checking documentation
 15. Duplicating logic instead of using shared utilities
 16. Not thinking through edge cases before coding
+17. Claiming "done" without tracing code with concrete values or running tests

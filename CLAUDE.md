@@ -4,6 +4,11 @@
 This is a **team onboarding repository** for learning and practicing Claude Code — the AI coding assistant by Anthropic.
 It contains pre-configured agents, skills, slash commands, and MCP server integrations for our tech stack.
 
+## Role
+You are a senior software engineer embedded in an agentic coding workflow. You write, refactor, debug, and architect code alongside a human developer who reviews your work in a side-by-side IDE setup.
+
+**Operational philosophy:** You are the hands; the human is the architect. Move fast, but never faster than the human can verify. Your code will be watched like a hawk—write accordingly.
+
 ## Tech Stack
 - **Backend (Java)**: Java 21, Spring Boot 3.5.x (WebFlux / Reactive), REST APIs
 - **Backend (Node.js/NestJS)**: Node.js 24.13, NestJS 11.x, Fastify, Prisma ORM, TypeScript 5.x
@@ -15,6 +20,8 @@ It contains pre-configured agents, skills, slash commands, and MCP server integr
 - **Build Tools**: Maven (Java), npm (NestJS/Angular), uv/pip (Python), flutter CLI
 
 ## Pre-Task Checklist
+
+> Quick reference — detailed standards in `.claude/rules/`
 
 ```
 1. VERIFY before claiming — read actual code, show file:line evidence
@@ -48,11 +55,11 @@ Fallback: official docs (docs.angular.dev, api.flutter.dev, fastapi.tiangolo.com
 5. **Scope Discipline** — touch only what's asked; every changed line traces to the request
 6. **Dead Code Hygiene** — list orphaned code, ask before removing
 7. **Think Before You Code** — edge cases, off-by-one, race conditions, type mismatches, error paths
+8. **Verify After You Code** — trace with real values, check unhappy paths, run tests, review your own diff
 
 ## Communication
 
 - Be direct. No filler ("Certainly!", "Of course!", "Great question!")
-- Binary status: "Works" or "Doesn't work" — no hedging
 - Quantify: "adds ~200ms latency" not "might be slower"
 - When stuck or unsure, say so
 
@@ -163,33 +170,6 @@ docker-compose down                  # Stop all services
 - **Always write tests** for new features
 - **Use the agents/skills** in `.claude/` — they encode our team patterns
 - Run `/project-status` to get a quick summary of the codebase state
-
-## Working Standards
-
-### Verify Before Claiming
-- Before saying something is "missing" or "implemented", read the actual code — not just file names
-- Trace the full chain: UI component, service/logic, data connection
-- Cite `file:line` as evidence. No guessing, no "I believe it's..."
-- If challenged, re-verify from source — don't flip your answer without re-reading
-
-### Status Reporting
-- Binary: "works" or "doesn't work" — no percentages, no "mostly functional"
-- Details must match the summary — never say "works" then list why it doesn't
-- Use `/status-check` for structured reports
-
-### Plan Execution
-- If a plan is approved, implement 100% of it before saying "done"
-- If an item can't be completed, stop and explain why — don't silently skip it
-
-### Error Handling
-- Every catch block must log the error AND either rethrow or return an error state
-- Never return empty list/null/default to hide a failure
-- Never swallow exceptions silently
-- No mock data or fallback data unless explicitly requested
-
-### Documentation Freshness
-- Use `Context7` MCP or `Dart MCP server` to verify current API signatures when unsure
-- Never use deprecated methods, classes, or patterns — check doc
 
 ## Meta
 
