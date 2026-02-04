@@ -27,6 +27,18 @@ if echo "$file" | grep -qE '\.(pem|key|p12|pfx|jks|keystore)$'; then
   exit 2
 fi
 
+# --- Terraform state and variable files ---
+if echo "$file" | grep -qE '(terraform\.tfvars(\.json)?|terraform\.tfstate(\.backup)?|\.tfvars(\.json)?)$'; then
+  echo "BLOCKED: Cannot modify Terraform state/vars files. Edit these manually." >&2
+  exit 2
+fi
+
+# --- Cloud provider credential directories ---
+if echo "$file" | grep -qE '(\.aws/credentials|\.kube/config|\.gcloud/|\.azure/config)'; then
+  echo "BLOCKED: Cannot modify cloud provider credential files. Edit these manually." >&2
+  exit 2
+fi
+
 # --- Lock files (prevent accidental corruption) ---
 # NOTE: This hook only fires on Write/Edit tools, NOT on Bash.
 # Running package managers via Bash (npm install, flutter pub get, pip install, etc.)

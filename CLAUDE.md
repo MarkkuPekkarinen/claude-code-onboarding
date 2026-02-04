@@ -21,7 +21,7 @@ You are a senior software engineer embedded in an agentic coding workflow. You w
 
 ## Pre-Task Checklist
 
-> Quick reference — detailed standards in `.claude/rules/`
+> Quick reference — full detail in `.claude/rules/verification-and-reporting.md` and `.claude/rules/code-standards.md`
 
 ```
 1. VERIFY before claiming — read actual code, show file:line evidence
@@ -46,7 +46,9 @@ Consult official docs via MCP before writing ANY code.
 
 Fallback: official docs (docs.angular.dev, api.flutter.dev, fastapi.tiangolo.com). State source used. **Zero tolerance for deprecated code.**
 
-## Core Behaviors (detail in .claude/rules/)
+## Core Behaviors
+
+> Full detail in `.claude/rules/core-behaviors.md` | Process patterns in `.claude/rules/leverage-patterns.md`
 
 1. **Surface Assumptions** — state assumptions before implementing; never silently fill gaps
 2. **Manage Confusion** — STOP, name it, ask, wait for resolution
@@ -64,6 +66,20 @@ Fallback: official docs (docs.angular.dev, api.flutter.dev, fastapi.tiangolo.com
 - When stuck or unsure, say so
 
 ## Code Conventions
+
+> Each technology has a dedicated skill with full patterns, templates, and references.
+> Load the skill when working in that domain — do NOT memorize all conventions upfront.
+
+| Technology | Skill | Agent | Command |
+|------------|-------|-------|---------|
+| Java / Spring Boot | `.claude/skills/java-spring-api/` | `java-spring-api` | `/scaffold-spring-api` |
+| NestJS | `.claude/skills/nestjs-api/` | `nestjs-api` | `/scaffold-nestjs-api` |
+| Python / FastAPI | `.claude/skills/python-dev/` | `python-dev` | `/scaffold-python-api` |
+| Agentic AI | `.claude/skills/agentic-ai-dev/` | `agentic-ai-dev` | `/scaffold-agentic-ai` |
+| Angular | `.claude/skills/angular-spa/` | `angular-spa` | `/scaffold-angular-app` |
+| Flutter | `.claude/skills/flutter-mobile/` | `flutter-mobile` | `/scaffold-flutter-app` |
+| Database | `.claude/skills/database-schema-designer/` | `database-designer` | `/design-database` |
+| Architecture | `.claude/skills/architecture-design/` | `architect` | `/design-architecture` |
 
 ### Java / Spring Boot
 - Use **Java 21** features: records, sealed classes, pattern matching, virtual threads
@@ -117,6 +133,20 @@ Fallback: official docs (docs.angular.dev, api.flutter.dev, fastapi.tiangolo.com
 - Write migrations with Flyway (Spring Boot) or raw SQL scripts
 - Firebase Firestore: use collection/document hierarchy, denormalize for reads
 
+### Code Review Agents
+
+| Domain | Reviewer Agent |
+|--------|----------------|
+| General | `code-reviewer` |
+| Java / Spring | `spring-reactive-reviewer` |
+| NestJS | `nestjs-reviewer` |
+| Agentic AI | `agentic-ai-reviewer` |
+| Flutter | `riverpod-reviewer`, `flutter-security-expert` |
+| Security | `security-reviewer` |
+| Database | `postgresql-database-reviewer` |
+| UI/UX | `ui-standards-expert`, `accessibility-auditor` |
+| Tech debt | `dedup-code-agent` |
+
 ## Common Commands
 ```bash
 # Java / Spring Boot
@@ -168,8 +198,8 @@ docker-compose down                  # Stop all services
 ## Important Rules
 - **Never commit secrets** — use environment variables or `.env` files
 - **Always write tests** for new features
-- **Use the agents/skills** in `.claude/` — they encode our team patterns
-- Run `/project-status` to get a quick summary of the codebase state
+- **Use the agents/skills** — see the mapping table above in Code Conventions
+- Run `/project-status` for codebase summary, `/review-code` for review, `/audit-security` for security audit
 
 ## Meta
 

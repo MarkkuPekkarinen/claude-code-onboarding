@@ -35,5 +35,17 @@ if echo "$cmd" | grep -qiE '(DROP\s+DATABASE|DROP\s+SCHEMA|TRUNCATE\s+)'; then
   exit 2
 fi
 
+# --- Destructive find commands ---
+if echo "$cmd" | grep -qE 'find\s+.*\s+-delete'; then
+  echo "BLOCKED: 'find ... -delete' can remove files recursively. Use specific rm commands instead." >&2
+  exit 2
+fi
+
+# --- Remote code execution via curl/wget piped to shell ---
+if echo "$cmd" | grep -qE '(curl|wget)\s+.*\|\s*(bash|sh|zsh|source)'; then
+  echo "BLOCKED: Piping downloaded content to a shell is dangerous. Download first, review, then execute." >&2
+  exit 2
+fi
+
 # All clear
 exit 0

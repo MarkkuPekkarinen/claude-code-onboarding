@@ -4,70 +4,15 @@ description: "This skill provides Riverpod state management patterns and best pr
 allowed-tools: Read
 ---
 
-# Riverpod Correct Patterns Reference
+# Riverpod Patterns
 
-## AsyncNotifier Pattern
-```dart
-@riverpod
-class TodoList extends _$TodoList {
-  @override
-  FutureOr<List<Todo>> build() async {
-    return _fetchTodos();
-  }
+Correct Riverpod patterns for Flutter state management with code_generation style.
 
-  Future<void> addTodo(String title) async {
-    state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() async {
-      await ref.read(todoRepositoryProvider).add(title);
-      return _fetchTodos();
-    });
-  }
-}
-```
+**When to use:** Writing or reviewing Riverpod providers, AsyncNotifier, AsyncValue.when, ref.watch vs ref.read, family providers, or provider lifecycle.
 
-## Proper AsyncValue.when
-```dart
-@override
-Widget build(BuildContext context, WidgetRef ref) {
-  final todosAsync = ref.watch(todoListProvider);
+**Process:**
 
-  return todosAsync.when(
-    data: (todos) => ListView.builder(
-      itemCount: todos.length,
-      itemBuilder: (_, i) => TodoTile(todos[i]),
-    ),
-    loading: () => const Center(child: CircularProgressIndicator()),
-    error: (error, stack) => ErrorWidget(error.toString()),
-  );
-}
-```
-
-## Correct ref.watch vs ref.read
-```dart
-class MyWidget extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // CORRECT: watch in build for reactivity
-    final count = ref.watch(counterProvider);
-
-    return ElevatedButton(
-      onPressed: () {
-        // CORRECT: read in callback for one-time access
-        ref.read(counterProvider.notifier).increment();
-      },
-      child: Text('Count: $count'),
-    );
-  }
-}
-```
-
-## Family Provider Pattern
-```dart
-@riverpod
-Future<User> user(Ref ref, String userId) async {
-  return ref.watch(userRepositoryProvider).getUser(userId);
-}
-
-// Usage
-final user = ref.watch(userProvider(userId));
-```
+1. **Identify pattern needed** from user request
+2. **Load reference:** Read `reference/riverpod-core-patterns.md` for code examples and rules
+3. **Apply patterns** using loaded reference
+4. **Verify:** Confirm ref.watch is only in build(), ref.read only in callbacks, all AsyncValue states handled visibly

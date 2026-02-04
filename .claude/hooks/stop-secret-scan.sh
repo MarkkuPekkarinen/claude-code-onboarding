@@ -22,7 +22,11 @@ changed=$(git diff --name-only HEAD 2>/dev/null || git diff --name-only 2>/dev/n
 #   eyJ...           → JWT token (base64-encoded JSON)
 #   -----BEGIN...    → Private key (RSA, EC, DSA, OPENSSH)
 #   xox[pboa]-...    → Slack token (bot, user, app)
-patterns='AKIA[0-9A-Z]{16}|AIza[0-9A-Za-z\-_]{35}|ghp_[0-9a-zA-Z]{36}|sk-[0-9a-zA-Z]{20,}|sk-ant-[0-9a-zA-Z\-_]{20,}|eyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}|-----BEGIN (RSA |EC |DSA |OPENSSH )?PRIVATE KEY-----|xox[pboa]-[0-9]{10,}-[a-zA-Z0-9-]+'
+#   hvs./hvb.        → HashiCorp Vault token
+#   sbp_/supabase    → Supabase service/anon keys
+#   postgres://...   → PostgreSQL connection string with password
+#   mongodb+srv://   → MongoDB connection string with password
+patterns='AKIA[0-9A-Z]{16}|AIza[0-9A-Za-z\-_]{35}|ghp_[0-9a-zA-Z]{36}|sk-[0-9a-zA-Z]{20,}|sk-ant-[0-9a-zA-Z\-_]{20,}|eyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}|-----BEGIN (RSA |EC |DSA |OPENSSH )?PRIVATE KEY-----|xox[pboa]-[0-9]{10,}-[a-zA-Z0-9-]+|hv[sb]\.[A-Za-z0-9_-]{20,}|sbp_[0-9a-zA-Z]{20,}|postgres://[^:]+:[^@]+@[^\s]+|mongodb(\+srv)?://[^:]+:[^@]+@[^\s]+'
 
 hits=""
 while IFS= read -r file; do
