@@ -8,6 +8,17 @@ allowed-tools: Read, Edit, Write, Glob, Grep, Bash, WebFetch, mcp__context7__res
 
 > **Tech Stack**: Angular 21+, TailwindCSS 4.x, daisyUI 5.5.5
 
+## Code Conventions
+- Standalone components (no NgModules unless legacy)
+- Signals for state management: `signal()`, `computed()`, `input()`, `output()`
+- Control flow: `@if`, `@for`, `@switch`, `@defer` — no `*ngIf`/`*ngFor`
+- `ChangeDetectionStrategy.OnPush` on all components
+- Lazy-loaded routes via `loadComponent`
+- Use `HttpClient` with RxJS operators
+- **TailwindCSS 4.x** + **daisyUI 5.5.5** for styling (CSS-native config, no `tailwind.config.js`)
+- Use daisyUI semantic colors only — never hardcode hex values
+- Folder structure: `features/ → shared/ → core/`
+- 
 ## When to Use
 
 Activate when: building Angular standalone components, services, lazy-loaded routes, unit tests, creating UI mockups, scaffolding Angular SPAs, designing forms, running accessibility audits, or creating design systems with TailwindCSS + daisyUI.

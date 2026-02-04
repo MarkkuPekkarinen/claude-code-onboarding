@@ -6,6 +6,13 @@ allowed-tools: Bash, Read, Write, Edit
 
 # Flutter Mobile Development Skill
 
+## Code Conventions
+- Use **Riverpod** for state management
+- Follow feature-first folder structure: `lib/features/<feature>/`
+- Separate `data/`, `domain/`, `presentation/` layers (clean architecture)
+- Use `freezed` for immutable models
+- Firebase integration via `firebase_core`, `cloud_firestore`, `firebase_auth`
+
 ## Quick Scaffold
 
 ```bash

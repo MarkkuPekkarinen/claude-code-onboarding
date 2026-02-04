@@ -81,58 +81,6 @@ Fallback: official docs (docs.angular.dev, api.flutter.dev, fastapi.tiangolo.com
 | Database | `.claude/skills/database-schema-designer/` | `database-designer` | `/design-database` |
 | Architecture | `.claude/skills/architecture-design/` | `architect` | `/design-architecture` |
 
-### Java / Spring Boot
-- Use **Java 21** features: records, sealed classes, pattern matching, virtual threads
-- Reactive stack: `WebFlux` + `Mono`/`Flux` — no blocking calls in reactive chains
-- Follow package structure: `controller → service → repository → model/dto`
-- Use `@RestController` with `@RequestMapping("/api/v1/...")`
-- DTOs as Java records, entities as classes with JPA/R2DBC annotations
-- Tests: JUnit 5 + WebTestClient for reactive endpoints
-
-### NestJS
-- Use **NestJS 11.x** with **Fastify** adapter (not Express)
-- **Prisma ORM** for database access with PostgreSQL
-- Module aggregation: `ConfigModule → CommonModule → CoreModule → FeaturesModule`
-- Fail-fast configuration: app crashes at startup if env vars are missing
-- `class-validator` + `class-transformer` for DTO validation
-- Feature-first modules: `src/features/{entity}/` with module, controller, service, dto, repository
-- Circuit breaker pattern for all external calls
-- Request context via `AsyncLocalStorage` for correlation ID propagation
-- Tests: Vitest + supertest for API integration tests
-
-### Python
-- Use **Python 3.14** with type hints everywhere
-- **FastAPI** for REST APIs, **Pydantic v2** for validation
-- Async by default: `async def` endpoints, `asyncpg` for PostgreSQL
-- Use `uv` for package management, `ruff` for linting, `mypy` for types
-- Folder structure: `api/routes/ → services/ → repositories/ → models/`
-- Tests: pytest + pytest-asyncio + httpx
-
-### Angular
-- Standalone components (no NgModules unless legacy)
-- Signals for state management: `signal()`, `computed()`, `input()`, `output()`
-- Control flow: `@if`, `@for`, `@switch`, `@defer` — no `*ngIf`/`*ngFor`
-- `ChangeDetectionStrategy.OnPush` on all components
-- Lazy-loaded routes via `loadComponent`
-- Use `HttpClient` with RxJS operators
-- **TailwindCSS 4.x** + **daisyUI 5.5.5** for styling (CSS-native config, no `tailwind.config.js`)
-- Use daisyUI semantic colors only — never hardcode hex values
-- Folder structure: `features/ → shared/ → core/`
-
-### Flutter
-- Use **Riverpod** for state management
-- Follow feature-first folder structure: `lib/features/<feature>/`
-- Separate `data/`, `domain/`, `presentation/` layers (clean architecture)
-- Use `freezed` for immutable models
-- Firebase integration via `firebase_core`, `cloud_firestore`, `firebase_auth`
-
-### Database
-- PostgreSQL naming: `snake_case` for tables and columns
-- Always include `id`, `created_at`, `updated_at` columns
-- Use UUID for primary keys
-- Write migrations with Flyway (Spring Boot) or raw SQL scripts
-- Firebase Firestore: use collection/document hierarchy, denormalize for reads
-
 ### Code Review Agents
 
 | Domain | Reviewer Agent |

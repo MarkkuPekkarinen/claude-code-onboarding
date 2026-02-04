@@ -6,6 +6,14 @@ allowed-tools: Bash, Read, Write, Edit
 
 # Python 3.14 Development Skill
 
+## Code Conventions
+- Use **Python 3.14** with type hints everywhere
+- **FastAPI** for REST APIs, **Pydantic v2** for validation
+- Async by default: `async def` endpoints, `asyncpg` for PostgreSQL
+- Use `uv` for package management, `ruff` for linting, `mypy` for types
+- Folder structure: `api/routes/ → services/ → repositories/ → models/`
+- Tests: pytest + pytest-asyncio + httpx
+
 ## Quick Scaffold — New Python Project
 
 ```bash

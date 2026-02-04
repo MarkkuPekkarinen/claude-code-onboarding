@@ -6,6 +6,17 @@ allowed-tools: Bash, Read, Write, Edit
 
 # NestJS 11.x + Fastify + Prisma REST API Skill
 
+## Code Conventions
+- Use **NestJS 11.x** with **Fastify** adapter (not Express)
+- **Prisma ORM** for database access with PostgreSQL
+- Module aggregation: `ConfigModule → CommonModule → CoreModule → FeaturesModule`
+- Fail-fast configuration: app crashes at startup if env vars are missing
+- `class-validator` + `class-transformer` for DTO validation
+- Feature-first modules: `src/features/{entity}/` with module, controller, service, dto, repository
+- Circuit breaker pattern for all external calls
+- Request context via `AsyncLocalStorage` for correlation ID propagation
+- Tests: Vitest + supertest for API integration tests
+
 ## Quick Scaffold — New NestJS Project
 
 ```bash
