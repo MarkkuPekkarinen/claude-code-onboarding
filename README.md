@@ -47,6 +47,7 @@ Clone it, install Claude Code, and start building.
     - [MCP Servers — External Tool Integrations](#mcp-servers--external-tool-integrations)
     - [settings.json Configuration](#settingsjson-configuration)
     - [Hooks — Automated Guardrails](#hooks--automated-guardrails)
+    - [Model Selection \& Cost Awareness](#model-selection--cost-awareness)
   - [9. What Gets Sent to the LLM?](#9-what-gets-sent-to-the-llm)
     - [Context Window Anatomy](#context-window-anatomy)
     - [What Each Layer Contains](#what-each-layer-contains)
@@ -64,16 +65,20 @@ Clone it, install Claude Code, and start building.
     - [Exercise 8: Build an AI Agent Service (Agentic AI)](#exercise-8-build-an-ai-agent-service-agentic-ai)
     - [Exercise 9: Domain-Driven Design with DDD Architect](#exercise-9-domain-driven-design-with-ddd-architect)
     - [Exercise 10: Add a Feature End-to-End](#exercise-10-add-a-feature-end-to-end)
-  - [12. Claude Code Power Features](#12-claude-code-power-features)
-    - [Keyboard Shortcuts (Inside Claude Code)](#keyboard-shortcuts-inside-claude-code)
-    - [Essential CLI Flags](#essential-cli-flags)
-    - [Core Tools](#core-tools)
-    - [Permission Model](#permission-model)
+  - [12. Customizing the Kit](#12-customizing-the-kit)
+    - [Adding a New Agent](#adding-a-new-agent)
+    - [Adding a New Slash Command](#adding-a-new-slash-command)
+    - [Adding a New Skill](#adding-a-new-skill)
+    - [Adding a New Hook](#adding-a-new-hook)
+    - [Removing Components You Don't Need](#removing-components-you-dont-need)
+    - [Version Update Guide](#version-update-guide)
   - [13. Tips \& Best Practices](#13-tips--best-practices)
     - [Prompting Best Practices](#prompting-best-practices)
+    - [Common Pitfalls — Avoid These](#common-pitfalls--avoid-these)
     - [@ File References](#-file-references)
     - [Context Window Management](#context-window-management)
     - [Parallel Workflows](#parallel-workflows)
+    - [Team Collaboration Patterns](#team-collaboration-patterns)
     - [Plugins Ecosystem](#plugins-ecosystem)
     - [Skills — Best Practices](#skills--best-practices)
     - [Writing a Good CLAUDE.md](#writing-a-good-claudemd)
@@ -94,8 +99,16 @@ Clone it, install Claude Code, and start building.
     - [Claude isn't using skills or agents](#claude-isnt-using-skills-or-agents)
     - [Background task not responding](#background-task-not-responding)
     - [Permission errors](#permission-errors)
+    - [Windows-Specific Setup](#windows-specific-setup)
     - [Run diagnostics](#run-diagnostics)
-  - [15. Resources](#15-resources)
+  - [15. Quick Reference Card](#15-quick-reference-card)
+    - [Commands You'll Use Every Day](#commands-youll-use-every-day)
+    - [Scaffolding](#scaffolding)
+    - [Design \& Review](#design--review)
+    - [Agents (use @name)](#agents-use-name)
+    - [Keyboard Shortcuts](#keyboard-shortcuts)
+    - [MCP Tips](#mcp-tips)
+  - [16. Resources](#16-resources)
 
 ---
 
@@ -516,6 +529,37 @@ This repo includes 4 hooks out of the box:
 
 > **Tip:** Install the `hookify` plugin to create hooks conversationally — run `/hookify` and describe what you want in plain English.
 
+### Model Selection & Cost Awareness
+
+This kit uses two model tiers strategically:
+
+| Model | Used By | When | Why |
+|-------|---------|------|-----|
+| **Sonnet** | Dev agents (`java-spring-api`, `angular-spa`, `flutter-mobile`, etc.) | Writing code, scaffolding, implementing features | Fast, cost-effective, excellent for code generation |
+| **Opus** | Review agents (`spring-reactive-reviewer`, `nestjs-reviewer`, `security-reviewer`, etc.) | Code review, security audits, architecture review | Deeper reasoning, catches subtle bugs, better at nuanced analysis |
+
+**Switching models mid-session:**
+
+```
+> /model                    # See current model and switch
+> /model sonnet             # Switch to Sonnet for implementation work
+> /model opus               # Switch to Opus for complex debugging
+```
+
+**Cost monitoring:**
+
+```
+> /cost                     # Token usage and estimated cost for this session
+> /stats                    # Usage stats over 7/30 days or all-time
+> /usage                    # Plan limits and remaining usage
+```
+
+**Cost-saving tips:**
+- Use `/compact` regularly in long sessions — stale context wastes tokens
+- Use `@file` references instead of pasting file contents — it's more token-efficient
+- Disable MCP servers you're not actively using (`/mcp` to check)
+- For simple tasks, Sonnet is sufficient — save Opus for reviews and complex reasoning
+
 ## 9. What Gets Sent to the LLM?
 
 Every time you send a prompt in Claude Code, it assembles a **context window** — the complete package of information sent to the LLM for that turn. Understanding what goes into this window helps you manage it effectively.
@@ -687,6 +731,18 @@ claude-code-onboarding/
 Work through these exercises to get familiar with Claude Code. Each one uses different components from this kit.
 These exercises follow a deliberate progression to help you understand **which component to use for and when**:
 
+| Exercises | Focus | Components Introduced |
+|-----------|-------|----------------------|
+| **1–4** | Single-stack scaffolding | Slash Commands, Skills (auto), Agents |
+| **5** | Multi-stack integration | Chaining commands + agents across layers |
+| **6** | External tooling | MCP Servers (Context7) |
+| **7** | Design & review | Review agents, architecture patterns |
+| **8** | AI agent development | Agentic AI stack, advanced agent patterns |
+| **9** | Domain modeling | DDD skill, cross-cutting analysis |
+| **10** | Full workflow | All components working together |
+
+**Exercises 1–4 are independent** — do them in any order based on your stack. **Exercises 5+** build on concepts from earlier exercises, so work through them sequentially.
+
 ### Exercise 1: Scaffold a Flutter Fitness App
 
 **Components used:** Slash Command → Skill (auto) → Sub-agent
@@ -833,6 +889,220 @@ This is the real-world workflow — a single command that triggers scaffolding, 
 > /add-feature User profile management — users can update their name, avatar, and preferences. Backend API + Angular settings page + Flutter profile screen
 ```
 
+## 12. Customizing the Kit
+
+This kit is a starting point — customize it for your team's stack and workflows.
+
+### Adding a New Agent
+
+Create a file in `.claude/agents/` with YAML frontmatter:
+
+```markdown
+---
+name: my-agent
+description: One-line description of when to use this agent. Claude reads this to decide when to activate it.
+model: sonnet
+tools: Bash, Read, Write, Edit, Glob, Grep
+skills:
+  - my-related-skill
+---
+
+# My Agent Name
+
+You are a [role] specializing in [domain].
+
+## Your Responsibilities
+1. First responsibility
+2. Second responsibility
+
+## How to Work
+1. Read the `my-related-skill` skill before writing code
+2. Follow [specific conventions]
+
+## Key Rules
+- Rule 1
+- Rule 2
+```
+
+**Usage:** `@my-agent Do something specific`
+
+### Adding a New Slash Command
+
+Create a file in `.claude/commands/` with YAML frontmatter:
+
+```markdown
+---
+description: What this command does (shown in /help)
+argument-hint: "[parameter description]"
+allowed-tools: Bash, Read, Write, Edit
+---
+
+# Command Title
+
+**Input:** $ARGUMENTS
+
+## Steps
+1. First step — explain what to do
+2. Second step — reference skills or agents if needed
+3. Final step — verify and report
+
+Use the `my-skill` skill for patterns and templates.
+```
+
+**Usage:** `/my-command some argument here`
+
+**Key notes:**
+- `$ARGUMENTS` is replaced with whatever the user types after the command name
+- `argument-hint` shows up in autocomplete to guide the user
+- `allowed-tools` restricts which tools the command can use
+- Add `disable-model-invocation: true` to prevent the command from using sub-agents
+
+### Adding a New Skill
+
+Create a directory in `.claude/skills/` with a `SKILL.md` file:
+
+```
+.claude/skills/my-skill/
+├── SKILL.md                    # Entry point (keep under 5KB)
+└── reference/                  # Detailed docs loaded on-demand
+    ├── templates.md            # Code templates
+    ├── patterns.md             # Design patterns
+    └── troubleshooting.md      # Common issues and fixes
+```
+
+**SKILL.md structure:**
+
+```markdown
+---
+name: my-skill
+description: |
+  Use this skill when the user asks about [domain].
+  Triggers: [list of keywords or contexts that activate this skill].
+---
+
+# My Skill
+
+## Overview
+What this skill covers and when it applies.
+
+## Quick Reference
+| Task | Pattern |
+|------|---------|
+| Common task 1 | Brief pattern |
+| Common task 2 | Brief pattern |
+
+## Detailed References
+When working on [specific task]:
+→ Read `reference/templates.md` for code templates
+
+When troubleshooting:
+→ Read `reference/troubleshooting.md`
+```
+
+**Key notes:**
+- Keep `SKILL.md` under 5KB — it loads into context when activated
+- Put detailed content in `reference/` files — they load on-demand, saving tokens
+- The `description` field is critical — Claude uses it to decide when to activate the skill
+- Skills activate automatically based on context. Users don't invoke them directly
+
+### Adding a New Hook
+
+1. Create the script in `.claude/hooks/`:
+
+```bash
+#!/usr/bin/env bash
+# Brief description of what this hook does
+set -uo pipefail
+
+# Read tool input from stdin
+input=$(cat)
+file=$(echo "$input" | jq -r '.tool_input.file_path // .tool_input.path // ""' 2>/dev/null) || file=""
+
+# Your logic here
+# Exit 0 = allow/pass, Exit 2 = block (message via stderr)
+
+exit 0
+```
+
+2. Make it executable:
+
+```bash
+chmod +x .claude/hooks/my-hook.sh
+```
+
+3. Register it in `.claude/settings.json`:
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/my-hook.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+**Hook events and matchers:**
+
+| Event | Matcher | Use Case |
+|-------|---------|----------|
+| `PreToolUse` | `Bash`, `Write`, `Edit`, `WebFetch` | Block dangerous operations before they happen |
+| `PostToolUse` | `Write`, `Edit` | Auto-format, lint, or validate after changes |
+| `Stop` | *(no matcher)* | Run tests, scan for secrets when Claude finishes |
+| `UserPromptSubmit` | *(no matcher)* | Enrich or validate user prompts before processing |
+
+### Removing Components You Don't Need
+
+If your team doesn't use a particular stack, remove the corresponding files to reduce noise:
+
+```bash
+# Example: Remove Flutter-related components if you don't use Flutter
+rm .claude/agents/flutter-mobile.md
+rm .claude/agents/flutter-security-expert.md
+rm .claude/agents/riverpod-reviewer.md
+rm .claude/agents/accessibility-auditor.md
+rm .claude/agents/ui-standards-expert.md
+rm -rf .claude/skills/flutter-mobile/
+rm -rf .claude/skills/riverpod-patterns/
+rm -rf .claude/skills/ui-standards-tokens/
+rm .claude/commands/scaffold-flutter-app.md
+
+# Update CLAUDE.md to remove Flutter references from the tech stack table
+```
+
+Also disable unused MCP servers in `.mcp.json` by setting `"disabled": true`.
+
+### Version Update Guide
+
+When a framework releases a new major version, update these files:
+
+| To Update... | Edit These Files |
+|---|---|
+| Angular version | `CLAUDE.md` (tech stack), `.claude/skills/angular-spa/SKILL.md`, `.claude/agents/angular-spa.md` |
+| Spring Boot version | `CLAUDE.md`, `.claude/skills/java-spring-api/SKILL.md`, `.claude/agents/java-spring-api.md` |
+| NestJS version | `CLAUDE.md`, `.claude/skills/nestjs-api/SKILL.md`, `.claude/agents/nestjs-api.md` |
+| Flutter/Dart version | `CLAUDE.md`, `.claude/skills/flutter-mobile/SKILL.md`, `.claude/agents/flutter-mobile.md` |
+| Python version | `CLAUDE.md`, `.claude/skills/python-dev/SKILL.md`, `.claude/agents/python-dev.md` |
+| LangChain/LangGraph | `CLAUDE.md`, `.claude/skills/agentic-ai-dev/SKILL.md`, `.claude/agents/agentic-ai-dev.md` |
+
+**Process:**
+1. Update version numbers in the files above
+2. Update any changed API patterns in skill `reference/` files
+3. Test with a scaffold command to verify the generated code compiles
+4. Commit as `docs: update [framework] to vX.Y`
+```
+
+---
+
 ## 12. Claude Code Power Features
 
 ### Keyboard Shortcuts (Inside Claude Code)
@@ -944,6 +1214,20 @@ This repo's `settings.json` comes pre-configured with sensible defaults.
 
 5. **Chain commands in one prompt** — combine slash commands and natural language: `/scaffold-spring-api order-service then @java-spring-api add CRUD for Orders with items, totals, and status`
 
+### Common Pitfalls — Avoid These
+
+These mistakes are common among new Claude Code users and waste significant time:
+
+| ❌ Pitfall | Why It's Bad | ✅ Instead |
+|-----------|-------------|-----------|
+| Enable all 12 MCP servers at once | Each server's tool schemas consume context tokens. 12 servers can eat 50K+ tokens before you type anything | Enable only the 3–4 servers relevant to your current task. Disable unused ones in `.mcp.json` using `"disabled": true` |
+| Paste entire files into the prompt | Files are transmitted as prompt tokens — a 500-line file wastes context | Use `@src/path/to/file.ts` references instead |
+| Skip `/compact` in long sessions | Context fills up silently. Claude's output quality degrades before you notice | Run `/compact` every ~30–50 tool operations, or when you switch tasks |
+| Ask Claude to "review everything" | Unbounded scope → shallow, generic feedback | Be specific: "Review `src/auth/` for SQL injection and missing input validation" |
+| Trust the first scaffold output blindly | Generated code may use outdated APIs or miss project-specific conventions | Always run the build command (`ng build`, `mvn verify`, `npm run build`) after scaffolding |
+| Use the same Claude session for unrelated tasks | Context from task A pollutes task B, causing confusion | Start a fresh session (`/exit` → `claude`) for unrelated work, or use `/clear` |
+| Ignore the "Context remaining" warnings | Once context is exhausted, Claude can't process new information effectively | Watch `/context` and compact or start fresh before hitting limits |
+
 ### @ File References
 
 Reference files directly in prompts with `@`  — Claude reads them into context automatically, which is more token-efficient than reading entire directories:
@@ -1018,6 +1302,65 @@ git worktree add ../feature-dashboard feature/dashboard
 # tmux — monitor long-running tasks
 tmux new -s dev
 # Detach: Ctrl+B, D | Reattach: tmux attach -t dev
+```
+
+### Team Collaboration Patterns
+
+When multiple developers use Claude Code on the same codebase:
+
+**Shared vs Personal Configuration**
+
+| File | Git Tracked? | Shared With Team? | Purpose |
+|------|-------------|-------------------|---------|
+| `CLAUDE.md` | ✅ Yes | ✅ Yes | Project conventions everyone follows |
+| `CLAUDE.local.md` | ❌ No (auto-gitignored) | ❌ No | Personal preferences (model, verbosity, shortcuts) |
+| `.claude/settings.json` | ✅ Yes | ✅ Yes | Shared permissions, hooks |
+| `.claude/settings.local.json` | ❌ No | ❌ No | Personal permission overrides |
+| `.mcp.json` | ✅ Yes | ✅ Yes | MCP server configurations |
+| `.env` | ❌ No (gitignored) | ❌ No | Personal API keys and credentials |
+
+**Branch Collision Prevention**
+
+When two developers use Claude Code simultaneously on the same repo:
+
+```bash
+# Each developer works on their own feature branch
+git checkout -b feature/alice-auth
+git checkout -b feature/bob-dashboard
+
+# For tasks that touch the same files, use git worktrees
+git worktree add ../project-auth feature/alice-auth
+git worktree add ../project-dashboard feature/bob-dashboard
+# Run separate Claude Code instances in each worktree
+```
+
+**Standardizing Team CLAUDE.md**
+
+To keep the team aligned:
+
+1. **Project-level `CLAUDE.md`** — committed to git, contains stack info, conventions, commands. PR-reviewed like any other code change
+2. **Personal `CLAUDE.local.md`** — each developer's preferences (model choice, verbosity, personal shortcuts). Never committed
+3. **Rules directory `.claude/rules/`** — committed to git. Breaking rules into files allows teams to own different areas (frontend team owns `angular-rules.md`, backend team owns `spring-rules.md`)
+
+**Onboarding a New Team Member**
+
+```bash
+# 1. Clone the repo (CLAUDE.md, agents, skills, commands come with it)
+git clone <repo-url> && cd <repo>
+
+# 2. Copy the .env template and fill in personal credentials
+cp .env.example .env
+# Edit .env with your API keys
+
+# 3. Make hooks executable
+chmod +x .claude/hooks/*.sh
+
+# 4. Start Claude Code and run the status check
+claude
+> /project-status
+
+# 5. Try a scaffold exercise to verify everything works
+> /scaffold-spring-api hello-world
 ```
 
 ### Plugins Ecosystem
@@ -1292,6 +1635,34 @@ source ~/.bashrc
 
 Pre-configure allowed commands in `.claude/settings.json` to avoid repeated permission prompts.
 
+### Windows-Specific Setup
+
+**Hooks require a Bash shell.** The `.claude/hooks/*.sh` scripts won't run natively on Windows. Options:
+
+| Approach | How | Trade-off |
+|----------|-----|-----------|
+| **WSL 2 (recommended)** | Install WSL 2, run Claude Code from a WSL terminal | Full Linux compatibility, hooks work natively |
+| **Git Bash** | Install Git for Windows, use Git Bash as your terminal | Most hooks work, occasional path issues |
+| **Rewrite as .ps1** | Convert bash hooks to PowerShell scripts | Native Windows, but requires rewriting and testing each hook |
+
+If using WSL 2:
+```bash
+# Install WSL 2 (from PowerShell as admin)
+wsl --install
+
+# Clone the repo inside WSL, not on /mnt/c/
+cd ~ && git clone <repo-url>
+
+# Run Claude Code from WSL
+claude
+```
+
+**MCP servers on Windows** may need a `cmd` wrapper in `.mcp.json`:
+```json
+"command": "cmd",
+"args": ["/c", "npx", "-y", "package-name"]
+```
+
 ### Run diagnostics
 
 When something isn't working and you're not sure why:
@@ -1302,7 +1673,79 @@ claude --debug             # Full debug logging
 claude --debug "mcp"       # Debug a specific category
 ```
 
-## 15. Resources
+## 15. Quick Reference Card
+
+Print or bookmark this — it covers 90% of daily Claude Code usage.
+
+### Commands You'll Use Every Day
+
+```
+claude                              # Start session
+claude --continue                   # Resume last session
+claude --resume <name>              # Resume named session
+/compact                            # Compress context (do this often)
+/context                            # Check context usage
+/cost                               # Token usage this session
+/exit                               # End session
+```
+
+### Scaffolding
+
+```
+/scaffold-spring-api <name>         # Java Spring Boot API
+/scaffold-nestjs-api <name>         # NestJS API
+/scaffold-python-api <name>         # Python FastAPI
+/scaffold-angular-app <name>        # Angular SPA
+/scaffold-flutter-app <name>        # Flutter mobile app
+/scaffold-agentic-ai <name>         # AI Agent service
+```
+
+### Design & Review
+
+```
+/design-architecture <description>  # System architecture with diagrams
+/design-database <domain>           # Database schema with ERD + migrations
+/review-code [scope]                # Code review (auto-detects stack)
+/audit-security [scope]             # Security vulnerability scan
+/project-status                     # Codebase summary
+/status-check                       # Binary works/broken report
+```
+
+### Agents (use @name)
+
+```
+@java-spring-api                    # Spring Boot backend expert
+@nestjs-api                         # NestJS backend expert
+@python-dev                         # Python / FastAPI expert
+@angular-spa                        # Angular frontend expert
+@flutter-mobile                     # Flutter mobile expert
+@agentic-ai-dev                     # AI agent builder
+@architect                          # Solution architecture
+@database-designer                  # PostgreSQL + Firestore
+@security-reviewer                  # Security audit
+@code-reviewer                      # General code review
+```
+
+### Keyboard Shortcuts
+
+```
+@filename                           # Reference a file in prompt
+Tab                                 # Toggle thinking display
+Shift+Enter                         # Multi-line input
+Esc                                 # Cancel generation
+Ctrl+U                              # Delete entire line
+/clear                              # Clear conversation
+/model                              # Switch model
+```
+
+### MCP Tips
+
+```
+use context7                        # Append to any prompt for live docs
+/mcp                                # Check MCP server status
+```
+
+## 16. Resources
 
 | Resource | Link |
 |----------|------|
