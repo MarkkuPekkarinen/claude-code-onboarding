@@ -37,6 +37,10 @@ Clone it, install Claude Code, and start building.
     - [Pull live docs with MCP](#pull-live-docs-with-mcp)
     - [Check what's loaded](#check-whats-loaded)
     - [A note on permissions](#a-note-on-permissions)
+  - [8. Understanding Claude Code Components](#8-understanding-claude-code-components)
+    - [How They Fit Together](#how-they-fit-together)
+    - [Decision Matrix - When to Use What](#decision-matrix---when-to-use-what)
+    - [CLAUDE.md (Project Context)](#claudemd-project-context)
     - [Slash Commands — Reusable Prompt Shortcuts](#slash-commands--reusable-prompt-shortcuts)
     - [Agents (Subagents) — Specialist AI Personas](#agents-subagents--specialist-ai-personas)
     - [Skills — Auto-Activated Knowledge](#skills--auto-activated-knowledge)
@@ -336,7 +340,6 @@ This can feel repetitive at first. The kit ships with pre-configured `allow` rul
 > claude --dangerously-skip-permissions
 > ```
 > **Do not use this in real projects.** It disables all guardrails including the hooks and deny rules this kit ships with. For real projects, add frequently-used commands to the `allow` list in `settings.json` instead — see the [Settings Configuration](#settingsjson-configuration) section for the full reference.
-```
 
 ## 8. Understanding Claude Code Components
 
