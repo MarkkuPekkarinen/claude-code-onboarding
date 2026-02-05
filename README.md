@@ -968,31 +968,7 @@ You've learned each component individually. Here's how they work together across
 
 ### How Components Interact
 
-```
-User Request
-    │
-    ▼
-┌─────────────────┐
-│  Slash Command   │  ← trigger (what to do)
-└────────┬────────┘
-         │ invokes
-         ▼
-┌─────────────────┐     ┌──────────────┐
-│     Agent        │────▶│    Skill      │  ← knowledge (how to do it)
-└────────┬────────┘     └──────┬───────┘
-         │ queries             │ reads
-         ▼                     ▼
-┌─────────────────┐     ┌──────────────┐
-│   MCP Server     │     │  Reference   │
-│  (live docs)     │     │    Files     │
-└─────────────────┘     └──────────────┘
-         │
-    ┌────┴────┐
-    ▼         ▼
-┌────────┐ ┌────────┐
-│ Hooks  │ │ Rules  │  ← guardrails (always active)
-└────────┘ └────────┘
-```
+![Claude Code Master](./img/component-interact.png)
 
 No component works alone. Slash commands without agents are just prompts. Agents without skills lose institutional knowledge. Skills without MCP servers drift to outdated patterns. Code without hooks skips safety checks.
 
