@@ -1018,9 +1018,7 @@ Start with slash commands to establish boundaries, then iterate with agents and 
 
 ### Phase 2: Scaffold & Bootstrap
 
-Slash commands generate the project skeleton to your team's standards.
-
-`/scaffold-nestjs-api`, `/scaffold-angular-app`, `/scaffold-flutter-app` — each one produces a buildable project with your design artifacts (Phase 1) and conventions baked in (folder structure, config, dependencies, sample endpoint, test). Each scaffold command delegates to a stack-specific agent backed by coding-standard skills, so the generated code follows your conventions from line one.
+Slash commands generate the project skeleton to your team's standards. Slash commands like `/scaffold-nestjs-api`, `/scaffold-angular-app`, `/scaffold-flutter-app` — each one produces a buildable project with your design artifacts (Phase 1) and conventions baked in (folder structure, config, dependencies, sample endpoint, test). Each scaffold command delegates to a stack-specific agent backed by coding-standard skills, so the generated code follows your conventions from line one.
 
 **Hooks** are already active: `pre-edit-protect-sensitive.sh` blocks accidental edits to lock files and credentials during setup.
 
