@@ -62,25 +62,32 @@ Clone it, install Claude Code, and start building.
     - [Exercise 9: Domain-Driven Design with DDD Architect](#exercise-9-domain-driven-design-with-ddd-architect)
     - [Exercise 10: Add a Feature End-to-End](#exercise-10-add-a-feature-end-to-end)
     - [What's Next?](#whats-next)
-  - [11. Security Considerations](#11-security-considerations)
+  - [11. Development Workflow — Putting It All Together](#11-development-workflow--putting-it-all-together)
+    - [How Components Interact](#how-components-interact)
+    - [Phase 1: Design \& Architecture](#phase-1-design--architecture)
+    - [Phase 2: Scaffold \& Bootstrap](#phase-2-scaffold--bootstrap)
+    - [Phase 3: Feature Development](#phase-3-feature-development)
+    - [Phase 4: Review \& Enforce Quality](#phase-4-review--enforce-quality)
+    - [Phase 5: Evolve Your Setup](#phase-5-evolve-your-setup)
+  - [12. Security Considerations](#12-security-considerations)
     - [What Goes to Anthropic's API](#what-goes-to-anthropics-api)
     - [MCP Server Credentials](#mcp-server-credentials)
     - [The `--dangerously-skip-permissions` Flag](#the---dangerously-skip-permissions-flag)
     - [Pre-configured Guardrails in This Kit](#pre-configured-guardrails-in-this-kit)
     - [Checklist Before Using Claude Code on a Real Project](#checklist-before-using-claude-code-on-a-real-project)
-  - [12. Customizing the Kit](#12-customizing-the-kit)
+  - [13. Customizing the Kit](#13-customizing-the-kit)
     - [Adding a New Agent](#adding-a-new-agent)
     - [Adding a New Slash Command](#adding-a-new-slash-command)
     - [Adding a New Skill](#adding-a-new-skill)
     - [Adding a New Hook](#adding-a-new-hook)
     - [Removing Components You Don't Need](#removing-components-you-dont-need)
     - [Version Update Guide](#version-update-guide)
-  - [13. Claude Code Power Features](#13-claude-code-power-features)
+  - [14. Claude Code Power Features](#14-claude-code-power-features)
     - [Keyboard Shortcuts (Inside Claude Code)](#keyboard-shortcuts-inside-claude-code)
     - [Essential CLI Flags](#essential-cli-flags)
     - [Core Tools](#core-tools)
     - [Permission Model](#permission-model)
-  - [14. Tips \& Best Practices](#14-tips--best-practices)
+  - [15. Tips \& Best Practices](#15-tips--best-practices)
     - [Prompting Best Practices](#prompting-best-practices)
     - [Common Pitfalls — Avoid These](#common-pitfalls--avoid-these)
     - [@ File References](#-file-references)
@@ -99,7 +106,7 @@ Clone it, install Claude Code, and start building.
       - [When Claude Guesses Instead of Verifying](#when-claude-guesses-instead-of-verifying)
       - [When Claude Flip-Flops](#when-claude-flip-flops)
       - [When Challenging Claude's Analysis](#when-challenging-claudes-analysis)
-  - [15. Troubleshooting](#15-troubleshooting)
+  - [16. Troubleshooting](#16-troubleshooting)
     - [`command not found: claude`](#command-not-found-claude)
     - ["Context too large" error](#context-too-large-error)
     - [Edit tool fails with "string not found"](#edit-tool-fails-with-string-not-found)
@@ -109,14 +116,14 @@ Clone it, install Claude Code, and start building.
     - [Permission errors](#permission-errors)
     - [Windows-Specific Setup](#windows-specific-setup)
     - [Run diagnostics](#run-diagnostics)
-  - [16. Quick Reference Card](#16-quick-reference-card)
+  - [17. Quick Reference Card](#17-quick-reference-card)
     - [Commands You'll Use Every Day](#commands-youll-use-every-day)
     - [Scaffolding](#scaffolding)
     - [Design \& Review](#design--review)
     - [Agents (use @name)](#agents-use-name)
     - [Keyboard Shortcuts](#keyboard-shortcuts)
     - [MCP Tips](#mcp-tips)
-  - [17. Resources](#17-resources)
+  - [18. Resources](#18-resources)
 
 ---
 
@@ -951,8 +958,123 @@ You've used every component in the kit — agents, skills, commands, hooks, and 
    > What agents and skills are available?
    ```
 6. **Iterate** — your CLAUDE.md and skills will evolve as you discover what works for your team. Treat them like living documentation — PR-reviewed and version-controlled
-   
-## 11. Security Considerations
+
+## 11. Development Workflow — Putting It All Together
+
+You've learned each component individually. Here's how they work together across a real development lifecycle. Every phase uses the same interaction model: **slash commands trigger, agents execute, skills supply knowledge, MCP servers provide ground truth, hooks guard, and rules enforce** — the mix just shifts per phase.
+
+### How Components Interact
+
+```
+User Request
+    │
+    ▼
+┌─────────────────┐
+│  Slash Command   │  ← trigger (what to do)
+└────────┬────────┘
+         │ invokes
+         ▼
+┌─────────────────┐     ┌──────────────┐
+│     Agent        │────▶│    Skill      │  ← knowledge (how to do it)
+└────────┬────────┘     └──────┬───────┘
+         │ queries             │ reads
+         ▼                     ▼
+┌─────────────────┐     ┌──────────────┐
+│   MCP Server     │     │  Reference   │
+│  (live docs)     │     │    Files     │
+└─────────────────┘     └──────────────┘
+         │
+    ┌────┴────┐
+    ▼         ▼
+┌────────┐ ┌────────┐
+│ Hooks  │ │ Rules  │  ← guardrails (always active)
+└────────┘ └────────┘
+```
+
+No component works alone. Slash commands without agents are just prompts. Agents without skills lose institutional knowledge. Skills without MCP servers drift to outdated patterns. Code without hooks skips safety checks.
+
+### Phase 1: Design & Architecture
+
+Start with slash commands to establish boundaries, then iterate with agents and skills.
+
+**Slash commands** set the foundation: produces  DDD artifacts, Architectural diagrams, API contracts, and ADRs. Generates Database design, ERDs. These commands give you a concrete artifact to iterate on rather than vague conversation.
+
+**Agents** refine the design: Challenges assumptions, identifies missing NFRs, normalizes schemas, choice of database, tech stack and proposes deployment topology. You go back and forth until the design is solid.
+
+**Skills** activate silently by Claude based on context and task type and feeds the right templates and patterns into every response without you asking.
+
+**MCP servers** ground designs in reality — `context7` checks current tech stack and framework capabilities so your architecture doesn't depend on deprecated APIs.
+
+**Rules** (always loaded) enforce behaviors across all phases: no silent failures, surface assumptions before coding, verify before claiming "done."
+
+**Example: Claude compnents changes as per your requriment and can be customized as per your need**
+
+| Component | What fires | Purpose |
+|-----------|-----------|---------|
+| Slash commands | `/design-architecture`, `/design-database` | Produce structured artifacts |
+| Agents | `architect`, `database-designer` | Iterate on design decisions |
+| Skills | `architecture-design`, `ddd-architect`, `database-schema-designer`, `openapi-spec-generation` | Supply templates and patterns |
+| MCP | `context7` | Verify against live documentation |
+
+### Phase 2: Scaffold & Bootstrap
+
+Slash commands generate the project skeleton to your team's standards.
+
+`/scaffold-nestjs-api`, `/scaffold-angular-app`, `/scaffold-flutter-app` — each one produces a buildable project with your design artifacts (Phase 1) and conventions baked in (folder structure, config, dependencies, sample endpoint, test). Each scaffold command delegates to a stack-specific agent backed by coding-standard skills, so the generated code follows your conventions from line one.
+
+**Hooks** are already active: `pre-edit-protect-sensitive.sh` blocks accidental edits to lock files and credentials during setup.
+
+**Verify immediately**: run the build command (`mvn verify`, `ng build`, `flutter build`) before moving on. Never trust scaffold output blindly.
+
+### Phase 3: Feature Development
+
+This is where agents and skills do the heavy lifting.
+
+**Agents** bring stack-specific expertise: `@java-spring-api` for backend endpoints, `@angular-spa` for UI components, `@flutter-mobile` for mobile screens. Each agent runs as a focused sub-task with its own context, so it doesn't consume your main conversation window. You can run multiple agents in parallel — backend and frontend simultaneously.
+
+**Skills** auto-activate based on what you're touching. Edit a `.dart` file and `flutter-mobile` + `riverpod-patterns` kick in. Touch a Spring controller and `java-spring-api` + `java-coding-standard` apply. You don't invoke them — they just work.
+
+**MCP servers** connect to external tools as needed: `context7` for live docs (append `use context7` to any prompt), `dart-mcp-server` for Flutter tooling, `postgres` for schema queries, `github` for PR creation.
+
+**Hooks** run automatically on every edit: `post-edit-format.sh` auto-formats your code (Prettier for TS, `dart format` for Dart, ruff for Python), `pre-bash-guard.sh` blocks destructive commands before they execute.
+
+> **Tip:** Append `use context7` to any prompt to force live documentation lookup — this prevents deprecated API usage before it happens.
+
+### Phase 4: Review & Enforce Quality
+
+Slash commands trigger multi-agent reviews; hooks catch what slips through.
+
+`/review-code` auto-detects the stack and delegates to the right reviewer (`spring-reactive-reviewer`, `nestjs-reviewer`, `agentic-ai-reviewer`, `riverpod-reviewer`). `/audit-security` runs `security-reviewer` across the scope. `/status-check` gives you an honest binary works/broken report — no "95% done" hedging.
+
+**Hooks** run automatically and act as deterministic guardrails you never have to think about:
+- `post-edit-format.sh` — auto-formats after every edit
+- `pre-bash-guard.sh` — blocks `rm -rf`, force pushes, `DROP DATABASE`
+- `pre-edit-protect-sensitive.sh` — blocks edits to `.env`, credentials, private keys
+- `stop-secret-scan.sh` — scans for leaked keys at session end
+
+**Example: Claude compnents changes as per your requriment and can be customized as per your need**
+
+| Trigger | What runs | Catches |
+|---------|----------|---------|
+| `/review-code` | 9 stack-specific reviewer agents | Code quality, patterns, architecture |
+| `/audit-security` | `security-reviewer` agent | OWASP Top 10, secrets, dependencies |
+| Every edit | `post-edit-format.sh` hook | Formatting inconsistencies |
+| Every command | `pre-bash-guard.sh` hook | Destructive operations |
+| Session end | `stop-secret-scan.sh` hook | Leaked secrets in git diff |
+
+### Phase 5: Evolve Your Setup
+
+Over time, customize everything based on what you learn.
+
+- **Add skills** when you see recurring patterns Claude keeps getting wrong
+- **Add agents** when a domain needs specialized expertise beyond what existing agents cover
+- **Add slash commands** for workflows your team repeats often
+- **Add hooks** for rules that must be enforced deterministically (no human memory required)
+- **Remove components** you don't use — fewer MCP servers and skills means more context budget for actual work
+
+The setup is a living product. Treat it like code: version-controlled, PR-reviewed, continuously improved.
+
+## 12. Security Considerations
 
 Before using Claude Code with real projects, understand the security boundaries.
 
@@ -1012,7 +1134,7 @@ These hooks are **defense-in-depth** — they catch mistakes but aren't a substi
 - [ ] CI/CD pipelines do NOT use `--dangerously-skip-permissions`
 - [ ] Hook scripts are executable (`chmod +x .claude/hooks/*.sh`)
 
-## 12. Customizing the Kit
+## 13. Customizing the Kit
 
 This kit is a starting point — customize it for your team's stack and workflows.
 
@@ -1225,7 +1347,7 @@ When a framework releases a new major version, update these files:
 
 ---
 
-## 13. Claude Code Power Features
+## 14. Claude Code Power Features
 
 ### Keyboard Shortcuts (Inside Claude Code)
 
@@ -1329,7 +1451,7 @@ Configure in `.claude/settings.json`:
 
 This repo's `settings.json` comes pre-configured with sensible defaults — see [Settings Configuration](#settingsjson-configuration) in Section 10 for the full breakdown.
 
-## 14. Tips & Best Practices
+## 15. Tips & Best Practices
 
 ### Prompting Best Practices
 
@@ -1708,7 +1830,7 @@ Don't just agree with me — RE-VERIFY by reading the actual code.
 Show me the file you checked and what you found or didn't find.
 ```
 
-## 15. Troubleshooting
+## 16. Troubleshooting
 
 ### `command not found: claude`
 
@@ -1810,7 +1932,7 @@ claude --debug             # Full debug logging
 claude --debug "mcp"       # Debug a specific category
 ```
 
-## 16. Quick Reference Card
+## 17. Quick Reference Card
 
 Print or bookmark this — it covers 90% of daily Claude Code usage.
 
@@ -1882,7 +2004,7 @@ use context7                        # Append to any prompt for live docs
 /mcp                                # Check MCP server status
 ```
 
-## 17. Resources
+## 18. Resources
 
 | Resource | Link |
 |----------|------|
