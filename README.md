@@ -1052,7 +1052,7 @@ Slash commands trigger multi-agent reviews; hooks catch what slips through.
 - `pre-edit-protect-sensitive.sh` — blocks edits to `.env`, credentials, private keys
 - `stop-secret-scan.sh` — scans for leaked keys at session end
 
-**Every trigger and hook below is customizable — add, remove, or replace them to fit your review process.**
+**Every commands and hook below is customizable — add, remove, or replace them to fit your review process.**
 
 | Trigger | What runs | Catches |
 |---------|----------|---------|
