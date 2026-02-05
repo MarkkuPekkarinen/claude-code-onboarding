@@ -15,7 +15,7 @@ This repository is a pre-configured starter kit packed with agents, skills, slas
 
 Clone it, install Claude Code, and start building.
 
----
+![Claude Code Master](./img/mastering-claudecode.png)
 
 ## Table of Contents
 
