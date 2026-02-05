@@ -1007,7 +1007,7 @@ Start with slash commands to establish boundaries, then iterate with agents and 
 
 **Rules** (always loaded) enforce behaviors across all phases: no silent failures, surface assumptions before coding, verify before claiming "done."
 
-**Example: Claude compnents changes as per your requriment and can be customized as per your need**
+**This is one example mix — swap components to match your team's stack and workflow.**
 
 | Component | What fires | Purpose |
 |-----------|-----------|---------|
@@ -1052,7 +1052,7 @@ Slash commands trigger multi-agent reviews; hooks catch what slips through.
 - `pre-edit-protect-sensitive.sh` — blocks edits to `.env`, credentials, private keys
 - `stop-secret-scan.sh` — scans for leaked keys at session end
 
-**Example: Claude compnents changes as per your requriment and can be customized as per your need**
+**Every trigger and hook below is customizable — add, remove, or replace them to fit your review process.**
 
 | Trigger | What runs | Catches |
 |---------|----------|---------|
