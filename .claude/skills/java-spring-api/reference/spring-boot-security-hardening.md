@@ -106,6 +106,7 @@ Add HSTS (HTTP Strict Transport Security) to the existing SecurityConfig:
 ```java
 .headers(headers -> {
     headers.frameOptions(opts -> opts.mode(XFrameOptionsServerHttpHeadersWriter.Mode.DENY));
+    headers.contentTypeOptions(Customizer.withDefaults()); // X-Content-Type-Options: nosniff
     headers.contentSecurityPolicy(csp ->
         csp.policyDirectives("default-src 'self'; frame-ancestors 'none';"));
     headers.hsts(hsts -> hsts

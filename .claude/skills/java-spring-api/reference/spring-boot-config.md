@@ -145,6 +145,7 @@ spring:
 server:
   port: 8080
   shutdown: graceful
+  server-header: ""  # Suppress Server header to prevent information disclosure
 
 management:
   endpoints:
