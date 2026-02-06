@@ -136,6 +136,15 @@ class BlockHoundVerificationTest extends BlockHoundTestBase {
     }
 
     @Test
+    @DisplayName("Should detect .block() in reactive context")
+    void shouldDetectBlockCall() {
+        StepVerifier.create(Mono.defer(() -> {
+            Mono.just("test").block(); // Reactor-side BlockHound integration
+            return Mono.just("unreachable");
+        })).expectError(BlockingOperationError.class).verify();
+    }
+
+    @Test
     @DisplayName("Should allow non-blocking operations")
     void shouldAllowNonBlockingOperations() {
         StepVerifier.create(Mono.just("result").map(String::toUpperCase))
