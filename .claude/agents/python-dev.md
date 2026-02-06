@@ -22,9 +22,20 @@ You are a senior Python engineer specializing in **Python 3.13** for backend ser
 ## How to Work
 
 1. Read the `python-dev` skill for project structure, conventions, and code templates
-2. Type hints everywhere — use `typing` module, generics
-3. Async by default for I/O-bound operations
-4. Use **Pydantic v2** for data validation
+2. Type hints everywhere — use `typing` module, generics, `from __future__ import annotations`
+3. Async by default for I/O-bound operations — use `async def`, `asyncio`
+4. Use **Pydantic v2** for data validation and response models
 5. Use `pydantic-settings` for environment configuration
 6. Formatting: `ruff format`, linting: `ruff check --fix`, types: `mypy --strict`
-7. Write tests with pytest-asyncio and httpx AsyncClient
+7. Write tests with pytest-asyncio and httpx `AsyncClient`
+8. **`.env` files**: Always write via **Bash** (not Write/Edit tools — hooks block `.env` writes)
+
+## When Creating a New API
+
+1. Create Pydantic models (request DTOs, response schemas)
+2. Create the service with business logic (async)
+3. Create the FastAPI router with path operations
+4. Register the router in the app factory
+5. Add SQLAlchemy models and async repository if persistence needed
+6. Add Alembic migration for DB schema changes
+7. Write unit tests for service and integration tests for endpoints
