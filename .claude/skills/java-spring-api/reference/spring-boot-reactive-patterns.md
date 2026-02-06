@@ -284,6 +284,34 @@ grep -rn 'spring-boot-starter-data-jpa' pom.xml
 grep -rn 'spring-boot-starter-data-redis"' pom.xml | grep -v reactive
 ```
 
+## N+1 Query Anti-Pattern (R2DBC)
+
+With R2DBC there is no lazy-loading proxy — every nested `flatMap(repo::findById)` inside a `Flux` fires a separate query per row.
+
+```java
+// WRONG — N+1: 1 query for orders + N queries for users
+return orderRepository.findAll()
+    .flatMap(order -> userRepository.findById(order.getUserId())
+        .map(user -> new OrderWithUser(order, user)));
+
+// CORRECT — batch fetch, then join in memory
+return orderRepository.findAll().collectList()
+    .flatMap(orders -> {
+        var userIds = orders.stream().map(Order::getUserId).distinct().toList();
+        return userRepository.findByIdIn(userIds).collectMap(User::getId)
+            .map(userMap -> orders.stream()
+                .map(o -> new OrderWithUser(o, userMap.get(o.getUserId())))
+                .toList());
+    })
+    .flatMapMany(Flux::fromIterable);
+
+// CORRECT — single join query in repository
+@Query("SELECT o.*, u.name AS user_name FROM orders o JOIN users u ON o.user_id = u.id")
+Flux<OrderWithUserProjection> findAllWithUser();
+```
+
+Detect N+1: any `Flux.flatMap()` that calls a repository method inside the lambda is suspect.
+
 ## Threading Anti-Patterns
 
 Beyond `.block()`, these also stall reactive threads:

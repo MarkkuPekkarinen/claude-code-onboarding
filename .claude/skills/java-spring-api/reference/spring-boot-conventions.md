@@ -30,3 +30,12 @@ com.company.<service>/
 - Use `switchIfEmpty()` with `Mono.error()` for not-found cases
 - Use `@ResponseStatus` for non-200 responses (e.g., `201 Created`); default 200 OK is implicit for GET endpoints
 - Use `@Valid` on `@RequestBody` params, `@Validated` on controller class for path/query param validation, `jakarta.validation` on DTOs
+- `@Transactional` only works on methods returning `Mono`/`Flux` — placing it on a void method or one calling `.subscribe()` silently does nothing. Requires `R2dbcTransactionManager` (auto-configured by `spring-boot-starter-data-r2dbc`). For multi-statement writes, annotate the **service** method, not the repository:
+  ```java
+  @Transactional
+  public Mono<Order> createOrder(CreateOrderRequest req) {
+      return orderRepository.save(toEntity(req))
+          .flatMap(order -> lineItemRepository.saveAll(toLineItems(order, req))
+              .then(Mono.just(order)));
+  }
+  ```
