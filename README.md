@@ -1,5 +1,7 @@
 # Claude Code — Team Onboarding Kit
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://github.com/kumaran-is/claude-code-onboarding)
+
 **Get your team from zero to productive with Claude Code in under 30 minutes.**
 
 This repository is a pre-configured starter kit packed with agents, skills, slash commands, and MCP integrations — ready to go for the following tech stack:
