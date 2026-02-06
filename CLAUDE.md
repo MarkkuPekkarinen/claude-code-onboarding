@@ -77,7 +77,7 @@ Consult official docs via MCP before writing ANY code. Zero tolerance for deprec
 | Flutter | `riverpod-reviewer`, `flutter-security-expert` |
 | Security | `security-reviewer` |
 | Database | `postgresql-database-reviewer` |
-| UI/UX | `ui-standards-expert`, `accessibility-auditor` |
+| UI/UX | `ui-standards-expert`, `frontend-design`, `accessibility-auditor` |
 | Tech debt | `dedup-code-agent` |
 
 ## Common Commands
