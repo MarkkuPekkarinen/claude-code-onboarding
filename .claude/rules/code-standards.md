@@ -18,24 +18,25 @@ When creating new files: remove/update old files, update all imports, delete orp
 
 ### No Silent Failures, No Mock Data, No Fallbacks
 
-```dart
-// ❌ FORBIDDEN
+```
+// ❌ FORBIDDEN (applies to ALL languages)
 catch (e) { return []; }           // Silent empty return
 catch (e) { return MockData.x; }   // Fake data
 catch (e) { /* nothing */ }        // Swallowed exception
 
 // ✅ REQUIRED
 catch (e) {
-  Logger.error('fetchData failed', error: e);
-  rethrow; // OR return Result.failure(AppError.from(e));
+  logger.error('fetchData failed', error: e);
+  rethrow; // OR return error state (Result.failure, HttpException, HTTPException, etc.)
 }
 ```
 
 - Every catch block MUST log the error
 - Every catch block MUST either rethrow OR return an error state
-- User MUST see when something fails (snackbar, error widget, etc.)
+- User MUST see when something fails (snackbar, error widget, toast, etc.)
 - NEVER return empty list/null/default on error
 - NEVER create mock data unless explicitly requested
+- Language-specific patterns: see each technology's skill (e.g., `java-spring-api`, `nestjs-api`, `python-dev`, `flutter-mobile`)
 
 ## DRY Enforcement
 
