@@ -45,6 +45,9 @@ grep -rn 'allowedOrigins.*\*' src/main/java/
 
 # CSRF disabled without justification (expected in stateless APIs, flag if session-based)
 grep -rn 'csrf.*disable' src/main/java/
+
+# H2 console enabled in non-dev config (should never be enabled in production)
+grep -rn 'h2.*console.*enabled.*true' src/main/resources/application-prod.yml
 ```
 
 ### Secrets & Credentials
@@ -74,6 +77,9 @@ grep -rn 'JWT\|jwt\|Bearer' src/main/java/
 ```bash
 # Request handlers without validation
 grep -rn '@RequestBody' src/main/java/ | grep -v '@Valid'
+
+# Input entry points — verify each has validation annotations
+grep -rn '@RequestParam\|@PathVariable' src/main/java/
 
 # Potential SQL injection (string concatenation in queries)
 grep -rn 'query.*+\s*\|sql.*+\s*' src/main/java/
