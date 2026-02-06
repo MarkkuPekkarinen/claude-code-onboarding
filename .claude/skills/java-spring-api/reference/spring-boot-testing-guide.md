@@ -285,6 +285,42 @@ void findById_shouldTimeout_whenDatabaseSlow() {
 }
 ```
 
+### Virtual Time — Testing Delays Without Waiting
+
+Use `StepVerifier.withVirtualTime()` for time-dependent logic (retries with backoff, scheduled tasks, timeouts) to avoid real delays in the test suite.
+
+```java
+@Test
+@DisplayName("Should complete after delay without real waiting")
+void shouldHandleDelayedEmission() {
+    StepVerifier.withVirtualTime(() -> Mono.delay(Duration.ofMinutes(5)).thenReturn("done"))
+        .expectSubscription()
+        .expectNoEvent(Duration.ofMinutes(5))
+        .expectNext("done")
+        .verifyComplete();
+}
+
+@Test
+@DisplayName("Should retry with backoff using virtual time")
+void shouldRetryWithBackoff_usingVirtualTime() {
+    AtomicInteger attempts = new AtomicInteger(0);
+
+    StepVerifier.withVirtualTime(() ->
+        Mono.defer(() -> {
+            if (attempts.incrementAndGet() < 3) {
+                return Mono.error(new RuntimeException("transient"));
+            }
+            return Mono.just("success");
+        }).retryWhen(Retry.backoff(3, Duration.ofSeconds(2))))
+        .expectSubscription()
+        .thenAwait(Duration.ofSeconds(10)) // fast-forward through backoff delays
+        .expectNext("success")
+        .verifyComplete();
+}
+```
+
+**Rule**: Always wrap the publisher creation inside the `withVirtualTime(() -> ...)` lambda — creating it outside breaks virtual time scheduling.
+
 ### Fallback Verification
 
 ```java
@@ -471,6 +507,67 @@ class PaymentServiceClientContractTest {
 }
 ```
 
+## External API Clients — Resilience + WireMock
+
+When an external API call is wrapped with resilience operators, test both the happy path and circuit-open path through WireMock.
+
+```java
+@ExtendWith(MockitoExtension.class)
+class PaymentServiceClientResilienceTest {
+
+    @Mock private CircuitBreakerRegistry cbRegistry;
+    @Mock private RetryRegistry retryRegistry;
+    @Mock private CircuitBreaker circuitBreaker;
+    @Mock private Retry retry;
+    @InjectMocks private PaymentServiceClient client;
+
+    private static WireMockServer wireMock;
+
+    @BeforeAll
+    static void startWireMock() {
+        wireMock = new WireMockServer(wireMockConfig().dynamicPort());
+        wireMock.start();
+    }
+
+    @AfterAll
+    static void stopWireMock() { wireMock.stop(); }
+
+    @BeforeEach
+    void setUp() {
+        when(cbRegistry.circuitBreaker("payment-api")).thenReturn(circuitBreaker);
+        when(retryRegistry.retry("payment-api")).thenReturn(retry);
+    }
+
+    @Test
+    @DisplayName("Should process payment through resilience chain when API responds 200")
+    void processPayment_shouldSucceed_whenApiResponds() {
+        wireMock.stubFor(post(urlEqualTo("/api/v1/payments"))
+            .willReturn(aResponse().withStatus(200)
+                .withHeader("Content-Type", "application/json")
+                .withBody("""
+                    {"transactionId": "txn-123", "status": "APPROVED"}
+                    """)));
+
+        StepVerifier.create(client.processPayment(new PaymentRequest("order-1", BigDecimal.TEN)))
+            .expectNextMatches(r -> r.status().equals("APPROVED"))
+            .verifyComplete();
+    }
+
+    @Test
+    @DisplayName("Should fallback when circuit breaker is open for payment API")
+    void processPayment_shouldFallback_whenCircuitBreakerOpen() {
+        when(cbRegistry.circuitBreaker("payment-api"))
+            .thenThrow(CallNotPermittedException.createCallNotPermittedException(circuitBreaker));
+
+        StepVerifier.create(client.processPayment(new PaymentRequest("order-1", BigDecimal.TEN)))
+            .expectErrorMatches(t ->
+                t instanceof ServiceIntegrationException &&
+                t.getMessage().contains("payment"))
+            .verify();
+    }
+}
+```
+
 ## Naming Conventions
 
 ```java
@@ -502,7 +599,14 @@ Enforce via CI pipeline. PRs below threshold are blocked.
 - [ ] No `.block()` calls in any test
 - [ ] BlockHound installed in base test class
 - [ ] Test data uses builder pattern for readability
-- [ ] Resilience patterns tested: happy path, circuit open, retry, timeout, fallback
+- [ ] Resilience registries mocked (`CircuitBreakerRegistry`, `RetryRegistry`, `TimeLimiterRegistry`)
+- [ ] Registry instances retrieved by configured name (e.g., `"database"`)
+- [ ] Happy path: resilience operators don't break normal flow
+- [ ] Circuit breaker open: `CallNotPermittedException` → fallback with context
+- [ ] Retry: transient failure → success on retry, `verify(repo, times(N))`
+- [ ] Timeout: slow operation → `TimeoutException`
+- [ ] Fallback includes context (IDs, error details) in error message
+- [ ] External API clients tested with resilience operators + WireMock
 - [ ] Integration tests use Testcontainers (not H2)
 - [ ] External API clients have contract tests with WireMock
 - [ ] `@DisplayName` on every test method
