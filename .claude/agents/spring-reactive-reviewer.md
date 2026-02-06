@@ -39,9 +39,9 @@ You are a senior architect specializing in reactive systems with Java 21 and Spr
 
 **2. Resilience Patterns**
 - All external calls (DB, HTTP, messaging) have resilience protection
-- If using programmatic Resilience4j: registry injection, `CircuitBreakerOperator` / `RetryOperator` / `TimeLimiterOperator`
-- If using annotation-based: `@CircuitBreaker`, `@Retry`, `@TimeLimiter` on correct methods
-- Operator ordering: CircuitBreaker → Retry → TimeLimiter
+- Programmatic Resilience4j only: registry injection, `.transformDeferred()` with `CircuitBreakerOperator` / `RetryOperator` / `TimeLimiterOperator`
+- NO annotation-based patterns (`@CircuitBreaker`, `@Retry`, `@TimeLimiter` are forbidden)
+- Operator ordering: Retry → CircuitBreaker → RateLimiter → TimeLimiter → Bulkhead (outermost first)
 - Fallback methods handle `CallNotPermittedException` specifically
 - Timeout configured on all external calls
 
