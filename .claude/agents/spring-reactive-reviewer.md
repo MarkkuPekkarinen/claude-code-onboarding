@@ -4,6 +4,7 @@ description: Specialized code reviewer for Java 21 Spring Boot 3.5.x WebFlux rea
 tools: Read, Grep, Glob, Bash
 model: opus
 permissionMode: default
+memory: project
 skills:
   - java-spring-api
   - java-coding-standard

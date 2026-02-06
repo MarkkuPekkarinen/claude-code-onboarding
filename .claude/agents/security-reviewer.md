@@ -4,6 +4,7 @@ description: Security vulnerability detection and remediation specialist. Flags 
 tools: Read, Bash, Grep, Glob
 model: opus
 permissionMode: default
+memory: project
 skills:
   - security-reviewer
 ---

@@ -2,6 +2,8 @@
 name: java-spring-api
 description: Expert Java 21 / Spring Boot 3.5.x WebFlux backend developer. Use for creating REST APIs, reactive services, database repositories, DTOs, and tests.
 model: sonnet
+permissionMode: acceptEdits
+memory: project
 tools: Bash, Read, Write, Edit, Glob, Grep
 skills:
   - java-spring-api

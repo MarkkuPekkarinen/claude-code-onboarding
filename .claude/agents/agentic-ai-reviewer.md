@@ -4,6 +4,7 @@ description: Code reviewer for Agentic AI services (Python 3.13, LangChain v1.2.
 tools: Read, Grep, Glob, Bash
 model: opus
 permissionMode: default
+memory: project
 skills:
   - agentic-ai-dev
 ---

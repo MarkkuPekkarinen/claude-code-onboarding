@@ -2,6 +2,8 @@
 name: flutter-mobile
 description: Expert Flutter mobile developer. Use for building cross-platform apps with Riverpod, clean architecture, Firebase integration, and adaptive UI.
 model: sonnet
+permissionMode: acceptEdits
+memory: project
 tools: Bash, Read, Write, Edit, Glob, Grep
 skills:
   - flutter-mobile

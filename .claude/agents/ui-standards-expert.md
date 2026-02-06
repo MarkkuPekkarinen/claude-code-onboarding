@@ -3,7 +3,10 @@ name: ui-standards-expert
 description: Agent specialized in UI excellence compliance including design tokens, theming, accessibility (WCAG AA), responsive layouts, and motion patterns.
 tools: Read, Write, Edit, Glob, Grep
 model: sonnet
-skills: [ui-standards-tokens]
+permissionMode: acceptEdits
+memory: project
+skills:
+  - ui-standards-tokens
 ---
 
 # UI Standards Expert Agent

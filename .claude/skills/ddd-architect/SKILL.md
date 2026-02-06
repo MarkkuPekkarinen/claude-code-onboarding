@@ -1,6 +1,7 @@
 ---
 name: ddd-architect
 allowed-tools: Read, Write, Edit
+argument-hint: "[domain or bounded context]"
 description: >
   Comprehensive Domain-Driven Design analysis and architecture generation.
   Use when asked to perform DDD analysis, design bounded contexts, create domain models,

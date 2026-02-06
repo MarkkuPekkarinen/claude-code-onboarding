@@ -2,6 +2,8 @@
 name: architect
 description: Solution architect for full-stack systems. Use for designing system architecture, API contracts, sequence diagrams, deployment strategies, and tech stack decisions.
 model: sonnet
+permissionMode: acceptEdits
+memory: project
 tools: Bash, Read, Write, Edit, Glob, Grep
 skills:
   - architecture-design

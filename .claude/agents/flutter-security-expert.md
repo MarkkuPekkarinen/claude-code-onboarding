@@ -2,6 +2,8 @@
 name: flutter-security-expert
 description: Flutter mobile security and privacy compliance specialist. Use for secure storage reviews, certificate pinning, GDPR/CCPA compliance, obfuscation, and mobile-specific security hardening.
 model: sonnet
+permissionMode: acceptEdits
+memory: project
 tools: Bash, Read, Write, Edit, Glob, Grep
 skills:
   - flutter-mobile

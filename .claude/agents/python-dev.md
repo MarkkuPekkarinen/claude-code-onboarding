@@ -2,6 +2,8 @@
 name: python-dev
 description: Expert Python 3.13 developer. Use for creating Python APIs (FastAPI/Flask), scripts, data processing, automation, testing, and package management.
 model: sonnet
+permissionMode: acceptEdits
+memory: project
 tools: Bash, Read, Write, Edit, Glob, Grep
 skills:
   - python-dev

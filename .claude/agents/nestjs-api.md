@@ -2,6 +2,8 @@
 name: nestjs-api
 description: Expert NestJS 11.x backend developer with Fastify, Prisma ORM, and TypeScript 5.x. Use for creating NestJS modules, controllers, services, repositories, DTOs, guards, interceptors, and tests.
 model: sonnet
+permissionMode: acceptEdits
+memory: project
 tools: Bash, Read, Write, Edit, Glob, Grep
 skills:
   - nestjs-api

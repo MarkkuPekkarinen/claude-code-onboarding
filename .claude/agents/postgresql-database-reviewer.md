@@ -4,6 +4,7 @@ description: PostgreSQL database specialist for query optimization, schema desig
 tools: Read, Bash, Grep, Glob
 model: opus
 permissionMode: default
+memory: project
 skills:
   - database-schema-designer
 ---

@@ -2,6 +2,8 @@
 name: database-designer
 description: Database architect for PostgreSQL and Firebase Firestore. Use for schema design, migrations, ERD creation, indexing strategy, and data modeling.
 model: sonnet
+permissionMode: acceptEdits
+memory: project
 tools: Bash, Read, Write, Edit
 skills:
   - database-schema-designer

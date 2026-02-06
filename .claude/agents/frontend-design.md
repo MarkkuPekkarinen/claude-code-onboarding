@@ -3,6 +3,8 @@ name: frontend-design
 description: Creative frontend design specialist. Builds visually striking, production-grade UIs -- landing pages, dashboards, components -- that avoid generic AI aesthetics.
 tools: Bash, Read, Write, Edit, Glob, Grep, WebFetch
 model: sonnet
+permissionMode: acceptEdits
+memory: project
 skills:
   - frontend-design
 ---

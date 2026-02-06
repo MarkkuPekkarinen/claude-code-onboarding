@@ -1,6 +1,7 @@
 ---
 name: architecture-design
 description: This skill should be used when designing system architecture, API contracts, deployment topologies, or making technology decisions for full-stack applications.
+argument-hint: "[system or feature to design]"
 allowed-tools: Bash, Read, Write, Edit
 ---
 

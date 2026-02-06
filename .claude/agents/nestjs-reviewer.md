@@ -4,6 +4,7 @@ description: Specialized code reviewer for NestJS 11.x services with Fastify, Pr
 tools: Read, Grep, Glob, Bash
 model: opus
 permissionMode: default
+memory: project
 skills:
   - nestjs-api
 ---

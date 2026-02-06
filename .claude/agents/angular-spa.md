@@ -2,6 +2,8 @@
 name: angular-spa
 description: Expert Angular frontend developer. Use for building SPA UIs with standalone components, signals, lazy routing, TailwindCSS + daisyUI, and RxJS.
 model: sonnet
+permissionMode: acceptEdits
+memory: project
 tools: Bash, Read, Write, Edit, Glob, Grep, WebFetch, mcp__context7__resolve-library-id, mcp__context7__query-docs
 skills:
   - angular-spa

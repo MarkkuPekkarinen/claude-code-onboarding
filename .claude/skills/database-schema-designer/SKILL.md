@@ -1,6 +1,7 @@
 ---
 name: database-schema-designer
 description: This skill should be used when designing database schemas for SQL or NoSQL databases. It provides normalization guidelines, indexing strategies, migration patterns, and performance optimization.
+argument-hint: "[domain or requirements]"
 allowed-tools: Read
 ---
 
