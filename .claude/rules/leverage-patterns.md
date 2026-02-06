@@ -29,11 +29,13 @@ Transform tasks into verifiable goals:
 
 ## Test-First
 
-When implementing non-trivial logic:
+When implementing new features or new logic (per CLAUDE.md: "Always write tests"):
 
 1. Write the test that defines success
 2. Implement until the test passes
 3. Show both
+
+For trivial changes (renaming, config tweaks, one-line fixes): run existing tests, don't write new ones unless behavior changed.
 
 Tests are your loop condition.
 

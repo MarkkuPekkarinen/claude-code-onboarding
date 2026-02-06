@@ -19,7 +19,7 @@ Actually check code before saying "missing" or "implemented". Don't guess. Don't
 - UI Component: [file:line] or ❌ NOT FOUND
 - Service/Logic: [file:line] or ❌ NOT FOUND
 - Data Connection: [file:line] or ❌ NOT FOUND
-### Status: ✅ IMPLEMENTED / ❌ MISSING / ⚠️ PARTIAL
+### Status: ✅ IMPLEMENTED / ❌ MISSING / ⚠️ PARTIAL (requires per-layer evidence above)
 ### Evidence: [Actual code snippet or function signature]
 ```
 
@@ -49,7 +49,7 @@ Here's the evidence: [show what you searched, what's not there]"
 
 - "Feature is 95% complete" → then listing critical blocking issues
 - "Mostly functional" → then describing why it doesn't work
-- Vague qualifiers: "mostly", "almost", "nearly", "partially"
+- Vague qualifiers: "mostly", "almost", "nearly", "partially" (note: ⚠️ PARTIAL in verification template is allowed because it requires per-layer file:line evidence — the ban is on "partially" as a hand-wave without proof)
 - Percentage estimates that contradict the details
 
 ### Required:

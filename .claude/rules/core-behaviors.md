@@ -61,11 +61,11 @@ Touch only what you're asked to touch.
 - Don't remove comments you don't understand
 - Don't "clean up" code orthogonal to the task
 - Don't refactor adjacent systems as side effects
-- Don't delete code that seems unused without approval
+- Don't delete **pre-existing** unused code without approval (it may be intentional or in-progress work)
 
 **Test:** Every changed line traces directly to the user's request.
 
-When YOUR changes create orphans, remove the imports/variables/functions that YOUR changes made unused.
+**Exception — cleanup obligation:** When YOUR changes create orphans (unused imports, dead functions, replaced files), you MUST remove them. This aligns with code-standards.md: "NEVER leave old + new both existing." The distinction: pre-existing unused code → ask first; code YOUR changes made unused → clean it up immediately.
 
 ## 6. Dead Code Hygiene
 
@@ -97,7 +97,7 @@ After writing code, before reporting done:
 
 - **Trace with a concrete example:** Walk through your code with real input values, step by step
 - **Check the unhappy paths:** What happens with null, empty, zero, error response, timeout?
-- **Run the tests:** If tests exist, run them. If you wrote new logic, write a test
+- **Run the tests:** Always run existing tests. New features or new logic → write a test (see CLAUDE.md "Always write tests"). Trivial changes (rename, config) → run existing tests only
 - **Diff review:** Re-read your own diff as if reviewing someone else's PR
 - **Contract check:** Do function signatures, return types, and error states match what callers expect?
 
