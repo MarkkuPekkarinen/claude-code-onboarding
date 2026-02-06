@@ -3,6 +3,7 @@ name: nestjs-reviewer
 description: Specialized code reviewer for NestJS 11.x services with Fastify, Prisma, and TypeScript 5.x. Reviews for module correctness, security, resilience, testing, and production readiness.
 tools: Read, Grep, Glob, Bash
 model: opus
+permissionMode: default
 skills:
   - nestjs-api
 ---

@@ -3,6 +3,7 @@ name: security-reviewer
 description: Security vulnerability detection and remediation specialist. Flags secrets, SSRF, injection, unsafe crypto, and OWASP Top 10 vulnerabilities.
 tools: Read, Bash, Grep, Glob
 model: opus
+permissionMode: default
 skills:
   - security-reviewer
 ---

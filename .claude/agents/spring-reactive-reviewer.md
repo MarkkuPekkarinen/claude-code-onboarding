@@ -3,6 +3,7 @@ name: spring-reactive-reviewer
 description: Specialized code reviewer for Java 21 Spring Boot 3.5.x WebFlux reactive services. Reviews for reactive correctness, Resilience4j patterns, security, testing, and production readiness.
 tools: Read, Grep, Glob, Bash
 model: opus
+permissionMode: default
 skills:
   - java-spring-api
   - java-coding-standard

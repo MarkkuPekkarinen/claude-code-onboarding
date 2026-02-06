@@ -3,6 +3,7 @@ name: postgresql-database-reviewer
 description: PostgreSQL database specialist for query optimization, schema design, security, and performance. Use PROACTIVELY when writing SQL, creating migrations, designing schemas, or troubleshooting database performance.
 tools: Read, Bash, Grep, Glob
 model: opus
+permissionMode: default
 skills:
   - database-schema-designer
 ---
