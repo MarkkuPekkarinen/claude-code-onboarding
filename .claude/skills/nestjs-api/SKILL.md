@@ -20,7 +20,7 @@ npx @nestjs/cli new my-service --package-manager npm --strict
 ## Process
 
 1. **Scaffold** using NestJS CLI or the command above
-2. **Configure** package.json and tsconfig — read `reference/nestjs-config-basics.md` and `reference/nestjs-config-schema.md`
+2. **Configure** package.json and tsconfig — read `reference/nestjs-config-basics.md`, `reference/nestjs-config-npm-ts.md`, and `reference/nestjs-config-prisma7.md`
 3. **Create files** using templates — read `reference/nestjs-templates-core.md` for main.ts, AppModule, CoreModule; read `reference/nestjs-templates-features.md` for feature modules, controllers, services, DTOs
 4. **Follow conventions** below for package layout and NestJS rules
 5. **Write tests** with Vitest + supertest or NestJS Testing utilities
@@ -47,27 +47,38 @@ npx @nestjs/cli new my-service --package-manager npm --strict
 | File | Content |
 |------|---------|
 | `reference/nestjs-config-basics.md` | Static config reader, config module aggregation, fail-fast validation |
-| `reference/nestjs-config-schema.md` | package.json, tsconfig.json, Prisma schema, .env template |
+| `reference/nestjs-config-npm-ts.md` | package.json with dependencies, tsconfig.json |
+| `reference/nestjs-config-prisma7.md` | Prisma 7.x schema, prisma.config.ts, PrismaService, .env template |
 | `reference/nestjs-templates-core.md` | main.ts, app.module, core.module templates |
 | `reference/nestjs-templates-features.md` | Feature module, controller, service, DTO templates |
 | `reference/nestjs-templates-infrastructure.md` | Dockerfile, docker-compose, Vitest config |
 | `reference/nestjs-enterprise-patterns.md` | Exception hierarchy, validation pipe, API versioning |
 | `reference/nestjs-enterprise-infrastructure.md` | Security middleware (Helmet), rate limiting, Swagger, health checks |
-| `reference/nestjs-resilience-patterns.md` | Circuit breaker, database fallback, request context (AsyncLocalStorage) |
+| `reference/nestjs-resilience-circuit-breaker.md` | Circuit breaker, retry, timeout, database fallback |
+| `reference/nestjs-resilience-context.md` | Request context with AsyncLocalStorage, correlation IDs |
 | `reference/nestjs-feature-flags.md` | Feature flags service, Redis fallback, gradual rollout |
 | `reference/nestjs-observability.md` | OpenTelemetry tracing/metrics, structured logging, cloud logging |
 | `reference/nestjs-messaging-basics.md` | BullMQ queues, background job processing |
 | `reference/nestjs-messaging-queues.md` | RabbitMQ reliable messaging, dead letter queues |
 | `reference/nestjs-messaging-streaming.md` | Kafka event streaming, high-throughput patterns |
-| `reference/nestjs-testing-unit.md` | Unit testing with Vitest, mocking, test data factories |
-| `reference/nestjs-testing-integration.md` | E2E testing with supertest, Testcontainers |
-| `reference/nestjs-testing-advanced.md` | Circuit breaker testing, coverage standards, CI/CD |
-| `reference/nestjs-rest-controllers.md` | OpenAPI/Swagger, DTO mapping, pagination, file uploads |
+| `reference/nestjs-testing-unit-basics.md` | Unit testing with Vitest, service test patterns |
+| `reference/nestjs-testing-unit-controllers.md` | Controller unit tests, test data factories |
+| `reference/nestjs-testing-unit-mocks.md` | Prisma/Redis/HTTP mocking, ConfigService mocking |
+| `reference/nestjs-testing-integration-setup.md` | E2E testing setup, Testcontainers, supertest |
+| `reference/nestjs-testing-integration-patterns.md` | Auth testing, validation, pagination patterns |
+| `reference/nestjs-testing-patterns.md` | Circuit breaker testing, AsyncLocalStorage testing |
+| `reference/nestjs-testing-ci-troubleshooting.md` | Coverage standards, CI/CD, troubleshooting |
+| `reference/nestjs-rest-workflow.md` | REST workflow, OpenAPI/Swagger controller setup |
+| `reference/nestjs-rest-dto-pagination.md` | DTO mapping, pagination, filter patterns |
+| `reference/nestjs-rest-upload-errors.md` | File uploads, API versioning, ProblemDetail errors |
 | `reference/nestjs-rest-services.md` | Service patterns, external API clients, bulk operations, soft delete |
 | `reference/nestjs-security-auth.md` | JWT authentication (RS256), password hashing, token management |
-| `reference/nestjs-security-hardening.md` | OWASP scanning, security headers, PII masking, input validation |
-| `reference/nestjs-debugging-basics.md` | Prisma query logging, Fastify lifecycle, config debugging |
-| `reference/nestjs-debugging-advanced.md` | Memory leaks, performance profiling, production debugging, tracing |
+| `reference/nestjs-security-scanning.md` | OWASP scanning, security headers, static analysis |
+| `reference/nestjs-security-validation-logging.md` | Input validation, PII masking, Prisma security |
+| `reference/nestjs-debugging-logging.md` | Debug mode, Prisma query logging, Fastify lifecycle |
+| `reference/nestjs-debugging-context-di.md` | AsyncLocalStorage context, DI debugging, config |
+| `reference/nestjs-debugging-performance.md` | Memory leaks, performance profiling |
+| `reference/nestjs-debugging-production.md` | Production debugging, structured logging, tracing |
 
 ## Documentation Sources
 

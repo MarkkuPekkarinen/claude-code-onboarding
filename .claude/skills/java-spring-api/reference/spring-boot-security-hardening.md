@@ -115,7 +115,7 @@ Add HSTS (HTTP Strict Transport Security) to the existing SecurityConfig:
 })
 ```
 
-This supplements the SecurityConfig in `spring-boot-enterprise.md` which already covers CSP and X-Frame-Options.
+This supplements the SecurityConfig in `spring-boot-enterprise-errors-security.md` which already covers CSP and X-Frame-Options.
 
 ## JWT Role Extraction
 

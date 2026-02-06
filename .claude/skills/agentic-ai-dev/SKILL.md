@@ -34,17 +34,17 @@ uv add --dev pytest pytest-asyncio httpx ruff mypy
 
 | Pattern | Implementation | Reference |
 |---------|---------------|-----------|
-| Agent Graphs | `StateGraph` + typed nodes + conditional edges | `agentic-templates-agents.md` |
+| Agent Graphs | `StateGraph` + typed nodes + conditional edges | `agentic-templates-basic.md` |
 | Tools | `@tool` + docstring + Pydantic input + try/except | `agentic-templates-tools.md` |
 | LLM Binding | Factory function per provider, `.bind_tools()` | `agentic-llm-routing.md` |
-| Routing | `Command(goto=...)` pattern (LangGraph) | `agentic-templates-agents.md` |
+| Routing | `Command(goto=...)` pattern (LangGraph) | `agentic-templates-advanced.md` |
 | Checkpointing | `PostgresSaver` (prod) / `MemorySaver` (test) | `agentic-memory-systems.md` |
 | Streaming | `astream()` + `stream_mode` + FastAPI SSE | `agentic-streaming-hitl.md` |
 | Human-in-the-Loop | `interrupt_before` + approval node | `agentic-streaming-hitl.md` |
 | RAG | Embeddings → Vector Store → Retriever → Reranker | `agentic-templates-rag.md` |
 | Guardrails | 12-layer pipeline: input → process → output | `agentic-guardrails-security.md` |
 | Structured Output | `.with_structured_output(PydanticModel)` | `agentic-prompt-engineering.md` |
-| Error Recovery | Retry node + fallback model + graceful degradation | `agentic-templates-agents.md` |
+| Error Recovery | Retry node + fallback model + graceful degradation | `agentic-templates-resilience.md` |
 | Config | pydantic-settings + fail-fast validators | `agentic-config-project.md` |
 
 ## Conventions & Rules
@@ -67,7 +67,9 @@ Before generating code, consult these sources for current syntax and APIs:
 |------|---------|-------------|
 | `agentic-config-project.md` | pyproject.toml, .env, config, Docker, ruff/mypy | Project setup |
 | `agentic-templates-core.md` | FastAPI app, main.py, routes, middleware, base state | Creating API layer |
-| `agentic-templates-agents.md` | 6 LangGraph agent patterns (ReAct, Multi-Agent, Supervisor, Command, Sub-Graph, Error Recovery) | Building any agent |
+| `agentic-templates-basic.md` | ReAct Agent, Multi-Agent Collaborative patterns | Building basic agents |
+| `agentic-templates-advanced.md` | Hierarchical Supervisor, Command, Sub-Graph patterns | Building complex agents |
+| `agentic-templates-resilience.md` | Error Recovery Agent, key design decisions | Agent error handling |
 | `agentic-templates-rag.md` | 6 RAG architectures + document ingestion pipeline | Building RAG systems |
 | `agentic-templates-tools.md` | @tool patterns, MCP integration, retry/timeout | Defining agent tools |
 | `agentic-guardrails-security.md` | 12-layer security framework | Adding safety layers |

@@ -54,9 +54,11 @@ curl https://start.spring.io/starter.zip \
 |------|---------|
 | `reference/spring-boot-config.md` | pom.xml template, application.yml configuration |
 | `reference/spring-boot-templates.md` | DTO, Entity, Repository, Service, Controller, Test, Error Handler templates |
-| `reference/spring-boot-enterprise.md` | Exception hierarchy, Security (OAuth2/JWT), Resilience4j, WebClient pool, Health indicators, Swagger |
+| `reference/spring-boot-enterprise-errors-security.md` | Exception hierarchy, Security (OAuth2/JWT), CORS |
+| `reference/spring-boot-enterprise-resilience-health.md` | Resilience4j, WebClient pool, Health indicators, Swagger |
 | `reference/spring-boot-rest-service-guide.md` | OpenAPI+DDL driven workflow, MapStruct mapping, External service clients, WireMock testing |
-| `reference/spring-boot-testing-guide.md` | BlockHound, Resilience4j testing, test data builders, Testcontainers, contract testing |
+| `reference/spring-boot-testing-unit.md` | BlockHound, Resilience4j testing, test data builders |
+| `reference/spring-boot-testing-integration.md` | Testcontainers, contract testing, WireMock, coverage |
 | `reference/spring-boot-reactive-debugging.md` | Reactor Hooks (onOperatorError, onNextDropped, onErrorDropped), checkpoint patterns, debug mode control |
 | `reference/spring-boot-security-hardening.md` | OWASP dependency scanning, static analysis patterns, HSTS, JWT role extraction, secure logging |
 | `reference/spring-boot-reactive-patterns.md` | Resilience4j operators, Redis reactive, SSE, Spring Cloud Stream, custom operators, threading anti-patterns |
