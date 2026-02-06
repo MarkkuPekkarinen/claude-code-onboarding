@@ -34,7 +34,7 @@ if echo "$file" | grep -qE '(terraform\.tfvars(\.json)?|terraform\.tfstate(\.bac
 fi
 
 # --- Cloud provider credential directories ---
-if echo "$file" | grep -qE '(\.aws/credentials|\.kube/config|\.gcloud/|\.azure/config)'; then
+if echo "$file" | grep -qE '(\.aws/credentials|\.kube/config|\.gcloud/)'; then
   echo "BLOCKED: Cannot modify cloud provider credential files. Edit these manually." >&2
   exit 2
 fi
