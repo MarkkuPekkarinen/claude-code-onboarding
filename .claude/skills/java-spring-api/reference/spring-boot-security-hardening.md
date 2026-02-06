@@ -190,6 +190,40 @@ public record CreateUserRequest(
 ) {}
 ```
 
+## Custom Validators
+
+For business rules beyond standard annotations, create reusable custom constraint validators:
+
+```java
+// 1. Define the annotation
+@Target({ElementType.FIELD, ElementType.PARAMETER})
+@Retention(RetentionPolicy.RUNTIME)
+@Constraint(validatedBy = NoProfanityValidator.class)
+public @interface NoProfanity {
+    String message() default "Input contains prohibited content";
+    Class<?>[] groups() default {};
+    Class<? extends Payload>[] payload() default {};
+}
+
+// 2. Implement the validator
+public class NoProfanityValidator implements ConstraintValidator<NoProfanity, String> {
+
+    private static final Set<String> BLOCKED = Set.of("spam", "test123");
+
+    @Override
+    public boolean isValid(String value, ConstraintValidatorContext context) {
+        if (value == null) return true; // use @NotNull for null checks
+        return BLOCKED.stream().noneMatch(value.toLowerCase()::contains);
+    }
+}
+
+// 3. Use on DTOs
+public record CreateOrderRequest(
+    @NotBlank @NoProfanity String description,
+    @NotNull @Min(1) Integer quantity
+) {}
+```
+
 ## Security Checklist
 
 - [ ] OWASP Dependency-Check runs in CI with `failBuildOnCVSS=7`

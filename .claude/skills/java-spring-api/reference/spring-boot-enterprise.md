@@ -149,35 +149,38 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
     private Mono<ServerResponse> renderErrorResponse(ServerRequest request) {
         Throwable error = getError(request);
         String traceId = UUID.randomUUID().toString().substring(0, 8);
+        String timestamp = Instant.now().toString();
 
         log.error("[{}] {} {} — {}", traceId, request.methodName(), request.path(), error.getMessage(), error);
 
-        if (error instanceof ApplicationException appEx) {
-            HttpStatus status = appEx.getHttpStatus();
-            if (status.is4xxClientError()) {
-                return ServerResponse.status(status)
+        return switch (error) {
+            case ApplicationException appEx when appEx.getHttpStatus().is4xxClientError() ->
+                ServerResponse.status(appEx.getHttpStatus())
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(new ClientErrorResponse(
-                        appEx.getMessage(), appEx.getErrors(), appEx.getErrorCode(), Instant.now().toString()));
+                        appEx.getMessage(), appEx.getErrors(), appEx.getErrorCode(), timestamp));
+
+            case ApplicationException appEx ->
+                ServerResponse.status(appEx.getHttpStatus())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(new ServerErrorResponse(
+                        appEx.getErrorCode(), appEx.getMessage(), timestamp, traceId));
+
+            case WebExchangeBindException validationEx -> {
+                List<String> errors = validationEx.getBindingResult().getAllErrors().stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
+                yield ServerResponse.status(HttpStatus.BAD_REQUEST)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(new ClientErrorResponse(
+                        "Validation failed", errors, "VALIDATION_FAILED", timestamp));
             }
-            return ServerResponse.status(status)
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new ServerErrorResponse(
-                    appEx.getErrorCode(), appEx.getMessage(), Instant.now().toString(), traceId));
-        }
 
-        if (error instanceof WebExchangeBindException validationEx) {
-            List<String> errors = validationEx.getBindingResult().getAllErrors().stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
-            return ServerResponse.status(HttpStatus.BAD_REQUEST)
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new ClientErrorResponse("Validation failed", errors, "VALIDATION_FAILED", Instant.now().toString()));
-        }
-
-        return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(new ServerErrorResponse(
-                "InternalServerError", "Unexpected error. Trace: " + traceId, Instant.now().toString(), traceId));
+            default ->
+                ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(new ServerErrorResponse(
+                        "InternalServerError", "Unexpected error. Trace: " + traceId, timestamp, traceId));
+        };
     }
 }
 ```

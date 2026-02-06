@@ -139,9 +139,12 @@ spring:
     enabled: ${FLYWAY_ENABLED:false}
   webflux:
     base-path: /
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
 
 server:
   port: 8080
+  shutdown: graceful
 
 management:
   endpoints:
@@ -151,6 +154,36 @@ management:
 
 logging:
   config: classpath:log4j2-spring.xml
+```
+
+## Type-Safe Configuration Properties
+
+Use Java records with `@ConfigurationProperties` for type-safe, immutable configuration. Prefer this over scattered `@Value` annotations.
+
+```java
+@ConfigurationProperties(prefix = "integration.payment-service")
+public record PaymentServiceProperties(
+    @NotBlank String baseUrl,
+    @NotBlank String apiKey,
+    @Min(100) int timeoutMs
+) {}
+
+// Enable in application class or a @Configuration class
+@SpringBootApplication
+@EnableConfigurationProperties(PaymentServiceProperties.class)
+public class MyServiceApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(MyServiceApplication.class, args);
+    }
+}
+```
+
+```yaml
+integration:
+  payment-service:
+    base-url: ${PAYMENT_SERVICE_URL:http://localhost:8081}
+    api-key: ${PAYMENT_SERVICE_API_KEY}
+    timeout-ms: 5000
 ```
 
 ## log4j2-spring.xml Template

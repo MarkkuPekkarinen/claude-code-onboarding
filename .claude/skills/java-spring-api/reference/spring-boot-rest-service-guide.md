@@ -102,15 +102,27 @@ public class OrderService {
 
 ```java
 @Service
-@RequiredArgsConstructor
 public class PaymentServiceClient {
 
     private final WebClient.Builder webClientBuilder;
     private final PaymentServiceProperties config;
 
-    @CircuitBreaker(name = "paymentService", fallbackMethod = "paymentFallback")
-    @Retry(name = "paymentService")
-    @TimeLimiter(name = "paymentService")
+    private final CircuitBreaker circuitBreaker;
+    private final Retry retry;
+    private final TimeLimiter timeLimiter;
+
+    public PaymentServiceClient(WebClient.Builder webClientBuilder,
+                                PaymentServiceProperties config,
+                                CircuitBreakerRegistry cbRegistry,
+                                RetryRegistry retryRegistry,
+                                TimeLimiterRegistry tlRegistry) {
+        this.webClientBuilder = webClientBuilder;
+        this.config = config;
+        this.circuitBreaker = cbRegistry.circuitBreaker("paymentService");
+        this.retry = retryRegistry.retry("paymentService");
+        this.timeLimiter = tlRegistry.timeLimiter("paymentService");
+    }
+
     public Mono<PaymentResponse> processPayment(PaymentRequest request) {
         return webClientBuilder.build()
             .post()
@@ -124,13 +136,14 @@ public class PaymentServiceClient {
                     .flatMap(body -> Mono.error(new InvalidInputException("Payment rejected: " + body))))
             .onStatus(HttpStatusCode::is5xxServerError, response ->
                 Mono.error(new ServiceIntegrationException("Payment service unavailable", null)))
-            .bodyToMono(PaymentResponse.class);
-    }
-
-    private Mono<PaymentResponse> paymentFallback(PaymentRequest request, Throwable t) {
-        return Mono.error(new ServiceIntegrationException(
-            HttpStatus.SERVICE_UNAVAILABLE, "PAYMENT_UNAVAILABLE",
-            "Payment service is temporarily unavailable", t));
+            .bodyToMono(PaymentResponse.class)
+            .transformDeferred(CircuitBreakerOperator.of(circuitBreaker))
+            .transformDeferred(RetryOperator.of(retry))
+            .transformDeferred(TimeLimiterOperator.of(timeLimiter))
+            .onErrorResume(CallNotPermittedException.class, ex ->
+                Mono.error(new ServiceIntegrationException(
+                    HttpStatus.SERVICE_UNAVAILABLE, "PAYMENT_UNAVAILABLE",
+                    "Payment service circuit breaker is open", ex)));
     }
 }
 ```
@@ -138,15 +151,12 @@ public class PaymentServiceClient {
 ### Type-Safe Configuration
 
 ```java
-@Configuration
 @ConfigurationProperties(prefix = "integration.payment-service")
-public class PaymentServiceProperties {
-    private String baseUrl;
-    private String apiKey;
-    private int timeoutMs = 5000;
-
-    // getters and setters
-}
+public record PaymentServiceProperties(
+    @NotBlank String baseUrl,
+    @NotBlank String apiKey,
+    @Min(100) int timeoutMs
+) {}
 ```
 
 ```yaml
@@ -349,7 +359,7 @@ class PaymentIntegrationTest {
 - [ ] DTOs use Java records with `jakarta.validation` annotations
 - [ ] MapStruct mappers for all DTO-entity conversions
 - [ ] Service layer returns `Mono`/`Flux` — no `.block()` calls
-- [ ] External clients use `WebClient` + Resilience4j annotations
+- [ ] External clients use `WebClient` + programmatic Resilience4j (`.transformDeferred()`)
 - [ ] Fallback methods defined for all circuit breakers
 - [ ] `@WebFluxTest` for controllers, `StepVerifier` for services
 - [ ] WireMock tests for external service integrations

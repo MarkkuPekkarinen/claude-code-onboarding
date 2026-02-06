@@ -223,14 +223,26 @@ Non-reactive signatures like `Function<Message, Message>` block the event loop.
 
 ### Wrapping Unavoidable Blocking I/O
 
-When blocking is unavoidable (legacy library, file I/O), isolate it on `boundedElastic`:
+When blocking is unavoidable (legacy library, file I/O), isolate it on `boundedElastic`. On Java 21+, virtual threads are an alternative for blocking I/O isolation:
 
 ```java
+// Option 1: boundedElastic (default, always works)
 public Mono<byte[]> readLegacyFile(String path) {
     return Mono.fromCallable(() -> Files.readAllBytes(Path.of(path)))
         .subscribeOn(Schedulers.boundedElastic());
 }
+
+// Option 2: Virtual threads (Java 21+) — better for high-concurrency blocking I/O
+private static final Scheduler VIRTUAL = Schedulers.fromExecutor(
+    Executors.newVirtualThreadPerTaskExecutor());
+
+public Mono<byte[]> readLegacyFileVT(String path) {
+    return Mono.fromCallable(() -> Files.readAllBytes(Path.of(path)))
+        .subscribeOn(VIRTUAL);
+}
 ```
+
+Use virtual threads when you have many concurrent blocking calls (e.g., hundreds of simultaneous legacy API calls). Stick with `boundedElastic` for low-concurrency cases or when predictable thread limits are needed.
 
 ### Context Propagation
 
