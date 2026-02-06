@@ -17,6 +17,13 @@ Correct Riverpod patterns for Flutter state management with code_generation styl
 3. **Apply patterns** using loaded reference
 4. **Verify:** Confirm ref.watch is only in build(), ref.read only in callbacks, all AsyncValue states handled visibly
 
+## Reference Files
+
+| File | Contents |
+|------|----------|
+| `reference/riverpod-core-patterns.md` | Code examples, provider types, ref usage rules |
+| `reference/riverpod-review-checklist.md` | Review checklist for Riverpod code audits (used by `riverpod-reviewer` agent) |
+
 ## Error Handling
 
 **Provider not found**: Ensure `ProviderScope` wraps the widget tree. Check that generated `.g.dart` files are up to date (`dart run build_runner build`).

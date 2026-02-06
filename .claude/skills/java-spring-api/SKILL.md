@@ -62,6 +62,7 @@ curl https://start.spring.io/starter.zip \
 | `reference/spring-boot-reactive-debugging.md` | Reactor Hooks (onOperatorError, onNextDropped, onErrorDropped), checkpoint patterns, debug mode control |
 | `reference/spring-boot-security-hardening.md` | OWASP dependency scanning, static analysis patterns, HSTS, JWT role extraction, secure logging |
 | `reference/spring-boot-reactive-patterns.md` | Resilience4j operators, Redis reactive, SSE, Spring Cloud Stream, custom operators, threading anti-patterns |
+| `reference/spring-reactive-review-checklist.md` | Spring reactive review checklist (used by `spring-reactive-reviewer` agent) |
 
 ## Documentation Sources
 

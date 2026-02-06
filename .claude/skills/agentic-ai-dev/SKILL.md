@@ -83,6 +83,7 @@ Before generating code, consult these sources for current syntax and APIs:
 | `agentic-cost-optimization.md` | Cost management, budget caps, prompt optimization | Reducing LLM costs |
 | `agentic-prompt-engineering.md` | Advanced prompting, structured output, templates | Writing better prompts |
 | `agentic-error-handling.md` | Agent, tool, LLM provider, and API error handling patterns | Error handling in agents |
+| `agentic-review-checklist.md` | Agentic AI review checklist (used by `agentic-ai-reviewer` agent) | Code reviews |
 
 ## Error Handling
 

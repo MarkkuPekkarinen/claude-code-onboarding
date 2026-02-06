@@ -112,6 +112,7 @@ Before generating schemas or queries, consult these sources:
 | `reference/nosql-design-patterns.md` | MongoDB/Firestore embedding vs referencing |
 | `reference/migration-patterns.md` | Zero-downtime migrations, rollback strategies |
 | `assets/templates/migration-template.sql` | SQL migration file template |
+| `reference/postgresql-review-checklist.md` | PostgreSQL review checklist (used by `postgresql-database-reviewer` agent) |
 
 ## Error Handling
 

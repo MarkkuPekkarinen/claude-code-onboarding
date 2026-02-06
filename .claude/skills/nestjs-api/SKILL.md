@@ -79,6 +79,7 @@ npx @nestjs/cli new my-service --package-manager npm --strict
 | `reference/nestjs-debugging-context-di.md` | AsyncLocalStorage context, DI debugging, config |
 | `reference/nestjs-debugging-performance.md` | Memory leaks, performance profiling |
 | `reference/nestjs-debugging-production.md` | Production debugging, structured logging, tracing |
+| `reference/nestjs-review-checklist.md` | NestJS review checklist (used by `nestjs-reviewer` agent) |
 
 ## Documentation Sources
 
