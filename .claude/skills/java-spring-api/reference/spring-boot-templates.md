@@ -2,6 +2,16 @@
 
 Production-ready code templates for Java 21 + Spring Boot 3.5.x WebFlux development.
 
+## Application Entry Point
+```java
+@SpringBootApplication
+public class MyServiceApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(MyServiceApplication.class, args);
+    }
+}
+```
+
 ## DTO (record)
 ```java
 public record CreateUserRequest(

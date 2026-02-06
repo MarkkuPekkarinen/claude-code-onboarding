@@ -95,17 +95,31 @@ public class ServiceIntegrationException extends ApplicationException {
 ```java
 // Client errors (4xx)
 public record ClientErrorResponse(
+    @Schema(description = "General error description", example = "Validation failed")
     String message,
+
+    @Schema(description = "Specific error details", example = "[\"email is required\"]", nullable = true)
     List<String> errors,
+
+    @Schema(description = "Application error code", example = "VALIDATION_ERROR")
     String errorCode,
+
+    @Schema(description = "ISO-8601 timestamp", example = "2025-05-19T13:30:00Z")
     String timestamp
 ) {}
 
 // Server errors (5xx)
 public record ServerErrorResponse(
+    @Schema(description = "Error type", example = "InternalServerError")
     String error,
+
+    @Schema(description = "Error description", example = "Unexpected error occurred")
     String message,
+
+    @Schema(description = "ISO-8601 timestamp", example = "2025-05-19T13:30:00Z")
     String timestamp,
+
+    @Schema(description = "Trace ID for log correlation", example = "abc123xy")
     String traceId
 ) {}
 ```
