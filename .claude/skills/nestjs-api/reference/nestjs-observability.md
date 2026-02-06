@@ -13,7 +13,7 @@ Configuration for structured logging with cloud provider support and request log
  * Structured Logging Configuration
  *
  * Supports multiple output formats and cloud logging providers:
- * - JSON format for production (GCP, AWS, Azure compatible)
+ * - JSON format for production (GCP, AWS compatible)
  * - Pretty format for development
  * - Configurable log levels per environment
  */
@@ -49,9 +49,6 @@ export default registerAs('logging', () => ({
     // AWS-specific
     awsRegion: getOptionalString('AWS_REGION'),
     awsLogGroup: getOptionalString('AWS_LOG_GROUP'),
-
-    // Azure-specific
-    azureConnectionString: getOptionalString('AZURE_APPINSIGHTS_CONNECTION_STRING'),
   },
 
   // Request logging
