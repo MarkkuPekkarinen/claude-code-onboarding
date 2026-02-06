@@ -103,6 +103,8 @@ After writing code, before reporting done:
 
 Don't trust that it "looks right." Prove it works.
 
+Note: This section covers **your own code quality**. For **claims about code state** (implemented/missing/broken), see `verification-and-reporting.md`.
+
 ---
 
 ## Guard Rails
@@ -119,12 +121,5 @@ Don't trust that it "looks right." Prove it works.
 6. Overcomplicating code and APIs
 7. Modifying code orthogonal to the task
 8. Removing things you don't fully understand
-9. Contradictory status (saying "works" then listing why it doesn't)
-10. Flipping claims when challenged without re-verifying
-11. Saying "done" with incomplete plan items
-12. Creating new files when modifying existing would suffice
-13. Silent failures, mock data fallbacks, swallowed exceptions
-14. Deprecated APIs without checking documentation
-15. Duplicating logic instead of using shared utilities
-16. Not thinking through edge cases before coding
-17. Claiming "done" without tracing code with concrete values or running tests
+
+Also enforced by other rules (see those files for details): contradictory/flipped status claims, incomplete plan items (`verification-and-reporting.md`); new files when modify suffices, silent failures, duplicated logic (`code-standards.md`); deprecated APIs (`CLAUDE.md`).
