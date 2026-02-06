@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# PostToolUse → Write|Edit|MultiEdit: Auto-format files after Claude modifies them.
+# PostToolUse → Write|Edit: Auto-format files after Claude modifies them.
 # Detects the file type and runs the appropriate formatter if available.
 # Exit 0 always (formatting is best-effort, never blocks).
 set -uo pipefail
