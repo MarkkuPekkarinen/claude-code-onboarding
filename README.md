@@ -1,7 +1,6 @@
 # Claude Code — Team Onboarding Kit
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/kumaran-is/claude-code-onboarding)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Built with Claude Code](https://img.shields.io/badge/Built%20with-Claude%20Code-blueviolet?style=flat&logo=anthropic&logoColor=white)](https://docs.anthropic.com/en/docs/claude-code)
 [![Blog: My Setup](https://img.shields.io/badge/Medium-My%20Claude%20Code%20Setup-000000?style=flat&logo=medium&logoColor=white)](https://medium.com/@kumaran.isk/my-claude-code-setup-heres-what-i-learned-d0403b1b1fec)
 [![Blog: Practices](https://img.shields.io/badge/Medium-Practices%20That%20Fixed%20My%20Workflow-000000?style=flat&logo=medium&logoColor=white)](https://medium.com/@kumaran.isk/the-practices-that-fixed-my-claude-code-workflow-f72ada6a52a5)
