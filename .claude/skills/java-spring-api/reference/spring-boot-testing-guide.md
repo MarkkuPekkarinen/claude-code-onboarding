@@ -17,9 +17,12 @@ Comprehensive testing patterns for Java 21 + Spring Boot 3.5.x reactive services
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest { }
 
-// Controller slice — only web layer loaded
+// Controller slice — only web layer loaded, use @MockBean for service deps
 @WebFluxTest(OrderController.class)
-class OrderControllerTest { }
+class OrderControllerTest {
+    @MockBean private OrderService orderService;
+    @Autowired private WebTestClient webTestClient;
+}
 
 // Repository slice — only data layer loaded
 @DataR2dbcTest

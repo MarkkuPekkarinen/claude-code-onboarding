@@ -197,6 +197,25 @@ public class SecurityConfig {
             )
             .build();
     }
+}
+
+// Method-level authorization — requires @EnableReactiveMethodSecurity above
+@Service
+@RequiredArgsConstructor
+public class OrderService {
+    @PreAuthorize("hasRole('ADMIN')")
+    public Mono<Void> deleteOrder(UUID id) { /* ... */ }
+
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public Mono<Order> getOrder(UUID id) { /* ... */ }
+}
+```
+
+### CORS Configuration
+
+```java
+@Configuration
+public class CorsConfig {
 
     private CorsConfigurationSource corsSource() {
         CorsConfiguration config = new CorsConfiguration();
