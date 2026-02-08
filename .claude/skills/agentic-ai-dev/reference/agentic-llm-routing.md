@@ -8,12 +8,16 @@ Multi-provider routing, cost calculation, fallback chains, and prompt caching.
 
 | Provider | Model | Best For | Cost (1M in/out) | Context | Speed |
 |----------|-------|----------|-------------------|---------|-------|
-| Anthropic | claude-opus-4-20250514 | Complex reasoning, code | $15/$75 | 200k | Slow |
-| Anthropic | claude-sonnet-4-20250514 | Balanced quality/cost | $3/$15 | 200k | Medium |
-| Anthropic | claude-haiku-3-5-20241022 | Fast, cheap tasks | $0.80/$4 | 200k | Fast |
-| OpenAI | gpt-4o | Multimodal, general | $2.50/$10 | 128k | Medium |
-| OpenAI | gpt-4o-mini | Fast, cheap tasks | $0.15/$0.60 | 128k | Fast |
-| Google | gemini-2.0-flash | Fast, multimodal | $0.10/$0.40 | 1M | Fast |
+| **Anthropic** | claude-opus-4-6 | Complex reasoning, agents, code | $5/$25 | 200k (1M beta) | Slow |
+| Anthropic | claude-sonnet-4-5-20250929 | Balanced quality/cost | $3/$15 | 200k (1M beta) | Medium |
+| Anthropic | claude-haiku-4-5-20251001 | Fast, cheap tasks | $1/$5 | 200k | Fast |
+| **OpenAI** | gpt-5.2 | Flagship coding, agentic | $1.75/$14 | 400k | Medium |
+| OpenAI | gpt-4.1 | Long-context, tool calling | $2/$8 | 1M | Medium |
+| OpenAI | gpt-4.1-mini | Fast, cheap, tool calling | $0.40/$1.60 | 1M | Fast |
+| OpenAI | gpt-4o-mini | Legacy fast/cheap tasks | $0.15/$0.60 | 128k | Fast |
+| **Google** | gemini-3-pro-preview | Best multimodal, agentic | $2/$12 | 1M | Medium |
+| Google | gemini-3-flash-preview | Frontier speed, reasoning | $0.50/$3 | 1M | Fast |
+| Google | gemini-2.5-flash | Hybrid reasoning, thinking | $0.30/$2.50 | 1M | Fast |
 
 ### Embeddings
 
@@ -21,14 +25,16 @@ Multi-provider routing, cost calculation, fallback chains, and prompt caching.
 |----------|-------|------------|-------------------|----------|
 | OpenAI | text-embedding-3-large | 3072 | $0.13 | High quality |
 | OpenAI | text-embedding-3-small | 1536 | $0.02 | Cost-effective |
-| Google | text-embedding-004 | 768 | $0.025 | Good balance |
+| Google | gemini-embedding-001 | 3072 | $0.15 | SOTA multilingual |
+| Google | text-embedding-004 | 768 | ~$0.025/1K chars | Legacy (deprecated Jan 2026) |
 
 ### Rerankers
 
-| Provider | Model | Best For |
-|----------|-------|----------|
-| Cohere | rerank-v3.5 | General reranking |
-| Jina | jina-reranker-v2 | Multilingual |
+| Provider | Model | Cost | Best For |
+|----------|-------|------|----------|
+| Cohere | rerank-v3.5 | $2/1K searches | General reranking, 100+ langs |
+| Jina | jina-reranker-v3 | Per-token | Listwise SOTA, 131K context |
+| Jina | jina-reranker-v2-base-multilingual | Per-token | Multilingual, agentic RAG |
 
 ## LLM Provider Factory
 
