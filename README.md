@@ -585,34 +585,62 @@ This repo includes 4 hooks out of the box:
 
 ### Model Selection & Cost Awareness
 
-This kit uses two model tiers strategically:
+Claude Code supports three Anthropic models, each optimized for different use cases:
 
-| Model | Used By | When | Why |
-|-------|---------|------|-----|
-| **Sonnet** | Dev agents (`java-spring-api`, `angular-spa`, `flutter-mobile`, etc.) | Writing code, scaffolding, implementing features | Fast, cost-effective, excellent for code generation |
-| **Opus** | Review agents (`spring-reactive-reviewer`, `nestjs-reviewer`, `security-reviewer`, etc.) | Code review, security audits, architecture review | Deeper reasoning, catches subtle bugs, better at nuanced analysis |
+| Model | Best For | Cost (1M in/out) | Context | Speed |
+|-------|----------|-------------------|---------|-------|
+| **Claude Sonnet 4.5** | Balanced quality/cost — 80% of your work | $3 / $15 | 200K (1M beta) | Medium |
+| **Claude Haiku 4.5** | Fast, cheap tasks (docs, non-critical work) | $1 / $5 | 200K | Fast |
+| **Claude Opus 4.6** | Complex reasoning (expensive, burns tokens fast) | $5 / $25 | 200K (1M beta) | Slow |
 
-**Switching models mid-session:**
+**Pricing details:**
+- **Opus 4.6**: $5 per million input tokens, $25 per million output tokens. [Source](https://www.anthropic.com/claude/opus)
+- **Sonnet 4.5**: $3 per million input tokens, $15 per million output tokens. [Source](https://www.anthropic.com/claude/sonnet)
+- **Haiku 4.5**: $1 per million input tokens, $5 per million output tokens. [Source](https://caylent.com/blog/claude-haiku-4-5-deep-dive-cost-capabilities-and-the-multi-agent-opportunity)
+- **Long context (>200K tokens)**: Premium rates apply — Opus: $10/$37.50, Sonnet: $6/$22.50 per million tokens. [Source](https://platform.claude.com/docs/en/about-claude/models/overview)
 
+**Recommended default: Sonnet 4.5**
+
+Sonnet balances high performance with efficient response times for coding tasks. Set it as your persistent default in `.claude/settings.json`:
+
+```json
+{
+  "permissions": {},
+  "model": "sonnet"
+}
 ```
-> /model                    # See current model and switch
-> /model sonnet             # Switch to Sonnet for implementation work
-> /model opus               # Switch to Opus for complex debugging
+
+**Switching models:**
+
+Inside a Claude Code session:
+```bash
+/model sonnet              # Switch to Sonnet (default)
+/model haiku               # Switch to Haiku (fast, cheap)
+/model opus                # Switch to Opus (complex reasoning)
+```
+
+Or use the `--model` flag when starting:
+```bash
+claude --model sonnet
+claude --model haiku
+claude --model opus
 ```
 
 **Cost monitoring:**
 
-```
-> /cost                     # Token usage and estimated cost for this session
-> /stats                    # Usage stats over 7/30 days or all-time
-> /usage                    # Plan limits and remaining usage
+```bash
+/cost                      # Token usage and estimated cost for this session
+/stats                     # Usage stats over 7/30 days or all-time
+/usage                     # Plan limits and remaining usage
 ```
 
 **Cost-saving tips:**
+- **Use Sonnet for 80% of work** — code generation, debugging, refactoring
+- **Use Haiku for docs** — README updates, comments, non-critical tasks
+- **Use Opus sparingly** — complex architecture, critical security reviews (burns tokens quickly)
 - Use `/compact` regularly in long sessions — stale context wastes tokens
-- Use `@file` references instead of pasting file contents — it's more token-efficient
-- Disable MCP servers you're not actively using (`/mcp` to check)
-- For simple tasks, Sonnet is sufficient — save Opus for reviews and complex reasoning
+- Use `@file` references instead of pasting file contents
+- Disable unused MCP servers (`/mcp` to check)
 
 ## 8. What Gets Sent to the LLM?
 
