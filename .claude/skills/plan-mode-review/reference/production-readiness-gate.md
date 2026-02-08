@@ -1,6 +1,6 @@
 # Production Readiness Gate
 
-Covers 6 subsections that must all pass before approving a change for implementation. This supplements Phase 1-4 (Architecture, Code Quality, Tests, Performance) with production-specific concerns.
+Covers 7 subsections that must all pass before approving a change for implementation. This supplements Phase 1-4 (Architecture, Code Quality, Tests, Performance) with production-specific concerns.
 
 ---
 
@@ -185,6 +185,18 @@ If no data model changes, state "No data migration required" and skip.
 
 ---
 
+## 5.7 — Success Metrics
+
+Define how we know this change WORKED after deployment — not just "deployed without errors."
+
+| Metric | Baseline (current) | Target | How to Measure | Observation Window |
+|--------|-------------------|--------|----------------|-------------------|
+| [e.g., checkout error rate] | [e.g., 2.3%] | [e.g., <1%] | [e.g., Datadog dashboard X] | [e.g., 7 days post-deploy] |
+
+If no measurable metric applies (pure refactor, internal tooling), state "No success metrics — internal change" and skip.
+
+---
+
 ## Production Readiness Gate Checklist
 
 Before approving for implementation, ALL must be true:
@@ -197,6 +209,7 @@ PRODUCTION READINESS GATE:
 - [ ] Second-order effects identified and acceptable (5.4)
 - [ ] Cost/infra impact understood (5.5)
 - [ ] Data migration plan exists if applicable (5.6)
+- [ ] Success metrics defined or explicitly skipped (5.7)
 - [ ] Human approved the production readiness assessment
 ```
 

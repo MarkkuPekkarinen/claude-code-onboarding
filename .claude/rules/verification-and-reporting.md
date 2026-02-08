@@ -23,6 +23,17 @@ Actually check code before saying "missing" or "implemented". Don't guess. Don't
 ### Evidence: [Actual code snippet or function signature]
 ```
 
+### Spec Conformance (when plan/spec exists for this feature):
+
+```
+- Completeness: All WHEN/THEN scenarios from spec covered? [YES/NO — list uncovered]
+- Correctness: Behavior matches spec intent, not just "code exists"? [YES/NO — evidence]
+- Coherence: Design decisions from plan reflected in code structure? [YES/NO — evidence]
+- Constraints: All non-functional requirements met? [YES/NO — list violated]
+```
+
+> Skip this section if no spec/plan document exists for the feature being verified.
+
 ### When User Challenges Your Analysis
 
 Don't flip. Re-verify:

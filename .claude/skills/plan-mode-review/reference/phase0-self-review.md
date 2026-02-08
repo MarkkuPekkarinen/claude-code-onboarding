@@ -19,10 +19,27 @@ Ask: **"What does DONE look like?"** — not how to build it, but what the end r
 ```
 ## Outcome Spec
 **Goal:** [one sentence in user/business terms]
+
 **Acceptance Criteria:**
-- [ ] [criterion 1]
-- [ ] [criterion 2]
-- [ ] [criterion 3]
+- [ ] [simple criterion — for UI/config/static checks]
+
+**Key Scenarios** (for behavioral requirements):
+#### Scenario: [name]
+- **WHEN** [condition or user action]
+- **THEN** [expected outcome, observable and testable]
+
+#### Scenario: [name — unhappy path]
+- **WHEN** [error condition or edge case]
+- **THEN** [expected error behavior]
+
+**Constraints** (non-functional requirements):
+| Category | Constraint |
+|----------|-----------|
+| Performance | [e.g., response <200ms at p95] |
+| Compatibility | [e.g., must not break existing API contract] |
+| Security | [e.g., must not expose PII in logs] |
+| Operational | [e.g., must work with zero downtime deployment] |
+> Skip categories that don't apply. Add categories that do.
 
 **End State Diagram:**
 [Mermaid or ASCII diagram here]
@@ -110,7 +127,7 @@ Before proceeding to review phases, ALL must be true:
 
 ```
 PHASE 0 GATE:
-- [ ] Outcome is clearly defined (Step 0.1)
+- [ ] Outcome is clearly defined with scenarios and constraints (Step 0.1)
 - [ ] Leanest approach is selected (Step 0.2)
 - [ ] Self-review surfaced and addressed edge cases (Step 0.3)
 - [ ] Deletion pass completed — we know what we're NOT building (Step 0.4)
