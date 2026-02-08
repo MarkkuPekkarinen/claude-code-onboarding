@@ -15,6 +15,8 @@ For every task:
 
 For small/obvious tasks, compress — but NEVER skip UNDERSTAND or VERIFY.
 
+For non-trivial changes (architecture, multi-service, schema changes): use the `plan-mode-review` skill or `/plan-review` command, which extends this protocol with Phase 0 self-review, approval scope triage, and production readiness gates.
+
 ## Declarative Over Imperative
 
 Prefer success criteria over step-by-step commands:

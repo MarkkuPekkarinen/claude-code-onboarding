@@ -65,6 +65,7 @@ Consult official docs via MCP before writing ANY code. Zero tolerance for deprec
 | Flutter | `.claude/skills/flutter-mobile/` | `flutter-mobile` | `/scaffold-flutter-app` |
 | Database | `.claude/skills/database-schema-designer/` | `database-designer` | `/design-database` |
 | Architecture | `.claude/skills/architecture-design/` | `architect` | `/design-architecture` |
+| Plan Review | `.claude/skills/plan-mode-review/` | — | `/plan-review` |
 
 ### Code Review Agents
 
@@ -101,6 +102,7 @@ docker-compose down                  # Stop all services
 - **Always write tests** for new features
 - **Use the agents/skills** — see the mapping table above in Code Conventions
 - Run `/project-status` for codebase summary, `/review-code` for review, `/audit-security` for security audit
+- Run `/plan-review` for structured plan review with Phase 0 self-review and production readiness gates
 
 ## Meta
 
