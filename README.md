@@ -69,16 +69,16 @@ Clone it, install Claude Code, and start building.
     - [settings.json Configuration](#settingsjson-configuration)
     - [Hooks — Automated Guardrails](#hooks--automated-guardrails)
     - [Model Selection \& Cost Awareness](#model-selection--cost-awareness)
-  - [10. Multiple Sub Agents](#10-multiple-sub-agents)
-  - [11. Agent Teams — Coordinated Multi-Agent Collaboration](#11-agent-teams--coordinated-multi-agent-collaboration)
+  - [9. Multiple Sub Agents](#9-multiple-sub-agents)
+  - [10. Agent Teams — Coordinated Multi-Agent Collaboration](#10-agent-teams--coordinated-multi-agent-collaboration)
     - [How to Enable](#how-to-enable)
-  - [12. What Gets Sent to the LLM?](#12-what-gets-sent-to-the-llm)
+  - [11. What Gets Sent to the LLM?](#11-what-gets-sent-to-the-llm)
     - [Context Window Anatomy](#context-window-anatomy)
     - [What Each Layer Contains](#what-each-layer-contains)
     - [Key Takeaways](#key-takeaways)
-  - [13. What's in This Repo](#13-whats-in-this-repo)
+  - [12. What's in This Repo](#12-whats-in-this-repo)
     - [MCP Servers (`.mcp.json`)](#mcp-servers-mcpjson)
-  - [14. Hands-On Exercises](#14-hands-on-exercises)
+  - [13. Hands-On Exercises](#13-hands-on-exercises)
     - [Exercise 1: Scaffold a Flutter Fitness App](#exercise-1-scaffold-a-flutter-fitness-app)
     - [Exercise 2: Build a Weather REST API (Java)](#exercise-2-build-a-weather-rest-api-java)
     - [Exercise 3: Build a Todo API (NestJS)](#exercise-3-build-a-todo-api-nestjs)
@@ -90,32 +90,32 @@ Clone it, install Claude Code, and start building.
     - [Exercise 9: Domain-Driven Design with DDD Architect](#exercise-9-domain-driven-design-with-ddd-architect)
     - [Exercise 10: Add a Feature End-to-End](#exercise-10-add-a-feature-end-to-end)
     - [What's Next?](#whats-next)
-  - [15. Development Workflow — Putting It All Together](#15-development-workflow--putting-it-all-together)
+  - [14. Development Workflow — Putting It All Together](#14-development-workflow--putting-it-all-together)
     - [How Components Interact](#how-components-interact)
     - [Phase 1: Design \& Architecture](#phase-1-design--architecture)
     - [Phase 2: Scaffold \& Bootstrap](#phase-2-scaffold--bootstrap)
     - [Phase 3: Feature Development](#phase-3-feature-development)
     - [Phase 4: Review \& Enforce Quality](#phase-4-review--enforce-quality)
     - [Phase 5: Evolve Your Setup](#phase-5-evolve-your-setup)
-  - [16. Security Considerations](#16-security-considerations)
+  - [15. Security Considerations](#15-security-considerations)
     - [What Goes to Anthropic's API](#what-goes-to-anthropics-api)
     - [MCP Server Credentials](#mcp-server-credentials)
     - [The `--dangerously-skip-permissions` Flag](#the---dangerously-skip-permissions-flag)
     - [Pre-configured Guardrails in This Kit](#pre-configured-guardrails-in-this-kit)
     - [Checklist Before Using Claude Code on a Real Project](#checklist-before-using-claude-code-on-a-real-project)
-  - [17. Customizing the Kit](#17-customizing-the-kit)
+  - [16. Customizing the Kit](#16-customizing-the-kit)
     - [Adding a New Agent](#adding-a-new-agent)
     - [Adding a New Slash Command](#adding-a-new-slash-command)
     - [Adding a New Skill](#adding-a-new-skill)
     - [Adding a New Hook](#adding-a-new-hook)
     - [Removing Components You Don't Need](#removing-components-you-dont-need)
     - [Version Update Guide](#version-update-guide)
-  - [18. Claude Code Power Features](#18-claude-code-power-features)
+  - [17. Claude Code Power Features](#17-claude-code-power-features)
     - [Keyboard Shortcuts (Inside Claude Code)](#keyboard-shortcuts-inside-claude-code)
     - [Essential CLI Flags](#essential-cli-flags)
     - [Core Tools](#core-tools)
     - [Permission Model](#permission-model)
-  - [19. Tips \& Best Practices](#19-tips--best-practices)
+  - [18. Tips \& Best Practices](#18-tips--best-practices)
     - [Prompting Best Practices](#prompting-best-practices)
     - [Common Pitfalls — Avoid These](#common-pitfalls--avoid-these)
     - [@ File References](#-file-references)
@@ -134,7 +134,7 @@ Clone it, install Claude Code, and start building.
       - [When Claude Guesses Instead of Verifying](#when-claude-guesses-instead-of-verifying)
       - [When Claude Flip-Flops](#when-claude-flip-flops)
       - [When Challenging Claude's Analysis](#when-challenging-claudes-analysis)
-  - [20. Troubleshooting](#20-troubleshooting)
+  - [19. Troubleshooting](#19-troubleshooting)
     - [`command not found: claude`](#command-not-found-claude)
     - ["Context too large" error](#context-too-large-error)
     - [Edit tool fails with "string not found"](#edit-tool-fails-with-string-not-found)
@@ -144,14 +144,14 @@ Clone it, install Claude Code, and start building.
     - [Permission errors](#permission-errors)
     - [Windows-Specific Setup](#windows-specific-setup)
     - [Run diagnostics](#run-diagnostics)
-  - [21. Quick Reference Card](#21-quick-reference-card)
+  - [20. Quick Reference Card](#20-quick-reference-card)
     - [Commands You'll Use Every Day](#commands-youll-use-every-day)
     - [Scaffolding](#scaffolding)
     - [Design \& Review](#design--review)
     - [Agents (use @name)](#agents-use-name)
     - [Keyboard Shortcuts](#keyboard-shortcuts)
     - [MCP Tips](#mcp-tips)
-  - [22. Resources](#22-resources)
+  - [21. Resources](#21-resources)
 
 ---
 
@@ -645,7 +645,7 @@ claude --model opus
 - Use `@file` references instead of pasting file contents
 - Disable unused MCP servers (`/mcp` to check)
 
-## 10. Multiple Sub Agents
+## 9. Multiple Sub Agents
 
 Spwaning Multiple agents that run inside main Claude Code session to handle specific subtasks (like research or verification). They work independently, then report results back to main Claude Code session. 
 
@@ -654,7 +654,7 @@ Spwaning Multiple agents that run inside main Claude Code session to handle spec
 > Spawn a multiple sub-agents to implement Authentication service 
 ```
 
-## 11. Agent Teams — Coordinated Multi-Agent Collaboration
+## 10. Agent Teams — Coordinated Multi-Agent Collaboration
 
 [Agent Teams](https://code.claude.com/docs/en/agent-teams) is a new experimental feature for Claude Code where multiple Claude Code sessions working in parallel. One **lead** coordinates and assigns tasks. Multiple **Teammates** work independently with separate context windows and communicate via shared tasks and messages.
 
@@ -760,7 +760,7 @@ Step 4: Spawn teammates
 
 Use Agent Teams when parallelization justifies the cost. For sequential tasks, stick with sub-agents.
 
-## 12. What Gets Sent to the LLM?
+## 11. What Gets Sent to the LLM?
 
 Every time you send a prompt in Claude Code, it assembles a **context window** — the complete package of information sent to the LLM for that turn. Understanding what goes into this window helps you manage it effectively.
 
@@ -800,7 +800,7 @@ Every time you send a prompt in Claude Code, it assembles a **context window** �
 > /compact              # Manually compress conversation history
 ```
 
-## 13. What's in This Repo
+## 12. What's in This Repo
 
 **76 components** — 20 skills, 13 commands, 20 agents, 4 rules, 4 hooks, 12 MCP servers, 2 settings files, 1 CLAUDE.md.
 
@@ -945,7 +945,7 @@ claude-code-onboarding/
 | `ios-simulator` | stdio | iOS simulator control |
 | `maestro` | stdio | Mobile UI testing framework |
 
-## 14. Hands-On Exercises
+## 13. Hands-On Exercises
 
 Work through these exercises to get familiar with Claude Code. Each one uses different components from this kit.
 These exercises follow a deliberate progression to help you understand **which component to use for and when**:
@@ -1129,7 +1129,7 @@ You've used every component in the kit — agents, skills, commands, hooks, and 
    ```
 6. **Iterate** — your CLAUDE.md and skills will evolve as you discover what works for your team. Treat them like living documentation — PR-reviewed and version-controlled
 
-## 15. Development Workflow — Putting It All Together
+## 14. Development Workflow — Putting It All Together
 
 You've learned each component individually. Here's how they work together across a real development lifecycle. Every phase uses the same interaction model: **slash commands trigger, agents execute, skills supply knowledge, MCP servers provide ground truth, hooks guard, and rules enforce** — the mix just shifts per phase.
 
@@ -1218,7 +1218,7 @@ Over time, customize everything based on what you learn.
 
 The setup is a living product. Treat it like code: version-controlled, PR-reviewed, continuously improved.
 
-## 16. Security Considerations
+## 15. Security Considerations
 
 Before using Claude Code with real projects, understand the security boundaries.
 
@@ -1278,7 +1278,7 @@ These hooks are **defense-in-depth** — they catch mistakes but aren't a substi
 - [ ] CI/CD pipelines do NOT use `--dangerously-skip-permissions`
 - [ ] Hook scripts are executable (`chmod +x .claude/hooks/*.sh`)
 
-## 17. Customizing the Kit
+## 16. Customizing the Kit
 
 This kit is a starting point — customize it for your team's stack and workflows.
 
@@ -1491,7 +1491,7 @@ When a framework releases a new major version, update these files:
 
 ---
 
-## 18. Claude Code Power Features
+## 17. Claude Code Power Features
 
 ### Keyboard Shortcuts (Inside Claude Code)
 
@@ -1595,7 +1595,7 @@ Configure in `.claude/settings.json`:
 
 This repo's `settings.json` comes pre-configured with sensible defaults — see [Settings Configuration](#settingsjson-configuration) in Section 10 for the full breakdown.
 
-## 19. Tips & Best Practices
+## 18. Tips & Best Practices
 
 ### Prompting Best Practices
 
@@ -1974,7 +1974,7 @@ Don't just agree with me — RE-VERIFY by reading the actual code.
 Show me the file you checked and what you found or didn't find.
 ```
 
-## 20. Troubleshooting
+## 19. Troubleshooting
 
 ### `command not found: claude`
 
@@ -2076,7 +2076,7 @@ claude --debug             # Full debug logging
 claude --debug "mcp"       # Debug a specific category
 ```
 
-## 21. Quick Reference Card
+## 20. Quick Reference Card
 
 Print or bookmark this — it covers 90% of daily Claude Code usage.
 
@@ -2148,7 +2148,7 @@ use context7                        # Append to any prompt for live docs
 /mcp                                # Check MCP server status
 ```
 
-## 22. Resources
+## 21. Resources
 
 | Resource | Link |
 |----------|------|
