@@ -69,16 +69,20 @@ Clone it, install Claude Code, and start building.
     - [settings.json Configuration](#settingsjson-configuration)
     - [Hooks — Automated Guardrails](#hooks--automated-guardrails)
     - [Model Selection \& Cost Awareness](#model-selection--cost-awareness)
-  - [9. Multiple Sub Agents](#9-multiple-sub-agents)
-  - [10. Agent Teams — Coordinated Multi-Agent Collaboration](#10-agent-teams--coordinated-multi-agent-collaboration)
+  - [9. Cheaper Alternative: MiniMax M2.5](#9-cheaper-alternative-minimax-m25)
+    - [Why Choose MiniMax M2.5?](#why-choose-minimax-m25)
+    - [Overview of MiniMax M2.5 for Coding](#overview-of-minimax-m25-for-coding)
+    - [Step-by-Step Configuration](#step-by-step-configuration)
+  - [10. Multiple Sub Agents](#10-multiple-sub-agents)
+  - [11. Agent Teams — Coordinated Multi-Agent Collaboration](#11-agent-teams--coordinated-multi-agent-collaboration)
     - [How to Enable](#how-to-enable)
-  - [11. What Gets Sent to the LLM?](#11-what-gets-sent-to-the-llm)
+  - [12. What Gets Sent to the LLM?](#12-what-gets-sent-to-the-llm)
     - [Context Window Anatomy](#context-window-anatomy)
     - [What Each Layer Contains](#what-each-layer-contains)
     - [Key Takeaways](#key-takeaways)
-  - [12. What's in This Repo](#12-whats-in-this-repo)
+  - [13. What's in This Repo](#13-whats-in-this-repo)
     - [MCP Servers (`.mcp.json`)](#mcp-servers-mcpjson)
-  - [13. Hands-On Exercises](#13-hands-on-exercises)
+  - [14. Hands-On Exercises](#14-hands-on-exercises)
     - [Exercise 1: Scaffold a Flutter Fitness App](#exercise-1-scaffold-a-flutter-fitness-app)
     - [Exercise 2: Build a Weather REST API (Java)](#exercise-2-build-a-weather-rest-api-java)
     - [Exercise 3: Build a Todo API (NestJS)](#exercise-3-build-a-todo-api-nestjs)
@@ -90,32 +94,32 @@ Clone it, install Claude Code, and start building.
     - [Exercise 9: Domain-Driven Design with DDD Architect](#exercise-9-domain-driven-design-with-ddd-architect)
     - [Exercise 10: Add a Feature End-to-End](#exercise-10-add-a-feature-end-to-end)
     - [What's Next?](#whats-next)
-  - [14. Development Workflow — Putting It All Together](#14-development-workflow--putting-it-all-together)
+  - [15. Development Workflow — Putting It All Together](#15-development-workflow--putting-it-all-together)
     - [How Components Interact](#how-components-interact)
     - [Phase 1: Design \& Architecture](#phase-1-design--architecture)
     - [Phase 2: Scaffold \& Bootstrap](#phase-2-scaffold--bootstrap)
     - [Phase 3: Feature Development](#phase-3-feature-development)
     - [Phase 4: Review \& Enforce Quality](#phase-4-review--enforce-quality)
     - [Phase 5: Evolve Your Setup](#phase-5-evolve-your-setup)
-  - [15. Security Considerations](#15-security-considerations)
+  - [16. Security Considerations](#16-security-considerations)
     - [What Goes to Anthropic's API](#what-goes-to-anthropics-api)
     - [MCP Server Credentials](#mcp-server-credentials)
     - [The `--dangerously-skip-permissions` Flag](#the---dangerously-skip-permissions-flag)
     - [Pre-configured Guardrails in This Kit](#pre-configured-guardrails-in-this-kit)
     - [Checklist Before Using Claude Code on a Real Project](#checklist-before-using-claude-code-on-a-real-project)
-  - [16. Customizing the Kit](#16-customizing-the-kit)
+  - [17. Customizing the Kit](#17-customizing-the-kit)
     - [Adding a New Agent](#adding-a-new-agent)
     - [Adding a New Slash Command](#adding-a-new-slash-command)
     - [Adding a New Skill](#adding-a-new-skill)
     - [Adding a New Hook](#adding-a-new-hook)
     - [Removing Components You Don't Need](#removing-components-you-dont-need)
     - [Version Update Guide](#version-update-guide)
-  - [17. Claude Code Power Features](#17-claude-code-power-features)
+  - [18. Claude Code Power Features](#18-claude-code-power-features)
     - [Keyboard Shortcuts (Inside Claude Code)](#keyboard-shortcuts-inside-claude-code)
     - [Essential CLI Flags](#essential-cli-flags)
     - [Core Tools](#core-tools)
     - [Permission Model](#permission-model)
-  - [18. Tips \& Best Practices](#18-tips--best-practices)
+  - [19. Tips \& Best Practices](#19-tips--best-practices)
     - [Prompting Best Practices](#prompting-best-practices)
     - [Common Pitfalls — Avoid These](#common-pitfalls--avoid-these)
     - [@ File References](#-file-references)
@@ -134,7 +138,7 @@ Clone it, install Claude Code, and start building.
       - [When Claude Guesses Instead of Verifying](#when-claude-guesses-instead-of-verifying)
       - [When Claude Flip-Flops](#when-claude-flip-flops)
       - [When Challenging Claude's Analysis](#when-challenging-claudes-analysis)
-  - [19. Troubleshooting](#19-troubleshooting)
+  - [20. Troubleshooting](#20-troubleshooting)
     - [`command not found: claude`](#command-not-found-claude)
     - ["Context too large" error](#context-too-large-error)
     - [Edit tool fails with "string not found"](#edit-tool-fails-with-string-not-found)
@@ -144,14 +148,14 @@ Clone it, install Claude Code, and start building.
     - [Permission errors](#permission-errors)
     - [Windows-Specific Setup](#windows-specific-setup)
     - [Run diagnostics](#run-diagnostics)
-  - [20. Quick Reference Card](#20-quick-reference-card)
+  - [21. Quick Reference Card](#21-quick-reference-card)
     - [Commands You'll Use Every Day](#commands-youll-use-every-day)
     - [Scaffolding](#scaffolding)
     - [Design \& Review](#design--review)
     - [Agents (use @name)](#agents-use-name)
     - [Keyboard Shortcuts](#keyboard-shortcuts)
     - [MCP Tips](#mcp-tips)
-  - [21. Resources](#21-resources)
+  - [22. Resources](#22-resources)
 
 ---
 
@@ -645,7 +649,101 @@ claude --model opus
 - Use `@file` references instead of pasting file contents
 - Disable unused MCP servers (`/mcp` to check)
 
-## 9. Multiple Sub Agents
+## 9. Cheaper Alternative: MiniMax M2.5
+
+[MiniMax M2.5](https://www.minimax.io/news/minimax-m25) is a cost-effective alternative to Claude for agentic coding workflows.
+
+### Why Choose MiniMax M2.5?
+
+MiniMax M2.5 (released February 12, 2026) delivers near-frontier coding performance — matching or approaching Claude Opus 4.6 on key benchmarks like SWE-Bench Verified (80.2%), while being **10-20x cheaper** and often faster in real agentic workflows. It excels at full-stack development across 10+ languages, task decomposition, planning, and tool use via its Forge Framework.
+
+For heavy users of Claude Code CLI, the [**MiniMax Coding Plan**](https://platform.minimax.io/subscribe/coding-plan) turns this into an ultra-cost-effective setup with predictable prompt-based limits instead of per-token bills that can explode during long sessions. Many developers report switching from Claude Max and handling 90%+ of daily coding/agentic work at a fraction of the cost, with seamless integration and built-in extras like MCP server with web search and image understanding.
+
+### Overview of MiniMax M2.5 for Coding
+
+MiniMax M2.5 is a 230B-parameter model (10B active) built for coding and agentic tasks. It supports 10+ languages, handles the full dev lifecycle—from system design to testing—and works across Web, Android, iOS, and Windows. Powered by its Forge Framework for agentic workflows.
+
+- The [**MiniMax M2.5 Coding Plan**](https://platform.minimax.io/subscribe/coding-plan) subscription provides a **dedicated API key** (exclusive to the plan, not interchangeable with pay-as-you-go keys).
+- It uses the same **Anthropic-compatible endpoint** (`https://api.minimax.io/anthropic`).
+- The model remains **MiniMax-M2.5** (or just `MiniMax-M2.5` in most configs).
+- It includes extras like built-in tools (e.g., `web_search`, `understand_image`) via MCP (MiniMax Coding Plan tools), which you can enable in Claude Code.
+- Billing is subscription-based with prompt/hour limits (rolling 5-hour window: e.g., Starter = 100 prompts/5h, Plus = 300, Max = 1000), much cheaper and more predictable for heavy coding use than pay-as-you-go or Claude Max.
+
+### Step-by-Step Configuration
+
+**1. Subscribe to the Coding Plan**
+
+- Go to: https://platform.minimax.io/subscribe/coding-plan
+- Choose a plan
+- After subscription activates, go to your account: https://platform.minimax.io/user-center/payment/coding-plan (or API Keys section).
+- Generate/copy your **Coding Plan API Key** (it looks like a standard `sk-...` or similar key, but it's plan-exclusive). Protect it—don't share or commit it.
+
+**2. Clear Any Conflicting Anthropic Variables** (important to avoid your Claude Max auth leaking in)
+
+In your terminal:
+```bash
+unset ANTHROPIC_AUTH_TOKEN
+unset ANTHROPIC_BASE_URL
+```
+
+**3. Configure Claude Code**
+
+Update the settings.local.json file (`~/.claude/settings.local.json`) as below.
+
+Paste this (replace `<YOUR_CODING_PLAN_API_KEY>` with your actual key):
+
+```json
+{
+  "env": {
+    "ANTHROPIC_BASE_URL": "https://api.minimax.io/anthropic",
+    "ANTHROPIC_AUTH_TOKEN": "<MINIMAX_CODING_PLAN_KEY>",
+    "API_TIMEOUT_MS": "3000000",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": 1,
+    "ANTHROPIC_MODEL": "MiniMax-M2.5",
+    "ANTHROPIC_SMALL_FAST_MODEL": "MiniMax-M2.5",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "MiniMax-M2.5",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "MiniMax-M2.5",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "MiniMax-M2.5"
+  }
+}
+```
+
+**4. (Optional but Highly Recommended) Enable MCP Tools** (web search + image understanding — included in Coding Plan)
+
+MiniMax provides an official MCP server for Claude Code to get these tools working seamlessly.
+
+Install/run it (requires uvx/pipx or similar for Python tools):
+```bash
+claude mcp add -s user MiniMax --env MINIMAX_API_KEY=<YOUR_CODING_PLAN_API_KEY> --env MINIMAX_API_HOST=https://api.minimax.io -- uvx minimax-coding-plan-mcp -y
+```
+
+Or manually add to `~/.mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "MiniMax": {
+      "command": "uvx",
+      "args": ["minimax-coding-plan-mcp", "-y"],
+      "env": {
+        "MINIMAX_API_KEY": "<YOUR_CODING_PLAN_API_KEY>",
+        "MINIMAX_API_HOST": "https://api.minimax.io"
+      }
+    }
+  }
+}
+```
+
+- In Claude Code session, type `/mcp` — you should see `web_search` and `understand_image` listed if successful.
+
+**5. Test It**
+
+- Run: `claude`
+- Type `/model` inside the session — it should show MiniMax-M2.5.
+- Try a coding task: "Plan and implement a full-stack Todo app with Angular + Java Spring boot".
+- Test tools: Ask something needing search, like "Search latest Angular features and update this component".
+
+## 10. Multiple Sub Agents
 
 Spwaning Multiple agents that run inside main Claude Code session to handle specific subtasks (like research or verification). They work independently, then report results back to main Claude Code session. 
 
@@ -654,7 +752,7 @@ Spwaning Multiple agents that run inside main Claude Code session to handle spec
 > Spawn a multiple sub-agents to implement Authentication service 
 ```
 
-## 10. Agent Teams — Coordinated Multi-Agent Collaboration
+## 11. Agent Teams — Coordinated Multi-Agent Collaboration
 
 [Agent Teams](https://code.claude.com/docs/en/agent-teams) is a new experimental feature for Claude Code where multiple Claude Code sessions working in parallel. One **lead** coordinates and assigns tasks. Multiple **Teammates** work independently with separate context windows and communicate via shared tasks and messages.
 
@@ -760,7 +858,7 @@ Step 4: Spawn teammates
 
 Use Agent Teams when parallelization justifies the cost. For sequential tasks, stick with sub-agents.
 
-## 11. What Gets Sent to the LLM?
+## 12. What Gets Sent to the LLM?
 
 Every time you send a prompt in Claude Code, it assembles a **context window** — the complete package of information sent to the LLM for that turn. Understanding what goes into this window helps you manage it effectively.
 
@@ -800,7 +898,7 @@ Every time you send a prompt in Claude Code, it assembles a **context window** �
 > /compact              # Manually compress conversation history
 ```
 
-## 12. What's in This Repo
+## 13. What's in This Repo
 
 **76 components** — 20 skills, 13 commands, 20 agents, 4 rules, 4 hooks, 12 MCP servers, 2 settings files, 1 CLAUDE.md.
 
@@ -945,7 +1043,7 @@ claude-code-onboarding/
 | `ios-simulator` | stdio | iOS simulator control |
 | `maestro` | stdio | Mobile UI testing framework |
 
-## 13. Hands-On Exercises
+## 14. Hands-On Exercises
 
 Work through these exercises to get familiar with Claude Code. Each one uses different components from this kit.
 These exercises follow a deliberate progression to help you understand **which component to use for and when**:
@@ -1129,7 +1227,7 @@ You've used every component in the kit — agents, skills, commands, hooks, and 
    ```
 6. **Iterate** — your CLAUDE.md and skills will evolve as you discover what works for your team. Treat them like living documentation — PR-reviewed and version-controlled
 
-## 14. Development Workflow — Putting It All Together
+## 15. Development Workflow — Putting It All Together
 
 You've learned each component individually. Here's how they work together across a real development lifecycle. Every phase uses the same interaction model: **slash commands trigger, agents execute, skills supply knowledge, MCP servers provide ground truth, hooks guard, and rules enforce** — the mix just shifts per phase.
 
@@ -1218,7 +1316,7 @@ Over time, customize everything based on what you learn.
 
 The setup is a living product. Treat it like code: version-controlled, PR-reviewed, continuously improved.
 
-## 15. Security Considerations
+## 16. Security Considerations
 
 Before using Claude Code with real projects, understand the security boundaries.
 
@@ -1278,7 +1376,7 @@ These hooks are **defense-in-depth** — they catch mistakes but aren't a substi
 - [ ] CI/CD pipelines do NOT use `--dangerously-skip-permissions`
 - [ ] Hook scripts are executable (`chmod +x .claude/hooks/*.sh`)
 
-## 16. Customizing the Kit
+## 17. Customizing the Kit
 
 This kit is a starting point — customize it for your team's stack and workflows.
 
@@ -1491,7 +1589,7 @@ When a framework releases a new major version, update these files:
 
 ---
 
-## 17. Claude Code Power Features
+## 18. Claude Code Power Features
 
 ### Keyboard Shortcuts (Inside Claude Code)
 
@@ -1595,7 +1693,7 @@ Configure in `.claude/settings.json`:
 
 This repo's `settings.json` comes pre-configured with sensible defaults — see [Settings Configuration](#settingsjson-configuration) in Section 10 for the full breakdown.
 
-## 18. Tips & Best Practices
+## 19. Tips & Best Practices
 
 ### Prompting Best Practices
 
@@ -1974,7 +2072,7 @@ Don't just agree with me — RE-VERIFY by reading the actual code.
 Show me the file you checked and what you found or didn't find.
 ```
 
-## 19. Troubleshooting
+## 20. Troubleshooting
 
 ### `command not found: claude`
 
@@ -2076,7 +2174,7 @@ claude --debug             # Full debug logging
 claude --debug "mcp"       # Debug a specific category
 ```
 
-## 20. Quick Reference Card
+## 21. Quick Reference Card
 
 Print or bookmark this — it covers 90% of daily Claude Code usage.
 
@@ -2148,7 +2246,7 @@ use context7                        # Append to any prompt for live docs
 /mcp                                # Check MCP server status
 ```
 
-## 21. Resources
+## 22. Resources
 
 | Resource | Link |
 |----------|------|
