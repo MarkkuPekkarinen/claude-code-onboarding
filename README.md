@@ -1043,6 +1043,34 @@ claude-code-onboarding/
 | `ios-simulator` | stdio | iOS simulator control |
 | `maestro` | stdio | Mobile UI testing framework |
 
+### Browser Automation
+
+We use two MCP servers together for complete browser testing:
+
+- **Chrome DevTools MCP** — debugging, network inspection, console errors, performance tracing
+- **Browser-Use MCP** — human-like interaction, form filling, E2E user flows
+
+Chrome DevTools is your X-ray machine watching everything under the hood. Browser-Use is your test user clicking through the app like a human.
+
+#### Sample Prompts
+
+**Quick health check:**
+```
+Open localhost:4200, check for any console errors or failed network requests
+```
+
+**Test a user flow:**
+```
+Test the login at https://the-internet.herokuapp.com/login with username "tomsmith" and password "SuperSecretPassword!" — give me both user and technical perspective
+```
+
+**Performance audit:**
+```
+Run a performance trace on localhost:4200 and analyze the LCP breakdown
+```
+
+Claude automatically picks the right tool (or both) based on the task — no need to specify which MCP server to use. See `.claude/skills/browser-testing/SKILL.md` and `.claude/agents/browser-testing.md` for the full workflow guide.
+
 ## 14. Hands-On Exercises
 
 Work through these exercises to get familiar with Claude Code. Each one uses different components from this kit.
