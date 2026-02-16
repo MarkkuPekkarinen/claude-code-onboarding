@@ -90,7 +90,12 @@ Consult official docs via MCP before writing ANY code. Zero tolerance for deprec
 docker-compose up -d                 # Start all services
 docker-compose down                  # Stop all services
 ```
-
+## Task Management
+- Use TaskCreate for multi-step work
+- Set dependencies with addBlockedBy for sequential phases
+- Update status to in_progress before starting each task
+- Mark completed only after verification
+  
 ## Git Workflow
 - Branch naming: `feature/<ticket>-<description>`, `bugfix/<ticket>-<description>`
 - Commit messages: conventional commits (`feat:`, `fix:`, `docs:`, `refactor:`)
