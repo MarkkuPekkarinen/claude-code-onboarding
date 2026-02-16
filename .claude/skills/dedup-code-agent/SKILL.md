@@ -2,6 +2,8 @@
 name: dedup-code-agent
 description: Code duplication detection and technical debt analysis skill. Provides methodology for finding duplicate code, dead code, and dependency bloat.
 allowed-tools: Read, Glob, Grep, Bash
+agent: dedup-code-agent
+context: fork
 ---
 
 # Code Deduplication Skill

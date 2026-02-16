@@ -2,6 +2,8 @@
 name: code-reviewer
 description: General-purpose code review skill. Provides checklists for security, code quality, performance, and best practices. Use when reviewing code changes, PRs, or performing quality audits.
 allowed-tools: Read, Grep, Glob, Bash
+agent: code-reviewer
+context: fork
 ---
 
 # Code Reviewer

@@ -91,10 +91,23 @@ docker-compose up -d                 # Start all services
 docker-compose down                  # Stop all services
 ```
 ## Task Management
-- Use TaskCreate for multi-step work
+
+### Creating Tasks
+- Use TaskCreate for any work with 3+ steps or multi-file changes
+- Write specific, actionable subjects in imperative form (e.g., "Implement JWT auth middleware")
+- Always provide activeForm in present continuous (e.g., "Implementing JWT auth middleware")
 - Set dependencies with addBlockedBy for sequential phases
-- Update status to in_progress before starting each task
-- Mark completed only after verification
+- Do NOT create tasks for trivial single-step work — just do it
+
+### Working on Tasks
+- Update status to in_progress BEFORE starting each task
+- Mark completed only after verification (tests pass, linting clean, etc.)
+- Add follow-up tasks discovered during implementation
+
+### Resuming Tasks
+- On session start, ALWAYS run TaskList to check for pending/in_progress tasks
+- If tasks exist, summarize status and ask which to resume
+- After /clear or /compact, immediately check TaskList again
   
 ## Git Workflow
 - Branch naming: `feature/<ticket>-<description>`, `bugfix/<ticket>-<description>`

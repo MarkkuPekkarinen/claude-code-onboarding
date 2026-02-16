@@ -2,6 +2,8 @@
 name: security-reviewer
 description: Security vulnerability detection and remediation skill. Provides OWASP Top 10 checklists, secret scanning patterns, and security review methodology.
 allowed-tools: Read, Bash, Grep, Glob
+agent: security-reviewer
+context: fork
 ---
 
 # Security Review Skill
