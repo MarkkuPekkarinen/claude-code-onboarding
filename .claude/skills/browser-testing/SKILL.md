@@ -13,81 +13,65 @@ This skill combines **two MCP servers** for complete browser automation:
 
 ## When to Use Which Tool
 
-### Chrome DevTools MCP — Use for INSPECTION & DEBUGGING
+### Chrome DevTools MCP — INSPECTION & DEBUGGING
 
-Use chrome-devtools when the task involves looking under the hood:
+Use chrome-devtools when you need to look under the hood:
 
 - Performance tracing and Core Web Vitals (LCP, CLS, TBT)
-- Console error monitoring (`list_console_messages`)
-- Network request inspection (`list_network_requests`)
-- JavaScript execution in page context (`evaluate_script`)
+- Console error monitoring
+- Network request inspection
+- JavaScript execution in page context
 - DOM and CSS debugging
-- CPU/Network throttling (`emulate_cpu`, `emulate_network`)
-- Connecting to user's running Chrome session (`--autoConnect`)
+- CPU/Network throttling
+- Connecting to user's running Chrome session
 
-#### Chrome DevTools Key Tools
+**Most common tools:**
+- `list_console_messages` — View console errors/warnings
+- `list_network_requests` — See all HTTP requests/responses
+- `take_snapshot` — Get accessibility tree with element UIDs
+- `take_screenshot` — Capture page visuals
+- `evaluate_script` — Run JavaScript in page context
+- `performance_start_trace` / `performance_stop_trace` — Record performance
+- `performance_analyze_insight` — Extract metrics (LCP, TBT, etc.)
 
-```
-navigate_page         → Open a URL
-take_snapshot         → Get accessibility tree of page
-take_screenshot       → Capture page visual
-click                 → Click an element
-fill / fill_form      → Fill form fields
-hover                 → Trigger hover effects
-list_console_messages → View console output (errors, warnings, logs)
-list_network_requests → See all HTTP requests/responses
-evaluate_script       → Run JavaScript in page context
-performance_start_trace → Start recording performance trace
-performance_stop_trace  → Stop recording
-performance_analyze_insight → Extract performance metrics (LCP, TBT, etc.)
-emulate_cpu           → Throttle CPU (test slow devices)
-emulate_network       → Throttle network (test slow connections)
-resize_page           → Change viewport size
-```
+> For complete tool reference, Read [reference/chrome-devtools-tools.md](reference/chrome-devtools-tools.md)
 
-### Browser-Use MCP — Use for USER INTERACTION & E2E FLOWS
+### Browser-Use MCP — USER INTERACTION & E2E FLOWS
 
-Use browser-use when the task involves acting like a human user:
+Use browser-use when you need to act like a human user:
 
 - Filling out forms step by step
 - Multi-step user flows (signup → verify → dashboard)
 - Testing UI interactions (click, type, select, scroll)
 - Running parallel browser sessions
-- Using real Chrome with existing logins (`--browser real`)
-- Element-by-index interaction for precise control
+- Using real Chrome with existing logins
 
-#### Browser-Use Key Commands
+**Most common commands:**
+- `browser_navigate` — Open a URL
+- `browser_get_state` — Get all interactive elements (**NO screenshots by default**)
+- `browser_click` — Click element by index
+- `browser_input` — Click element then type text
+- `browser_type` — Type into focused element
+- `browser_close_all` — Close all sessions
 
-```
-browser_navigate      → Open a URL
-browser_get_state     → Get all interactive elements with indices (DO NOT include screenshots unless asked)
-browser_click         → Click element by index
-browser_type          → Type text into focused element
-browser_input         → Click element then type text
-browser_select        → Select dropdown option
-browser_scroll        → Scroll up/down
-browser_keys          → Send keyboard shortcuts
-browser_switch_tab    → Switch between tabs
-browser_close         → Close browser session
-```
+> For complete command reference, Read [reference/browser-use-tools.md](reference/browser-use-tools.md)
 
 ## Combined Workflow Pattern
 
-The most powerful approach is using BOTH together:
+The most powerful approach uses **BOTH** together:
 
 1. **Chrome DevTools** monitors the internals (network, console, performance)
 2. **Browser-Use** performs user actions (click, fill, navigate)
 3. **Chrome DevTools** checks for errors after each action
 
-### Example: Testing a Login Flow with Full Debugging
+### Quick Example: Testing Login Flow
 
 ```
-Step 1: Open the app with chrome-devtools
-  → navigate_page to localhost:4200
+Step 1: Open with chrome-devtools
+  → navigate_page to localhost:4200/login
   → Start monitoring console and network
 
-Step 2: Use browser-use to interact like a user
-  → browser_navigate to localhost:4200/login
+Step 2: Use browser-use to interact
   → browser_get_state (NO screenshot) to see form elements
   → browser_input [email_index] "test@example.com"
   → browser_input [password_index] "password123"
@@ -95,60 +79,36 @@ Step 2: Use browser-use to interact like a user
 
 Step 3: Check chrome-devtools for issues
   → list_console_messages — any errors after submit?
-  → list_network_requests — did the API call succeed? What status code?
+  → list_network_requests — did the API call succeed?
   → evaluate_script — check auth token in localStorage?
 ```
 
-### Example: Performance Testing
-
-```
-Step 1: Use chrome-devtools for performance
-  → navigate_page to the target URL
-  → performance_start_trace
-  → Wait for page load
-  → performance_stop_trace
-  → performance_analyze_insight "LCPBreakdown"
-  → performance_analyze_insight "RenderBlocking"
-
-Step 2: Emulate slow conditions
-  → emulate_network "Slow 3G"
-  → emulate_cpu 4x slowdown
-  → Repeat performance trace
-  → Compare results
-```
-
-### Example: E2E User Flow Testing
-
-```
-Step 1: Use browser-use for the full user journey
-  → browser_navigate to /signup
-  → browser_get_state (NO screenshot)
-  → Fill all form fields using browser_input
-  → browser_click submit
-  → browser_get_state to verify redirect to /dashboard
-
-Step 2: Use chrome-devtools to validate
-  → list_network_requests — check all API calls succeeded
-  → list_console_messages — no errors during flow
-  → evaluate_script "document.cookie" — verify session cookie set
-```
+> For complete workflow patterns (performance testing, E2E flows, validation testing, accessibility testing), Read [reference/browser-testing-workflows.md](reference/browser-testing-workflows.md)
 
 ## Critical Rules
 
-1. **NEVER include screenshots in browser_get_state** unless the user explicitly asks for one. Screenshots cause token overflow (126K+ characters).
-2. **Pick the right tool for the job** — don't use browser-use for console errors, don't use chrome-devtools for complex form filling.
-3. **Always close browsers when done** — `browser_close` for browser-use sessions.
-4. **For chrome-devtools screenshots**, use `take_screenshot` which is optimized and doesn't cause overflow.
-5. **When tasks require BOTH tools**, start chrome-devtools first for monitoring, then use browser-use for interaction, then check chrome-devtools for results.
+1. **NEVER include screenshots in browser_get_state** unless the user explicitly asks. Screenshots cause 126K+ token overflow.
+2. **Pick the right tool** — Use chrome-devtools for inspection, browser-use for interaction.
+3. **Always close browsers** — Run `browser_close_all` when done.
+4. **Use chrome-devtools for screenshots** — `take_screenshot` is optimized and safe.
+5. **When using BOTH tools** — Start chrome-devtools first for monitoring, then browser-use for interaction, then check chrome-devtools for results.
+
+## Reference Files
+
+| Resource | When to Load |
+|----------|-------------|
+| [Chrome DevTools Tools](reference/chrome-devtools-tools.md) | When you need detailed chrome-devtools command reference, parameters, or advanced features |
+| [Browser-Use Tools](reference/browser-use-tools.md) | When you need detailed browser-use command reference, best practices, or error handling |
+| [Combined Workflows](reference/browser-testing-workflows.md) | When testing login flows, performance, E2E journeys, validation, accessibility, or multi-device |
 
 ## Decision Quick Reference
 
 | Need to... | Use |
-|---|---|
+|-----------|-----|
 | Check console errors | chrome-devtools: `list_console_messages` |
 | Monitor network requests | chrome-devtools: `list_network_requests` |
 | Run performance trace | chrome-devtools: `performance_start_trace` |
-| Execute JavaScript on page | chrome-devtools: `evaluate_script` |
+| Execute JavaScript | chrome-devtools: `evaluate_script` |
 | Inspect DOM/CSS | chrome-devtools: `take_snapshot` |
 | Test on slow network/CPU | chrome-devtools: `emulate_network` / `emulate_cpu` |
 | Fill out a form | browser-use: `browser_input` |
@@ -156,3 +116,39 @@ Step 2: Use chrome-devtools to validate
 | Test full user flow | browser-use: navigate → get_state → input → click → verify |
 | Test with real logged-in Chrome | browser-use: `--browser real` |
 | Debug + Test together | chrome-devtools monitors, browser-use acts |
+
+## Documentation Sources
+
+Before using these tools, consult:
+
+| Source | URL / Tool | Purpose |
+|--------|-----------|---------|
+| Chrome DevTools MCP | MCP server docs | Tool parameters, response formats |
+| Browser-Use MCP | MCP server docs | Command syntax, session management |
+| Web Performance | https://web.dev/metrics/ | Core Web Vitals (LCP, CLS, INP, TBT) |
+
+## Error Handling
+
+> For detailed error handling patterns and solutions, Read the tool-specific reference files above.
+
+**Critical: Screenshot Token Overflow**
+
+NEVER use `browser_get_state({ include_screenshot: true })` by default — it generates 126K+ characters. Always use `include_screenshot: false` unless user explicitly requests visuals. Use `chrome-devtools.take_screenshot()` instead.
+
+**Common Issues:**
+- **Session crashes** → Close and restart: `browser_close_all()` then `browser_navigate()`
+- **Network timeouts** → Check pending requests: `list_network_requests()`, then reload
+- **Element not found** → Get fresh state: `browser_get_state({ include_screenshot: false })`
+- **Console errors after action** → Monitor: `list_console_messages({ types: ["error"] })`
+- **Performance issues** → Emulate slow conditions: `emulate_network("Slow 3G")` + `emulate_cpu(4)` + analyze with `performance_analyze_insight()`
+
+## Process
+
+1. **Determine which tool to use** — See "When to Use Which Tool" above
+2. **Load reference files** — Read detailed docs for the tool you're using
+3. **For inspection tasks** — Use chrome-devtools (console, network, performance)
+4. **For interaction tasks** — Use browser-use (forms, clicks, user flows)
+5. **For combined testing** — Start with chrome-devtools monitoring, use browser-use for actions, check chrome-devtools for results
+6. **Verify results** — Check both user perspective (what changed on page) and technical perspective (network, console, state)
+7. **Report findings** — Present both user experience and technical details
+8. **Clean up** — Close browser sessions with `browser_close_all`
