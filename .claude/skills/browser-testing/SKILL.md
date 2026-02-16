@@ -2,6 +2,8 @@
 name: browser-testing
 description: Browser automation and testing using Chrome DevTools MCP (debugging, performance, network inspection) and Browser-Use MCP (human-like UI interaction, form filling, E2E flows). Use when the user needs to test web apps, debug browser issues, analyze performance, fill forms, run E2E user flows, or inspect network/console activity.
 allowed-tools: Bash(browser-use:*), mcp:chrome-devtools, mcp:browser-use
+agent: browser-testing
+context: fork
 ---
 
 # Browser Automation & Testing Skill
