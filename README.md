@@ -1019,8 +1019,8 @@ claude-code-onboarding/
         │  # — Tooling skills —
         ├── mcp-builder/                  # MCP server development: Python (FastMCP) and Node.js (MCP SDK),
         │                                 # tool definitions, transport config (18 reference files + scripts)
-        ├── playwright-skill/             # E2E testing: page objects, test fixtures, assertions,
-        │                                 # CI configuration (3 reference files + runtime)
+        ├── browser-testing/              # Browser automation & testing: Chrome DevTools MCP (inspection,
+        │                                 # performance, network) + Browser-Use MCP (E2E flows, form filling) (3 reference files)
         ├── domain-finder/                # Domain name availability checking via WHOIS (1 reference file)
         └── changelog-generator/          # Git history parsing, semantic versioning,
                                           # release notes generation (1 reference file)
@@ -1033,12 +1033,12 @@ claude-code-onboarding/
 | `github` | HTTP | GitHub API — issues, PRs, code search |
 | `langchain-docs` | HTTP | LangChain documentation search |
 | `angular-cli` | stdio | Angular CLI operations |
-| `chrome-devtools` | stdio | Browser automation & DevTools |
+| `chrome-devtools` | stdio | Browser inspection & debugging |
+| `browser-use` | stdio | Human-like browser interaction & E2E testing |
 | `context7` | stdio | Live documentation for any library |
 | `dart-mcp-server` | stdio | Dart/Flutter tooling daemon |
 | `firebase` | stdio | Firebase CLI operations |
 | `postgres` | stdio | PostgreSQL query & schema tools |
-| `playwright` | stdio | Browser testing automation |
 | `docker` | stdio | Docker container management |
 | `ios-simulator` | stdio | iOS simulator control |
 | `maestro` | stdio | Mobile UI testing framework |
