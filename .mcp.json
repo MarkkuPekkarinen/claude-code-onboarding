@@ -31,6 +31,17 @@
       ],
       "timeout": 60000
     },
+    "browser-use": {
+      "type": "stdio",
+      "disabled": false,
+      "description": "Browser automation for web testing, form filling, screenshots, and data extraction.",
+      "command": "uvx",
+      "args": [
+        "browser-use[cli]",
+        "--mcp"
+      ],
+      "timeout": 60000
+    },
     "firebase": {
       "type": "stdio",
       "disabled": false,
@@ -78,17 +89,6 @@
         "-y",
         "@modelcontextprotocol/server-postgres",
         "${POSTGRES_CONNECTION_STRING}"
-      ],
-      "timeout": 60000
-    },
-    "playwright": {
-      "type": "stdio",
-      "disabled": false,
-      "description": "Playwright MCP server for browser automation, E2E testing, and accessibility snapshots.",
-      "command": "npx",
-      "args": [
-        "-y",
-        "@playwright/mcp@latest"
       ],
       "timeout": 60000
     },
