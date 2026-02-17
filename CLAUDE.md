@@ -66,6 +66,7 @@ Consult official docs via MCP before writing ANY code. Zero tolerance for deprec
 | Database | `.claude/skills/database-schema-designer/` | `database-designer` | `/design-database` |
 | Architecture | `.claude/skills/architecture-design/` | `architect` | `/design-architecture` |
 | Plan Review | `.claude/skills/plan-mode-review/` | — | `/plan-review` |
+| Browser Testing | `.claude/skills/browser-testing/` | `browser-testing` | — |
 
 ### Code Review Agents
 
