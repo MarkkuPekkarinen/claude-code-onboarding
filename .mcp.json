@@ -123,6 +123,17 @@
         "maestro-mcp"
       ],
       "timeout": 60000
+    },
+    "voicemode": {
+      "type": "stdio",
+      "disabled": false,
+      "description": "Voice Mode for Claude Code — OpenAI Whisper API (STT) + OpenAI TTS API (speech output). Local Whisper + Kokoro available on Apple Silicon.",
+      "command": "uvx",
+      "args": [
+        "--refresh",
+        "voice-mode"
+      ],
+      "timeout": 60000
     }
   }
 }

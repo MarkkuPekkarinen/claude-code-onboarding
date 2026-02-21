@@ -40,7 +40,10 @@
       "Bash(python *)",
       "Bash(pytest *)",
       "Bash(ruff *)",
-      "Bash(mypy *)"
+      "Bash(mypy *)",
+      "mcp__voicemode__converse",
+      "mcp__voicemode__service",
+      "Bash(voicemode *)"
     ],
     "ask": [
       "Bash(git reset *)",

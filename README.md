@@ -51,14 +51,26 @@ Clone it, install Claude Code, and start building.
   - [5. First-time Using Claude Code](#5-first-time-using-claude-code)
   - [6. Install Claude-Mem (Persistent Memory) *(Optional)*](#6-install-claude-mem-persistent-memory-optional)
     - [What Claude-Mem Does](#what-claude-mem-does)
-  - [7. Try It Out — Your First 5 Minutes](#7-try-it-out--your-first-5-minutes)
+  - [7. Enable Voice Mode *(Optional)*](#7-enable-voice-mode-optional)
+    - [One-Prompt Setup](#one-prompt-setup)
+    - [Manual Setup](#manual-setup)
+      - [Prerequisites](#prerequisites)
+      - [Quick Install](#quick-install)
+      - [What Each Step Does](#what-each-step-does)
+      - [OpenAI API Configuration](#openai-api-configuration)
+      - [Usage](#usage)
+      - [How It Works](#how-it-works)
+      - [Auto-Approve Voice Tools](#auto-approve-voice-tools)
+      - [Platform-Specific Dependencies](#platform-specific-dependencies)
+      - [Troubleshooting](#troubleshooting)
+  - [8. Try It Out — Your First 5 Minutes](#8-try-it-out--your-first-5-minutes)
     - [Ask about the project](#ask-about-the-project)
     - [Scaffold something](#scaffold-something)
     - [Use a sub-agent](#use-a-sub-agent)
     - [Pull live docs with MCP](#pull-live-docs-with-mcp)
     - [Check what's loaded](#check-whats-loaded)
     - [A note on permissions](#a-note-on-permissions)
-  - [8. Understanding Claude Code Components](#8-understanding-claude-code-components)
+  - [9. Understanding Claude Code Components](#9-understanding-claude-code-components)
     - [How They Fit Together](#how-they-fit-together)
     - [Decision Matrix - When to Use What](#decision-matrix---when-to-use-what)
     - [CLAUDE.md (Project Context)](#claudemd-project-context)
@@ -69,20 +81,22 @@ Clone it, install Claude Code, and start building.
     - [settings.json Configuration](#settingsjson-configuration)
     - [Hooks — Automated Guardrails](#hooks--automated-guardrails)
     - [Model Selection \& Cost Awareness](#model-selection--cost-awareness)
-  - [9. Cheaper Alternative: MiniMax M2.5](#9-cheaper-alternative-minimax-m25)
+  - [10. Cheaper Alternative: MiniMax M2.5](#10-cheaper-alternative-minimax-m25)
     - [Why Choose MiniMax M2.5?](#why-choose-minimax-m25)
     - [Overview of MiniMax M2.5 for Coding](#overview-of-minimax-m25-for-coding)
     - [Step-by-Step Configuration](#step-by-step-configuration)
-  - [10. Multiple Sub Agents](#10-multiple-sub-agents)
-  - [11. Agent Teams — Coordinated Multi-Agent Collaboration](#11-agent-teams--coordinated-multi-agent-collaboration)
+  - [11. Multiple Sub Agents](#11-multiple-sub-agents)
+  - [12. Agent Teams — Coordinated Multi-Agent Collaboration](#12-agent-teams--coordinated-multi-agent-collaboration)
     - [How to Enable](#how-to-enable)
-  - [12. What Gets Sent to the LLM?](#12-what-gets-sent-to-the-llm)
+  - [13. What Gets Sent to the LLM?](#13-what-gets-sent-to-the-llm)
     - [Context Window Anatomy](#context-window-anatomy)
     - [What Each Layer Contains](#what-each-layer-contains)
     - [Key Takeaways](#key-takeaways)
-  - [13. What's in This Repo](#13-whats-in-this-repo)
+  - [14. What's in This Repo](#14-whats-in-this-repo)
     - [MCP Servers (`.mcp.json`)](#mcp-servers-mcpjson)
-  - [14. Hands-On Exercises](#14-hands-on-exercises)
+    - [Browser Automation](#browser-automation)
+      - [Sample Prompts](#sample-prompts)
+  - [15. Hands-On Exercises](#15-hands-on-exercises)
     - [Exercise 1: Scaffold a Flutter Fitness App](#exercise-1-scaffold-a-flutter-fitness-app)
     - [Exercise 2: Build a Weather REST API (Java)](#exercise-2-build-a-weather-rest-api-java)
     - [Exercise 3: Build a Todo API (NestJS)](#exercise-3-build-a-todo-api-nestjs)
@@ -94,32 +108,32 @@ Clone it, install Claude Code, and start building.
     - [Exercise 9: Domain-Driven Design with DDD Architect](#exercise-9-domain-driven-design-with-ddd-architect)
     - [Exercise 10: Add a Feature End-to-End](#exercise-10-add-a-feature-end-to-end)
     - [What's Next?](#whats-next)
-  - [15. Development Workflow — Putting It All Together](#15-development-workflow--putting-it-all-together)
+  - [16. Development Workflow — Putting It All Together](#16-development-workflow--putting-it-all-together)
     - [How Components Interact](#how-components-interact)
     - [Phase 1: Design \& Architecture](#phase-1-design--architecture)
     - [Phase 2: Scaffold \& Bootstrap](#phase-2-scaffold--bootstrap)
     - [Phase 3: Feature Development](#phase-3-feature-development)
     - [Phase 4: Review \& Enforce Quality](#phase-4-review--enforce-quality)
     - [Phase 5: Evolve Your Setup](#phase-5-evolve-your-setup)
-  - [16. Security Considerations](#16-security-considerations)
+  - [17. Security Considerations](#17-security-considerations)
     - [What Goes to Anthropic's API](#what-goes-to-anthropics-api)
     - [MCP Server Credentials](#mcp-server-credentials)
     - [The `--dangerously-skip-permissions` Flag](#the---dangerously-skip-permissions-flag)
     - [Pre-configured Guardrails in This Kit](#pre-configured-guardrails-in-this-kit)
     - [Checklist Before Using Claude Code on a Real Project](#checklist-before-using-claude-code-on-a-real-project)
-  - [17. Customizing the Kit](#17-customizing-the-kit)
+  - [18. Customizing the Kit](#18-customizing-the-kit)
     - [Adding a New Agent](#adding-a-new-agent)
     - [Adding a New Slash Command](#adding-a-new-slash-command)
     - [Adding a New Skill](#adding-a-new-skill)
     - [Adding a New Hook](#adding-a-new-hook)
     - [Removing Components You Don't Need](#removing-components-you-dont-need)
     - [Version Update Guide](#version-update-guide)
-  - [18. Claude Code Power Features](#18-claude-code-power-features)
+  - [19. Claude Code Power Features](#19-claude-code-power-features)
     - [Keyboard Shortcuts (Inside Claude Code)](#keyboard-shortcuts-inside-claude-code)
     - [Essential CLI Flags](#essential-cli-flags)
     - [Core Tools](#core-tools)
     - [Permission Model](#permission-model)
-  - [19. Tips \& Best Practices](#19-tips--best-practices)
+  - [20. Tips \& Best Practices](#20-tips--best-practices)
     - [Prompting Best Practices](#prompting-best-practices)
     - [Common Pitfalls — Avoid These](#common-pitfalls--avoid-these)
     - [@ File References](#-file-references)
@@ -138,7 +152,7 @@ Clone it, install Claude Code, and start building.
       - [When Claude Guesses Instead of Verifying](#when-claude-guesses-instead-of-verifying)
       - [When Claude Flip-Flops](#when-claude-flip-flops)
       - [When Challenging Claude's Analysis](#when-challenging-claudes-analysis)
-  - [20. Troubleshooting](#20-troubleshooting)
+  - [21. Troubleshooting](#21-troubleshooting)
     - [`command not found: claude`](#command-not-found-claude)
     - ["Context too large" error](#context-too-large-error)
     - [Edit tool fails with "string not found"](#edit-tool-fails-with-string-not-found)
@@ -148,14 +162,14 @@ Clone it, install Claude Code, and start building.
     - [Permission errors](#permission-errors)
     - [Windows-Specific Setup](#windows-specific-setup)
     - [Run diagnostics](#run-diagnostics)
-  - [21. Quick Reference Card](#21-quick-reference-card)
+  - [22. Quick Reference Card](#22-quick-reference-card)
     - [Commands You'll Use Every Day](#commands-youll-use-every-day)
     - [Scaffolding](#scaffolding)
     - [Design \& Review](#design--review)
     - [Agents (use @name)](#agents-use-name)
     - [Keyboard Shortcuts](#keyboard-shortcuts)
     - [MCP Tips](#mcp-tips)
-  - [22. Resources](#22-resources)
+  - [23. Resources](#23-resources)
 
 ---
 
@@ -297,7 +311,166 @@ Verify with: Inside a Claude Code CLI session, run:
 > Do you have any memory from previous sessions?
 ```
 
-## 7. Try It Out — Your First 5 Minutes
+## 7. Enable Voice Mode *(Optional)*
+
+Claude Code does not support voice mode by default. VoiceMode is a community MCP server that adds this capability, letting you **talk to Claude Code** instead of typing, using OpenAI Whisper for STT (speech-to-text) and OpenAI TTS for speech output.
+
+**Note:** VoiceMode supports any OpenAI-compatible STT/TTS service, not just OpenAI's Whisper/TTS.
+
+### One-Prompt Setup
+
+Open a Claude Code session and paste this prompt — it handles the full installation *(macOS, Linux, and Windows WSL2)*:
+
+```text
+Set up VoiceMode for Claude Code using OpenAI Whisper (STT) and OpenAI TTS (speech output). Do the following steps in order:
+1. Check if UV is installed (uv --version). If not, install it: curl -LsSf https://astral.sh/uv/install.sh | sh
+2. Run: uvx voice-mode-install
+3. Run: claude mcp add --scope user voicemode -- uvx --refresh voice-mode
+4. Create or update ~/.voicemode/voicemode.env with these two lines:
+   VOICEMODE_TTS_BASE_URLS=https://api.openai.com/v1
+   VOICEMODE_STT_BASE_URLS=https://api.openai.com/v1
+5. Check if OPENAI_API_KEY is set in the environment. If not, remind me to add it to ~/.zshrc and re-source it.
+Tell me when each step completes and flag any errors before moving to the next step.
+```
+
+> After setup, restart Claude Code so the MCP server loads.
+
+### Manual Setup
+#### Prerequisites
+
+- Python 3.13+
+- A microphone and speakers (or headphones)
+- An OpenAI API key (for Whisper STT and OpenAI TTS)
+
+#### Quick Install
+
+```bash
+# 1. Install UV package manager (if not already installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# 2. Install VoiceMode
+uvx voice-mode-install
+
+# 3. Register VoiceMode MCP server with Claude Code
+claude mcp add --scope user voicemode -- uvx --refresh voice-mode
+```
+
+#### What Each Step Does
+
+| Step | Command | What It Does |
+|------|---------|-------------|
+| **1** | `curl ... \| sh` | Installs UV, a fast Python package manager |
+| **2** | `uvx voice-mode-install` | Installs the VoiceMode Python package and adds the `voicemode` CLI to your system. Also checks system dependencies (PortAudio, FFmpeg) |
+| **3** | `claude mcp add ...` | Registers VoiceMode as an MCP server so Claude Code knows it exists. Without this, Claude Code has no idea the voice tools are installed — like installing PostgreSQL but never adding the connection string to your app |
+
+#### OpenAI API Configuration
+
+VoiceMode uses OpenAI Whisper for speech-to-text (STT) and OpenAI TTS for speech output — two separate services under the same API key:
+
+```bash
+# 1. Set your OpenAI key (add to ~/.zshrc to persist)
+export OPENAI_API_KEY=your-openai-key
+
+# 2. Configure voicemode to use OpenAI for both STT and TTS
+# Add to ~/.voicemode/voicemode.env:
+VOICEMODE_TTS_BASE_URLS=https://api.openai.com/v1
+VOICEMODE_STT_BASE_URLS=https://api.openai.com/v1
+
+# 3. Restart Claude Code so the MCP server picks up the new key
+claude converse
+```
+
+> **Important:** The MCP server reads `OPENAI_API_KEY` from the environment at startup. If you set the key after Claude Code is already running, you must restart it for the change to take effect.
+
+#### Usage
+
+```bash
+# Start Claude Code with voice mode
+claude converse
+
+# Or combine with auto-approved permissions (learning/playground only ⚠️)
+claude --dangerously-skip-permissions converse
+```
+
+Once running, just **speak into your mic** — Claude will listen, process, and respond through your speakers. Say "stop" or press `Ctrl+C` to exit.
+
+#### How It Works
+
+```
+              OpenAI Cloud API (same key, separate models)
+  ┌─────────────────────────────────────────────────────┐
+  │  Whisper (whisper-1)       /v1/audio/transcriptions  │
+  │  You speak ──────────────────────────► Claude Code  │
+  │                                              │       │
+  │  OpenAI TTS (tts-1)        /v1/audio/speech  │       │
+  │  You hear  ◄─────────────────────────────────┘       │
+  └─────────────────────────────────────────────────────┘
+```
+
+#### Auto-Approve Voice Tools
+
+To avoid permission prompts every time voice mode activates, the kit's `.claude/settings.json` includes:
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "mcp__voicemode__converse",
+      "mcp__voicemode__service",
+      "Bash(voicemode *)"
+    ]
+  }
+}
+```
+
+#### Platform-Specific Dependencies
+
+<details>
+<summary><strong>macOS</strong></summary>
+
+Usually works out of the box. If you get audio errors:
+```bash
+brew install portaudio ffmpeg
+```
+</details>
+
+<details>
+<summary><strong>Ubuntu / Debian</strong></summary>
+
+```bash
+sudo apt update
+sudo apt install -y ffmpeg libasound2-dev libasound2-plugins libportaudio2 portaudio19-dev python3-dev
+```
+</details>
+
+<details>
+<summary><strong>Fedora</strong></summary>
+
+```bash
+sudo dnf install alsa-lib-devel ffmpeg portaudio portaudio-devel python3-dev
+```
+</details>
+
+<details>
+<summary><strong>Windows (WSL2)</strong></summary>
+
+```bash
+sudo apt install -y ffmpeg libasound2-dev libasound2-plugins libportaudio2 portaudio19-dev pulseaudio pulseaudio-utils python3-dev
+```
+> WSL2 requires pulseaudio packages for microphone access.
+</details>
+
+#### Troubleshooting
+
+| Problem | Fix |
+|---------|-----|
+| "No audio input device" | Check microphone permissions in System Settings → Privacy → Microphone |
+| `[BLANK_AUDIO]` returned | Speak during the recording window; check mic is selected as default input |
+| Audio choppy/laggy | Close other audio apps; try wired headset over Bluetooth |
+| MCP not connecting | Run `/mcp` in Claude Code; restart after install |
+| API key not picked up | Restart Claude Code — MCP server reads `OPENAI_API_KEY` at startup only |
+
+## 8. Try It Out — Your First 5 Minutes
 
 You're set up. Before diving into components and theory, take Claude Code for a spin. Run these inside your Claude Code session:
 
@@ -369,7 +542,7 @@ This can feel repetitive at first. The kit ships with pre-configured `allow` rul
 > ```
 > **Do not use this in real projects.** It disables all guardrails including the hooks and deny rules this kit ships with. For real projects, add frequently-used commands to the `allow` list in `settings.json` instead — see the [Settings Configuration](#settingsjson-configuration) section for the full reference.
 
-## 8. Understanding Claude Code Components
+## 9. Understanding Claude Code Components
 
 Knowing *when to use what* is the key to being productive with Claude Code. Here's a quick reference:
 
@@ -649,7 +822,7 @@ claude --model opus
 - Use `@file` references instead of pasting file contents
 - Disable unused MCP servers (`/mcp` to check)
 
-## 9. Cheaper Alternative: MiniMax M2.5
+## 10. Cheaper Alternative: MiniMax M2.5
 
 [MiniMax M2.5](https://www.minimax.io/news/minimax-m25) is a cost-effective alternative to Claude for agentic coding workflows.
 
@@ -743,7 +916,7 @@ Or manually add to `~/.mcp.json`:
 - Try a coding task: "Plan and implement a full-stack Todo app with Angular + Java Spring boot".
 - Test tools: Ask something needing search, like "Search latest Angular features and update this component".
 
-## 10. Multiple Sub Agents
+## 11. Multiple Sub Agents
 
 Spwaning Multiple agents that run inside main Claude Code session to handle specific subtasks (like research or verification). They work independently, then report results back to main Claude Code session. 
 
@@ -752,7 +925,7 @@ Spwaning Multiple agents that run inside main Claude Code session to handle spec
 > Spawn a multiple sub-agents to implement Authentication service 
 ```
 
-## 11. Agent Teams — Coordinated Multi-Agent Collaboration
+## 12. Agent Teams — Coordinated Multi-Agent Collaboration
 
 [Agent Teams](https://code.claude.com/docs/en/agent-teams) is a new experimental feature for Claude Code where multiple Claude Code sessions working in parallel. One **lead** coordinates and assigns tasks. Multiple **Teammates** work independently with separate context windows and communicate via shared tasks and messages.
 
@@ -858,7 +1031,7 @@ Step 4: Spawn teammates
 
 Use Agent Teams when parallelization justifies the cost. For sequential tasks, stick with sub-agents.
 
-## 12. What Gets Sent to the LLM?
+## 13. What Gets Sent to the LLM?
 
 Every time you send a prompt in Claude Code, it assembles a **context window** — the complete package of information sent to the LLM for that turn. Understanding what goes into this window helps you manage it effectively.
 
@@ -898,7 +1071,7 @@ Every time you send a prompt in Claude Code, it assembles a **context window** �
 > /compact              # Manually compress conversation history
 ```
 
-## 13. What's in This Repo
+## 14. What's in This Repo
 
 **76 components** — 20 skills, 13 commands, 20 agents, 4 rules, 4 hooks, 12 MCP servers, 2 settings files, 1 CLAUDE.md.
 
@@ -1071,7 +1244,7 @@ Run a performance trace on localhost:4200 and analyze the LCP breakdown
 
 Claude automatically picks the right tool (or both) based on the task — no need to specify which MCP server to use. See `.claude/skills/browser-testing/SKILL.md` and `.claude/agents/browser-testing.md` for the full workflow guide.
 
-## 14. Hands-On Exercises
+## 15. Hands-On Exercises
 
 Work through these exercises to get familiar with Claude Code. Each one uses different components from this kit.
 These exercises follow a deliberate progression to help you understand **which component to use for and when**:
@@ -1255,7 +1428,7 @@ You've used every component in the kit — agents, skills, commands, hooks, and 
    ```
 6. **Iterate** — your CLAUDE.md and skills will evolve as you discover what works for your team. Treat them like living documentation — PR-reviewed and version-controlled
 
-## 15. Development Workflow — Putting It All Together
+## 16. Development Workflow — Putting It All Together
 
 You've learned each component individually. Here's how they work together across a real development lifecycle. Every phase uses the same interaction model: **slash commands trigger, agents execute, skills supply knowledge, MCP servers provide ground truth, hooks guard, and rules enforce** — the mix just shifts per phase.
 
@@ -1344,7 +1517,7 @@ Over time, customize everything based on what you learn.
 
 The setup is a living product. Treat it like code: version-controlled, PR-reviewed, continuously improved.
 
-## 16. Security Considerations
+## 17. Security Considerations
 
 Before using Claude Code with real projects, understand the security boundaries.
 
@@ -1404,7 +1577,7 @@ These hooks are **defense-in-depth** — they catch mistakes but aren't a substi
 - [ ] CI/CD pipelines do NOT use `--dangerously-skip-permissions`
 - [ ] Hook scripts are executable (`chmod +x .claude/hooks/*.sh`)
 
-## 17. Customizing the Kit
+## 18. Customizing the Kit
 
 This kit is a starting point — customize it for your team's stack and workflows.
 
@@ -1617,7 +1790,7 @@ When a framework releases a new major version, update these files:
 
 ---
 
-## 18. Claude Code Power Features
+## 19. Claude Code Power Features
 
 ### Keyboard Shortcuts (Inside Claude Code)
 
@@ -1721,7 +1894,7 @@ Configure in `.claude/settings.json`:
 
 This repo's `settings.json` comes pre-configured with sensible defaults — see [Settings Configuration](#settingsjson-configuration) in Section 10 for the full breakdown.
 
-## 19. Tips & Best Practices
+## 20. Tips & Best Practices
 
 ### Prompting Best Practices
 
@@ -2100,7 +2273,7 @@ Don't just agree with me — RE-VERIFY by reading the actual code.
 Show me the file you checked and what you found or didn't find.
 ```
 
-## 20. Troubleshooting
+## 21. Troubleshooting
 
 ### `command not found: claude`
 
@@ -2202,7 +2375,7 @@ claude --debug             # Full debug logging
 claude --debug "mcp"       # Debug a specific category
 ```
 
-## 21. Quick Reference Card
+## 22. Quick Reference Card
 
 Print or bookmark this — it covers 90% of daily Claude Code usage.
 
@@ -2274,7 +2447,7 @@ use context7                        # Append to any prompt for live docs
 /mcp                                # Check MCP server status
 ```
 
-## 22. Resources
+## 23. Resources
 
 | Resource | Link |
 |----------|------|
