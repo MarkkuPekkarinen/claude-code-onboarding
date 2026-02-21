@@ -4,6 +4,8 @@
 [![Built with Claude Code](https://img.shields.io/badge/Built%20with-Claude%20Code-blueviolet?style=flat&logo=anthropic&logoColor=white)](https://docs.anthropic.com/en/docs/claude-code)
 [![Blog: My Setup](https://img.shields.io/badge/Medium-My%20Claude%20Code%20Setup-000000?style=flat&logo=medium&logoColor=white)](https://medium.com/@kumaran.isk/my-claude-code-setup-heres-what-i-learned-d0403b1b1fec)
 [![Blog: Practices](https://img.shields.io/badge/Medium-Practices%20That%20Fixed%20My%20Workflow-000000?style=flat&logo=medium&logoColor=white)](https://medium.com/@kumaran.isk/the-practices-that-fixed-my-claude-code-workflow-f72ada6a52a5)
+[![Blog: Agent Teams](https://img.shields.io/badge/Medium-Orchestrating%20Peer--to--Peer%20AI%20Agent%20Teams-000000?style=flat&logo=medium&logoColor=white)](https://medium.com/@kumaran.isk/claude-code-beyond-sub-agents-orchestrating-peer-to-peer-ai-with-agent-teams-3406d2169bfd)
+[![Blog: 7-Agent Playbook](https://img.shields.io/badge/Medium-7--Agent%20Full--Stack%20App%20Playbook-000000?style=flat&logo=medium&logoColor=white)](https://medium.com/@kumaran.isk/claude-code-agent-teams-a-7-agent-full-stack-app-playbook-f584a7fa1a69)
 [![Blog: Voice Mode](https://img.shields.io/badge/Medium-Voice%20Mode%20in%205%20Minutes-000000?style=flat&logo=medium&logoColor=white)](https://medium.com/@kumaran.isk/how-i-added-voice-mode-to-claude-code-hands-free-coding-in-5-minutes-101a5086968f)
 
 ![Java](https://img.shields.io/badge/Java-21-ED8B00?style=flat&logo=openjdk&logoColor=white)
