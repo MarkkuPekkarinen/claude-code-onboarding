@@ -1035,7 +1035,145 @@ Step 4: Spawn teammates
 
 Use Agent Teams when parallelization justifies the cost. For sequential tasks, stick with sub-agents.
 
-## 13. What Gets Sent to the LLM?
+## 13. Claude Code Desktop — GUI with Live Preview
+
+[Claude Code Desktop](https://code.claude.com/docs/en/desktop) is a desktop GUI that wraps the same Claude Code engine you use in the terminal — same `CLAUDE.md`, same `.claude/agents`, skills, slash commands, `settings.json`, hooks, and MCP servers. Everything in this kit works in Desktop without changes.
+
+What Desktop adds on top of CLI: an **embedded browser preview** with interactive testing, visual diff review, parallel sessions with Git worktree isolation, background PR monitoring with auto-merge, and the ability to seamlessly switch between Desktop ↔ CLI ↔ VS Code at any time.
+
+![Claude Code Desktop](./img/claude-code-desktop.png)
+
+### What It Can Do
+
+| Capability | How It Works |
+|---|---|
+| **Everything Claude Code CLI does** | Same engine — code gen, agents, skills, commands, MCP servers, hooks, git |
+| **Start servers + live preview** | Runs `ng serve`, `mvn spring-boot:run`, `flutter run` and opens the app in an embedded browser |
+| **Interactive UI testing** | Claude clicks buttons, fills forms, takes screenshots, reads DOM — and self-corrects issues |
+| **Auto-verify changes** | After every code edit, Claude screenshots the preview and confirms the fix works |
+| **PR lifecycle automation** | Creates PR → monitors CI → auto-fixes failures → auto-merges when green |
+| **Visual diff review** | Side-by-side code diffs in the GUI instead of terminal output |
+| **Session mobility** | Start in Desktop, continue in CLI (`/desktop` command), or move to web/mobile |
+| **Remote SSH debugging** | Connect to EC2/GCP/Azure VMs and debug directly — read logs, fix configs, restart services |
+
+**Note:** Agent Teams are **not supported in Claude Code Desktop** — they are a CLI-only feature that requires `tmux` for split-pane visibility. Agent Teams need the `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` environment variable and spawn multiple independent Claude Code CLI sessions, which the Desktop GUI doesn't support. Sub-agents (single-session task delegation) work fine in Desktop. If you need Agent Teams, use the CLI.
+
+### Testing Frontend SPAs (Angular, React)
+
+**Sample repo:** [kumaran-is/shopping-list-demo](https://github.com/kumaran-is/shopping-list-demo) — Angular 21 shopping list app pre-configured with agents, skills, and slash commands. Open in Claude Code Desktop and start testing.
+
+![Angular Shopping List in Claude Code Desktop](./img/claude-desktop-angular.png)
+
+Start the dev server and test interactively — Claude can click, type, navigate, and verify DOM changes in the embedded preview with HMR hot-reload:
+
+```
+> Start ng serve and open the preview. Add an item "Milk" with quantity 2.
+  Verify it appears in the list and the counter updates.
+
+> Mark "Milk" as picked up. Switch to Pending filter. Confirm it's hidden.
+
+> Add localStorage persistence. Refresh the preview and verify items persist.
+```
+
+Claude takes screenshots, reads the DOM, identifies errors, and fixes them — all within the embedded browser.
+
+### Testing Backend REST APIs (Spring Boot, NestJS)
+
+**Sample repo:** [kumaran-is/claude-desktop-springboot-demo](https://github.com/kumaran-is/claude-desktop-springboot-demo) — Spring Boot 3.5 WebFlux REST API with H2, Swagger UI, and full CRUD. Open in Desktop, launch Swagger UI in preview, and test endpoints.
+
+![Swagger UI in Claude Code Desktop](./img/claude-desktop-springboot.png)
+
+Launch Swagger UI in the embedded preview and test endpoints using plain English:
+
+```
+> Run mvn spring-boot:run and open Swagger UI in the preview.
+
+> In Swagger UI, POST a product: name "Laptop", price 999.99, category "Electronics".
+  Then GET /api/v1/products and verify it returns.
+
+> Test full CRUD in Swagger UI: POST two products, PUT to rename one,
+  DELETE the other, GET to confirm final state.
+```
+
+Claude expands endpoints, clicks "Try it out", fills JSON bodies, executes requests, and reads responses — all in the embedded browser, no curl needed.
+
+### Testing Flutter Apps (Canvas Limitation)
+
+**Sample repo:** [kumaran-is/claude-desktop-flutter-demo](https://github.com/kumaran-is/claude-desktop-flutter-demo) — Flutter notes app with Riverpod, GoRouter, and Device Preview. Includes the full canvas limitation workaround guide and code-assisted test prompts.
+
+![Flutter Notes App in Claude Code Desktop](./img/claude-desktop-flutter.png)
+
+Flutter web renders to a **`<canvas>` element**, not DOM nodes. This means `preview_fill` and JavaScript text input **do not work** on Flutter TextFields. Button clicks via the semantics tree work fine.
+
+**Workaround — code-assisted testing:** For any step requiring text input, temporarily modify source code (provider state, controller initial text), restart the server, verify via screenshot + accessibility snapshot, then revert.
+
+```
+> Modify notes_provider.dart to pre-populate with 4 test notes. Restart the
+  preview server. Verify all notes appear via screenshot and accessibility tree.
+
+> Click the star button for "Meeting Notes" in the semantics tree. Verify it
+  shows as important.
+
+> Revert provider to empty state. Restart and confirm empty list.
+```
+
+See the [Flutter Web Canvas Limitation](https://github.com/kumaran-is/claude-desktop-flutter-demo) doc in the Flutter demo repo for the full interaction patterns reference.
+
+### CI/CD & PR Workflow
+
+Claude Desktop monitors PRs in the background and auto-fixes CI failures:
+
+```
+> Stage all changes, commit, push to feature/shopping-list, and create a PR.
+
+> Create a GitHub Actions CI workflow that runs lint, test, and build on PRs.
+  Push it and verify the action runs.
+
+> Check the GitHub Actions status on our PR. If it failed, show me the error
+  and fix it.
+```
+
+Claude watches the PR, catches CI failures, pushes fixes, and can auto-merge when green — all while you continue working on the next task.
+
+### Remote SSH Debugging
+
+Connect to any remote server (EC2, GCP VM, Azure VM, dev containers) and debug directly from the Desktop GUI. Claude Code must be installed on the remote machine.
+
+```
+Setup: Environment dropdown → + Add SSH connection → enter Host + Identity File
+```
+
+```
+> Check why the Spring Boot app is failing on the EC2 instance.
+  Read logs, test endpoints, fix the config, restart the service.
+```
+
+Full capabilities on SSH: file access, bash commands, connectors, plugins, MCP servers, git, and embedded preview (with SSH port forwarding for visual preview).
+
+### Desktop vs CLI — When to Use What
+
+| Use Case | Tool |
+|---|---|
+| Scaffolding, code generation, bulk editing | **CLI** — faster, uses full terminal capabilities |
+| Live preview, UI interaction, visual testing | **Desktop** — embedded browser + auto-verify |
+| Code review with visual diffs | **Desktop** — side-by-side diff view |
+| PR monitoring, CI/CD automation | **Desktop** — background PR watching + auto-fix |
+| Remote server debugging | **Desktop** — SSH sessions with full GUI |
+| Quick one-off commands, scripting | **CLI** — lower overhead |
+| Long-running autonomous tasks | **Desktop** — Cowork tab for background agents |
+
+You can switch between them at any time — start in CLI, run `/desktop` to bring the session into Desktop, or move a local Desktop session to the web with "Continue with Claude Code on the web."
+
+### Quick Start
+
+1. Download Claude Desktop from [claude.ai/download](https://claude.ai/download)
+2. Open the app → **Code** tab → select your project folder
+3. Pick a model and permission mode → start chatting
+4. Desktop auto-detects dev servers and stores config in `.claude/launch.json`
+
+> **Docs:** [Claude Code Desktop](https://code.claude.com/docs/en/desktop) · [Desktop Quickstart](https://code.claude.com/docs/en/desktop-quickstart) · [Preview, Review, and Merge](https://claude.com/blog/preview-review-and-merge-with-claude-code)
+
+## 14. What Gets Sent to the LLM?
 
 Every time you send a prompt in Claude Code, it assembles a **context window** — the complete package of information sent to the LLM for that turn. Understanding what goes into this window helps you manage it effectively.
 
@@ -1075,7 +1213,7 @@ Every time you send a prompt in Claude Code, it assembles a **context window** �
 > /compact              # Manually compress conversation history
 ```
 
-## 14. What's in This Repo
+## 15. What's in This Repo
 
 **76 components** — 20 skills, 13 commands, 20 agents, 4 rules, 4 hooks, 12 MCP servers, 2 settings files, 1 CLAUDE.md.
 
@@ -1248,7 +1386,7 @@ Run a performance trace on localhost:4200 and analyze the LCP breakdown
 
 Claude automatically picks the right tool (or both) based on the task — no need to specify which MCP server to use. See `.claude/skills/browser-testing/SKILL.md` and `.claude/agents/browser-testing.md` for the full workflow guide.
 
-## 15. Hands-On Exercises
+## 16. Hands-On Exercises
 
 Work through these exercises to get familiar with Claude Code. Each one uses different components from this kit.
 These exercises follow a deliberate progression to help you understand **which component to use for and when**:
@@ -1432,7 +1570,7 @@ You've used every component in the kit — agents, skills, commands, hooks, and 
    ```
 6. **Iterate** — your CLAUDE.md and skills will evolve as you discover what works for your team. Treat them like living documentation — PR-reviewed and version-controlled
 
-## 16. Development Workflow — Putting It All Together
+## 17. Development Workflow — Putting It All Together
 
 You've learned each component individually. Here's how they work together across a real development lifecycle. Every phase uses the same interaction model: **slash commands trigger, agents execute, skills supply knowledge, MCP servers provide ground truth, hooks guard, and rules enforce** — the mix just shifts per phase.
 
@@ -1521,7 +1659,7 @@ Over time, customize everything based on what you learn.
 
 The setup is a living product. Treat it like code: version-controlled, PR-reviewed, continuously improved.
 
-## 17. Security Considerations
+## 18. Security Considerations
 
 Before using Claude Code with real projects, understand the security boundaries.
 
@@ -1581,7 +1719,7 @@ These hooks are **defense-in-depth** — they catch mistakes but aren't a substi
 - [ ] CI/CD pipelines do NOT use `--dangerously-skip-permissions`
 - [ ] Hook scripts are executable (`chmod +x .claude/hooks/*.sh`)
 
-## 18. Customizing the Kit
+## 19. Customizing the Kit
 
 This kit is a starting point — customize it for your team's stack and workflows.
 
@@ -1794,7 +1932,7 @@ When a framework releases a new major version, update these files:
 
 ---
 
-## 19. Claude Code Power Features
+## 20. Claude Code Power Features
 
 ### Keyboard Shortcuts (Inside Claude Code)
 
@@ -1898,7 +2036,7 @@ Configure in `.claude/settings.json`:
 
 This repo's `settings.json` comes pre-configured with sensible defaults — see [Settings Configuration](#settingsjson-configuration) in Section 10 for the full breakdown.
 
-## 20. Tips & Best Practices
+## 21. Tips & Best Practices
 
 ### Prompting Best Practices
 
@@ -2277,7 +2415,7 @@ Don't just agree with me — RE-VERIFY by reading the actual code.
 Show me the file you checked and what you found or didn't find.
 ```
 
-## 21. Troubleshooting
+## 22. Troubleshooting
 
 ### `command not found: claude`
 
@@ -2379,7 +2517,7 @@ claude --debug             # Full debug logging
 claude --debug "mcp"       # Debug a specific category
 ```
 
-## 22. Quick Reference Card
+## 23. Quick Reference Card
 
 Print or bookmark this — it covers 90% of daily Claude Code usage.
 
@@ -2451,7 +2589,7 @@ use context7                        # Append to any prompt for live docs
 /mcp                                # Check MCP server status
 ```
 
-## 23. Resources
+## 24. Resources
 
 | Resource | Link |
 |----------|------|
