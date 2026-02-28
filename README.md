@@ -825,6 +825,27 @@ grep -A 10 "2026-02-20" blackbox/session-log.md
 cat blackbox/archive-2026-01.md
 ```
 
+**Diagram Staleness Detection:**
+
+The blackbox also tracks when source code changes may have made an architecture diagram stale. The hook checks if any modified files match a known diagram by folder name and appends a warning automatically:
+
+```
+⚠️  Diagrams that may need updating:
+  - docs/diagrams/auth-flow.md (auth/ was modified)
+```
+
+Naming convention: `src/auth/` → `docs/diagrams/auth-flow.md` (folder prefix = diagram prefix). The policy rule instructs Claude to update or create diagrams during the session; the hook warns if it was missed.
+
+```
+docs/
+└── diagrams/
+    ├── auth-flow.md       ← generated after auth feature, updated when auth/ changes
+    ├── payment-flow.md    ← generated after payments feature
+    └── api-contracts.md   ← generated after API layer work
+```
+
+Reference a diagram in any session with `@docs/diagrams/auth-flow.md` to give Claude instant architectural context without codebase exploration.
+
 ### Model Selection & Cost Awareness
 
 Claude Code supports three Anthropic models, each optimized for different use cases:

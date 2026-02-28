@@ -35,4 +35,28 @@ timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
     printf "<!-- end-snapshot -->\n"
 } >> "$LOGFILE" 2>/dev/null || true
 
+# Diagram staleness detection: warn if changed files may affect a known diagram.
+# Convention: src/auth/ → docs/diagrams/auth-flow.md (folder name = diagram prefix)
+DIAGRAMS_DIR="$CLAUDE_PROJECT_DIR/docs/diagrams"
+if [ -d "$DIAGRAMS_DIR" ]; then
+    stale_warnings=""
+    while IFS= read -r diagram_file; do
+        # Extract keyword from diagram filename: auth-flow.md → auth
+        keyword=$(basename "$diagram_file" .md | cut -d'-' -f1)
+        if echo "$changed" | grep -qi "${keyword}/"; then
+            rel_path="${diagram_file#$CLAUDE_PROJECT_DIR/}"
+            stale_warnings="${stale_warnings}  - ${rel_path} (${keyword}/ was modified)\n"
+        fi
+    done < <(find "$DIAGRAMS_DIR" -name "*.md" 2>/dev/null)
+
+    if [ -n "$stale_warnings" ]; then
+        {
+            printf "\n<!-- diagram-staleness %s -->\n" "$timestamp"
+            printf "⚠️  Diagrams that may need updating:\n"
+            printf "%b" "$stale_warnings"
+            printf "<!-- end-diagram-staleness -->\n"
+        } >> "$LOGFILE" 2>/dev/null || true
+    fi
+fi
+
 exit 0
