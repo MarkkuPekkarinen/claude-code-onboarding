@@ -772,10 +772,58 @@ This repo includes 4 hooks out of the box:
 | **Protect Sensitive Files** | `pre-edit-protect-sensitive.sh` | `PreToolUse` → Write/Edit | Blocks edits to `.env`, credentials, private keys, lock files |
 | **Auto-Format** | `post-edit-format.sh` | `PostToolUse` → Write/Edit | Runs Prettier (TS/JS/HTML/CSS), `dart format`, ruff/black (Python) |
 | **Secret Scan** | `stop-secret-scan.sh` | `Stop` | Warns if changed files contain AWS/GCP/GitHub/OpenAI API keys |
+| **Blackbox Log** | `stop-blackbox-log.sh` | `Stop` | Appends session decisions, user constraints, and changed files to `blackbox/session-log.md` |
 
 > After cloning: `chmod +x .claude/hooks/*.sh`
 
 > **Tip:** Install the `hookify` plugin to create hooks conversationally — run `/hookify` and describe what you want in plain English.
+
+### Blackbox — Session Decision Log
+
+The **blackbox** is a persistent, append-only log of every session where decisions were made, code was written, or user constraints were stated. Think of it as a **flight data recorder for your AI sessions** — you don't look at it every day, but when something goes wrong or you need to trace a decision, it's invaluable.
+
+**How it works:**
+
+| Component | Location | Auto-loaded? | Purpose |
+|-----------|----------|-------------|---------|
+| Policy rule | `.claude/rules/blackbox-policy.md` | ✅ Always | Instructs Claude to write entries at session end |
+| Log data | `blackbox/session-log.md` | ❌ Never | Actual entries — grows freely without bloating context |
+| Hook script | `.claude/hooks/stop-blackbox-log.sh` | Runs at `Stop` | Mechanically appends git-changed files as backup |
+
+**Each log entry looks like this:**
+
+```
+## 2026-02-28T09:00Z
+### Decisions
+- Used PostgreSQL per user constraint (not AI default)
+### Constraints Stated by User
+- No mobile app — web only
+### Files Modified
+- src/db/config.ts — switched connection pool to postgres
+### Deferred
+- Rate limiting — explicitly deferred to post-launch
+---
+```
+
+**Key design principles:**
+- **Never bloats context** — `blackbox/session-log.md` lives outside `.claude/` so it's never auto-loaded into every session
+- **Auto-created** — hook creates the `blackbox/` directory and log file on first session end if missing
+- **Monthly rotation** — on month boundary, hook auto-renames to `archive-YYYY-MM.md` and starts fresh
+- **Two-layer logging** — Claude writes decisions (policy rule); hook writes git facts (mechanical backup)
+- **Committed to git** — full history preserved, team-visible
+
+**When to read it:**
+
+```bash
+# "What did we decide last week?"
+cat blackbox/session-log.md
+
+# "Why was this file changed?"
+grep -A 10 "2026-02-20" blackbox/session-log.md
+
+# Read archived months
+cat blackbox/archive-2026-01.md
+```
 
 ### Model Selection & Cost Awareness
 
@@ -1716,6 +1764,7 @@ This repo includes 4 hooks that enforce security automatically:
 | `pre-bash-guard.sh` | `rm -rf /`, force-push to main, `DROP DATABASE`, piping curl to shell |
 | `pre-edit-protect-sensitive.sh` | Direct edits to `.env`, private keys, credentials, lock files |
 | `stop-secret-scan.sh` | Warns if changed files contain AWS/GCP/GitHub/Stripe/Anthropic API key patterns |
+| `stop-blackbox-log.sh` | Appends session decisions and changed files to `blackbox/session-log.md` for accountability |
 | `post-edit-format.sh` | Not security-related, but auto-formats to prevent malformed code commits |
 
 These hooks are **defense-in-depth** — they catch mistakes but aren't a substitute for proper secret management. Always use a secrets manager (AWS Secrets Manager, HashiCorp Vault, 1Password CLI) for production credentials.
