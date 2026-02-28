@@ -112,3 +112,34 @@ Options:
 ```
 
 **Never** silently skip plan items. **Never** defer without explicit approval.
+
+## Quality Gates
+
+Before declaring any workflow type complete, the following gates must pass. These are minimum bars — do not skip them.
+
+### Feature / PR Gate
+- [ ] All existing tests pass (run them — don't assume)
+- [ ] New logic has at least one test covering the happy path
+- [ ] `security-reviewer` agent has been run on changed files
+- [ ] No new unused imports, variables, or functions introduced
+- [ ] Change description written (CHANGES MADE / THINGS I DIDN'T TOUCH / POTENTIAL CONCERNS)
+
+### Architecture Gate
+- [ ] ADR (Architecture Decision Record) created for the key tech choice
+- [ ] `architect` agent or `/design-architecture` command was used
+- [ ] API contracts defined before implementation starts
+- [ ] No circular dependencies introduced
+
+### Database Schema Gate
+- [ ] Migration is reversible (has both up and down)
+- [ ] Indexes defined for expected query patterns
+- [ ] `postgresql-database-reviewer` agent run on migration files
+- [ ] No direct table drops without explicit human approval
+
+### Release / Merge Gate
+- [ ] `/review-code` run and issues addressed
+- [ ] `/audit-security` run with no Critical findings unresolved
+- [ ] CLAUDE.md tech stack versions still accurate
+- [ ] No TODOs or stub implementations in changed files
+
+**If ANY gate item is NO → do NOT declare done. State which gate items are open.**

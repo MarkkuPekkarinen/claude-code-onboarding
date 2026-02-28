@@ -86,6 +86,28 @@ POTENTIAL CONCERNS:
 - [any risks or things to verify]
 ```
 
+## Content Validation Before Writing
+
+Before creating or writing ANY file containing diagrams or structured content:
+
+### Mermaid Diagrams
+- Validate syntax mentally before writing — broken Mermaid renders as raw text
+- Escape special characters: parentheses `()`, brackets `[]`, quotes in node labels
+- Test: Can every node label be parsed without ambiguity?
+- Always provide a text description as fallback below the diagram block
+
+### ASCII Diagrams
+- Use ONLY these characters: `+` `-` `|` `^` `v` `<` `>` and spaces
+- NEVER use Unicode box-drawing characters: `┌ ─ │ └ ┐ ┘ ├ ┤ ┬ ┴ ┼ ▼ ▲ ► ◄`
+  (they render inconsistently across terminals and fonts)
+- Every line inside a box MUST have the same character count
+- Verify alignment in monospace before writing
+
+### General
+- No raw HTML in markdown files unless the render target is confirmed to support it
+- No emoji in code comments or rule files unless the project explicitly uses them
+- Special characters in file paths must be escaped per the target shell
+
 ## Pre-Submit Checklist
 
 - [ ] MCP server was consulted for relevant technology

@@ -67,6 +67,18 @@ Touch only what you're asked to touch.
 
 **Exception — cleanup obligation:** When YOUR changes create orphans (unused imports, dead functions, replaced files), you MUST remove them. This aligns with code-standards.md: "NEVER leave old + new both existing." The distinction: pre-existing unused code → ask first; code YOUR changes made unused → clean it up immediately.
 
+### Approval Scope Reference
+
+Use this to decide whether to pause and ask vs proceed:
+
+| Color | Approval Needed | Examples |
+|-------|----------------|---------|
+| 🔴 RED | Explicit approval required — STOP and ask | New agents, new files that didn't exist, architecture changes, MCP config changes, deleting existing files, modifying CI/CD or hooks |
+| 🟡 YELLOW | Inform and proceed — state what you're doing | Editing existing file content, refactoring logic within a file, updating rules, adding to existing config |
+| 🟢 GREEN | Just do it — no announcement needed | Typos, formatting, fixing broken imports, removing dead code YOUR changes created |
+
+When in doubt between RED and YELLOW, default to RED.
+
 ## 6. Dead Code Hygiene
 
 After refactoring or implementing:
@@ -123,3 +135,38 @@ Note: This section covers **your own code quality**. For **claims about code sta
 8. Removing things you don't fully understand
 
 Also enforced by other rules (see those files for details): contradictory/flipped status claims, incomplete plan items (`verification-and-reporting.md`); new files when modify suffices, silent failures, duplicated logic (`code-standards.md`); deprecated APIs (`CLAUDE.md`).
+
+## 9. Overconfidence Prevention
+
+AI systems exhibit a known failure mode: proceeding without enough clarifying questions, then producing confidently wrong output.
+
+**Old pattern (forbidden):** "Only ask if absolutely necessary" → results in wrong assumptions running unchecked.
+**Required pattern:** "When in doubt, ask" → overconfidence leads to poor outcomes.
+
+### Red Flags — Stop and Ask When You See These
+
+- Completing a non-trivial task without asking a single clarifying question
+- Proceeding when requirements mention multiple possible interpretations
+- Skipping entire question categories (e.g., assuming NFRs are obvious)
+- Making technology choices without confirming constraints
+- Assuming scope when the request could mean a small or large change
+
+### Mandatory Question Triggers
+
+Ask clarifying questions BEFORE coding when ANY of these are true:
+- The request is ambiguous about scope (one file vs system-wide)
+- The request implies a technology choice that hasn't been confirmed
+- Requirements contain undefined terms or business rules
+- The change touches more than 2 components
+- You are about to make an irreversible structural decision
+
+### What to Ask
+
+```
+BEFORE I PROCEED, I need to clarify:
+1. [Specific ambiguity]
+2. [Specific constraint or technology choice]
+→ If these assumptions are wrong, the implementation will need to be redone.
+```
+
+Do not ask questions you already know the answer to from context. Ask only what materially changes the implementation.
