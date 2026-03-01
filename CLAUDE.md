@@ -133,6 +133,28 @@ Continue from [specific next step]? Or review a previous task first?
 - Run `/project-status` for codebase summary, `/review-code` for review, `/audit-security` for security audit
 - Run `/plan-review` for structured plan review with Phase 0 self-review and production readiness gates
 
+## Self-Improvement Loop
+
+When the user corrects a mistake during any session:
+
+1. BEFORE proceeding with the corrected approach — write the lesson
+2. Open `.claude/rules/lessons.md`
+3. Check if this exact mistake already has an entry — if yes, increment [xN]
+4. If no existing entry — add a new one in the 4-line format
+5. If the entry is now [x3] — promote Rule to the matching rules file, delete entry from lessons.md
+6. THEN continue with the task
+
+Correction signals that trigger this:
+- User says "that's wrong", "not like that", "you missed X"
+- User re-states something already said earlier in the session
+- User explicitly points out a repeated mistake
+- User overrides a decision I made independently
+
+Do NOT write a lesson for:
+- Preference changes mid-task (user changed their mind, not a mistake)
+- Clarifications that were never stated before
+- Requests to try a different approach when first approach was reasonable
+
 ## Meta
 
 The human monitors you in an IDE. Minimize mistakes they need to catch. You have unlimited stamina — the human does not. Loop on hard problems, not wrong problems.

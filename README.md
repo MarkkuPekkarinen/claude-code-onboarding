@@ -85,6 +85,7 @@ Clone it, install Claude Code, and start building.
     - [MCP Servers — External Tool Integrations](#mcp-servers--external-tool-integrations)
     - [settings.json Configuration](#settingsjson-configuration)
     - [Hooks — Automated Guardrails](#hooks--automated-guardrails)
+    - [Lessons Log — Self-Improvement Loop](#lessons-log--self-improvement-loop)
     - [Model Selection \& Cost Awareness](#model-selection--cost-awareness)
   - [10. Cheaper Alternative: MiniMax M2.5](#10-cheaper-alternative-minimax-m25)
     - [Why Choose MiniMax M2.5?](#why-choose-minimax-m25)
@@ -845,6 +846,46 @@ docs/
 ```
 
 Reference a diagram in any session with `@docs/diagrams/auth-flow.md` to give Claude instant architectural context without codebase exploration.
+
+### Lessons Log — Self-Improvement Loop
+
+The **lessons log** is the team's shared record of corrections — mistakes Claude made that you corrected, expressed as rules to prevent recurrence.
+
+Unlike the blackbox (which is never auto-loaded), `lessons.md` lives in `.claude/rules/` so it is **always active** in every session.
+
+| Component | Location | Auto-loaded? | Purpose |
+|-----------|----------|-------------|---------|
+| Lessons log | `.claude/rules/lessons.md` | Always | Active correction patterns for current sessions |
+| Trigger rule | `CLAUDE.md` (Self-Improvement Loop section) | Always | Instructs Claude to write a lesson when corrected |
+
+**How it works:**
+
+1. Claude makes a mistake. You correct it.
+2. Before proceeding, Claude writes a 4-line lesson entry to `lessons.md`.
+3. You commit and push. All teammates get the lesson on next `git pull`.
+4. From that session forward, every Claude instance on the team avoids the same mistake.
+
+**Bloat prevention — three-tier lifecycle:**
+
+```
+lessons.md (max 15 entries)
+    |
+    | lesson recurs 3x across sessions
+    v
+Promoted to matching rules file (core-behaviors.md, code-standards.md, etc.)
+    + deleted from lessons.md
+```
+
+`lessons.md` stays lean (~60 lines max). Repeated lessons become permanent rules. One-off mistakes that never recur get pruned at the 15-entry cap.
+
+**Difference from blackbox:**
+
+| | `blackbox/session-log.md` | `.claude/rules/lessons.md` |
+|--|--|--|
+| Auto-loaded? | Never | Always |
+| Records | Decisions + files changed | Correction patterns |
+| Grows? | Unboundedly (append-only) | Capped at 15 entries |
+| Purpose | Audit trail | Active mistake prevention |
 
 ### Model Selection & Cost Awareness
 
