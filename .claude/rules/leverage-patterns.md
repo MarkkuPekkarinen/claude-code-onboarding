@@ -144,3 +144,36 @@ If the human redirects while a task is in progress:
 3. List what was NOT started yet
 4. Confirm: should completed work be kept, modified, or reverted?
 5. Only then start the new direction
+
+### Error Severity Triage
+
+Before deciding how to handle any error, classify it:
+
+| Severity | Meaning | Response |
+|----------|---------|---------|
+| **Critical** | Task cannot continue at all | Stop, report fully, list recovery options |
+| **High** | Current approach is blocked, need alternative | Stop current approach, propose alternative |
+| **Medium** | Can continue with workaround, quality reduced | Proceed with workaround, flag the gap explicitly |
+| **Low** | Minor issue, non-blocking | Note it, continue, mention at end |
+
+Never classify an error as Low when it hides a real problem.
+
+### Change Request Decision Tree
+
+When a user requests a change to ongoing or completed work:
+
+```
+User requests change
+    |
+    +-- Affects in-progress work?
+    |   Yes -> Stop. List done (file:line). List not-started. Ask: keep / modify / revert?
+    |
+    +-- Affects a completed file or feature?
+    |   Low impact (isolated) -> Inform and proceed
+    |   High impact (cascading) -> List all affected areas, get explicit confirmation
+    |
+    +-- Affects architecture or structure?
+        RED: List all cascading effects. Require explicit approval before changing.
+```
+
+**Before any destructive change:** commit or note the current state first so the human can roll back.

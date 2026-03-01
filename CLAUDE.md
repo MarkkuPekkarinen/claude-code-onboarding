@@ -102,13 +102,23 @@ docker-compose down                  # Stop all services
 
 ### Working on Tasks
 - Update status to in_progress BEFORE starting each task
+- Mark completed in the **same response** where the work finishes — never defer status updates
 - Mark completed only after verification (tests pass, linting clean, etc.)
 - Add follow-up tasks discovered during implementation
 
 ### Resuming Tasks
 - On session start, ALWAYS run TaskList to check for pending/in_progress tasks
-- If tasks exist, summarize status and ask which to resume
 - After /clear or /compact, immediately check TaskList again
+- If tasks exist, present this status summary before asking which to resume:
+
+```
+## Session Resumed
+- In-progress: [task subject] — last completed step: [description]
+- Pending (unblocked): [list]
+- Pending (blocked): [list with blockers]
+
+Continue from [specific next step]? Or review a previous task first?
+```
   
 ## Git Workflow
 - Branch naming: `feature/<ticket>-<description>`, `bugfix/<ticket>-<description>`

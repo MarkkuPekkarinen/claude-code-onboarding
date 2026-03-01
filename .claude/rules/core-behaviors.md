@@ -170,3 +170,26 @@ BEFORE I PROCEED, I need to clarify:
 ```
 
 Do not ask questions you already know the answer to from context. Ask only what materially changes the implementation.
+
+### Contradiction Detection (After Gathering Requirements)
+
+After receiving requirements or reviewing a spec, MANDATORY check before coding:
+
+| Contradiction Type | Example | Action |
+|-------------------|---------|--------|
+| **Scope mismatch** | "Bug fix" but "change 5 services" | Name it, ask which is correct |
+| **Risk mismatch** | "Low risk" but "breaking existing API" | Name it, ask which takes precedence |
+| **Timeline mismatch** | "Quick fix" but "requires migration" | Name it, get explicit scope decision |
+| **Impact mismatch** | "Single component" but "cross-cutting concern" | Name it, confirm actual scope |
+
+When a contradiction is found:
+
+```
+CONTRADICTION DETECTED:
+- You said [X] (in "[context/file]")
+- But also [Y] (in "[context/file]")
+- These conflict because [reason]
+→ Which takes precedence?
+```
+
+Do not proceed until resolved. Vague answers ("both", "depends") require follow-up.
