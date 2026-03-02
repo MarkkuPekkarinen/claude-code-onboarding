@@ -130,6 +130,54 @@ Not every task needs the same depth of planning, testing, or documentation. Cali
 
 **Default:** Start at Minimal. Escalate only when a factor above applies. Do not gold-plate simple requests.
 
+## Cost and Context Awareness
+
+Every tool call, agent dispatch, and file read consumes tokens. Be deliberate.
+
+### Model Selection for Sub-Agents
+
+The Task tool accepts a `model` parameter. Use it:
+
+| Model | When to Use | Examples |
+|-------|-------------|---------|
+| **haiku** | Quick, straightforward tasks with clear instructions | File search, simple grep, formatting, linting check |
+| **sonnet** | Default — most implementation and review tasks | Code generation, code review, test writing |
+| **opus** | Deep reasoning, complex architecture, ambiguous requirements | Architecture design, multi-system debugging, nuanced trade-off analysis |
+
+**Default:** Inherit parent model (omit param). Only override when the task is clearly simpler or harder than the current model warrants.
+
+### Foreground vs Background Agents
+
+| Mode | When to Use |
+|------|-------------|
+| **Foreground** (default) | You need the result before proceeding — research, analysis, blocking question |
+| **Background** | Genuinely independent work — linting, test runs, reviews while you implement |
+
+**Rule:** Do not run agents in background just to appear fast. If you need the result to decide your next step, run in foreground.
+
+### Context Window Management
+
+The context window is finite. Protect it:
+
+- **Read selectively.** Use `offset`/`limit` on large files instead of reading the entire file. Read the section you need.
+- **Don't re-read files** you already have in context unless they were modified since your last read.
+- **Summarize at boundaries.** When a task spans many steps, summarize completed work before continuing — this is cheaper than re-reading everything.
+- **Prefer Grep/Glob over exploratory reads.** Find the exact file:line first, then read a narrow range.
+- **Don't load blackbox/session-log.md** or other append-only logs into context unless explicitly asked.
+
+### When to Break Tasks vs Do In-Session
+
+```
+Can I finish this in one session without losing context?
+    |
+    +-- YES (< ~15 files touched, clear scope) -> Do it yourself
+    |
+    +-- NO -> Break into subtasks:
+        +-- Independent subtasks? -> Dispatch parallel background agents
+        +-- Sequential subtasks? -> Complete each, summarize, continue
+        +-- Too large even for subtasks? -> Stop. Ask human to scope down.
+```
+
 ## Large Task Management
 
 When a task is too large for a single context window:
