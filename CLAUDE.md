@@ -67,6 +67,9 @@ Consult official docs via MCP before writing ANY code. Zero tolerance for deprec
 | Architecture | `.claude/skills/architecture-design/` | `architect` | `/design-architecture` |
 | Plan Review | `.claude/skills/plan-mode-review/` | — | `/plan-review` |
 | Browser Testing | `.claude/skills/browser-testing/` | `browser-testing` | — |
+| Debugging | `.claude/skills/systematic-debugging/` | — | — |
+| Verification | `.claude/skills/verification-before-completion/` | — | — |
+| Code Review Reception | `.claude/skills/receiving-code-review/` | — | — |
 
 ### Code Review Agents
 
