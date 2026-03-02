@@ -501,3 +501,34 @@ Need to test a feature?
         2. Interact with browser-use
         3. Validate with chrome-devtools
 ```
+
+## Flutter Web Testing Patterns
+
+### DDC Bootstrap (Critical)
+
+Flutter web in development mode (DDC) does NOT auto-start. Must manually bootstrap:
+```python
+page.wait_for_load_state("networkidle", timeout=20000)
+time.sleep(2)
+if page.evaluate("typeof window.$dartRunMain === 'function'"):
+    page.evaluate("window.$dartRunMain()")
+    time.sleep(6)
+```
+
+### Pixel-Coordinate Interaction
+
+Flutter web renders to WebGL canvas — no HTML form elements. All clicks must use pixel coordinates:
+- `page.mouse.click(x, y)` then `page.keyboard.type(text)`
+- Use `headless=False` for Playwright — Flutter DDC requires a visible display
+- Get coordinates from screenshots by visual inspection
+
+### Playwright Mouse API Notes
+
+- `page.mouse.triple_click()` does NOT exist — use Ctrl+A then Backspace to clear inputs
+- For clearing: `page.keyboard.press("Control+a")` then `page.keyboard.press("Backspace")`
+
+### MCP Fallback to Playwright
+
+If chrome-devtools and browser-use MCPs are not available as direct `mcp__*` calls:
+- Install `playwright` Python library and use Playwright directly
+- `pip3 install playwright && playwright install chromium`

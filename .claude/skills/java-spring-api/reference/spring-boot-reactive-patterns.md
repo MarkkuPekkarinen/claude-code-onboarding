@@ -344,3 +344,29 @@ Mono.delay(Duration.ofSeconds(1))  // non-blocking delay
 Mono.fromFuture(completableFuture) // bridge to reactive
 Schedulers.boundedElastic()        // isolate unavoidable blocking
 ```
+
+## Patterns
+
+### WebFlux Security Filter
+
+`JwtAuthFilter implements WebFilter` — set via `.addFilterAt(jwtAuthFilter, SecurityWebFiltersOrder.AUTHENTICATION)`.
+Principal name must be the userId string; extract with `ctx.getAuthentication().getName()`.
+The filter must call `chain.filter(exchange).contextWrite(ReactiveSecurityContextHolder.withAuthentication(auth))`.
+
+### SecurityConfig for H2 Console
+
+Must add `.headers(headers -> headers.frameOptions(fo -> fo.disable()))` to allow H2 iframe.
+Use `.allowedOriginPatterns(List.of("*"))` not `.allowedOrigins("*")` when `allowCredentials` is false.
+
+### GlobalExceptionHandler in WebFlux
+
+Use `@ControllerAdvice` with `@ExceptionHandler` returning `Mono<ResponseEntity<ProblemDetail>>` — this works correctly in WebFlux (not only in MVC). Do NOT use `AbstractErrorWebExceptionHandler` unless you need to handle errors from non-controller paths.
+
+### R2DBC Entity Design
+
+R2DBC entities need full getters+setters (Lombok `@Data` on entities causes issues with auditing). Use `@CreatedDate` + `@LastModifiedDate` — requires `@EnableR2dbcAuditing` on the application class.
+
+### R2DBC Repository Patterns
+
+Use `@Query` for custom SQL on `ReactiveCrudRepository`. Named parameters work: `:paramName`.
+`findByUserIdOrderByStartedAtDesc(UUID userId, Pageable pageable)` — Spring Data derives this correctly.
