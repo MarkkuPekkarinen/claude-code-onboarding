@@ -69,6 +69,7 @@ Consult official docs via MCP before writing ANY code. Zero tolerance for deprec
 | Browser Testing | `.claude/skills/browser-testing/` | `browser-testing` | — |
 | Debugging | `.claude/skills/systematic-debugging/` | — | — |
 | Verification | `.claude/skills/verification-before-completion/` | — | — |
+| SDD Pipeline | `.claude/skills/subagent-driven-development/` | — | — |
 
 ### Code Review Agents
 

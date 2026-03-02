@@ -43,7 +43,18 @@
       "Bash(mypy *)",
       "mcp__voicemode__converse",
       "mcp__voicemode__service",
-      "Bash(voicemode *)"
+      "Bash(voicemode *)",
+      "mcp__chrome-devtools__*",
+      "mcp__firebase__*",
+      "mcp__dart-mcp-server__*",
+      "mcp__angular-cli__*",
+      "mcp__docker__*",
+      "mcp__Claude_in_Chrome__*",
+      "mcp__Claude_Preview__*",
+      "mcp__context7__*",
+      "mcp__langchain-docs__*",
+      "mcp__ios-simulator__*",
+      "mcp__mcp-registry__*"
     ],
     "ask": [
       "Bash(git reset *)",
