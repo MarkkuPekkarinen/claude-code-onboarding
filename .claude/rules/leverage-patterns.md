@@ -87,6 +87,59 @@ When a task is too large for a single context window:
 - Summarize completed work at each boundary for context carry-forward
 - If losing track of earlier decisions, say so and request a recap
 
+## Sub-Agent Governance
+
+Sub-agents (via Task tool or Agent Teams) are powerful but have blind spots. Govern them.
+
+### When to Use Sub-Agents vs Do It Yourself
+
+| Situation | Action |
+|-----------|--------|
+| Single-file change, clear requirement | Do it yourself |
+| Multi-file change within one domain | Do it yourself |
+| 3+ tasks with an approved plan file | Use SDD pipeline (`subagent-driven-development` skill) |
+| Parallel independent work streams | Use Agent Teams (TeamCreate) |
+| Specialized review (security, DB, a11y) | Dispatch reviewer agent |
+
+**Default:** Do it yourself. Sub-agents add coordination overhead — only use when parallelism or specialization justifies it.
+
+### Mandatory Pre-Dispatch Checklist
+
+Before dispatching ANY agent (Task tool or TeamCreate):
+
+1. **Load the skill first.** The `subagent-driven-development` skill defines the Implementer -> Spec Reviewer -> Quality Reviewer pipeline. Skipping it means skipping review stages.
+2. **Pass explicit context.** Agents do NOT inherit: `CLAUDE.md`, `lessons.md`, rules files, or conversation history. For Task tool: include everything in the `prompt` param. For Teams: include in the initial `SendMessage` body.
+3. **Specify the subagent_type.** Match the agent to the work — read-only agents (Explore, Plan) cannot edit files. Do not assign implementation to research agents.
+4. **Set isolation when needed.** Use `isolation: "worktree"` for changes that might conflict with concurrent work.
+
+### Mode-Specific Rules
+
+| Concern | Task Tool (sub-agent) | Agent Teams (TeamCreate) |
+|---------|----------------------|--------------------------|
+| Context delivery | `prompt` parameter | `SendMessage` body — never say "read the plan" |
+| Coordination | You manage sequentially | Shared `TaskList` + `SendMessage` between teammates |
+| Task assignment | One task per dispatch | `TaskUpdate` with `owner` field |
+| Shutdown | Agent returns automatically | You MUST send `shutdown_request` to each teammate, then `TeamDelete` |
+| Idle teammates | N/A | Normal — idle means waiting for input, not broken. Send a message to wake them |
+
+### Limitations (Both Modes)
+
+- Agents cannot read `.claude/rules/` or `CLAUDE.md` unless you paste the relevant rules into the prompt or message
+- Agents create `.claude/agent-memory/` files that are NOT reliably read by future agents — treat these as orphans and consolidate via `/promote-lessons`
+- Agents do not see prior conversation context unless the agent type description says "access to current context"
+- Agent output is not visible to the user — you must summarize results back
+- Team teammates cannot hear you unless you use `SendMessage` — plain text output is invisible to them
+
+### Orphan Prevention
+
+After any session using sub-agents or teams:
+
+1. Check for `.claude/agent-memory/` files
+2. Consolidate useful findings into `lessons.md` or skill reference files
+3. Delete the orphaned files
+
+This is automated by the `/promote-lessons` command and the stop hook reminder.
+
 ## Error Recovery
 
 When a task goes wrong mid-execution, follow this protocol instead of pushing forward or starting over silently.

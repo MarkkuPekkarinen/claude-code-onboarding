@@ -136,7 +136,43 @@ Note: This section covers **your own code quality**. For **claims about code sta
 
 Also enforced by other rules (see those files for details): contradictory/flipped status claims, incomplete plan items (`verification-and-reporting.md`); new files when modify suffices, silent failures, duplicated logic (`code-standards.md`); deprecated APIs (`CLAUDE.md`).
 
-## 9. Overconfidence Prevention
+## 9. Session Resume Protocol
+
+Context is lost between sessions and after `/clear` or `/compact`. Recover it before doing new work.
+
+### On Every Session Start
+
+```
+1. Run TaskList — check for pending/in_progress tasks
+2. If tasks exist → present status summary (see CLAUDE.md "Resuming Tasks")
+3. If NO tasks exist → ready for new work
+```
+
+### After `/clear` or `/compact`
+
+Same as session start: run TaskList immediately. Do not assume you remember what was in progress.
+
+### Context Recovery Priority
+
+When resuming, recover context in this order:
+
+| Source | What It Gives You | When to Check |
+|--------|-------------------|---------------|
+| TaskList | Active tasks, blockers, owners | Always (step 1) |
+| `docs/plans/*.md` | Approved plan for current work | If tasks reference a plan |
+| Recent git log | What was committed vs what's pending | If task state is unclear |
+| `.claude/rules/lessons.md` | Auto-loaded — no action needed | Automatic |
+
+**Do NOT load** `blackbox/session-log.md` unless the user explicitly asks. It is an append-only audit trail, not a context source.
+
+### What NOT to Do on Resume
+
+- Do not start fresh work without checking for in-progress tasks
+- Do not re-read all rules files "just in case" — they are auto-loaded
+- Do not ask "what were we working on?" if TaskList has the answer
+- Do not re-implement completed tasks — check git log first
+
+## 10. Overconfidence Prevention
 
 AI systems exhibit a known failure mode: proceeding without enough clarifying questions, then producing confidently wrong output.
 
