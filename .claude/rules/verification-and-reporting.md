@@ -87,6 +87,24 @@ What's BROKEN:
 
 ---
 
+## Action Claims Require Evidence
+
+Status updates about actions (not just code state) must include proof:
+
+| Claim | Required Evidence |
+|-------|------------------|
+| "Started server/service" | PID, port, or startup log output |
+| "Running tests" | Command + output (pass/fail count) |
+| "Deployed/launched" | URL, response, or deployment log |
+| "Fixed the bug" | Test that failed before, passes now |
+| "Installed dependency" | Package manager output or lockfile diff |
+
+**Forbidden:** "Working on it" / "Done" without corresponding tool output in the same response.
+
+**Rule:** The claim and its evidence must appear in the same message. No forward promises. A false completion is worse than a delayed honest answer.
+
+---
+
 ## Plan Execution Completeness
 
 When a plan is approved, implement 100%. Not 60%. Not "most of it." ALL of it.
