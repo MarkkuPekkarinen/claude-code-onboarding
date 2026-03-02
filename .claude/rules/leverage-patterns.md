@@ -53,6 +53,58 @@ Correctness first. Performance second. Never skip step 1.
 
 When applicable, use a browser MCP for real-time validation. Verify against actual rendered output or live behavior, not just static code analysis.
 
+## Skill and Agent Selection
+
+Skills and agents are lazy-loaded — load the right one before working in a domain. CLAUDE.md has the full mapping tables, but sub-agents don't see CLAUDE.md. This section provides the selection logic.
+
+### When to Load a Skill
+
+```
+About to write or modify code?
+    |
+    +-- What technology? Match to skill:
+    |   Java/Spring    -> java-spring-api
+    |   NestJS         -> nestjs-api
+    |   Python/FastAPI  -> python-dev
+    |   Agentic AI     -> agentic-ai-dev
+    |   Angular        -> angular-spa
+    |   Flutter        -> flutter-mobile
+    |   Database schema -> database-schema-designer
+    |   Architecture   -> architecture-design
+    |
+    +-- Cross-cutting concern?
+        Debugging       -> systematic-debugging
+        Security audit  -> load skill, then dispatch security-reviewer agent
+        Code review     -> load skill, then dispatch tech-specific reviewer agent
+        Browser testing -> browser-testing
+        Plan review     -> plan-mode-review
+```
+
+**Rule:** Load the skill BEFORE writing code, not after. Skills contain patterns, templates, and MCP server references that prevent mistakes.
+
+### When to Dispatch a Reviewer Agent
+
+Reviewer agents are dispatched AFTER code is written, not before. Match by domain:
+
+| Signal in Changed Files | Reviewer Agent |
+|------------------------|----------------|
+| `*.java`, `pom.xml`, Spring annotations | `spring-reactive-reviewer` |
+| `*.ts` with NestJS decorators (`@Controller`, `@Injectable`) | `nestjs-reviewer` |
+| `*.dart`, `pubspec.yaml`, Riverpod providers | `riverpod-reviewer` |
+| LangChain/LangGraph imports, agent graphs | `agentic-ai-reviewer` |
+| SQL migrations, schema changes | `postgresql-database-reviewer` |
+| Any security-sensitive change (auth, crypto, input handling) | `security-reviewer` |
+| UI components, accessibility | `ui-standards-expert` or `accessibility-auditor` |
+| None of the above / mixed | `code-reviewer` (general) |
+
+**Rule:** When in doubt, dispatch `code-reviewer`. It covers all languages. Stack-specific reviewers add deeper checks but are not a replacement — use both for critical changes.
+
+### Common Mistakes
+
+- Loading a skill after already writing code → patterns were missed, rewrite likely
+- Dispatching a reviewer for the wrong stack → shallow review, false confidence
+- Skipping skill load for "small changes" → small changes to Spring WebFlux or Riverpod still need the skill's patterns to avoid framework-specific traps
+
 ## Adaptive Depth Levels
 
 Not every task needs the same depth of planning, testing, or documentation. Calibrate effort to the actual problem.

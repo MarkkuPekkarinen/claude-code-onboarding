@@ -1,5 +1,31 @@
 # Code Standards
 
+## Documentation Before Code
+
+Consult official docs via MCP before writing ANY code. This rule is enforced here (always-loaded) because CLAUDE.md is not visible to sub-agents.
+
+```
+About to write code?
+    |
+    +-- Does a dedicated MCP server exist for this library/framework?
+    |   YES -> Query it first. Use the response to inform your implementation.
+    |   NO  -> Use Context7 MCP as fallback.
+    |
+    +-- Does the code use an API you haven't verified this session?
+        YES -> Check signature, params, return type against MCP/docs before using.
+        NO  -> Proceed.
+```
+
+**Non-negotiable:**
+- NEVER generate code from memory when an MCP server can confirm the current API
+- NEVER use deprecated methods — MCP results will show current alternatives
+- If MCP returns something different from what you expected, trust the MCP result
+
+**MCP lookup order:**
+1. Dedicated MCP server listed in the skill's SKILL.md (e.g., Angular CLI MCP, Firebase MCP, Dart MCP)
+2. `Context7` MCP — resolve library ID first, then query docs
+3. `WebSearch` / `WebFetch` — last resort for very new or niche libraries
+
 ## Modify Existing Files First
 
 ```
