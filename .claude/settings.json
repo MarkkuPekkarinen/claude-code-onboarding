@@ -32,6 +32,11 @@
       "Bash(docker *)",
       "Bash(docker-compose *)",
       "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(cp *)",
+      "Bash(mv *)",
+      "Bash(curl *)",
+      "Bash(wget *)",
       "Bash(find *)",
       "Bash(grep *)",
       "Bash(mkdir *)",
@@ -60,11 +65,6 @@
       "Bash(git reset *)",
       "Bash(git clean *)",
       "Bash(git restore *)",
-      "Bash(cat *)",
-      "Bash(cp *)",
-      "Bash(mv *)",
-      "Bash(curl *)",
-      "Bash(wget *)",
       "Bash(rm *)"
     ],
     "deny": [
