@@ -69,7 +69,6 @@ Consult official docs via MCP before writing ANY code. Zero tolerance for deprec
 | Browser Testing | `.claude/skills/browser-testing/` | `browser-testing` | — |
 | Debugging | `.claude/skills/systematic-debugging/` | — | — |
 | Verification | `.claude/skills/verification-before-completion/` | — | — |
-| Code Review Reception | `.claude/skills/receiving-code-review/` | — | — |
 
 ### Code Review Agents
 
