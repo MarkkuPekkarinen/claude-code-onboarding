@@ -15,7 +15,7 @@ For every task:
 
 For small/obvious tasks, compress — but NEVER skip UNDERSTAND or VERIFY.
 
-For non-trivial changes (architecture, multi-service, schema changes): use the `plan-mode-review` skill or `/plan-review` command, which extends this protocol with Phase 0 self-review, approval scope triage, and production readiness gates.
+For non-trivial changes (architecture, multi-service, schema changes): use the `plan-mode-review` skill or `/plan-review` command, which extends this protocol with Phase 0 self-review, approval scope triage, and production readiness gates. Save the approved plan to `docs/plans/YYYY-MM-DD-<feature>.md` before starting implementation — this gives a persistent, git-committed reference for the session and future sessions.
 
 ## Declarative Over Imperative
 

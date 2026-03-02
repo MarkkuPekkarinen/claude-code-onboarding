@@ -101,6 +101,7 @@ docker-compose down                  # Stop all services
 - Always provide activeForm in present continuous (e.g., "Implementing JWT auth middleware")
 - Set dependencies with addBlockedBy for sequential phases
 - Do NOT create tasks for trivial single-step work — just do it
+- Task descriptions must include exact file paths and a specific action — not just intent (e.g., "Add `validateToken()` to `src/auth/token.service.ts`", not "Add token validation")
 
 ### Working on Tasks
 - Update status to in_progress BEFORE starting each task
