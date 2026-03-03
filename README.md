@@ -776,6 +776,7 @@ This repo includes 4 hooks out of the box:
 | **Auto-Format** | `post-edit-format.sh` | `PostToolUse` → Write/Edit | Runs Prettier (TS/JS/HTML/CSS), `dart format`, ruff/black (Python) |
 | **Secret Scan** | `stop-secret-scan.sh` | `Stop` | Warns if changed files contain AWS/GCP/GitHub/OpenAI API keys |
 | **Blackbox Log** | `stop-blackbox-log.sh` | `Stop` | Appends session decisions, user constraints, and changed files to `blackbox/session-log.md` |
+| **Ralph Loop** | `stop-ralph-loop.sh` | `Stop` | Autonomous iteration — blocks exit and re-feeds prompt until task complete. Opt-in: only active when `/ralph-loop` was called. |
 
 > After cloning: `chmod +x .claude/hooks/*.sh`
 
@@ -848,6 +849,77 @@ docs/
 ```
 
 Reference a diagram in any session with `@docs/diagrams/auth-flow.md` to give Claude instant architectural context without codebase exploration.
+
+### Ralph Loop — Autonomous Iteration
+
+The **ralph loop** is a Stop hook that keeps Claude working on a task autonomously — when Claude tries to exit, the hook intercepts, checks if the task is done, and if not, feeds the same prompt back to start another iteration. Each iteration can see all file changes from previous iterations.
+
+> Named after Ralph Wiggum (*The Simpsons*) — persistent iteration despite setbacks. **High risk. Use deliberately.**
+> Adapted from the [`ralph-wiggum`](https://github.com/anthropics/claude-code-samples) plugin in the Anthropic `claude-code-samples` repository.
+
+#### Start
+
+```bash
+/ralph-loop "Your task" --max-iterations 10 --completion-promise "DONE"
+```
+
+| Flag | Default | Meaning |
+|------|---------|---------|
+| `--max-iterations N` | `10` | Hard stop after N iterations (safety net — always set this) |
+| `--completion-promise "TEXT"` | none | Claude exits ONLY when it outputs `<promise>TEXT</promise>` and means it |
+
+Monitor progress:
+```bash
+head -5 .claude/ralph-loop.local.md   # iteration: 3, max_iterations: 10, ...
+```
+
+#### Stop
+
+```bash
+/cancel-ralph   # deletes state file — loop exits on next turn
+```
+
+#### Regular use
+
+```bash
+# Fix all TypeScript errors — loop until clean
+/ralph-loop "Run: npx tsc --noEmit. Fix all errors. Repeat until zero errors." \
+  --max-iterations 15 --completion-promise "ZERO ERRORS"
+
+# Implement all unchecked items in a plan file
+/ralph-loop "Read docs/plans/feature.md. Implement the next unchecked item. Repeat." \
+  --max-iterations 20 --completion-promise "ALL ITEMS DONE"
+```
+
+#### With sub-agents
+
+Sub-agents work naturally inside a ralph loop. Each iteration spawns fresh sub-agents; their file changes persist into the next iteration.
+
+```bash
+/ralph-loop "Run /review-pr. Fix all CRITICAL findings using specialist agents.
+When zero CRITICAL findings remain, output <promise>ALL CRITICAL RESOLVED</promise>" \
+  --max-iterations 10 --completion-promise "ALL CRITICAL RESOLVED"
+```
+
+#### With Agent teams
+
+Teams are recreated each iteration (previous team sessions end, but TaskList entries and file changes persist). Write prompts that check TaskList state first:
+
+```bash
+/ralph-loop "Check TaskList for pending tasks. If tasks remain, create a team and dispatch them.
+When all tasks complete and tests pass, output <promise>TEAM DONE</promise>" \
+  --max-iterations 5 --completion-promise "TEAM DONE"
+```
+
+#### When to use / avoid
+
+| Use | Avoid |
+|-----|-------|
+| Multi-attempt problems (fix errors, pass tests) | Single-shot tasks that don't need retry |
+| Overnight / unattended long work | Tasks requiring human decisions mid-way |
+| Iterative refinement over existing files | Tasks with no clear completion signal |
+
+**Always set `--max-iterations`.** Without it, the loop runs until the completion promise is satisfied or you run `/cancel-ralph`. Uncontrolled loops = uncontrolled API costs.
 
 ### Lessons Log — Self-Improvement Loop
 

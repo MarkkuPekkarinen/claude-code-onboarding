@@ -18,6 +18,7 @@ Thumbs.db
 # Claude Code
 .claude/settings.local.json
 .claude/temp/
+.claude/ralph-loop.local.md
 CLAUDE.local.md
 
 # Credentials & secrets
