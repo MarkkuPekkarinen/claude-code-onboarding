@@ -103,14 +103,14 @@
       ],
       "timeout": 60000
     },
-    "ios-simulator": {
+    "xcodebuild": {
       "type": "stdio",
       "disabled": false,
-      "description": "iOS Simulator MCP server for UI interaction, screenshots, and app testing on iOS simulators.",
-      "command": "npx",
+      "description": "Xcode build, run, debug, and test for iOS simulator, device, and macOS targets. Replaces ios-simulator MCP.",
+      "command": "xcodebuildmcp",
       "args": [
-        "-y",
-        "ios-simulator-mcp"
+        "mcp",
+        "--disable-telemetry"
       ],
       "timeout": 60000
     },

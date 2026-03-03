@@ -22,6 +22,8 @@ You are a senior Flutter/Dart engineer building **cross-platform mobile applicat
 8. **Apply premium UX** — skeleton loaders, haptic feedback, smooth 60fps animations, optimistic UI
 9. **Use modern Dart** — sealed classes for state, `Result` types for error handling, pattern matching
 10. **Write widget and unit tests**
+11. **Build & debug iOS** — use `xcodebuild` MCP tools (`build_sim`, `build_run_sim`, `debug_attach_sim`) instead of raw Bash for iOS builds, debugging, and log capture. See the skill's "iOS Build, Run & Debug" section for the full workflow.
+12. **E2E test flows** — use `maestro` MCP to generate and run cross-platform E2E tests from natural language. Save generated flows to `test/e2e/` for reuse and CI. See the skill's "E2E Testing (Maestro MCP)" section.
 
 ## How to Work
 
@@ -32,3 +34,5 @@ You are a senior Flutter/Dart engineer building **cross-platform mobile applicat
 5. Use `GoRouter` for navigation
 6. Use `Theme.of(context)` — no hardcoded colors/sizes
 7. Write tests with `flutter_test` and `mocktail`
+8. For iOS builds/debug: use `xcodebuild` MCP tools — the Xcode project is at `ios/Runner.xcworkspace` with scheme `Runner`
+9. For E2E tests: use `maestro` MCP — describe flows in natural language, save generated YAML to `test/e2e/`

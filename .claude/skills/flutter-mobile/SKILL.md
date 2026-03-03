@@ -71,13 +71,89 @@ Before generating code, consult these sources for current syntax and APIs:
 | Riverpod | `Context7` MCP | Provider types, ref usage, AsyncValue patterns |
 | Firebase Firestore | `Firebase MCP server` | Firestore operations, rules validation, auth flows |
 
+## iOS Build, Run & Debug (XcodeBuildMCP)
+
+For iOS-specific workflows, use the `xcodebuild` MCP server instead of raw CLI commands. It provides structured output, error parsing, and debugging that `flutter build ios` via Bash cannot.
+
+### When to Use Which
+
+| Task | Use This | Not This |
+|------|----------|----------|
+| Build iOS for simulator | `build_sim` (MCP) | `flutter build ios --simulator` (Bash) |
+| Build + install + launch on simulator | `build_run_sim` (MCP) | `flutter run` (Bash) |
+| Build for physical device | `build_device` (MCP) | `flutter build ios` (Bash) |
+| Debug a crash or inspect state | `debug_attach_sim` → `debug_variables` (MCP) | Manual Xcode debugging |
+| Capture runtime logs | `start_sim_log_cap` / `stop_sim_log_cap` (MCP) | Reading console manually |
+| Check signing/scheme config | `show_build_settings` / `list_schemes` (MCP) | `xcodebuild -showBuildSettings` (Bash) |
+| UI interaction (tap, swipe, type) | `tap`, `swipe`, `type_text` (MCP) | Not available via Bash |
+| Build Android | `flutter build apk` (Bash) | N/A — XcodeBuildMCP is iOS/macOS only |
+
+### iOS Debug Workflow
+
+```
+1. discover_projs → find ios/Runner.xcworkspace
+2. list_schemes → identify the Runner scheme
+3. build_run_sim → build, install, and launch on simulator
+4. start_sim_log_cap → begin capturing logs
+5. [reproduce the issue]
+6. debug_attach_sim → attach LLDB debugger
+7. debug_breakpoint_add → set breakpoint at suspect line
+8. debug_variables / debug_stack → inspect state
+9. stop_sim_log_cap → get captured logs
+```
+
+### Gotchas
+
+- **Flutter projects**: The Xcode project is at `ios/Runner.xcworkspace`, not the project root
+- **First build**: Run `flutter build ios` once first to generate the Xcode project and Pods
+- **Signing**: `show_build_settings` exposes signing config — use this to diagnose code signing failures
+- **Scheme name**: Flutter apps use the `Runner` scheme by default
+
+## E2E Testing (Maestro MCP)
+
+For cross-platform E2E testing, use the `maestro` MCP server. It runs test flows on both iOS simulator and Android emulator from natural language prompts.
+
+### When to Use Which Test Tool
+
+| Test Type | Tool | When |
+|-----------|------|------|
+| Widget/unit tests | `flutter test` (Bash) or `dart-mcp-server` `run_tests` | Every feature — fast, isolated, no device needed |
+| iOS build + quick visual check | `xcodebuild` MCP (`build_run_sim`, `screenshot`) | Spot-checking a screen during development |
+| Repeatable E2E flows | `maestro` MCP | Login, checkout, CRUD journeys — saved and rerunnable |
+| Cross-platform E2E | `maestro` MCP | Same YAML flow runs on iOS simulator AND Android emulator |
+| CI/CD regression suite | `maestro test test/e2e/` (Bash) | Pre-merge gate in GitHub Actions |
+
+### E2E Workflow
+
+```
+1. Build and launch app (XcodeBuildMCP for iOS, flutter run for Android)
+2. Describe the test flow in natural language
+3. Claude generates YAML via Maestro MCP and runs it
+4. Claude reports pass/fail per step
+5. Save generated YAML to test/e2e/<flow-name>.yaml for reuse
+```
+
+### Flow File Conventions
+
+- Save flows to `test/e2e/` at the project root
+- Name files by user journey: `login-flow.yaml`, `create-workout-flow.yaml`
+- Use `appId` matching your app's bundle ID
+- One flow per file — keep flows focused on a single journey
+
+### Gotchas
+
+- **App must be running**: Maestro interacts with a live app — build and launch first
+- **Accessibility labels**: Maestro finds elements by text and accessibility labels — ensure `Semantics` widgets have labels
+- **Timing**: Use `waitForAnimationToEnd` or `extendedWaitUntil` for slow transitions, not hardcoded sleeps
+- **Cross-platform element names**: iOS and Android may render text differently — use `id` attributes for reliable cross-platform selectors
+
 ## Common Commands
 
 ```bash
 flutter run                          # Run on connected device/emulator
 flutter test                         # Run tests
 flutter build apk                    # Build Android APK
-flutter build ios                    # Build iOS
+flutter build ios                    # Build iOS (also generates Xcode project)
 flutter pub get                      # Install dependencies
 flutter clean                        # Clean build artifacts
 dart run build_runner build --delete-conflicting-outputs  # Run code generation

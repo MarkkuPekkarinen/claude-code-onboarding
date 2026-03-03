@@ -703,6 +703,8 @@ This repo comes pre-configured with:
 | **Firebase** | Firestore and Auth operations |
 | **Sequential Thinking** | Step-by-step reasoning for complex multi-step problems |
 | **Dart** | Dart language server integration |
+| **XcodeBuildMCP** | Build, run, debug, and test Xcode projects from Claude — covers iOS simulator, device, and macOS targets |
+| **Maestro** | Cross-platform mobile E2E testing — run test flows on iOS simulator and Android emulator using natural language |
 | **Filesystem** | Secure file search and manipulation with configurable directory permissions |
 | **LangChain Docs** | Live LangChain documentation lookup |
 
@@ -1239,6 +1241,186 @@ Flutter web renders to a **`<canvas>` element**, not DOM nodes. This means `prev
 
 See the [Flutter Web Canvas Limitation](https://github.com/kumaran-is/claude-desktop-flutter-demo) doc in the Flutter demo repo for the full interaction patterns reference.
 
+### XcodeBuildMCP — iOS Build, Debug & Test from Claude
+
+[XcodeBuildMCP](https://github.com/getsentry/XcodeBuildMCP) is an MCP server by Sentry that gives Claude direct access to Xcode's build system. It provides **79 tools** across build, debug, test, simulator management, device deployment, and UI automation — making it a complete iOS/macOS development companion.
+
+**Why it matters for Flutter:** Flutter generates an Xcode project (`ios/Runner.xcworkspace`). XcodeBuildMCP lets Claude build it, run it on a simulator or device, attach a debugger, capture logs, and inspect the UI — all without opening Xcode.
+
+#### Install
+
+```bash
+brew tap getsentry/xcodebuildmcp
+brew install xcodebuildmcp
+```
+
+**Requirements:** macOS 14.5+, Xcode 16+
+
+#### Configure (`.mcp.json`)
+
+Already configured in this repo. The entry:
+
+```json
+"xcodebuild": {
+  "type": "stdio",
+  "disabled": false,
+  "description": "Xcode build, run, debug, and test for iOS simulator, device, and macOS targets.",
+  "command": "xcodebuildmcp",
+  "args": ["mcp", "--disable-telemetry"],
+  "timeout": 60000
+}
+```
+
+> **Note:** `--disable-telemetry` opts out of Sentry's crash reporting. Remove it if you want to help the project with error telemetry.
+
+#### Key Tool Groups
+
+| Group | Tools | What Claude Can Do |
+|-------|-------|-------------------|
+| **iOS Simulator** | `build_sim`, `build_run_sim`, `install_app_sim`, `launch_app_sim` | Build and run Flutter iOS app on simulator |
+| **iOS Device** | `build_device`, `install_app_device`, `launch_app_device` | Deploy to a physical iPhone |
+| **LLDB Debugging** | `debug_attach_sim`, `debug_breakpoint_add`, `debug_variables`, `debug_stack` | Attach debugger, set breakpoints, inspect variables |
+| **Log Capture** | `start_sim_log_cap`, `stop_sim_log_cap` | Capture app logs during a run |
+| **UI Automation** | `tap`, `swipe`, `type_text`, `snapshot_ui`, `screenshot` | Interact with and verify the running app |
+| **Simulator Mgmt** | `list_sims`, `boot_sim`, `set_sim_location`, `set_sim_appearance` | Manage simulators, set GPS, toggle dark mode |
+| **Project Discovery** | `discover_projs`, `list_schemes`, `show_build_settings` | Inspect Xcode project structure and signing config |
+
+#### Sample Prompts
+
+```
+> Build the Flutter iOS app for simulator and launch it
+
+> Attach the debugger to the running app, set a breakpoint in AppDelegate,
+  and show me the variables when it hits
+
+> Capture simulator logs while I test the login flow, then show me any errors
+
+> List available Xcode schemes for the ios/Runner.xcworkspace
+
+> Build for my connected iPhone and install the app
+```
+
+### Maestro — Mobile E2E Testing (iOS + Android)
+
+[Maestro](https://github.com/mobile-dev-inc/maestro) is a cross-platform mobile E2E testing framework with an MCP server. Claude generates and runs test flows from natural language — no YAML writing required. **Completely free for local use** (Apache 2.0, no API key needed).
+
+#### Install
+
+```bash
+# Install Maestro CLI (requires Java 17+)
+curl -fsSL "https://get.maestro.mobile.dev" | bash
+
+# Verify
+maestro --version
+java -version   # Must be 17+
+```
+
+#### How It Works
+
+You describe tests in plain English. Claude generates the YAML flow, runs it via Maestro MCP, and reports results:
+
+```
+You:     "Test the login flow with email test@example.com and password secret123"
+Claude:  1. Generates login-flow.yaml
+         2. Runs it on the active simulator/emulator
+         3. Reports: PASS (5/5 steps) or FAIL (step 3: "Dashboard" not visible)
+```
+
+The generated YAML flows are saved to `test/e2e/` — reusable by your team and runnable in CI without Claude.
+
+#### Configure (`.mcp.json`)
+
+Already configured in this repo:
+
+```json
+"maestro": {
+  "type": "stdio",
+  "disabled": false,
+  "description": "Maestro MCP server for cross-platform mobile E2E testing on iOS and Android.",
+  "command": "uvx",
+  "args": ["maestro-mcp"],
+  "timeout": 60000
+}
+```
+
+#### Sample Prompts
+
+**Test on iOS Simulator:**
+```
+> Build the fitness app with XcodeBuildMCP, then run Maestro E2E tests
+  on the login screen — try valid and invalid credentials
+
+> Test the full workout flow: navigate to Exercises, filter by CHEST,
+  tap Bench Press, add it to a workout, complete the workout
+
+> Generate Maestro test flows for all screens in the fitness app
+  and save them to test/e2e/
+```
+
+**Test on Android Emulator:**
+```
+> Start the Android emulator, install the fitness app APK,
+  then run the login E2E test with Maestro
+
+> Run the same login-flow.yaml on Android to verify cross-platform parity
+```
+
+**Test on Connected Device:**
+```
+> Run the checkout E2E flow on my connected iPhone
+
+> Run all test flows in test/e2e/ on the connected Android device
+```
+
+**Generate + Save Flows for CI:**
+```
+> Create Maestro test flows for login, registration, and workout creation.
+  Save each as a separate YAML file in test/e2e/
+
+> Run all Maestro flows in test/e2e/ and give me a pass/fail summary
+```
+
+#### XcodeBuildMCP + Maestro Together
+
+These two MCP servers complement each other for a complete iOS testing workflow:
+
+```
+XcodeBuildMCP                              Maestro
+─────────────                              ───────
+build_run_sim → build & launch app    →    Run E2E test suite
+debug_attach_sim → diagnose crash     ←    Test failure found
+screenshot → quick visual check            Structured pass/fail assertions
+```
+
+| Task | Tool |
+|------|------|
+| Build and launch iOS app | XcodeBuildMCP |
+| Quick visual spot-check | XcodeBuildMCP |
+| Debug a crash (LLDB) | XcodeBuildMCP |
+| Repeatable regression tests | Maestro |
+| Cross-platform (iOS + Android) tests | Maestro |
+| CI/CD test automation | Maestro |
+
+#### What a Generated Flow Looks Like
+
+Claude generates this automatically — you never write it by hand:
+
+```yaml
+# test/e2e/login-flow.yaml
+appId: com.example.fitnessApp
+---
+- launchApp
+- tapOn: "Email"
+- inputText: "test@example.com"
+- tapOn: "Password"
+- inputText: "secret123"
+- tapOn: "Sign In"
+- assertVisible: "Welcome"
+- assertVisible: "Workout"
+```
+
+Run it anytime without Claude: `maestro test test/e2e/login-flow.yaml`
+
 ### CI/CD & PR Workflow
 
 Claude Desktop monitors PRs in the background and auto-fixes CI failures:
@@ -1475,7 +1657,7 @@ claude-code-onboarding/
 | `firebase` | stdio | Firebase CLI operations |
 | `postgres` | stdio | PostgreSQL query & schema tools |
 | `docker` | stdio | Docker container management |
-| `ios-simulator` | stdio | iOS simulator control |
+| `xcodebuild` | stdio | Xcode build, run, debug, test — iOS simulator, device, and macOS (replaces `ios-simulator`) |
 | `maestro` | stdio | Mobile UI testing framework |
 
 ### Browser Automation
