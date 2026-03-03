@@ -2988,6 +2988,8 @@ claude --resume <name>              # Resume named session
 ```
 /design-architecture <description>  # System architecture with diagrams
 /design-database <domain>           # Database schema with ERD + migrations
+/pr-risk [main..HEAD]               # 1st — risk score before opening a PR
+/review-pr [scope]                  # 2nd — 6-role qualitative review
 /review-code [scope]                # Code review (auto-detects stack)
 /audit-security [scope]             # Security vulnerability scan
 /project-status                     # Codebase summary
