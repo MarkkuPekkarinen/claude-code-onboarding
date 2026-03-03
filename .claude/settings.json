@@ -45,6 +45,7 @@
       "Bash(uv *)",
       "Bash(pip *)",
       "Bash(python *)",
+      "Bash(python3 *)",
       "Bash(pytest *)",
       "Bash(ruff *)",
       "Bash(mypy *)",
@@ -116,6 +117,15 @@
             "timeout": 10
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hookify/hooks/pretooluse.py",
+            "timeout": 10
+          }
+        ]
       }
     ],
     "PostToolUse": [
@@ -126,6 +136,15 @@
             "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/post-edit-format.sh",
             "timeout": 30
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hookify/hooks/posttooluse.py",
+            "timeout": 10
           }
         ]
       }
@@ -166,6 +185,15 @@
             "timeout": 10
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hookify/hooks/stop.py",
+            "timeout": 10
+          }
+        ]
       }
     ],
     "UserPromptSubmit": [
@@ -174,6 +202,15 @@
           {
             "type": "command",
             "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/prompt-secret-scan.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 $CLAUDE_PROJECT_DIR/.claude/hookify/hooks/userpromptsubmit.py",
             "timeout": 5
           }
         ]

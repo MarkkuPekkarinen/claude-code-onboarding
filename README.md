@@ -780,7 +780,60 @@ This repo includes 4 hooks out of the box:
 
 > After cloning: `chmod +x .claude/hooks/*.sh`
 
-> **Tip:** Install the `hookify` plugin to create hooks conversationally — run `/hookify` and describe what you want in plain English.
+#### Two-Layer Hook System
+
+This repo implements a **two-layer hook architecture**:
+
+| Layer | Technology | Purpose | How Rules Are Defined |
+|-------|-----------|---------|----------------------|
+| **Layer 1 — Core Safety** | Shell scripts (`.claude/hooks/*.sh`) | Non-negotiable guardrails — always enforced | Hardcoded in shell scripts |
+| **Layer 2 — Configurable** | Hookify Python engine (`.claude/hookify/`) | Team-customizable rules — enable/disable per project | Markdown rule files (`.claude/hookify.*.local.md`) |
+
+Shell hooks are the baseline — always active, no way to disable them. Hookify sits on top and adds rules you can toggle without touching shell code.
+
+**Layer 2: Hookify Rule Engine**
+
+Rules live in `.claude/hookify.*.local.md` files with YAML frontmatter:
+
+```markdown
+---
+name: warn-console-log
+enabled: true            # false to disable without deleting the file
+event: file              # bash | file | stop | prompt | all
+pattern: console\.log\(  # regex matched against the relevant field
+action: warn             # warn (show message) | block (deny the tool call)
+---
+
+console.log detected — use the centralized logger instead.
+```
+
+**To add a custom rule (slash command — no file editing needed):**
+
+```
+/hookify Warn me when I write console.log in a TypeScript file
+/hookify Block force-push to main
+/hookify                    # scan conversation for behaviors to prevent
+```
+
+Or manage existing rules:
+
+```
+/hookify-list               # show all rules and their enabled/disabled status
+/hookify-configure          # interactive toggle — enable or disable rules
+```
+
+**Hookify never crashes Claude** — it always exits 0. If Python is unavailable, a rule file is malformed, or any error occurs, Claude continues normally and the error is shown as a `systemMessage`.
+
+**Rule fields reference:**
+
+| Field | Values | Required |
+|-------|--------|----------|
+| `name` | Any string | Yes |
+| `enabled` | `true` / `false` | Yes |
+| `event` | `bash`, `file`, `stop`, `prompt`, `all` | Yes |
+| `action` | `warn`, `block` | Yes |
+| `pattern` | Regex string (shorthand for single condition) | One of pattern or conditions |
+| `conditions` | List of `{field, operator, pattern}` | One of pattern or conditions |
 
 ### Blackbox — Session Decision Log
 
@@ -3004,6 +3057,15 @@ claude --resume <name>              # Resume named session
 /branch-cleanup --dry-run           # Preview stale/merged branches to delete
 /branch-cleanup                     # Interactive cleanup (confirm each deletion)
 /branch-cleanup --force             # Delete all merged branches without prompts
+```
+
+### Hookify — Custom Rules
+
+```
+/hookify <describe behavior>        # Create a rule from plain English description
+/hookify                            # Scan conversation for behaviors to prevent
+/hookify-list                       # Show all rules and enabled/disabled status
+/hookify-configure                  # Interactive toggle — enable or disable rules
 ```
 
 ### Agents (use @name)
