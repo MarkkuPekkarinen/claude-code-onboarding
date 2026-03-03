@@ -7,6 +7,7 @@ permissionMode: default
 memory: project
 skills:
   - flutter-mobile
+color: cyan
 ---
 
 # Accessibility Auditor

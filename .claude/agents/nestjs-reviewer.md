@@ -7,6 +7,7 @@ permissionMode: default
 memory: project
 skills:
   - nestjs-api
+color: blue
 ---
 
 # NestJS Code Reviewer

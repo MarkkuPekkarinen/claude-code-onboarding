@@ -7,6 +7,7 @@ permissionMode: default
 memory: project
 skills:
   - dedup-code-agent
+color: yellow
 ---
 
 # Dedup Code Agent

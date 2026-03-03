@@ -7,6 +7,7 @@ permissionMode: default
 memory: project
 skills:
   - agentic-ai-dev
+color: blue
 ---
 
 # Agentic AI Code Reviewer

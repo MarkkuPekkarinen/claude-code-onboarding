@@ -7,6 +7,7 @@ permissionMode: default
 memory: project
 skills:
   - code-reviewer
+color: blue
 ---
 
 # Code Reviewer

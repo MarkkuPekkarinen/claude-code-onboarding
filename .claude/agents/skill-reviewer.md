@@ -7,6 +7,7 @@ permissionMode: default
 memory: project
 skills:
   - writing-skills
+color: cyan
 ---
 
 # Skill Reviewer

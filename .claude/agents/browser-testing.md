@@ -7,6 +7,7 @@ permissionMode: default
 memory: project
 skills:
   - browser-testing
+color: yellow
 ---
 
 # Browser Testing Agent

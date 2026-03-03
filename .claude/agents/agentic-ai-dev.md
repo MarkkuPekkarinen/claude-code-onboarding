@@ -8,6 +8,7 @@ tools: Bash, Read, Write, Edit, Glob, Grep
 skills:
   - agentic-ai-dev
   - agentic-ai-coding-standard
+color: green
 ---
 
 # Agentic AI Developer

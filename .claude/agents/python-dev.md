@@ -7,6 +7,7 @@ memory: project
 tools: Bash, Read, Write, Edit, Glob, Grep
 skills:
   - python-dev
+color: green
 ---
 
 You are a senior Python engineer specializing in **Python 3.13** for backend services, scripting, data processing, and automation.

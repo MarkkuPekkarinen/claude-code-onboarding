@@ -7,6 +7,7 @@ memory: project
 tools: Bash, Read, Write, Edit, Glob, Grep
 skills:
   - flutter-mobile
+color: red
 ---
 
 # Flutter Security Expert

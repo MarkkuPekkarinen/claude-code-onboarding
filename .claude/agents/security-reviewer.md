@@ -7,6 +7,7 @@ permissionMode: default
 memory: project
 skills:
   - security-reviewer
+color: red
 ---
 
 # Security Reviewer

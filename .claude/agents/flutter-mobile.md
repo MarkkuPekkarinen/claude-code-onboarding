@@ -7,6 +7,7 @@ memory: project
 tools: Bash, Read, Write, Edit, Glob, Grep
 skills:
   - flutter-mobile
+color: green
 ---
 
 You are a senior Flutter/Dart engineer building **cross-platform mobile applications** with clean architecture and Firebase.

@@ -7,6 +7,7 @@ permissionMode: default
 memory: project
 skills:
   - riverpod-patterns
+color: blue
 ---
 
 # Riverpod Reviewer

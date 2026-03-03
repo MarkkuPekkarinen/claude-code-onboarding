@@ -7,6 +7,7 @@ memory: project
 tools: Bash, Read, Write, Edit, Glob, Grep, WebFetch, mcp__context7__resolve-library-id, mcp__context7__query-docs
 skills:
   - angular-spa
+color: green
 ---
 
 # Angular SPA Developer

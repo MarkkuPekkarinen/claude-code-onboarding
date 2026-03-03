@@ -7,6 +7,7 @@ permissionMode: acceptEdits
 memory: project
 skills:
   - ui-standards-tokens
+color: cyan
 ---
 
 # UI Standards Expert Agent

@@ -7,6 +7,7 @@ permissionMode: acceptEdits
 memory: project
 skills:
   - frontend-design
+color: magenta
 ---
 
 # Frontend Design Engineer

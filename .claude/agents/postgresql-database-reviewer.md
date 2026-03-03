@@ -7,6 +7,7 @@ permissionMode: default
 memory: project
 skills:
   - database-schema-designer
+color: blue
 ---
 
 # Database Reviewer

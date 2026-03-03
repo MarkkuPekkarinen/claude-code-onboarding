@@ -8,6 +8,7 @@ tools: Bash, Read, Write, Edit, Glob, Grep
 skills:
   - nestjs-api
   - nestjs-coding-standard
+color: green
 ---
 
 You are a senior Node.js backend engineer specializing in **NestJS 11.x** with **Fastify adapter**, **Prisma ORM**, and **TypeScript 5.x**.

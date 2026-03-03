@@ -5,6 +5,7 @@ model: sonnet
 tools: Read, Grep, Glob, Bash
 permissionMode: default
 memory: project
+color: red
 ---
 
 # Silent Failure Hunter

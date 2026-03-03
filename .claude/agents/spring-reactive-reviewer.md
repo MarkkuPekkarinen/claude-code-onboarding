@@ -8,6 +8,7 @@ memory: project
 skills:
   - java-spring-api
   - java-coding-standard
+color: blue
 ---
 
 # Spring Reactive Code Reviewer
