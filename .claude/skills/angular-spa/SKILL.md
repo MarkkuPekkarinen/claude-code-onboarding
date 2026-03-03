@@ -66,6 +66,33 @@ Detailed patterns are in `reference/`:
 - `animations.md` — Timing standards, keyframes, utility classes
 - `user-research.md` — Persona templates, journey mapping, usability testing, SUS survey
 
+## Anti-Patterns — What to Avoid
+
+### Architecture
+- **NEVER** create `NgModule` — Angular 21 is fully standalone; all components, pipes, and directives are standalone by default
+- **NEVER** call HTTP or business logic directly in a component — delegate to an injectable service
+
+### State & Change Detection
+- **NEVER** use `@Input()` / `@Output()` decorators for new code — use `input()`, `output()`, and `model()` signals (Angular 21 standard)
+- **NEVER** use `BehaviorSubject` for component state — use `signal()` and `computed()`
+- **NEVER** rely on default change detection (`ChangeDetectionStrategy.Default`) — always use `OnPush` with signals
+
+### Templates
+- **NEVER** use `*ngIf`, `*ngFor`, `*ngSwitch` structural directives — use `@if`, `@for`, `@switch` control flow (Angular 17+, standard in v21)
+- **NEVER** import `CommonModule` in standalone components — it is a compatibility shim; import nothing or use control flow syntax
+
+### Dependency Injection
+- **NEVER** inject services via constructor parameters — use the `inject()` function in Angular 21
+- **NEVER** import `HttpClientModule` — use `provideHttpClient()` in `app.config.ts` (functional API)
+
+### Subscriptions & Memory
+- **NEVER** subscribe manually without `takeUntilDestroyed(destroyRef)` — memory leaks in long-lived components
+- **NEVER** use `ngOnDestroy` to unsubscribe — use `DestroyRef` and `takeUntilDestroyed()` instead
+
+### DOM & Styling
+- **NEVER** use `document.getElementById` or direct DOM manipulation — use `viewChild()` signal or Angular CDK
+- **NEVER** use inline `style=""` attributes — use TailwindCSS utilities or SCSS
+
 ## Error Handling
 
 **Build failures (`NG0908`, `NullInjectorError`)**: Read `reference/angular-troubleshooting.md` for common errors and fixes.
