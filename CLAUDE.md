@@ -134,8 +134,6 @@ Continue from [specific next step]? Or review a previous task first?
 - **Never commit secrets** — use environment variables or `.env` files
 - **Always write tests** for new features
 - **Use the agents/skills** — see the mapping table above in Code Conventions
-- Run `/project-status` for codebase summary, `/review-code` for review, `/audit-security` for security audit
-- Run `/plan-review` for structured plan review with Phase 0 self-review and production readiness gates
 
 ## Self-Improvement Loop
 
