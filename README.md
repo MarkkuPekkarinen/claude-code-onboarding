@@ -2996,6 +2996,16 @@ claude --resume <name>              # Resume named session
 /status-check                       # Binary works/broken report
 ```
 
+### Git Housekeeping
+
+```
+/worktree-sync                      # Sync worktrees for all open PRs (parallel work)
+/worktree-sync --new <branch>       # New branch + isolated worktree in one step
+/branch-cleanup --dry-run           # Preview stale/merged branches to delete
+/branch-cleanup                     # Interactive cleanup (confirm each deletion)
+/branch-cleanup --force             # Delete all merged branches without prompts
+```
+
 ### Agents (use @name)
 
 ```
