@@ -1,6 +1,6 @@
 ---
 name: ui-standards-expert
-description: Agent specialized in UI excellence compliance including design tokens, theming, accessibility (WCAG AA), responsive layouts, and motion patterns.
+description: Agent specialized in UI excellence compliance including design tokens, theming, accessibility (WCAG AA), responsive layouts, and motion patterns. Examples:\n\n<example>\nContext: New Flutter dashboard widgets were built and need design system compliance review.\nUser: "Make sure the new dashboard widgets follow our design system."\nAssistant: "I'll use the ui-standards-expert agent to audit design token usage, Material 3 theming, accessibility, and responsive layout patterns. For full WCAG 2.1 validation use accessibility-auditor instead."\n</example>
 tools: Read, Write, Edit, Glob, Grep
 model: sonnet
 permissionMode: acceptEdits

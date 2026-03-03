@@ -1,6 +1,6 @@
 ---
 name: python-dev
-description: Expert Python 3.13 developer. Use for creating Python APIs (FastAPI/Flask), scripts, data processing, automation, testing, and package management.
+description: Expert Python 3.13 developer. Use for creating Python APIs (FastAPI/Flask), scripts, data processing, automation, testing, and package management. Examples:\n\n<example>\nContext: A new async endpoint is needed in the FastAPI service for PDF document processing.\nUser: "Build a FastAPI endpoint that extracts text from uploaded PDFs."\nAssistant: "I'll use the python-dev agent to implement the async endpoint with Pydantic validation, error handling, and pytest tests."\n</example>
 model: sonnet
 permissionMode: acceptEdits
 memory: project

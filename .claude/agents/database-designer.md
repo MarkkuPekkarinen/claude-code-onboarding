@@ -1,6 +1,6 @@
 ---
 name: database-designer
-description: Database architect for PostgreSQL and Firebase Firestore. Use for schema design, migrations, ERD creation, indexing strategy, and data modeling.
+description: Database architect for PostgreSQL and Firebase Firestore. Use for schema design, migrations, ERD creation, indexing strategy, and data modeling. Examples:\n\n<example>\nContext: A new invoicing module needs a complete database schema before implementation starts.\nUser: "Design the database schema for our invoicing and billing module."\nAssistant: "I'll use the database-designer agent to create the ERD, Flyway migrations, index strategy, and Firestore collection structure."\n</example>
 model: sonnet
 permissionMode: acceptEdits
 memory: project

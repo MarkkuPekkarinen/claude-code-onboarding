@@ -1,6 +1,6 @@
 ---
 name: security-reviewer
-description: Security vulnerability detection and remediation specialist. Flags secrets, SSRF, injection, unsafe crypto, and OWASP Top 10 vulnerabilities.
+description: Security vulnerability detection and remediation specialist. Flags secrets, SSRF, injection, unsafe crypto, and OWASP Top 10 vulnerabilities. Examples:\n\n<example>\nContext: New authentication endpoints and input handling code were just implemented.\nUser: "Check the new auth endpoints for security vulnerabilities."\nAssistant: "I'll use the security-reviewer agent to scan for injection, SSRF, unsafe crypto, hardcoded secrets, and OWASP Top 10 violations."\n</example>
 tools: Read, Bash, Grep, Glob
 model: opus
 permissionMode: default

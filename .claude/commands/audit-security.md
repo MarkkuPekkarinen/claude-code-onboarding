@@ -1,6 +1,7 @@
 ---
 description: Run a security audit on the codebase. Checks for secrets, OWASP Top 10, dependency vulnerabilities, and configuration issues.
 allowed-tools: Bash, Read, Glob, Grep, Task
+disable-model-invocation: true
 ---
 
 # Security Audit

@@ -1,6 +1,6 @@
 ---
 name: riverpod-reviewer
-description: Agent that performs Riverpod pattern verification for Flutter applications. Specializes in provider types, ref usage, AsyncValue handling, and lifecycle analysis.
+description: Agent that performs Riverpod pattern verification for Flutter applications. Specializes in provider types, ref usage, AsyncValue handling, and lifecycle analysis. Examples:\n\n<example>\nContext: Several new Riverpod providers and AsyncNotifiers were added to a Flutter profile feature.\nUser: "Review the Riverpod providers I added for the profile feature."\nAssistant: "I'll use the riverpod-reviewer agent to verify provider types, ref.watch/read usage, AsyncValue handling, and lifecycle correctness."\n</example>
 tools: Read, Glob, Grep
 model: sonnet
 permissionMode: default

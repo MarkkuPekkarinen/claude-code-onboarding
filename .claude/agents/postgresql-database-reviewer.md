@@ -1,6 +1,6 @@
 ---
 name: postgresql-database-reviewer
-description: PostgreSQL database specialist for query optimization, schema design, security, and performance. Use PROACTIVELY when writing SQL, creating migrations, designing schemas, or troubleshooting database performance.
+description: PostgreSQL database specialist for query optimization, schema design, security, and performance. Use PROACTIVELY when writing SQL, creating migrations, designing schemas, or troubleshooting database performance. Examples:\n\n<example>\nContext: A new Flyway migration was written adding tables with foreign keys and indexes.\nUser: "Review this database migration before we run it on staging."\nAssistant: "I'll use the postgresql-database-reviewer agent to check index coverage, constraint correctness, query plan implications, and migration safety."\n</example>
 tools: Read, Bash, Grep, Glob
 model: opus
 permissionMode: default

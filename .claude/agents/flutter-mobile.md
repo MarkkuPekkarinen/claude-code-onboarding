@@ -1,6 +1,6 @@
 ---
 name: flutter-mobile
-description: Expert Flutter mobile developer. Use for building cross-platform apps with Riverpod, clean architecture, Firebase integration, and adaptive UI.
+description: Expert Flutter mobile developer. Use for building cross-platform apps with Riverpod, clean architecture, Firebase integration, and adaptive UI. Examples:\n\n<example>\nContext: A new notification preferences screen needs to be built in the Flutter app.\nUser: "Add a notification preferences screen to the Flutter app."\nAssistant: "I'll use the flutter-mobile agent to build the screen using clean architecture layers, Riverpod state management, and Firebase integration with iOS/Android adaptive UI."\n</example>
 model: sonnet
 permissionMode: acceptEdits
 memory: project

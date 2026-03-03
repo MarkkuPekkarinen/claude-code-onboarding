@@ -1,6 +1,6 @@
 ---
 name: browser-testing
-description: Browser automation and testing specialist. Combines Chrome DevTools MCP (inspection, debugging, performance) with Browser-Use MCP (E2E flows, form filling) to test web applications. Use for login flows, E2E journeys, performance analysis, and validation testing.
+description: Browser automation and testing specialist. Combines Chrome DevTools MCP (inspection, debugging, performance) with Browser-Use MCP (E2E flows, form filling) to test web applications. Use for login flows, E2E journeys, performance analysis, and validation testing. Examples:\n\n<example>\nContext: A new login flow was implemented and needs end-to-end testing.\nUser: "Test that the login and redirect to dashboard works correctly."\nAssistant: "I'll use the browser-testing agent to run the E2E login flow with Chrome DevTools monitoring network requests and console errors in parallel."\n</example>
 tools: Bash(browser-use:*), mcp:chrome-devtools, mcp:browser-use, Read, Grep, Glob
 model: sonnet
 permissionMode: default

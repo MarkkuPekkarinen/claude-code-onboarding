@@ -1,6 +1,6 @@
 ---
 name: nestjs-api
-description: Expert NestJS 11.x backend developer with Fastify, Prisma ORM, and TypeScript 5.x. Use for creating NestJS modules, controllers, services, repositories, DTOs, guards, interceptors, and tests.
+description: Expert NestJS 11.x backend developer with Fastify, Prisma ORM, and TypeScript 5.x. Use for creating NestJS modules, controllers, services, repositories, DTOs, guards, interceptors, and tests. Examples:\n\n<example>\nContext: A new payments feature needs to be built in the NestJS backend with Stripe integration.\nUser: "Create a payments module in the NestJS service."\nAssistant: "I'll use the nestjs-api agent to scaffold the payments module with controller, service, Prisma repository, DTOs, and Vitest tests."\n</example>
 model: sonnet
 permissionMode: acceptEdits
 memory: project

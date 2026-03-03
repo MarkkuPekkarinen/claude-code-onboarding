@@ -1,6 +1,6 @@
 ---
 name: dedup-code-agent
-description: Detects code duplication, unused code, and dependency bloat. Specializes in technical debt identification and cleanup in Flutter + Firebase codebases.
+description: Detects code duplication, unused code, and dependency bloat. Specializes in technical debt identification and cleanup in Flutter + Firebase codebases. Examples:\n\n<example>\nContext: The codebase has grown and the team suspects duplicated utility functions across modules.\nUser: "I think we have a lot of duplicated helper code across the Flutter app."\nAssistant: "I'll use the dedup-code-agent to scan for duplicate code blocks, unused exports, dead code, and dependency bloat across the codebase."\n</example>
 tools: Read, Glob, Grep, Bash
 model: sonnet
 permissionMode: default

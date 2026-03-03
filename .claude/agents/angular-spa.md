@@ -1,6 +1,6 @@
 ---
 name: angular-spa
-description: Expert Angular frontend developer. Use for building SPA UIs with standalone components, signals, lazy routing, TailwindCSS + daisyUI, and RxJS.
+description: Expert Angular frontend developer. Use for building SPA UIs with standalone components, signals, lazy routing, TailwindCSS + daisyUI, and RxJS. Examples:\n\n<example>\nContext: A new user profile page needs to be added to an Angular 21.x SPA.\nUser: "Add a user profile page to the Angular app."\nAssistant: "I'll use the angular-spa agent to build the standalone component with signals-based state, lazy routing, and daisyUI styling."\n</example>
 model: sonnet
 permissionMode: acceptEdits
 memory: project

@@ -1,6 +1,7 @@
 ---
 description: Review code for quality, security, and maintainability. Delegates to the appropriate reviewer agent based on the tech stack detected.
 allowed-tools: Bash, Read, Glob, Grep, Task
+disable-model-invocation: true
 ---
 
 # Code Review

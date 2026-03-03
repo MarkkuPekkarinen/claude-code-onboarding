@@ -1,6 +1,6 @@
 ---
 name: frontend-design
-description: Creative frontend design specialist. Builds visually striking, production-grade UIs -- landing pages, dashboards, components -- that avoid generic AI aesthetics.
+description: Creative frontend design specialist. Builds visually striking, production-grade UIs -- landing pages, dashboards, components -- that avoid generic AI aesthetics. Examples:\n\n<example>\nContext: A new marketing landing page needs to be designed with a distinctive visual identity.\nUser: "Design a landing page for our developer tool product."\nAssistant: "I'll use the frontend-design agent to commit to a bold aesthetic direction and build a production-grade landing page that avoids generic AI aesthetics like Inter font and purple gradients."\n</example>
 tools: Bash, Read, Write, Edit, Glob, Grep, WebFetch
 model: sonnet
 permissionMode: acceptEdits
