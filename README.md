@@ -1304,16 +1304,61 @@ Already configured in this repo. The entry:
 
 [Maestro](https://github.com/mobile-dev-inc/maestro) is a cross-platform mobile E2E testing framework with an MCP server. Claude generates and runs test flows from natural language — no YAML writing required. **Completely free for local use** (Apache 2.0, no API key needed).
 
-#### Install
+#### Prerequisites
+
+| Requirement | Why | Install |
+|-------------|-----|---------|
+| **Xcode** (16+) | iOS Simulator + build tools | [Mac App Store](https://apps.apple.com/us/app/xcode/id497799835) — then run `xcode-select --install` for CLI tools |
+| **Android Studio** | Android Emulator + SDK | [developer.android.com/studio](https://developer.android.com/studio) — then create an emulator via AVD Manager |
+| **Java 21** | Maestro runtime | `brew install openjdk@21` (see below) |
+
+> **Note:** You only need Xcode for iOS testing and Android Studio for Android testing. Install whichever platforms you target — or both for full cross-platform E2E.
+
+**Step 1: Install Java 21**
 
 ```bash
-# Install Maestro CLI (requires Java 17+)
-curl -fsSL "https://get.maestro.mobile.dev" | bash
-
-# Verify
-maestro --version
-java -version   # Must be 17+
+brew install openjdk@21
 ```
+
+After Homebrew finishes, create the system symlink so macOS can find it:
+
+```bash
+sudo ln -sfn /opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk /Library/Java/JavaVirtualMachines/openjdk-21.jdk
+```
+
+**Step 2: Set PATH in your shell**
+
+Add these lines to `~/.zshrc` (default macOS shell) or `~/.bashrc`:
+
+```bash
+# Java 21
+export JAVA_HOME="/opt/homebrew/opt/openjdk@21"
+export PATH="$JAVA_HOME/bin:$PATH"
+
+# Maestro
+export PATH="$PATH:$HOME/.maestro/bin"
+```
+
+Reload your shell:
+
+```bash
+source ~/.zshrc   # or source ~/.bashrc
+```
+
+**Step 3: Install Maestro CLI**
+
+```bash
+curl -fsSL "https://get.maestro.mobile.dev" | bash
+```
+
+**Step 4: Verify both**
+
+```bash
+java -version      # Should show: openjdk 21.x.x
+maestro --version  # Should show: Maestro [version number]
+```
+
+> **Troubleshooting:** If `maestro --version` shows "Unable to locate a Java Runtime", the symlink step was missed — run the `sudo ln` command from Step 1. If `java -version` shows nothing, run `source ~/.zshrc` or open a new terminal.
 
 #### How It Works
 
