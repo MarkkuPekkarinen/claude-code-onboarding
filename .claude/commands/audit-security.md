@@ -26,7 +26,18 @@ Run a comprehensive security audit on the codebase.
    - Run `npm audit` for Node.js projects
    - Run `pip audit` for Python projects
    - Flag known CVEs in `pom.xml` dependencies
-5. **Report findings**:
+5. **Dependency vulnerability scan** (deep scan):
+
+   Run the dependency scanner for a comprehensive CVE analysis with priority scoring:
+
+   ```
+   /security-dependencies $ARGUMENTS
+   ```
+
+   Include the top 5 highest-priority CVEs (by priority score) in the final report.
+   Flag any CVSS 9+ findings as blocking -- do not approve the release until resolved.
+
+6. **Report findings**:
 
 ```
 ## Security Audit: [scope]

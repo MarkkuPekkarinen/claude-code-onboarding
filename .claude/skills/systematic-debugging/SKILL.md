@@ -152,6 +152,40 @@ You MUST complete each phase before proceeding to the next.
    - Write it down
    - Be specific, not vague
 
+### Hypothesis Ranking
+
+For each hypothesis, score and document:
+
+| Hypothesis | Probability | Evidence | Falsification | Test Approach |
+|------------|-------------|----------|---------------|---------------|
+| H1: DB pool exhausted | 85% | Timeout errors every 30s | Check active connections < max | `SHOW PROCESSLIST` or pool metrics |
+| H2: Network latency | 30% | Intermittent not consistent | Ping DB host | `curl` timing, traceroute |
+
+**Scoring guide:**
+- 80-100%: Strong evidence, consistent with all symptoms → test first
+- 50-79%: Partial evidence, explains some symptoms → test second
+- <50%: Weak evidence, speculative → test only if higher-ranked fail
+
+Always state: "Highest-probability hypothesis is H1 (85%) because [evidence]."
+
+### Five Whys Drill-Down
+
+Use when root cause is unclear after initial hypothesis. Ask "Why?" 5 times:
+
+**Example:**
+```
+Error: Database connection timeout after 30s
+Why? The database connection pool was exhausted
+Why? All connections were held by long-running queries
+Why? A new feature introduced N+1 query patterns
+Why? The ORM lazy-loading wasn't properly configured
+Why? Code review didn't catch the performance regression
+Root cause: Missing performance review criteria in PR checklist
+```
+
+Stop when you reach: a process failure, a human decision, or an external constraint.
+The answer to the 5th "Why?" is your fix target.
+
 2. **Test Minimally**
    - Make the SMALLEST possible change to test hypothesis
    - One variable at a time
