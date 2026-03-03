@@ -81,13 +81,27 @@ For MongoDB, Firestore, and other document databases, read `reference/nosql-desi
 
 ## Anti-Patterns
 
+### PostgreSQL Type Forbidden List
+
+NEVER use these types — they have silent, hard-to-debug failure modes:
+
+| Forbidden type | Problem | Use instead |
+|----------------|---------|-------------|
+| `timestamp` (no tz) | Stores local time, breaks across timezones | `timestamptz` |
+| `timetz` | Doesn't handle DST — reports wrong time after clock changes | `timestamptz` |
+| `char(n)` / `varchar(n)` | `char` pads with spaces, silently breaks equality checks | `text` |
+| `money` | Locale-dependent formatting, rounding errors across servers | `numeric` |
+| `serial` | Sequence ownership breaks on pg_dump/restore | `generated always as identity` |
+| `float` for money | Binary floating-point rounding errors | `numeric(10,2)` |
+
+### Schema Anti-Patterns
+
 | Avoid | Why | Instead |
 |-------|-----|---------|
 | VARCHAR(255) everywhere | Wastes storage, hides intent | Size appropriately per field |
-| FLOAT for money | Rounding errors | DECIMAL(10,2) |
 | Missing FK constraints | Orphaned data | Always define foreign keys |
 | No indexes on FKs | Slow JOINs | Index every foreign key |
-| Storing dates as strings | Cannot compare/sort | DATE, TIMESTAMP types |
+| Storing dates as strings | Cannot compare/sort | DATE, TIMESTAMPTZ types |
 | Non-reversible migrations | Cannot rollback | Always write DOWN migration |
 
 ## Verification

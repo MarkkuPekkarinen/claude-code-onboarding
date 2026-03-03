@@ -59,7 +59,7 @@
 - Missing indexes on foreign keys
 - OFFSET pagination on large tables
 - N+1 query patterns
-- `int` IDs, `varchar(255)`, `timestamp` without timezone, `float` for money
+- `int` IDs, `varchar(255)`, `timestamp` (no tz), `timetz`, `char(n)`, `money`, `serial`, `float` for money
 - `GRANT ALL` to application users
 - RLS policies with bare `auth.uid()` (not wrapped in SELECT)
 - Locks held during external calls
