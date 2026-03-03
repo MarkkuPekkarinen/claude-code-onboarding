@@ -72,6 +72,7 @@ If `$ARGUMENTS` contains one of these words, run only that role:
 Status: READY FOR PR / NEEDS FIXES (N critical issues)
 ```
 
+> For quantitative risk scoring (size, complexity, test coverage, dependencies, security) before this review: run `/pr-risk`.
 > For two-stage PR review (internal analysis -> human approval -> posting to GitHub): load the `pr-review` skill.
 
 $ARGUMENTS

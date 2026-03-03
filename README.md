@@ -2066,6 +2066,25 @@ Slash commands trigger multi-agent reviews; hooks catch what slips through.
 | Every command | `pre-bash-guard.sh` hook | Destructive operations |
 | Session end | `stop-secret-scan.sh` hook | Leaked secrets in git diff |
 
+#### Before Opening a PR — Two Commands, Always in This Order
+
+These are **manual** — run them yourself before pushing.
+
+```
+/pr-risk [main..HEAD]   # 1st — quantitative risk score across 5 dimensions
+/review-pr              # 2nd — 6-role qualitative review by specialist agents
+```
+
+**`/pr-risk`** runs git commands and scores the diff across: size, complexity, test coverage, dependency changes, and security-sensitive files. Output is a scored table (0–10 per factor) plus a risk level:
+
+- 🟢 **Low** — open the PR
+- 🟡 **Medium** — fix the flagged drivers first, then open
+- 🟠 **High** / 🔴 **Critical** — split the PR or get a second reviewer before touching GitHub
+
+**`/review-pr`** dispatches 6 specialist agents in parallel: comment accuracy, test coverage gaps, silent failures, type design, code quality, and unnecessary complexity. Findings are aggregated by severity — CRITICAL / IMPORTANT / SUGGESTIONS.
+
+Run `/pr-risk` first. If the score is High or Critical, fix the structural issues before spending 6 agents on a review that will change anyway.
+
 ### Phase 5: Evolve Your Setup
 
 Over time, customize everything based on what you learn.
