@@ -1,6 +1,7 @@
 ---
 name: receiving-code-review
 description: Use when receiving code review feedback — before implementing any suggestion, especially if feedback is unclear, conflicts with prior decisions, or seems technically questionable. Requires verification and technical rigor, not performative agreement or blind implementation.
+allowed-tools: Read, Grep, Glob
 ---
 
 # Receiving Code Review
