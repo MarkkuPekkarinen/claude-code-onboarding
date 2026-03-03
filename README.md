@@ -2202,6 +2202,31 @@ This repo includes 4 hooks that enforce security automatically:
 
 These hooks are **defense-in-depth** — they catch mistakes but aren't a substitute for proper secret management. Always use a secrets manager (AWS Secrets Manager, HashiCorp Vault, 1Password CLI) for production credentials.
 
+### Security Superpowers — AI-Assisted Security Tooling
+
+Beyond the passive guardrails above, this kit ships dedicated security commands, a threat-modeling agent, and SAST skills — adapted from `claude-skill-samples/security/` and tailored to the onboarding stack (Java/Spring, NestJS, Python, Angular, Flutter):
+
+| Tool | Invoke | What It Does |
+|------|--------|--------------|
+| `/security-hardening [scope]` | Command | Full-stack orchestration: SAST → threat model → architecture review → fix → hardening → validation |
+| `/security-sast [path]` | Command | SAST across all stack languages (Bandit, Semgrep, ESLint Security, SpotBugs, dart analyze). Risk score 0–100. |
+| `/security-dependencies [path]` | Command | CVE scan across npm / pip / Maven / pub.dev. Priority score per CVE. CycloneDX SBOM output. |
+| `/xss-scan [path]` | Command | Angular-specific XSS: `bypassSecurityTrust*`, `[innerHTML]`, `ElementRef.nativeElement`. Fix patterns included. |
+| `/audit-security [scope]` | Command | Full audit — now includes dependency scan as Step 5. |
+| `@threat-modeling-expert` | Agent | STRIDE analysis, DFD review, attack trees, risk scoring. Call before designing any new service. |
+| `threat-modeling` skill | Skill | Lazy-loaded STRIDE methodology + control library. Auto-loads references on demand. |
+| `sast-configuration` skill | Skill | Lazy-loaded SAST tool config, Semgrep rules, CI/CD integration. |
+
+**Typical security workflow:**
+
+| Phase | Action |
+|-------|--------|
+| Before design | `@threat-modeling-expert` — STRIDE the new feature |
+| After coding | `/security-sast src/` — catch code-level vulns |
+| After coding | `/security-dependencies .` — catch CVEs in packages |
+| Before release | `/audit-security` — full audit (includes dep scan) |
+| Failing audit | `/security-hardening` — orchestrated remediation |
+
 ### Checklist Before Using Claude Code on a Real Project
 
 - [ ] No real secrets in `.mcp.json` — all use `${ENV_VAR}` references
@@ -3047,6 +3072,17 @@ claude --resume <name>              # Resume named session
 /audit-security [scope]             # Security vulnerability scan
 /project-status                     # Codebase summary
 /status-check                       # Binary works/broken report
+```
+
+### Security
+
+```
+/security-hardening [scope]         # Full-stack orchestrated hardening (10-step pipeline)
+/security-sast [path]               # SAST — Bandit + Semgrep + ESLint + SpotBugs + dart analyze
+/security-dependencies [path]       # CVE scan — npm / pip / Maven / pub.dev + SBOM
+/xss-scan [path]                    # Angular XSS scan — bypassSecurityTrust*, innerHTML
+/audit-security [scope]             # Full security audit (includes dep scan)
+@threat-modeling-expert             # STRIDE threat model before any new design
 ```
 
 ### Git Housekeeping
