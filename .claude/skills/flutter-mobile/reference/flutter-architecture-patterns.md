@@ -202,3 +202,124 @@ Extract to a `StatefulWidget` with `dispose()` — never create controllers insi
 If a `Notifier<T>` has async methods, errors must be surfaced:
 - Option A: Convert to `AsyncNotifier<T?>` — state machine includes loading/error
 - Option B: Keep sync, catch errors in every method, store in separate error field, emit SnackBar via `ref.listen`
+
+### BuildContext Usage After Async Gap
+
+WRONG — widget may have been disposed during the await; context is stale:
+```dart
+Future<void> _submit() async {
+  await ref.read(authProvider.notifier).signIn(email, password);
+  // Widget may be gone by now — context is invalid
+  Navigator.of(context).pushReplacementNamed('/home');
+}
+```
+
+CORRECT — check mounted before any context access after an await:
+```dart
+Future<void> _submit() async {
+  await ref.read(authProvider.notifier).signIn(email, password);
+  if (!mounted) return; // Guard: widget was disposed during await
+  Navigator.of(context).pushReplacementNamed('/home');
+}
+```
+
+Rule: every `await` that is followed by a `context` usage (Navigator, ScaffoldMessenger,
+Theme, etc.) MUST be preceded by `if (!mounted) return;`.
+
+### StreamBuilder Firestore Write Loop
+
+WRONG — writing to Firestore inside a StreamBuilder builder creates an infinite loop:
+```dart
+StreamBuilder<QuerySnapshot>(
+  stream: _firestore.collection('items').snapshots(),
+  builder: (context, snapshot) {
+    if (snapshot.hasData) {
+      // Each write → Firestore emits new snapshot → builder reruns → write again
+      _firestore.collection('log').add({'event': 'viewed'});
+      return ItemList(snapshot.data!.docs);
+    }
+    return const CircularProgressIndicator();
+  },
+)
+```
+
+CORRECT — perform side effects and writes in a StreamSubscription, not the builder:
+```dart
+class _ItemScreenState extends ConsumerState<ItemScreen> {
+  StreamSubscription<QuerySnapshot>? _sub;
+
+  @override
+  void initState() {
+    super.initState();
+    _sub = FirebaseFirestore.instance
+        .collection('items')
+        .snapshots()
+        .listen((snapshot) {
+      // Side effects and writes belong here — runs once per snapshot, not in build
+      FirebaseFirestore.instance.collection('log').add({'event': 'viewed'});
+      ref.read(itemsProvider.notifier).updateFromSnapshot(snapshot);
+    });
+  }
+
+  @override
+  void dispose() {
+    _sub?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Builder is pure — no writes, no side effects
+    final items = ref.watch(itemsProvider);
+    return ItemList(items);
+  }
+}
+```
+
+### StreamBuilder Expensive Computation on Every Rebuild
+
+WRONG — heavy computation runs on every Firestore snapshot, blocking the UI thread:
+```dart
+StreamBuilder<QuerySnapshot>(
+  stream: _firestore.collection('items').snapshots(),
+  builder: (context, snapshot) {
+    if (!snapshot.hasData) return const CircularProgressIndicator();
+    // Runs synchronously on the UI thread for every snapshot
+    final sorted = snapshot.data!.docs
+        .map((d) => ItemModel.fromFirestore(d))
+        .where((i) => i.isActive)
+        .toList()
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    return ItemList(sorted);
+  },
+)
+```
+
+CORRECT — move data transformation into a Riverpod provider so it is computed once
+per snapshot and widgets use select() to avoid unnecessary rebuilds:
+```dart
+@riverpod
+Stream<List<ItemModel>> activeItems(Ref ref) {
+  return FirebaseFirestore.instance
+      .collection('items')
+      .snapshots()
+      .map((snapshot) => snapshot.docs
+          .map((d) => ItemModel.fromFirestore(d))
+          .where((i) => i.isActive)
+          .toList()
+        ..sort((a, b) => b.createdAt.compareTo(a.createdAt)));
+}
+
+// Widget is now pure and efficient
+class ItemScreen extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final itemsAsync = ref.watch(activeItemsProvider);
+    return itemsAsync.when(
+      data: (items) => ItemList(items),
+      loading: () => const CircularProgressIndicator(),
+      error: (e, _) => ErrorDisplay(error: e),
+    );
+  }
+}
+```

@@ -106,4 +106,39 @@ todosAsync.when(
   loading: () => const CircularProgressIndicator(),
   error: (e, s) => ErrorDisplay(error: e),
 );
+
+// BAD: Reading a provider inside initState() of a regular StatefulWidget
+// ref does not exist in StatefulWidget — this will not compile
+class _MyScreenState extends State<MyScreen> {
+  @override
+  void initState() {
+    super.initState();
+    final value = ref.read(someProvider); // COMPILE ERROR: ref undefined
+  }
+}
+
+// GOOD: Use ConsumerStatefulWidget + ConsumerState to access ref in initState
+// Only ref.read() is allowed in initState — ref.watch() requires the build phase
+class MyScreen extends ConsumerStatefulWidget {
+  const MyScreen({super.key});
+  @override
+  ConsumerState<MyScreen> createState() => _MyScreenState();
+}
+
+class _MyScreenState extends ConsumerState<MyScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // ref.read() is safe here — one-time access, no subscription
+    final initialValue = ref.read(someProvider);
+    // ref.watch() is FORBIDDEN here — subscriptions require the build phase
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // ref.watch() is correct here for reactive rebuilds
+    final value = ref.watch(someProvider);
+    return Text(value.toString());
+  }
+}
 ```
