@@ -49,6 +49,7 @@ Skip any step = lying, not verifying
 | Regression test works | Red-green cycle verified | Test passes once |
 | Agent completed | VCS diff shows changes | Agent reports "success" |
 | Requirements met | Line-by-line checklist | Tests passing |
+| PR task complete | GitHub Actions CI green + deployment workflow succeeded | PR merged |
 
 ## Red Flags — STOP
 
@@ -105,6 +106,32 @@ Skip any step = lying, not verifying
 ✅ Agent reports success → Check VCS diff → Verify changes → Report actual state
 ❌ Trust agent report
 ```
+
+**Post-merge deployment (GitHub Actions via `github` MCP):**
+```
+✅ PR merged → Check Actions run → CI green + deploy workflow succeeded → Task complete
+❌ "PR merged" (deployment may have failed silently)
+```
+
+## Post-Merge Verification
+
+When a task involves a PR that has been merged, "done" means the deployment succeeded — not just that the code was merged. Use the `github` MCP (already configured) to check:
+
+```
+1. gh run list --branch main --limit 5          # list recent workflow runs
+2. gh run view <run-id>                         # inspect CI + deploy workflow
+3. All jobs: ✅ green → task is complete
+   Any job: ❌ failed → task is NOT complete — investigate and fix
+```
+
+This costs nothing — the `github` MCP is already in `.mcp.json`. The agent can check deployment status directly without leaving the session.
+
+**Trigger:** Apply this check whenever:
+- A PR was merged as part of the task
+- The task description included deployment or release
+- The human says "it's merged" or "it's deployed"
+
+**Do NOT skip this step** by assuming merge = success. CI can pass locally and fail in the pipeline (environment variables, container build, migration runner).
 
 ## Why This Matters
 
