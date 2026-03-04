@@ -45,6 +45,8 @@ For output format examples (App Store, Keep a Changelog, internal/technical, Sla
 
 Suggest to the user: add a `pre-release` hook or CI step that runs this skill automatically when tagging a new version. Pair with the `/changelog` command for quick manual runs.
 
+For tool configuration (`cliff.toml`, `release.config.js`, GitHub Actions release workflow) -> Read [reference/changelog-automation-tools.md](reference/changelog-automation-tools.md)
+
 ## Error Handling
 
 **No conventional commits found**: Verify commit messages follow `type:` prefix format. Fall back to manual changelog if history is inconsistent.
