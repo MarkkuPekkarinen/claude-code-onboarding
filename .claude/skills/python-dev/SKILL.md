@@ -96,3 +96,16 @@ try:
 except IntegrityError:
     raise HTTPException(status_code=409, detail="Email already exists")
 ```
+
+## Common Commands
+
+```bash
+uvicorn src.main:app --reload                          # Run dev server (hot reload)
+pytest -q                                              # Run tests (quiet output)
+pytest -q --cov=src --cov-report=term-missing          # Tests with coverage
+ruff check --fix .                                     # Lint and auto-fix
+ruff format .                                          # Format code
+mypy src/                                              # Type check
+alembic upgrade head                                   # Run pending migrations
+alembic revision --autogenerate -m "description"       # Generate new migration
+```

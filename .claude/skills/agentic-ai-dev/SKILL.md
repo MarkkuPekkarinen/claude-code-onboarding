@@ -85,6 +85,17 @@ Before generating code, consult these sources for current syntax and APIs:
 | `agentic-error-handling.md` | Agent, tool, LLM provider, and API error handling patterns | Error handling in agents |
 | `agentic-review-checklist.md` | Agentic AI review checklist (used by `agentic-ai-reviewer` agent) | Code reviews |
 
+## Common Commands
+
+```bash
+uvicorn src.main:app --reload                          # Run dev server (hot reload)
+pytest -q                                              # Run tests (quiet output)
+pytest -q --cov=src --cov-report=term-missing          # Tests with coverage
+ruff check --fix .                                     # Lint and auto-fix
+ruff format .                                          # Format code
+mypy src/                                              # Type check
+```
+
 ## Error Handling
 
 > For error handling patterns and code examples, read `reference/agentic-error-handling.md`

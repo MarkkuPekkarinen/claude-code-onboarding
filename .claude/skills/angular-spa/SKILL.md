@@ -100,3 +100,15 @@ Detailed patterns are in `reference/`:
 **TailwindCSS not applied**: Verify `.postcssrc.json` exists (not `postcss.config.js`) and global styles use `.css` (not `.scss`).
 
 **Blank screen on load**: Check browser console for lazy-loading errors. Verify route paths and `loadComponent` imports.
+
+## Common Commands
+
+```bash
+ng serve                          # Dev server (http://localhost:4200)
+ng test --watch=false             # Run unit tests once (no watch)
+ng test                           # Run unit tests in watch mode
+ng build                          # Production build
+ng lint                           # ESLint check
+ng generate component features/my-feature/my-component --standalone   # Scaffold component
+ng generate service features/my-feature/my-service                    # Scaffold service
+```

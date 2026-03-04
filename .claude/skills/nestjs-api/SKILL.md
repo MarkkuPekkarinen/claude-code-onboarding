@@ -81,6 +81,21 @@ npx @nestjs/cli new my-service --package-manager npm --strict
 | `reference/nestjs-debugging-production.md` | Production debugging, structured logging, tracing |
 | `reference/nestjs-review-checklist.md` | NestJS review checklist (used by `nestjs-reviewer` agent) |
 
+## Common Commands
+
+```bash
+npm run start:dev                           # Run in dev mode (watch)
+npm test                                    # Run unit tests (Vitest)
+npm run test:e2e                            # Run integration/E2E tests
+npm run test:cov                            # Run tests with coverage report
+npm run lint                                # ESLint check
+npm run typecheck                           # TypeScript type-check only
+npm run build                               # Compile TypeScript
+npx prisma migrate dev --name <migration>   # Create and run migration
+npx prisma generate                         # Regenerate Prisma client after schema change
+npx prisma studio                           # Open Prisma Studio GUI
+```
+
 ## Documentation Sources
 
 Before generating code, consult these sources for current syntax and APIs:

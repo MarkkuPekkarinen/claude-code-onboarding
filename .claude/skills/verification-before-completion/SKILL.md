@@ -133,6 +133,23 @@ This costs nothing — the `github` MCP is already in `.mcp.json`. The agent can
 
 **Do NOT skip this step** by assuming merge = success. CI can pass locally and fail in the pipeline (environment variables, container build, migration runner).
 
+## Test Command by Stack
+
+When about to claim tests pass, first confirm you're running the right command. Pick by what files are in the changed set:
+
+| Project marker / changed files | Test command |
+|--------------------------------|--------------|
+| `pom.xml` or `*.java` | `mvn test -q` |
+| `nest-cli.json` or `*.ts` with NestJS imports | `npm test` |
+| `pyproject.toml` or `*.py` (FastAPI / plain Python) | `pytest -q` |
+| `pubspec.yaml` or `*.dart` | `flutter test` |
+| `angular.json` or `*.ts` with Angular imports | `ng test --watch=false` |
+| `pyproject.toml` + LangGraph/LangChain imports | `pytest -q` |
+
+**If multiple markers match** (e.g., a monorepo with Java + TypeScript), run the test command for each changed service separately.
+
+**Never run the wrong stack's test command** — `npm test` in a Python project exits 0 with no output, giving false confidence.
+
 ## Why This Matters
 
 Verification failures lead to:
