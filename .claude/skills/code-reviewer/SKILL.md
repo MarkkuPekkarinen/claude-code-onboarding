@@ -4,6 +4,13 @@ description: General-purpose code review skill. Provides checklists for security
 allowed-tools: Read, Grep, Glob, Bash
 agent: code-reviewer
 context: fork
+metadata:
+  triggers: code review, review code, PR review, pull request review, code quality, code audit, review this code
+  related-skills: security-reviewer, dedup-code-agent, test-driven-development
+  domain: quality
+  role: specialist
+  scope: review
+  output-format: report
 ---
 
 # Code Reviewer
@@ -25,9 +32,9 @@ General-purpose code review skill covering security, quality, performance, and b
 
 ## Reference Files
 
-| File | Contents |
-|------|----------|
-| `reference/code-review-checklist.md` | Security checks, code quality, performance, best practices, output format |
+| File | Contents | Load When |
+|------|----------|-----------|
+| `reference/code-review-checklist.md` | Security checks, code quality, performance, best practices, output format | Reviewing any code change, pre-PR checklist, security audit |
 
 ## Error Handling
 

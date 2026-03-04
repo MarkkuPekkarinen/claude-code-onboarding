@@ -2,6 +2,13 @@
 name: systematic-debugging
 description: Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes
 allowed-tools: Read, Grep, Glob, Bash
+metadata:
+  triggers: debug, error, bug, exception, stack trace, troubleshoot, root cause, not working, crash, investigate issue
+  related-skills: test-driven-development, verification-before-completion, code-reviewer
+  domain: quality
+  role: specialist
+  scope: analysis
+  output-format: analysis
 ---
 
 # Systematic Debugging

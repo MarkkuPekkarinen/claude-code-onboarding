@@ -2,6 +2,13 @@
 name: java-spring-api
 description: This skill provides patterns and templates for Java 21 Spring Boot 3.5.x WebFlux REST API development. It should be activated when creating controllers, services, repositories, DTOs, or reactive tests.
 allowed-tools: Bash, Read, Write, Edit
+metadata:
+  triggers: Java, Spring Boot, Spring WebFlux, REST API Java, reactive Java, WebFlux, R2DBC, Mono, Flux
+  related-skills: java-coding-standard, openapi-spec-generation, database-schema-designer
+  domain: backend
+  role: specialist
+  scope: implementation
+  output-format: code
 ---
 
 # Java 21 + Spring Boot 3.5.x WebFlux REST API Skill
@@ -50,19 +57,19 @@ curl https://start.spring.io/starter.zip \
 
 ## Reference Files
 
-| File | Content |
-|------|---------|
-| `reference/spring-boot-config.md` | pom.xml template, application.yml configuration |
-| `reference/spring-boot-templates.md` | DTO, Entity, Repository, Service, Controller, Test, Error Handler templates |
-| `reference/spring-boot-enterprise-errors-security.md` | Exception hierarchy, Security (OAuth2/JWT), CORS |
-| `reference/spring-boot-enterprise-resilience-health.md` | Resilience4j, WebClient pool, Health indicators, Swagger |
-| `reference/spring-boot-rest-service-guide.md` | OpenAPI+DDL driven workflow, MapStruct mapping, External service clients, WireMock testing |
-| `reference/spring-boot-testing-unit.md` | BlockHound, Resilience4j testing, test data builders |
-| `reference/spring-boot-testing-integration.md` | Testcontainers, contract testing, WireMock, coverage |
-| `reference/spring-boot-reactive-debugging.md` | Reactor Hooks (onOperatorError, onNextDropped, onErrorDropped), checkpoint patterns, debug mode control |
-| `reference/spring-boot-security-hardening.md` | OWASP dependency scanning, static analysis patterns, HSTS, JWT role extraction, secure logging |
-| `reference/spring-boot-reactive-patterns.md` | Resilience4j operators, Redis reactive, SSE, Spring Cloud Stream, custom operators, threading anti-patterns |
-| `reference/spring-reactive-review-checklist.md` | Spring reactive review checklist (used by `spring-reactive-reviewer` agent) |
+| File | Content | Load When |
+|------|---------|-----------|
+| `reference/spring-boot-config.md` | pom.xml template, application.yml configuration | Project setup, configuring dependencies |
+| `reference/spring-boot-templates.md` | DTO, Entity, Repository, Service, Controller, Test, Error Handler templates | Creating DTOs, services, controllers, entities |
+| `reference/spring-boot-enterprise-errors-security.md` | Exception hierarchy, Security (OAuth2/JWT), CORS | Implementing error handling, adding security, configuring CORS |
+| `reference/spring-boot-enterprise-resilience-health.md` | Resilience4j, WebClient pool, Health indicators, Swagger | Adding resilience, health checks, API documentation |
+| `reference/spring-boot-rest-service-guide.md` | OpenAPI+DDL driven workflow, MapStruct mapping, External service clients, WireMock testing | Designing REST APIs, mapping DTOs, calling external services |
+| `reference/spring-boot-testing-unit.md` | BlockHound, Resilience4j testing, test data builders | Writing unit tests, testing reactive streams |
+| `reference/spring-boot-testing-integration.md` | Testcontainers, contract testing, WireMock, coverage | Writing integration tests, controller tests |
+| `reference/spring-boot-reactive-debugging.md` | Reactor Hooks (onOperatorError, onNextDropped, onErrorDropped), checkpoint patterns, debug mode control | Debugging reactive pipelines, tracing Flux/Mono errors |
+| `reference/spring-boot-security-hardening.md` | OWASP dependency scanning, static analysis patterns, HSTS, JWT role extraction, secure logging | Security hardening, JWT auth, dependency scanning |
+| `reference/spring-boot-reactive-patterns.md` | Resilience4j operators, Redis reactive, SSE, Spring Cloud Stream, custom operators, threading anti-patterns | Writing reactive endpoints, Flux/Mono, Redis caching, SSE |
+| `reference/spring-reactive-review-checklist.md` | Spring reactive review checklist (used by `spring-reactive-reviewer` agent) | Code review, pre-PR checklist |
 
 ## Documentation Sources
 

@@ -3,6 +3,13 @@ name: threat-modeling
 description: Threat modeling skill for STRIDE analysis, attack tree construction, and security requirement extraction. Use when designing new features, reviewing architecture, conducting threat modeling sessions, creating security documentation, or training teams on security thinking. Triggers: threat model, STRIDE, attack tree, DFD, security design, threat analysis, security architecture review.
 allowed-tools: Read, Grep, Glob, Bash
 agent: threat-modeling-expert
+metadata:
+  triggers: threat model, STRIDE, attack tree, security design, threat analysis, security architecture review, DFD
+  related-skills: security-reviewer, sast-configuration, architecture-design
+  domain: security
+  role: architect
+  scope: design
+  output-format: document
 ---
 
 ## Iron Law: NO ARCHITECTURE REVIEW WITHOUT THREAT MODELING FIRST
@@ -27,10 +34,10 @@ Every new feature, service, or architectural change requires a threat model befo
 
 ## References
 
-| File | Content |
-|------|---------|
-| `references/stride-methodology.md` | STRIDE matrix, DFD mapping, risk scoring formula, output template |
-| `references/threat-mitigation-mapping.md` | Control library (16 controls), coverage scoring, budget prioritization |
+| File | Content | Load When |
+|------|---------|-----------|
+| `references/stride-methodology.md` | STRIDE matrix, DFD mapping, risk scoring formula, output template | STRIDE analysis, DFD mapping, risk scoring |
+| `references/threat-mitigation-mapping.md` | Control library (16 controls), coverage scoring, budget prioritization | Selecting security controls, budget prioritization |
 
 ## Error Handling
 

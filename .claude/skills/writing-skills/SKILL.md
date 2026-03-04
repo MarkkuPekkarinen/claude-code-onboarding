@@ -2,6 +2,13 @@
 name: writing-skills
 description: Use when creating a new Claude Code skill from scratch, extending an existing skill, or reviewing a skill for structure compliance. Covers anatomy, frontmatter fields, progressive disclosure, 500-line limit, and the 6-step creation checklist. Triggers: "create a skill", "write a skill", "add a skill", "new skill for X", "skill structure", "how do I write a skill".
 allowed-tools: Read, Write, Edit, Glob, Grep
+metadata:
+  triggers: create a skill, write a skill, add a skill, new skill, skill structure, skill authoring, skill template, SKILL.md
+  related-skills: subagent-driven-development, plan-mode-review, documentation-generation
+  domain: workflow
+  role: specialist
+  scope: design
+  output-format: document
 ---
 
 # Writing Skills

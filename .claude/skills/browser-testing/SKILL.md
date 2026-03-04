@@ -4,6 +4,13 @@ description: Browser automation and testing using Chrome DevTools MCP (debugging
 allowed-tools: Bash(browser-use:*), mcp:chrome-devtools, mcp:browser-use
 agent: browser-testing
 context: fork
+metadata:
+  triggers: browser testing, Chrome DevTools, E2E test, browser automation, Browser-Use, UI testing, end-to-end, login flow, form filling
+  related-skills: angular-spa, frontend-design, systematic-debugging
+  domain: quality
+  role: specialist
+  scope: testing
+  output-format: report
 ---
 
 # Browser Automation & Testing Skill

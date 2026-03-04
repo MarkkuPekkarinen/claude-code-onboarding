@@ -2,6 +2,13 @@
 name: sast-configuration
 description: Static Application Security Testing (SAST) configuration skill. Use when setting up security scanning, configuring Semgrep rules, running SAST in CI/CD, reviewing SAST findings, or writing custom security rules. Triggers: SAST, static analysis, Semgrep, Bandit, ESLint security, code scanning, vulnerability detection, security scan setup.
 allowed-tools: Read, Grep, Glob, Bash
+metadata:
+  triggers: SAST, static analysis, Semgrep, security scanning, static code analysis, security rules, Bandit, gosec
+  related-skills: security-reviewer, threat-modeling, code-reviewer
+  domain: security
+  role: specialist
+  scope: infrastructure
+  output-format: document
 ---
 
 ## Iron Law: NO SAST CONFIGURATION WITHOUT READING THE CUSTOM RULES FILE FIRST

@@ -2,6 +2,13 @@
 name: python-dev
 description: This skill provides patterns and templates for Python 3.13 development with FastAPI and modern tooling. It should be activated when creating Python APIs, scripts, data processing pipelines, or pytest tests.
 allowed-tools: Bash, Read, Write, Edit
+metadata:
+  triggers: Python, FastAPI, Pydantic, Python API, async Python, Python backend, uv, ruff, Python 3.13
+  related-skills: openapi-spec-generation, database-schema-designer, agentic-ai-dev
+  domain: backend
+  role: specialist
+  scope: implementation
+  output-format: code
 ---
 
 # Python 3.13 Development Skill

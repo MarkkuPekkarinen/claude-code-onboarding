@@ -2,6 +2,13 @@
 name: changelog-generator
 description: This skill should be used when preparing releases, writing app store updates, or maintaining a CHANGELOG.md. It parses conventional commits and outputs polished release notes.
 allowed-tools: Bash, Read, Write, Edit
+metadata:
+  triggers: changelog, release notes, CHANGELOG.md, git log, release preparation, conventional commits, app store update, version release
+  related-skills: pr-review, documentation-generation, verification-before-completion
+  domain: workflow
+  role: specialist
+  scope: analysis
+  output-format: document
 ---
 
 # Changelog Generator Skill

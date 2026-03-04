@@ -70,6 +70,8 @@ Consult official docs via MCP before writing ANY code. Zero tolerance for deprec
 | Debugging | `.claude/skills/systematic-debugging/` | — | — |
 | Verification | `.claude/skills/verification-before-completion/` | — | — |
 | SDD Pipeline | `.claude/skills/subagent-driven-development/` | — | — |
+| Critical Reasoning | `.claude/skills/the-fool/` | — | — |
+| Requirements / Feature Spec | `.claude/skills/feature-forge/` | — | — |
 
 ### Code Review Agents
 

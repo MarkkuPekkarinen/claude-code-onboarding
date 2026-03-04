@@ -2,6 +2,13 @@
 name: java-coding-standard
 description: This skill should be activated when reviewing Java code or enforcing coding standards in Spring Boot services. It covers naming conventions, immutability patterns, Optional usage, streams, and exception handling.
 allowed-tools: Read
+metadata:
+  triggers: Java coding standard, Java code review, Java best practices, Spring Boot Java, Java style, Java review
+  related-skills: java-spring-api, code-reviewer, security-reviewer
+  domain: backend
+  role: specialist
+  scope: review
+  output-format: report
 ---
 
 # Java Coding Standards

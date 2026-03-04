@@ -2,6 +2,13 @@
 name: subagent-driven-development
 description: 3-role pipeline (Implementer -> Spec Reviewer -> Quality Reviewer) for plan-driven multi-task implementation. Supports subagent dispatch (Agent tool) and Agent Teams (TeamCreate). Use when a plan file exists in docs/plans/ and work spans 3+ tasks.
 allowed-tools: Read, Glob, Bash
+metadata:
+  triggers: subagent, SDD pipeline, multi-agent, agent teams, parallel agents, plan-driven implementation, TeamCreate
+  related-skills: plan-mode-review, writing-skills, test-driven-development
+  domain: workflow
+  role: architect
+  scope: design
+  output-format: document
 ---
 
 # Subagent-Driven Development (SDD)

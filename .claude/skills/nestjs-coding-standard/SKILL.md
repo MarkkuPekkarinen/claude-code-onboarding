@@ -2,6 +2,13 @@
 name: nestjs-coding-standard
 description: This skill should be activated when reviewing NestJS/TypeScript code or enforcing coding standards in NestJS 11.x services. It covers naming conventions, TypeScript strictness, DTO patterns, module organization, and error handling.
 allowed-tools: Read
+metadata:
+  triggers: NestJS coding standard, NestJS code review, NestJS best practices, TypeScript backend standard, NestJS style
+  related-skills: nestjs-api, code-reviewer, security-reviewer
+  domain: backend
+  role: specialist
+  scope: review
+  output-format: report
 ---
 
 # NestJS + TypeScript Coding Standards

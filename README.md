@@ -3195,6 +3195,78 @@ claude --resume <name>              # Resume named session
 /status-check                       # Binary works/broken report
 ```
 
+### Requirements & Feature Specs Skills (`feature-forge`)
+
+Skill: [`.claude/skills/feature-forge/`](.claude/skills/feature-forge/SKILL.md)
+
+**What it is:** A structured requirements gathering skill. Runs a PM + Dev dual-perspective interview before implementation starts, then produces a formal spec saved to `specs/{feature}.spec.md`.
+
+**Why use it:** Most implementation mistakes are scoped-in at requirements time, not caught in code review. This skill forces structured elicitation — scope, NFRs, edge cases, and acceptance criteria — before the first line of code is written.
+
+**When to use it:**
+- Starting any new feature, before `/scaffold-*` commands
+- When requirements are vague ("add payments", "improve search")
+- When a PM or stakeholder has a feature request to formalise
+- When you need a spec document to hand off to another team
+
+**How to use it:** Say any trigger phrase — Claude runs the interview and produces a spec.
+
+```
+# Trigger phrases
+"Define this feature"
+"Gather requirements for X"
+"Write a spec for X"
+"Help me write user stories for X"
+"What are the requirements for X?"
+
+# 5-phase workflow
+Discover   → AskUserQuestion: goal, target users, business value
+Interview  → PM Hat (scope, priority, success metrics) + Dev Hat (security, performance, edge cases)
+Document   → EARS-format functional requirements + Given/When/Then acceptance criteria
+Validate   → Review spec with stakeholder, confirm scope and trade-offs
+Plan       → Implementation checklist: backend, frontend, testing TODOs
+
+# Output saved to
+specs/{feature_name}.spec.md
+```
+
+> Sample skill library adapted from [jeffallan.github.io/claude-skills](https://jeffallan.github.io/claude-skills/)
+
+### Critical Reasoning Skills (`the-fool`)
+
+Skill: [`.claude/skills/the-fool/`](.claude/skills/the-fool/SKILL.md)
+
+**What it is:** An adversarial reasoning skill that stress-tests plans, decisions, and designs using formal methodology — not gut-feel pushback.
+
+**Why use it:** Most mistakes aren't caught in code review — they're baked in at the decision stage. This skill forces structured challenge *before* you commit to a design, technology choice, or architecture. It exposes hidden assumptions, failure modes, and weak evidence while there's still time to change course cheaply.
+
+**When to use it:**
+- Before finalising an architecture or tech stack choice
+- Before shipping a feature or going live
+- When a plan feels right but you want to be sure
+- When a stakeholder pushes back and you need to stress-test your own position
+
+**How to use it:** Say any trigger phrase — no slash command needed. Claude activates the skill and asks you to pick a reasoning mode.
+
+```
+# Say any of these to activate
+"Play devil's advocate on this design"
+"Pre-mortem this — we ship in 3 days"
+"Red team my authentication flow"
+"Poke holes in my microservices decision"
+"Challenge this"  /  "Stress test this"  /  "What could go wrong?"
+"Test my assumptions"
+
+# Then pick a mode
+Expose My Assumptions   → Surfaces what you're taking for granted (Socratic)
+Argue the Other Side    → Steel-manned counter-argument + synthesis (Dialectic)
+Find the Failure Modes  → Ranked failures with mitigations (Pre-mortem)
+Attack This             → Adversary profiles, attack vectors, defenses (Red team)
+Test the Evidence       → Are your conclusions actually supported? (Falsificationism)
+```
+
+> Sample skill library adapted from [jeffallan.github.io/claude-skills](https://jeffallan.github.io/claude-skills/)
+
 ### Security
 
 ```

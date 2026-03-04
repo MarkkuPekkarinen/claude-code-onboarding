@@ -4,6 +4,13 @@ description: Security vulnerability detection and remediation skill. Provides OW
 allowed-tools: Read, Bash, Grep, Glob
 agent: security-reviewer
 context: fork
+metadata:
+  triggers: security review, vulnerability, OWASP, security audit, injection, XSS, SSRF, secret scan, hardcoded secret
+  related-skills: sast-configuration, threat-modeling, code-reviewer
+  domain: security
+  role: specialist
+  scope: review
+  output-format: report
 ---
 
 # Security Review Skill

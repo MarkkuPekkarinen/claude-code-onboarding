@@ -2,6 +2,13 @@
 name: riverpod-patterns
 description: "This skill provides Riverpod state management patterns and best practices for Flutter applications. Use when reviewing or writing Riverpod providers, AsyncValue handling, ref usage, or provider lifecycle management."
 allowed-tools: Read
+metadata:
+  triggers: Riverpod, Flutter state management, Riverpod provider, AsyncValue, StateNotifier, ConsumerWidget, AsyncNotifier
+  related-skills: flutter-mobile, ui-standards-tokens
+  domain: frontend
+  role: specialist
+  scope: implementation
+  output-format: code
 ---
 
 # Riverpod Patterns
@@ -19,10 +26,10 @@ Correct Riverpod patterns for Flutter state management with code_generation styl
 
 ## Reference Files
 
-| File | Contents |
-|------|----------|
-| `reference/riverpod-core-patterns.md` | Code examples, provider types, ref usage rules |
-| `reference/riverpod-review-checklist.md` | Review checklist for Riverpod code audits (used by `riverpod-reviewer` agent) |
+| File | Contents | Load When |
+|------|----------|-----------|
+| `reference/riverpod-core-patterns.md` | Code examples, provider types, ref usage rules | Writing providers, ref.watch/read, AsyncValue handling |
+| `reference/riverpod-review-checklist.md` | Review checklist for Riverpod code audits (used by `riverpod-reviewer` agent) | Reviewing Riverpod code, running riverpod-reviewer agent |
 
 ## Error Handling
 

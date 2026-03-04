@@ -5,6 +5,13 @@ argument-hint: "[system or feature to design]"
 allowed-tools: Bash, Read, Write, Edit
 agent: architect
 context: fork
+metadata:
+  triggers: system architecture, design architecture, API contract, deployment topology, tech stack decision, C4 diagram, sequence diagram
+  related-skills: ddd-architect, architecture-decision-records, database-schema-designer, openapi-spec-generation
+  domain: api-architecture
+  role: architect
+  scope: design
+  output-format: architecture
 ---
 
 # Architecture Design Skill

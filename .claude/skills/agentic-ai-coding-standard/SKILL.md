@@ -2,6 +2,13 @@
 name: agentic-ai-coding-standard
 description: "This skill provides coding standards for Python agentic AI services with LangChain/LangGraph. Use when reviewing or writing Python agentic AI code. Covers state management, tool definitions, graph structure, error handling, and observability."
 allowed-tools: Read
+metadata:
+  triggers: LangChain, LangGraph, agentic AI, Python AI agent, FastAPI agent, state management, tool functions, guardrails, AI agent coding standard
+  related-skills: agentic-ai-dev, code-reviewer, security-reviewer
+  domain: backend
+  role: specialist
+  scope: review
+  output-format: report
 ---
 
 # Agentic AI Coding Standards

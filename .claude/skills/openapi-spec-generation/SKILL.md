@@ -2,6 +2,13 @@
 name: openapi-spec-generation
 description: This skill should be used when creating API documentation, generating SDKs, or ensuring API contract compliance. It generates and maintains OpenAPI 3.1 specifications.
 allowed-tools: Read
+metadata:
+  triggers: OpenAPI, Swagger, API specification, OpenAPI 3.1, API documentation, SDK generation, API contract
+  related-skills: documentation-generation, java-spring-api, nestjs-api, python-dev
+  domain: api-architecture
+  role: specialist
+  scope: design
+  output-format: specification
 ---
 
 # OpenAPI Spec Generation

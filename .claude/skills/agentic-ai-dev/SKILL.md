@@ -2,6 +2,13 @@
 name: agentic-ai-dev
 description: "This skill provides patterns and templates for building production AI agents with Python 3.13, LangChain v1.2.8, LangGraph v1.0.7, and FastAPI 0.128.x. Use when creating AI agents, RAG systems, graph workflows, tools, memory systems, or agent tests."
 allowed-tools: Bash, Read, Write, Edit
+metadata:
+  triggers: AI agent, LangChain, LangGraph, RAG system, graph workflow, FastAPI, Python 3.13, LangGraph agent, memory system, agent test
+  related-skills: agentic-ai-coding-standard, python-dev, mcp-builder
+  domain: backend
+  role: specialist
+  scope: implementation
+  output-format: code
 ---
 
 # Agentic AI Development Skill — Python 3.13 + LangChain + LangGraph + FastAPI

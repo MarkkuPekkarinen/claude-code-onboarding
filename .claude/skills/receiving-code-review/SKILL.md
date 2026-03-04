@@ -2,6 +2,13 @@
 name: receiving-code-review
 description: Use when receiving code review feedback — before implementing any suggestion, especially if feedback is unclear, conflicts with prior decisions, or seems technically questionable. Requires verification and technical rigor, not performative agreement or blind implementation.
 allowed-tools: Read, Grep, Glob
+metadata:
+  triggers: code review feedback, receiving feedback, implementing review suggestions, code review response, review comment
+  related-skills: pr-review, code-reviewer, test-driven-development
+  domain: workflow
+  role: specialist
+  scope: review
+  output-format: document
 ---
 
 # Receiving Code Review

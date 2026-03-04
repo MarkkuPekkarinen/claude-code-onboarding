@@ -4,6 +4,13 @@ description: Code duplication detection and technical debt analysis skill. Provi
 allowed-tools: Read, Glob, Grep, Bash
 agent: dedup-code-agent
 context: fork
+metadata:
+  triggers: duplicate code, dead code, code duplication, dependency bloat, technical debt, unused code, code cleanup
+  related-skills: code-reviewer, systematic-debugging, receiving-code-review
+  domain: quality
+  role: specialist
+  scope: analysis
+  output-format: report
 ---
 
 # Code Deduplication Skill

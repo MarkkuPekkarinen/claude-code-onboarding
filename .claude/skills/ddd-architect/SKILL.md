@@ -9,6 +9,13 @@ description: >
   or generate DDD documentation. Triggers: "DDD", "domain-driven design", "bounded context",
   "aggregate design", "context map", "subdomain", "ubiquitous language", "strategic design",
   "tactical design", "domain model", "modular monolith decomposition".
+metadata:
+  triggers: DDD, domain-driven design, bounded context, aggregate design, context map, subdomain, ubiquitous language, strategic design, tactical design, domain model, modular monolith decomposition
+  related-skills: architecture-design, architecture-decision-records, database-schema-designer
+  domain: api-architecture
+  role: architect
+  scope: system-design
+  output-format: architecture
 ---
 
 # DDD Architect Skill

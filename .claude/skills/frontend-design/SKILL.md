@@ -2,6 +2,13 @@
 name: frontend-design
 description: Creative frontend design skill. Provides visual design principles, typography and color guidance, motion patterns, and anti-patterns for building distinctive production-grade UIs.
 allowed-tools: Bash, Read, Write, Edit, Glob, Grep, WebFetch
+metadata:
+  triggers: frontend design, UI design, landing page, visual design, UI component, design system, creative UI
+  related-skills: angular-spa, ui-standards-tokens, browser-testing
+  domain: frontend
+  role: specialist
+  scope: design
+  output-format: code
 ---
 
 # Frontend Design Skill

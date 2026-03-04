@@ -2,6 +2,13 @@
 name: test-driven-development
 description: Use when implementing new features or logic that requires tests — before writing implementation code. Covers Red-Green-Refactor cycle, stack-specific test patterns, test naming conventions, and mocking. Triggers: "write tests first", "TDD", "test-driven", "failing test", "red-green-refactor", "how do I test X".
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
+metadata:
+  triggers: TDD, test-driven, write tests first, failing test, red-green-refactor, test first, unit test, TDD cycle
+  related-skills: systematic-debugging, verification-before-completion, code-reviewer
+  domain: quality
+  role: specialist
+  scope: testing
+  output-format: code
 ---
 
 # Test-Driven Development
@@ -60,12 +67,12 @@ test('createUser throws ConflictException when email is duplicate', ...)
 
 ## Stack Dispatch
 
-| Stack | Reference File |
-|-------|---------------|
-| Java 21 / Spring Boot WebFlux | `references/tdd-patterns-java.md` |
-| NestJS 11 / TypeScript | `references/tdd-patterns-nestjs.md` |
-| Python 3.13 / FastAPI | `references/tdd-patterns-python.md` |
-| Flutter / Dart | `references/tdd-patterns-flutter.md` |
+| Stack | Reference File | Load When |
+|-------|---------------|-----------|
+| Java 21 / Spring Boot WebFlux | `references/tdd-patterns-java.md` | Writing tests for Spring Boot, WebFlux, reactive Java |
+| NestJS 11 / TypeScript | `references/tdd-patterns-nestjs.md` | Writing tests for NestJS, TypeScript, Fastify |
+| Python 3.13 / FastAPI | `references/tdd-patterns-python.md` | Writing tests for FastAPI, Pydantic, async Python |
+| Flutter / Dart | `references/tdd-patterns-flutter.md` | Writing tests for Flutter widgets, Riverpod providers, Dart |
 
 ## Quick Checklist
 

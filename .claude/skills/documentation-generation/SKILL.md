@@ -5,6 +5,13 @@ description: Documentation generation skill for README creation, docstring patte
   setting up doc automation, or creating README files. Triggers: doc-generate, README,
   docstring, documentation, doc pipeline, generate docs.
 allowed-tools: Read, Grep, Glob, Bash, Write, Edit
+metadata:
+  triggers: README, docstring, documentation, API docs, JSDoc, JavaDoc, doc generation, documentation pipeline
+  related-skills: openapi-spec-generation, changelog-generator, architecture-decision-records
+  domain: workflow
+  role: specialist
+  scope: design
+  output-format: document
 ---
 
 ## Iron Law: NO DOC GENERATION WITHOUT READING THE PROJECT-SPECIFIC TEMPLATES FIRST
@@ -28,11 +35,11 @@ Read the appropriate reference before writing any documentation.
 
 ## References
 
-| File | Content |
-|------|---------|
-| `references/readme-templates.md` | Stack-specific README templates for Java/Spring, NestJS, Python FastAPI, Flutter |
-| `references/docstring-patterns.md` | Javadoc, JSDoc, Python Google-style, Dart `///` patterns with examples |
-| `references/cicd-doc-pipeline.md` | GitHub Actions workflow for auto-doc generation + Redocly + GitHub Pages |
+| File | Content | Load When |
+|------|---------|-----------|
+| `references/readme-templates.md` | Stack-specific README templates for Java/Spring, NestJS, Python FastAPI, Flutter | Writing README for Java, NestJS, Python, or Flutter project |
+| `references/docstring-patterns.md` | Javadoc, JSDoc, Python Google-style, Dart `///` patterns with examples | Writing Javadoc, JSDoc, Python docstrings, Dart doc comments |
+| `references/cicd-doc-pipeline.md` | GitHub Actions workflow for auto-doc generation + Redocly + GitHub Pages | Setting up automated doc generation, GitHub Pages, Redocly |
 
 ## Error Handling
 

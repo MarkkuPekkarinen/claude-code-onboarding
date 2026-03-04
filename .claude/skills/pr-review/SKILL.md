@@ -2,6 +2,13 @@
 name: pr-review
 description: Use when reviewing someone else's PR or preparing your own review comments for posting to GitHub. Implements a two-stage approval process — internal rich analysis first, human approval gate, then clean public posting. Nothing posts to GitHub until you explicitly approve. Triggers: "review this PR", "post a PR review", "review PR #N", "give feedback on PR", "submit a code review", "pr comment".
 allowed-tools: Read, Write, Bash, Glob, Grep
+metadata:
+  triggers: PR review, pull request review, GitHub PR, code review, review PR, post PR comment, PR feedback
+  related-skills: receiving-code-review, code-reviewer, verification-before-completion, changelog-generator
+  domain: quality
+  role: specialist
+  scope: review
+  output-format: report
 ---
 
 # PR Review (Two-Stage)

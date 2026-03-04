@@ -5,6 +5,13 @@ argument-hint: "[domain or requirements]"
 allowed-tools: Read
 agent: database-designer
 context: fork
+metadata:
+  triggers: database schema, schema design, SQL design, NoSQL design, ERD, database design, create tables, model data, data modeling
+  related-skills: architecture-design, java-spring-api, nestjs-api, python-dev
+  domain: infrastructure
+  role: architect
+  scope: design
+  output-format: document
 ---
 
 # Database Schema Designer
