@@ -2,7 +2,7 @@
 
 > Complete skill catalog for Claude Code Onboarding Kit. Use this to find the right skill for any task.
 >
-> 35 skills across 7 domains. Each skill is loaded with `/skill-name` or via `Skill` tool.
+> 37 skills across 7 domains. Each skill is loaded with `/skill-name` or via `Skill` tool.
 
 ---
 
@@ -46,7 +46,7 @@
 - **security-reviewer**: Security vulnerability detection and remediation skill providing OWASP Top 10 checklists, secret scanning patterns, and security review methodology.
 - **threat-modeling**: Threat modeling skill for STRIDE analysis, attack tree construction, and security requirement extraction when designing new features or reviewing architecture.
 
-### Workflow & Process (8 skills)
+### Workflow & Process (10 skills)
 - **changelog-generator**: Used when preparing releases, writing app store updates, or maintaining a CHANGELOG.md by parsing conventional commits and outputting polished release notes.
 - **documentation-generation**: Documentation generation skill for README creation, docstring patterns, and CI/CD doc pipelines when generating project documentation or creating README files.
 - **domain-finder**: Used when starting a new project or brand and needing to find a registrable domain by brainstorming creative names and checking real availability via DNS/WHOIS.
