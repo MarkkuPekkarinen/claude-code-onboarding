@@ -1739,6 +1739,12 @@ claude-code-onboarding/
     │   ├── riverpod-reviewer.md          # Flutter Riverpod state management reviewer
     │   ├── dedup-code-agent.md           # Dead code & duplication detector
     │   └── ui-standards-expert.md        # UI consistency & design system enforcement
+    │   │
+    │   │  # — CI/CD agents (model: haiku) —
+    │   ├── deployment-engineer.md        # GitHub Actions, Docker, Cloud Run, Flutter CI, Firebase deploy
+    │   │
+    │   │  # — Infrastructure agents (model: opus) —
+    │   └── terraform-specialist.md       # GCP IaC: Cloud Run, Cloud SQL, Artifact Registry, IAM, WIF
     │
     ├── commands/                          # 13 slash commands (triggered with /name)
     │   │
@@ -2236,7 +2242,122 @@ Beyond the passive guardrails above, this kit ships dedicated security commands,
 - [ ] CI/CD pipelines do NOT use `--dangerously-skip-permissions`
 - [ ] Hook scripts are executable (`chmod +x .claude/hooks/*.sh`)
 
-## 19. Customizing the Kit
+## 19. CI/CD Automation — Deployment Engineer Agent
+
+The `deployment-engineer` agent generates production-ready GitHub Actions pipelines for every service in this stack. It knows your exact tech versions, branching model (`feature/* → develop → main`), and pipeline architecture — no generic templates.
+
+**Triggers automatically** when you mention CI/CD, Docker builds, Cloud Run, Flutter builds, or Firebase deployments. Or invoke directly with `@deployment-engineer`.
+
+### What it covers
+
+| Service | Pipeline it generates |
+|---|---|
+| NestJS (Node.js 24.13) | npm cache → lint/test → Docker build → Trivy scan → Prisma migrate → Cloud Run staging/prod |
+| Python FastAPI | uv cache → test → Docker build → Trivy scan → Alembic migrate → Cloud Run |
+| LangChain / LangGraph | Same as Python + Cloud Run `--memory=4Gi --timeout=300 --concurrency=1` |
+| Spring Boot | Maven cache → test → Buildpacks image → Cloud Run with `--cpu-boost` |
+| Flutter | Flutter SDK cache → analyze/test → APK + IPA → Firebase App Distribution (QA) / Fastlane (prod) |
+| Angular | npm cache → build → Firebase Hosting deploy |
+| Firestore | `firebase deploy --only firestore:rules,firestore:indexes` |
+
+All pipelines include: Docker layer caching (~60% faster builds), Trivy CVE scanning (hard-fail on CRITICAL), Workload Identity Federation (no JSON keys in secrets), health check post-deploy, and production approval gate.
+
+### Example prompts
+
+```
+Set up GitHub Actions CI/CD for our NestJS payments service to deploy to Cloud Run
+
+Create a Flutter build pipeline — APK to QA via Firebase App Distribution on develop merge
+
+Add Trivy vulnerability scanning to our Python API Docker build
+
+Configure Cloud Run for our LangGraph agent with correct memory and timeout settings
+
+Set up Prisma migrate deploy as a step before NestJS Cloud Run revision goes live
+
+Automate Firestore security rules deployment on every merge to develop
+
+Configure Workload Identity Federation — remove the JSON service account key from our secrets
+```
+
+### Your pipeline at a glance
+
+```
+PR merged to develop
+  ├── Flutter:     test → APK build → Firebase App Distribution (QA team notified)
+  ├── Python API:  Docker build → Trivy scan → Cloud Run staging
+  ├── NestJS API:  Docker build → Trivy scan → Cloud Run staging
+  └── Firestore:   rules + indexes → Firebase staging project
+
+QA signs off → merge develop to main
+  ├── Flutter:     APK + IPA → Google Play / App Store (Fastlane)
+  ├── Python API:  Cloud Run production  ← approval gate
+  ├── NestJS API:  Cloud Run production  ← approval gate
+  ├── Spring Boot: Cloud Run production  ← approval gate
+  └── Firestore:   Firebase production project
+```
+
+---
+
+## 19b. GCP Infrastructure — Terraform Specialist Agent
+
+The `terraform-specialist` agent provisions and manages all GCP infrastructure as code. It handles what the deployment-engineer doesn't — creating the platform your services run on.
+
+**Rule of thumb:** terraform-specialist runs *once* (or when infra changes). deployment-engineer runs *on every merge*.
+
+```
+terraform-specialist          deployment-engineer
+─────────────────────────────────────────────────
+Creates Cloud Run service  →  Deploys image to it
+Creates Artifact Registry  →  Pushes Docker images
+Creates Secret Manager     →  Reads secrets at runtime
+Sets up Workload Identity  →  Uses it in CI pipeline
+Runs rarely                   Runs on every PR merge
+```
+
+### What it provisions for your stack
+
+| Resource | Terraform resource |
+|---|---|
+| Cloud Run services (NestJS, Python, Spring, AI agent) | `google_cloud_run_v2_service` |
+| Artifact Registry (Docker images) | `google_artifact_registry_repository` |
+| Cloud SQL PostgreSQL 15 | `google_sql_database_instance` |
+| Secret Manager (API keys, DB URLs) | `google_secret_manager_secret` |
+| Workload Identity (keyless GitHub Actions auth) | `google_iam_workload_identity_pool` |
+| GCS bucket (Terraform remote state) | `google_storage_bucket` |
+| Firebase project | `google_firebase_project` |
+
+### Example prompts
+
+```
+Provision complete GCP infra for our project — Cloud Run services, Artifact Registry,
+Cloud SQL, Secret Manager, Workload Identity, GCS state bucket, staging + prod tfvars
+
+Create a reusable Terraform module for Cloud Run used by all our services
+
+Set up Workload Identity Federation so GitHub Actions deploys without JSON keys
+
+Configure Cloud Run for our LangGraph agent with 4Gi memory and 300s timeout
+
+Import our existing Cloud Run services into Terraform state management
+
+Add tfsec and Checkov security scanning to our Terraform CI pipeline
+```
+
+### The only workflow you need
+
+```bash
+terraform init
+terraform workspace new staging        # or: select staging
+terraform plan -var-file=staging.tfvars   # always review before apply
+terraform apply -var-file=staging.tfvars
+```
+
+> If `plan` shows `# will be destroyed` on Cloud SQL or Cloud Run — stop and ask the agent why before applying.
+
+---
+
+## 20. Customizing the Kit
 
 This kit is a starting point — customize it for your team's stack and workflows.
 
