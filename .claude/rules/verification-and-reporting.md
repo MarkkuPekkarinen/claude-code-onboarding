@@ -84,6 +84,7 @@ What's BROKEN:
 1. Did I say something "works" or is "functional"?
 2. Did I then list reasons why it doesn't work?
 3. If yes → REWRITE with honest, non-contradictory status
+4. **Principal engineer check:** Would a principal engineer approve this if they reviewed your diff? If not — what would they flag? Fix it before reporting done.
 
 ---
 

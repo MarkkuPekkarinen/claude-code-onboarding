@@ -54,6 +54,15 @@ Your natural tendency is to overcomplicate. Actively resist it.
 
 **Principles:** DRY | KISS | YAGNI | SOLID
 
+### Demand Elegance (Balanced)
+
+For non-trivial changes, pause and ask: "Is there a more elegant way?"
+
+- If a fix feels hacky: "Knowing everything I know now, what's the clean solution?" — then implement that instead
+- Challenge your own work before presenting it — not just "does it work?" but "is this how I'd want to find it in 6 months?"
+- **Skip this for simple, obvious fixes** — don't over-engineer a one-liner in pursuit of elegance
+- Elegance ≠ complexity. The elegant solution is usually the simpler one, not the clever one
+
 ## 5. Scope Discipline
 
 Touch only what you're asked to touch.

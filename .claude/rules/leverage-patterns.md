@@ -240,6 +240,20 @@ After any session using sub-agents or teams:
 
 This is automated by the `/promote-lessons` command and the stop hook reminder.
 
+## Autonomy Ladder for Bug Fixing
+
+Not every problem requires the same level of human involvement. Match autonomy to signal clarity.
+
+| Signal Clarity | Autonomy Level | Action |
+|----------------|---------------|--------|
+| **Clear** — failing test with stack trace, lint error with file:line, CI failure with log output | **Act first** — fix it, run tests, report what you did | Don't ask "should I fix this?" — just fix it and show the diff |
+| **Moderate** — bug report with reproduction steps, error log pointing to a region of code | **Investigate first, then fix** — root-cause via `systematic-debugging` skill, propose fix, implement | Ask only if multiple valid fixes exist |
+| **Ambiguous** — vague report ("it's slow"), no reproduction, unclear scope | **Ask first** — clarify scope and expected behavior before touching code | Overconfidence Prevention rules apply (core-behaviors.md §10) |
+
+**Bias:** When the signal is clear (test output, stack trace, error log), act. When the signal is ambiguous, ask. The goal is zero context-switching for the human on well-defined problems.
+
+**Constraint:** Even at "Act first" level, all existing guardrails apply — scope discipline (touch only what's broken), run tests after fixing, report with evidence.
+
 ## Error Recovery
 
 When a task goes wrong mid-execution, follow this protocol instead of pushing forward or starting over silently.
