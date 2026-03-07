@@ -10,6 +10,9 @@ conditions:
   - field: content
     operator: regex_match
     pattern: Color\(0x[0-9A-Fa-f]+\)|Colors\.\w+(?!Scheme)
+  - field: content
+    operator: not_contains
+    value: "ignore-design"
 ---
 Hardcoded color detected in Dart file. Use theme tokens instead:
 - `Theme.of(context).colorScheme.primary` (not `Colors.blue`)

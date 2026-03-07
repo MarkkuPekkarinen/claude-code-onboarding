@@ -41,7 +41,10 @@ Scan `src/app/**/*.{html,scss,css,ts}`:
 | Check | Pattern | Violation |
 |---|---|---|
 | Hardcoded hex colors | `bg-[#...]`, `text-[#...]`, `color: #...` | Use daisyUI semantic tokens (`bg-primary`, `text-base-content`) |
+| Hardcoded rgb/hsl colors | `rgb(...)`, `rgba(...)`, `hsl(...)`, `hsla(...)` | Use daisyUI semantic tokens or CSS custom properties |
 | Raw spacing utilities | `mt-3`, `px-4`, `gap-2` (numeric) | Use Tailwind's semantic scale or daisyUI component spacing |
+| Raw typography | `text-[14px]`, `font-[...]`, `font-size: N` | Use Tailwind typography scale (`text-sm`, `text-lg`) |
+| Raw form inputs | `<input>` without `formControl`, bare `<select>` | Use daisyUI form classes + reactive form bindings |
 | Inline styles | `style="..."` in templates | Use TailwindCSS utilities or SCSS |
 
 Commands to run:
@@ -49,8 +52,17 @@ Commands to run:
 # Hardcoded hex
 grep -rn "bg-\[#\|text-\[#\|border-\[#\|color:\s*#" src/app/ --include="*.html" --include="*.scss" --include="*.css" | grep -v "// ignore-design" | grep -v "<!-- ignore-design"
 
+# Hardcoded rgb/hsl
+grep -rn "rgba\?\s*(\\|hsla\?\s*(" src/app/ --include="*.html" --include="*.scss" --include="*.css" | grep -v "// ignore-design" | grep -v "<!-- ignore-design"
+
 # Raw spacing utilities
 grep -rn "\b\(mt\|mb\|ml\|mr\|mx\|my\|pt\|pb\|pl\|pr\|px\|py\|gap\)-[0-9]" src/app/ --include="*.html" | grep -v "<!-- ignore-design"
+
+# Raw typography
+grep -rn "text-\[\d\+px\]\|text-\[\d\+rem\]\|font-\[.*\]\|font-size:\s*\d" src/app/ --include="*.html" --include="*.scss" --include="*.css" --include="*.ts" | grep -v "// ignore-design" | grep -v "<!-- ignore-design"
+
+# Raw form inputs (feature templates only)
+grep -rn "<input\s\|<select\s\|<textarea\s" src/app/features/ --include="*.html" | grep -v "formControl" | grep -v "<!-- ignore-design"
 
 # Inline styles
 grep -rn 'style="' src/app/ --include="*.html" | grep -v "<!-- ignore-design"

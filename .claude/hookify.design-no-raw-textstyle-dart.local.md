@@ -10,6 +10,9 @@ conditions:
   - field: content
     operator: regex_match
     pattern: TextStyle\(\s*fontSize\s*:
+  - field: content
+    operator: not_contains
+    value: "ignore-design"
 ---
 Raw TextStyle with fontSize detected. Use theme typography instead:
 - `Theme.of(context).textTheme.titleMedium`
