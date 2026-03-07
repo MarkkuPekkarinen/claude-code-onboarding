@@ -43,6 +43,16 @@ cd my-app
 
 Do NOT pass `--standalone` (removed/default since v19). Verify flags against fetched docs.
 
+## Before Writing Any UI Code
+
+Before creating or modifying any component template or styles:
+
+1. **Read `reference/daisyui-v5-components.md`** — for semantic color tokens and component patterns
+2. **Read `reference/tailwind-v4-config.md`** — for TailwindCSS 4.x setup constraints
+3. **Verify token awareness** — can you name the color token (`bg-primary`, `text-base-content`), spacing base (4px), and typography approach you will use?
+4. If not → read the reference files before writing any template or style code
+5. For accessibility: read `reference/accessibility-checklist.md` before adding interactive elements
+
 ## Process
 
 1. **Understand Requirements** — Clarify feature scope, API endpoints, data models, and UI requirements

@@ -155,6 +155,14 @@ Before declaring any workflow type complete, the following gates must pass. Thes
 - [ ] `postgresql-database-reviewer` agent run on migration files
 - [ ] No direct table drops without explicit human approval
 
+### UI / Design System Gate
+- [ ] No hardcoded colors — all colors use theme tokens (Flutter: `colorScheme`, Angular: daisyUI semantic)
+- [ ] No raw spacing values — all spacing uses semantic tokens (Flutter: `AppSpacing`, Angular: Tailwind scale)
+- [ ] No inline TextStyles — all typography uses theme text styles
+- [ ] Touch targets >= 48dp (Flutter) / 44px (Angular) for interactive elements
+- [ ] `/lint-design-system` run with zero violations
+- [ ] Exception markers (`// ignore-design: [reason]`) reviewed and justified
+
 ### Release / Merge Gate
 - [ ] `/review-code` run and issues addressed
 - [ ] `/audit-security` run with no Critical findings unresolved

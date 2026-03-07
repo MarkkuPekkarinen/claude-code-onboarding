@@ -57,6 +57,23 @@
 - **Spacing**: 4px base unit (4, 8, 12, 16, 24, 32, 48, 64)
 - **BEM Naming** for custom CSS: `.block__element--modifier`
 
+### Machine Enforcement
+
+Design rules are enforced automatically:
+
+| Rule File | What It Catches | Action |
+|---|---|---|
+| `hookify.design-no-hex-angular.local.md` | `bg-[#hex]`, `text-[#hex]`, `color: #hex` in `src/**/*.{html,scss,css,ts}` | warn |
+| `hookify.design-no-raw-spacing-angular.local.md` | `mt-3`, `px-4`, `gap-2` numeric utilities in `src/**/*.html` | warn |
+
+Lint commands:
+- `ng lint` — ESLint rules including Angular-specific checks
+- `/lint-design-system` — Orchestrator scanning for hardcoded colors and raw spacing
+
+Scope: `src/app/` only. Test files, generated code, and node_modules are excluded.
+
+Exception marker: `<!-- ignore-design: [reason] -->` in templates, `// ignore-design: [reason]` in TypeScript/SCSS.
+
 ## Accessibility (WCAG 2.1 AA)
 
 - Must pass all AXE checks

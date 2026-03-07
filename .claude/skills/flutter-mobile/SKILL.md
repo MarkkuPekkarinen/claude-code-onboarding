@@ -35,6 +35,15 @@ flutter pub add dev:riverpod_generator dev:freezed dev:json_serializable dev:bui
 dart run build_runner build --delete-conflicting-outputs
 ```
 
+## Before Writing Any UI Code
+
+Before creating or modifying any widget, screen, or visual component:
+
+1. **Load `ui-standards-tokens` skill** — read `reference/ui-design-tokens.md` for spacing, color, typography, radius tokens
+2. **Verify token awareness** — can you name the spacing token (`AppSpacing.md`), color approach (`Theme.of(context).colorScheme`), and typography pattern (`Theme.of(context).textTheme`) you will use?
+3. If not → read the reference file before writing any widget code
+4. For accessibility: read `reference/ui-accessibility-patterns.md` before adding interactive elements
+
 ## Process
 
 1. **Read templates** - Use Read tool on `reference/flutter-templates.md` for all code templates (Freezed models, Riverpod providers, screens, GoRouter, tests, Firebase integration)
