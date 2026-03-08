@@ -236,6 +236,11 @@ After copying, you'll want to:
 3. Edit `.mcp.json` — remove MCP servers you don't need, add project-specific ones
 4. Remove agents/skills/commands for stacks you don't use
 5. Run `chmod +x .claude/hooks/*.sh` to make hooks executable
+6. Install the git pre-commit secrets hook (blocks commits containing API keys, tokens, and credentials):
+   ```bash
+   cp git-hooks/pre-commit-secrets.sh .git/hooks/pre-commit
+   chmod +x .git/hooks/pre-commit
+   ```
 
 ## 3. Set Up Your Editor (Install VS Code)
 
@@ -2196,15 +2201,42 @@ This flag disables all permission prompts. Rules for safe usage:
 
 ### Pre-configured Guardrails in This Kit
 
-This repo includes 4 hooks that enforce security automatically:
+This repo includes Claude Code hooks (`.claude/hooks/`) and a git pre-commit hook (`.git/hooks/pre-commit`) that enforce security automatically:
 
-| Hook | What It Prevents |
-|------|-----------------|
-| `pre-bash-guard.sh` | `rm -rf /`, force-push to main, `DROP DATABASE`, piping curl to shell |
-| `pre-edit-protect-sensitive.sh` | Direct edits to `.env`, private keys, credentials, lock files |
-| `stop-secret-scan.sh` | Warns if changed files contain AWS/GCP/GitHub/Stripe/Anthropic API key patterns |
-| `stop-blackbox-log.sh` | Appends session decisions and changed files to `blackbox/session-log.md` for accountability |
-| `post-edit-format.sh` | Not security-related, but auto-formats to prevent malformed code commits |
+**Claude Code hooks** — fire on Claude Code lifecycle events:
+
+| Hook | Event | What It Prevents |
+|------|-------|-----------------|
+| `pre-bash-guard.sh` | PreToolUse | `rm -rf /`, force-push to main, `DROP DATABASE`, piping curl to shell |
+| `pre-edit-protect-sensitive.sh` | PreToolUse | Direct edits to `.env`, private keys, credentials, lock files |
+| `pre-prompt-injection.sh` | PreToolUse | Role-override attacks, jailbreaks, delimiter injection, authority impersonation, encoded payloads in Bash commands |
+| `pre-unicode-injection.sh` | PreToolUse | Zero-width characters, RTL overrides, ANSI escapes, null bytes hidden in file edits (CVE-2025-53109/53110) |
+| `session-claudemd-scan.sh` | SessionStart | Injection patterns in `CLAUDE.md` / `.claude/*.md` files loaded at session start |
+| `stop-secret-scan.sh` | Stop | Warns if changed files contain AWS/GCP/GitHub/Stripe/Anthropic API key patterns |
+| `stop-blackbox-log.sh` | Stop | Appends session decisions and changed files to `blackbox/session-log.md` for accountability |
+| `post-edit-format.sh` | PostToolUse | Not security-related, but auto-formats to prevent malformed code commits |
+
+**Git pre-commit hook** — fires on every `git commit`, before the commit is created:
+
+| Hook | Location | What It Prevents |
+|------|----------|-----------------|
+| `pre-commit` | `.git/hooks/pre-commit` | Blocks commits containing 15 secret patterns: OpenAI/Anthropic API keys, GitHub tokens, AWS access keys, Firebase/GCP credentials, database URLs with passwords, private key blocks, JWTs, generic `api_key`/`secret`/`token` assignments |
+
+The git hook is the last line of defence before secrets enter git history. It complements `stop-secret-scan.sh` (which catches secrets in Claude's output) by catching secrets in your own edits.
+
+```bash
+# Install (one-time, after cloning):
+cp git-hooks/pre-commit-secrets.sh .git/hooks/pre-commit
+chmod +x .git/hooks/pre-commit
+
+# The hook then runs automatically on every git commit.
+# To bypass in an emergency (use with caution):
+git commit --no-verify
+
+# To add a false-positive to the allowlist, edit the WHITELIST array in:
+git-hooks/pre-commit-secrets.sh   # source (committed)
+.git/hooks/pre-commit             # active copy (re-copy after editing)
+```
 
 These hooks are **defense-in-depth** — they catch mistakes but aren't a substitute for proper secret management. Always use a secrets manager (AWS Secrets Manager, HashiCorp Vault, 1Password CLI) for production credentials.
 
@@ -3266,6 +3298,36 @@ Test the Evidence       → Are your conclusions actually supported? (Falsificat
 ```
 
 > Sample skill library adapted from [jeffallan.github.io/claude-skills](https://jeffallan.github.io/claude-skills/)
+
+### Adversarial Plan Review (`plan-challenger`)
+
+Agent: [`.claude/agents/plan-challenger.md`](.claude/agents/plan-challenger.md)
+
+**What it is:** An Opus-powered read-only agent that attacks implementation plans across 5 dimensions — Assumptions, Missing Cases, Security, Architecture, and Complexity Creep — then tries to *disprove each challenge* before reporting. Only findings that survive self-scrutiny reach the report.
+
+**How it differs from `the-fool`:** `the-fool` is conversational and works on any idea at any stage. `plan-challenger` is autonomous, plan-specific, reads the actual codebase to ground its claims, and has a built-in refutation step that eliminates false positives before you ever see them. Use `the-fool` to challenge a strategy; use `plan-challenger` to vet an implementation plan before coding starts.
+
+**Workflow:**
+
+```
+1. Produce a plan          /plan-review  →  saved to docs/plans/YYYY-MM-DD-<feature>.md
+2. Challenge the plan      Use the plan-challenger agent to review docs/plans/<plan-file>.md
+3. Resolve blockers        Fix 🔴 Blockers before writing a line of code
+                           Use architect or the-fool to explore alternatives if needed
+4. Begin implementation    Only after blockers are resolved
+```
+
+**When to use it:**
+- Before any multi-day implementation effort
+- Before irreversible decisions: database schema, public API contract, auth architecture
+- When the team can't agree on an approach — challenges surface hidden assumptions
+
+**Stack-aware:** The agent includes targeted challenge questions for every stack in this kit — Java/WebFlux reactive chains, NestJS/Prisma N+1 risk, Python async/sync mixing, Angular Observable leaks, Flutter/Riverpod lifecycle mismatches, PostgreSQL migration reversibility, Firebase security rules.
+
+```
+# Invoke after saving an approved plan
+Use the plan-challenger agent to review docs/plans/2026-03-08-payment-service.md
+```
 
 ### Security
 
