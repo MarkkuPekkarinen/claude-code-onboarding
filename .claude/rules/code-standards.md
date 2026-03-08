@@ -88,6 +88,7 @@ Before writing ANY code:
 - Log sync operations (start, success, failure)
 - NEVER log sensitive data (passwords, tokens, PII)
 - NEVER use `print()` — use centralized logger
+- NEVER use `console.log()` / `console.warn()` / `console.error()` directly — use centralized logger (e.g., NestJS `Logger`, Angular `ErrorHandler`). Raw console statements leak internal logic to anyone with devtools open. Sweep before every deploy.
 
 ## Output Quality
 

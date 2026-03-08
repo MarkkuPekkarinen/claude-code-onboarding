@@ -18,9 +18,11 @@
 - Passwords hashed with bcrypt/argon2 (never plaintext comparison)
 - JWT tokens properly validated (signature, expiry, issuer)
 - Authorization checked on every route/endpoint (not just authentication)
+- **Client-side guards are UX, NOT security.** Angular route guards, Flutter widget visibility checks, and UI-level role hiding do NOT enforce authorization. All authorization MUST be enforced server-side. Anyone can call your API directly.
 - No IDOR -- users cannot access other users' resources by changing IDs
 - Rate limiting on auth endpoints (login, register, password reset)
 - Session management secure (httpOnly, secure, sameSite cookies)
+- **Prefer managed auth providers** (Firebase Auth, Auth0, Clerk) over custom JWT implementations for production apps. Custom auth with bcrypt+Passport is acceptable for learning/demo projects only. Managed providers handle token rotation, MFA, account recovery, and security patches automatically.
 
 ### 4. Input Validation & Output Encoding (HIGH)
 - All user inputs validated and sanitized server-side
@@ -51,12 +53,14 @@
 - Row Level Security (RLS) enabled on multi-tenant tables
 - No direct database access from client
 - Database credentials not hardcoded; rotated regularly
+- **Secret rotation schedule enforced:** All secrets (API keys, DB passwords, JWT signing keys, service account keys) rotated every 90 days maximum. Use calendar reminders or automated rotation (GCP Secret Manager auto-rotation, AWS Secrets Manager rotation lambdas). Rotation must be zero-downtime: deploy new secret → verify → revoke old secret.
 - Parameterized queries only
 
 ### 9. Logging & Monitoring (MEDIUM)
 - Security events logged (failed logins, authorization failures, input validation errors)
 - No sensitive data in logs (passwords, tokens, PII)
 - Alerts configured for anomalous patterns
+- **Mandatory audit triggers:** Audit log required for: record deletions, role/permission changes, payment events, data exports, account modifications, admin actions. If a critical action has no audit trail, flag it as HIGH severity.
 
 ## Anti-Patterns to Always Flag
 

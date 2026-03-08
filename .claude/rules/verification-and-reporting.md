@@ -141,6 +141,7 @@ Before declaring any workflow type complete, the following gates must pass. Thes
 - [ ] New logic has at least one test covering the happy path
 - [ ] `security-reviewer` agent has been run on changed files
 - [ ] No new unused imports, variables, or functions introduced
+- [ ] `npm audit --audit-level=high` (Node.js) or `pip audit` (Python) or `mvn dependency-check:check` (Java) — zero critical/high CVEs
 - [ ] Change description written (CHANGES MADE / THINGS I DIDN'T TOUCH / POTENTIAL CONCERNS)
 
 ### Architecture Gate

@@ -306,3 +306,5 @@ class BudgetManager:
 | Budget | Set per-request, per-session, and daily limits |
 | Monitoring | Track `llm_cost_usd_total` metric, alert on budget |
 | Prompt caching | Use Anthropic `cache_control` for long system prompts |
+| Dashboard budgets | Set spending alerts in provider dashboards (Anthropic Console, OpenAI Usage, GCP Billing) — code-level `BudgetManager` is defense-in-depth, not a replacement for provider-level hard caps and email/PagerDuty alerts |
+| Quota limits | Configure per-project rate limits and monthly spend caps in each provider's console before deploying to production |

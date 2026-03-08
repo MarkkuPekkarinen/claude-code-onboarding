@@ -12,8 +12,9 @@ Create a new Python 3.13 / FastAPI project with the following:
 **Project name:** $ARGUMENTS (default to "my-python-api" if not provided)
 
 ## Steps
-1. Initialize project with `pyproject.toml` (dependencies + dev dependencies)
-2. Set up virtual environment with `uv init` or `python -m venv`
+1. **Create `.gitignore` first** — before any other file. Include: `__pycache__/`, `.env`, `*.pem`, `*.key`, `.venv/`, `dist/`, `*.egg-info/`, `.DS_Store`, `.mypy_cache/`, `.ruff_cache/`
+2. Initialize project with `pyproject.toml` (dependencies + dev dependencies, include `pip-audit` in dev deps)
+3. Set up virtual environment with `uv init` or `python -m venv`
 3. Create folder structure: `src/<package>/api/routes/`, `models/`, `services/`, `repositories/`, `core/`, `utils/`
 4. Create `main.py` with FastAPI app, lifespan handler, and router includes
 5. Create `core/config.py` with pydantic-settings
@@ -25,6 +26,7 @@ Create a new Python 3.13 / FastAPI project with the following:
 11. Configure ruff (linting) and mypy (type checking) in pyproject.toml
 12. Create a `Dockerfile` for production
 13. Add a `.env.example` file
-14. Print summary of created files and next steps
+14. Run `pip audit` — fix or document any critical/high CVEs before proceeding
+15. Print summary of created files and next steps
 
 Use the python-dev skill for patterns and templates.

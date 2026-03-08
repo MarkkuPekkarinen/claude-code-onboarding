@@ -219,7 +219,7 @@ async function bootstrap() {
       },
     });
 
-    console.log(`Swagger documentation available at: http://localhost:${port}/${swaggerPath}`);
+    logger.log(`Swagger documentation available at: http://localhost:${port}/${swaggerPath}`);
   }
 
   await app.listen(port, '0.0.0.0');

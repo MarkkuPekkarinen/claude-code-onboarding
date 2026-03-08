@@ -65,6 +65,17 @@ export class ProductController {
       throw new BadRequestException('Only JPEG, PNG, and WebP images are allowed');
     }
 
+    // Validate actual file content by magic bytes (not just MIME type)
+    // MIME type is client-spoofable — magic bytes check the real file signature
+    // npm install file-type
+    const { fileTypeFromBuffer } = await import('file-type');
+    const detected = await fileTypeFromBuffer(file.buffer);
+    if (!detected || !allowedTypes.includes(detected.mime)) {
+      throw new BadRequestException(
+        `File content does not match allowed types (detected: ${detected?.mime ?? 'unknown'})`,
+      );
+    }
+
     if (file.size > maxSize) {
       throw new BadRequestException('File size must not exceed 5MB');
     }

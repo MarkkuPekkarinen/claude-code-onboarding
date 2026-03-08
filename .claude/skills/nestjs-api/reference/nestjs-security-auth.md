@@ -274,3 +274,96 @@ export class AuthController {
   async health() {}
 }
 ```
+
+---
+
+## Webhook Signature Verification
+
+**NEVER** process webhook payloads without verifying the signature. Attackers can forge webhook calls to trigger payments, refunds, or state changes.
+
+### Stripe Example
+
+```typescript
+// webhook.controller.ts
+import Stripe from 'stripe';
+
+@Controller('webhooks')
+export class WebhookController {
+  private readonly logger = new Logger(WebhookController.name);
+  private readonly stripe: Stripe;
+
+  constructor(private readonly config: ConfigService) {
+    this.stripe = new Stripe(this.config.getOrThrow('STRIPE_SECRET_KEY'));
+  }
+
+  @Post('stripe')
+  async handleStripeWebhook(
+    @Headers('stripe-signature') signature: string,
+    @Req() req: RawBodyRequest<FastifyRequest>,
+  ) {
+    const webhookSecret = this.config.getOrThrow('STRIPE_WEBHOOK_SECRET');
+
+    let event: Stripe.Event;
+    try {
+      event = this.stripe.webhooks.constructEvent(
+        req.rawBody,        // Raw body buffer — NOT parsed JSON
+        signature,
+        webhookSecret,
+      );
+    } catch (err) {
+      this.logger.error('Webhook signature verification failed', err);
+      throw new BadRequestException('Invalid webhook signature');
+    }
+
+    this.logger.log(`Webhook received: ${event.type} (${event.id})`);
+
+    switch (event.type) {
+      case 'checkout.session.completed':
+        await this.handleCheckoutComplete(event.data.object);
+        break;
+      case 'invoice.payment_failed':
+        await this.handlePaymentFailed(event.data.object);
+        break;
+      default:
+        this.logger.log(`Unhandled event type: ${event.type}`);
+    }
+
+    return { received: true };
+  }
+}
+```
+
+### Fastify Raw Body Setup
+
+```typescript
+// main.ts — required for Stripe signature verification
+const app = await NestFactory.create<NestFastifyApplication>(
+  AppModule,
+  new FastifyAdapter(),
+  { rawBody: true },  // Enable raw body access
+);
+```
+
+### Generic HMAC Verification (Non-Stripe Providers)
+
+```typescript
+import { createHmac, timingSafeEqual } from 'crypto';
+
+function verifyWebhookSignature(
+  payload: Buffer,
+  signature: string,
+  secret: string,
+): boolean {
+  const expected = createHmac('sha256', secret).update(payload).digest('hex');
+  return timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+}
+```
+
+### Key Rules
+
+- ALWAYS use `rawBody` (Buffer), never parsed JSON, for signature verification
+- Use `timingSafeEqual` to prevent timing attacks on signature comparison
+- Store webhook secrets in environment variables, never hardcoded
+- Log webhook events for audit trail
+- Return 200 quickly — do heavy processing async (queue)
+- **NEVER point dev/test webhook URLs to production endpoints.** Use provider sandbox/test modes (Stripe test mode, PayPal sandbox). Each environment (dev, staging, prod) must have its own webhook URL and its own webhook secret. Shared secrets across environments = one compromised env compromises all.
