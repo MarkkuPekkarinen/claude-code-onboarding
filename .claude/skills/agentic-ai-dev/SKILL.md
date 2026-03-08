@@ -112,3 +112,9 @@ mypy src/                                              # Type check
 **Tool execution errors**: Wrap all `@tool` functions in try/except. Return structured error messages the LLM can reason about.
 
 **Graph infinite loops**: Always include `iteration_count` in state and check it in the routing function.
+
+## Post-Code Review
+
+After writing agentic AI code, dispatch these reviewer agents:
+- `agentic-ai-reviewer` — graph correctness, guardrails, iteration limits, cost efficiency
+- `security-reviewer` — tool input validation, prompt injection defense

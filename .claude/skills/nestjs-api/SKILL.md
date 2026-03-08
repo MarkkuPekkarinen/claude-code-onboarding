@@ -119,3 +119,19 @@ Before generating code, consult these sources for current syntax and APIs:
 **Not-found errors**: Throw `NotFoundException` from services. Global exception filter returns structured 404.
 
 **Duplicate errors**: Catch Prisma `P2002` unique constraint violation and convert to `409 Conflict`.
+
+## Hard Prohibitions
+
+- No raw `any` request bodies — all endpoints must use DTOs with `class-validator` decorators
+- No raw SQL unless performance-critical (document why in a comment)
+- No `jest` in new code — use Vitest exclusively
+- `@UseGuards(JwtAuthGuard)` on every non-public route — no exceptions
+- No arbitrary Tailwind values (`p-[13px]`) — use the scale (`p-4`, `gap-6`)
+- Angular: no `*ngIf`/`*ngFor` — use `@if`/`@for`/`@switch`; typed reactive forms `FormGroup<T>` only
+
+## Post-Code Review
+
+After writing TypeScript code, dispatch these reviewer agents:
+- `nestjs-reviewer` — module correctness, Prisma usage, resilience patterns
+- `code-reviewer` — general quality, DRY, error handling
+- `security-reviewer` — auth, input validation, OWASP Top 10

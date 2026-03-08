@@ -98,3 +98,15 @@ mvn dependency:tree                  # Show dependency tree
 **Not-found errors**: Use `switchIfEmpty(Mono.error(new ResourceNotFoundException(...)))` in services.
 
 **Duplicate errors**: Catch `DataIntegrityViolationException` in services and convert to `409 Conflict`.
+
+## Hard Prohibitions
+
+- No `block()` calls in reactive chains — all operations must stay non-blocking
+- No JPA in reactive stacks — use R2DBC exclusively
+- Password reset rate limit: 3 attempts per email per hour maximum
+
+## Post-Code Review
+
+After writing Java code, dispatch these reviewer agents:
+- `spring-reactive-reviewer` — reactive correctness, blocking call detection, R2DBC patterns
+- `security-reviewer` — auth, input validation, secrets management

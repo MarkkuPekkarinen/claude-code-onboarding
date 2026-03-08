@@ -116,3 +116,15 @@ mypy src/                                              # Type check
 alembic upgrade head                                   # Run pending migrations
 alembic revision --autogenerate -m "description"       # Generate new migration
 ```
+
+## Hard Prohibitions
+
+- Use `str | None` union syntax (Python 3.10+), not `Optional[str]`
+- Use `model_validator` for cross-field Pydantic validation, not ad-hoc `__init__` logic
+
+## Post-Code Review
+
+After writing Python code, dispatch these reviewer agents:
+- `code-reviewer` — general quality, DRY, error handling
+- `agentic-ai-reviewer` — if LangChain/LangGraph code: graph correctness, guardrails, cost
+- `security-reviewer` — input validation, auth, dependency audit

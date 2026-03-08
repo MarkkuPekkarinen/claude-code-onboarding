@@ -143,3 +143,14 @@ Before generating schemas or queries, consult these sources:
 **Migration conflicts**: When migrations fail, check for column type mismatches or missing dependent migrations. Never modify an applied migration — create a new corrective one.
 
 **Index creation failures**: Verify the column exists and data types support the index type. For large tables, use `CREATE INDEX CONCURRENTLY`.
+
+## Hard Prohibitions
+
+- No `DROP TABLE` or `DROP COLUMN` without explicit human approval
+- Use plural table names (`users`, `orders`, `payments`)
+- Database credentials rotated every 90 days (see `security-review-checklist.md` §8)
+
+## Post-Code Review
+
+After writing SQL/migration code, dispatch this reviewer agent:
+- `postgresql-database-reviewer` — query optimization, schema correctness, index coverage, security

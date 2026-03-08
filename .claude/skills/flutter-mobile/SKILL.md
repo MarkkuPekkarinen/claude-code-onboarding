@@ -190,6 +190,21 @@ flutter analyze                      # Static analysis
 
 **AsyncValue stuck loading**: Check repository returns data, use `AsyncValue.guard()` to catch errors
 
+## Hard Prohibitions
+
+- No `Navigator.push` with raw strings — use GoRouter type-safe routes exclusively
+- No returning null on async error — use `AsyncValue.error`, never null/empty fallbacks
+- No `Color(0x...)` or `Colors.*` — use `Theme.of(context).colorScheme.*`
+- No raw `EdgeInsets` with numeric values — use `AppSpacing.*` tokens
+- No inline `TextStyle(fontSize: ...)` — use `Theme.of(context).textTheme.*`
+
+## Post-Code Review
+
+After writing Dart code, dispatch these reviewer agents:
+- `riverpod-reviewer` — state management, provider types, AsyncValue handling
+- `flutter-security-expert` — secure storage, certificate pinning, data protection
+- `accessibility-auditor` — WCAG 2.1 compliance, Semantics widgets, touch targets
+
 ## Templates Reference
 
 For all code templates (pubspec.yaml, Freezed models, Riverpod providers, screen widgets, GoRouter config, widget tests, Firebase integration, repository patterns):
