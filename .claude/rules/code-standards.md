@@ -21,6 +21,10 @@ About to write code?
 - NEVER use deprecated methods — MCP results will show current alternatives
 - If MCP returns something different from what you expected, trust the MCP result
 
+**Dependency version selection:**
+- When selecting a dependency, explicitly use the latest stable version. Pin to a specific version in `package.json` / `pubspec.yaml` / `pom.xml` / `pyproject.toml` — never use `*`, `latest`, or unpinned ranges in production.
+- Verify the package exists and is legitimate before installing (see `security-review-checklist.md` §6 Dependencies).
+
 **MCP lookup order:**
 1. Dedicated MCP server listed in the skill's SKILL.md (e.g., Angular CLI MCP, Firebase MCP, Dart MCP)
 2. `Context7` MCP — resolve library ID first, then query docs

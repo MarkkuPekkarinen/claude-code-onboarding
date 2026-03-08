@@ -6,6 +6,7 @@
 - No hardcoded API keys, passwords, tokens, or connection strings in source code
 - Secrets loaded from environment variables or secret managers only
 - No secrets in git history (check with grep/trufflehog if suspicious)
+- **Never paste real API keys, tokens, or credentials into AI chat interfaces** (Cursor, Claude, ChatGPT, Copilot). Use `process.env.VAR_NAME` placeholders in prompts. AI providers may log conversations — treat chat input as a public channel.
 - `.env` files in `.gitignore`
 
 ### 2. Injection Prevention (CRITICAL)
@@ -38,6 +39,7 @@
 - CORS configured with specific origins (not wildcard in production)
 
 ### 6. Dependencies (HIGH)
+- **Verify every package before installing:** Check npm/PyPI download count (>1K weekly), last publish date (<12 months), verify package name matches intended (typosquatting defense: `lodash` not `lodash-utils`). For AI-suggested packages, verify the package actually exists on the registry before running `npm install` / `pip install`.
 - `npm audit` / `pip audit` / dependency-check clean of critical/high CVEs
 - No deprecated or unmaintained packages in critical paths
 - Lock files committed; dependencies pinned

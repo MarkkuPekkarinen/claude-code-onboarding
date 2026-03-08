@@ -2,6 +2,89 @@
 
 Enterprise authentication patterns for NestJS 11.x with JWT, bcrypt, and rate limiting.
 
+## Redirect URL Validation
+
+### Allowlist-Based Redirect Guard
+
+Open redirects allow attackers to craft URLs like `yourapp.com/login?redirect=evil.com` that look legitimate but send users to phishing sites. Always validate redirect targets against an allowlist.
+
+```typescript
+// src/common/guards/safe-redirect.guard.ts
+import { Injectable, BadRequestException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+
+@Injectable()
+export class SafeRedirectService {
+  private readonly allowedHosts: Set<string>;
+
+  constructor(private readonly config: ConfigService) {
+    // Load allowed redirect hosts from config
+    this.allowedHosts = new Set(
+      this.config.get<string>('ALLOWED_REDIRECT_HOSTS', '')
+        .split(',')
+        .filter(Boolean)
+        .map((h) => h.trim().toLowerCase()),
+    );
+  }
+
+  /**
+   * Validate a redirect URL against the allowlist.
+   * Returns the URL if safe, throws if not.
+   */
+  validateRedirectUrl(redirectUrl: string): string {
+    // Allow relative paths (they stay on the same origin)
+    if (redirectUrl.startsWith('/') && !redirectUrl.startsWith('//')) {
+      return redirectUrl;
+    }
+
+    try {
+      const parsed = new URL(redirectUrl);
+      if (!this.allowedHosts.has(parsed.hostname.toLowerCase())) {
+        throw new BadRequestException(
+          `Redirect to '${parsed.hostname}' is not allowed`,
+        );
+      }
+      // Block non-HTTPS redirects in production
+      if (parsed.protocol !== 'https:') {
+        throw new BadRequestException('Only HTTPS redirects are allowed');
+      }
+      return redirectUrl;
+    } catch (e) {
+      if (e instanceof BadRequestException) throw e;
+      throw new BadRequestException('Invalid redirect URL');
+    }
+  }
+}
+```
+
+### Usage in Auth Controller
+
+```typescript
+@Post('login')
+async login(
+  @Body() dto: LoginDto,
+  @Query('redirect') redirect?: string,
+) {
+  const tokens = await this.authService.login(dto);
+
+  // Validate redirect URL if provided
+  const safeRedirect = redirect
+    ? this.safeRedirectService.validateRedirectUrl(redirect)
+    : '/dashboard';
+
+  return { ...tokens, redirectTo: safeRedirect };
+}
+```
+
+### Key Rules
+- **NEVER** redirect to a user-provided URL without validation
+- Allow relative paths (`/dashboard`) — they stay on the same origin
+- Block `//evil.com` (protocol-relative URLs that look like relative paths)
+- Require HTTPS for absolute redirects
+- Load allowed hosts from environment config, not hardcoded
+
+---
+
 ## JWT Security Best Practices
 
 ### Installation
