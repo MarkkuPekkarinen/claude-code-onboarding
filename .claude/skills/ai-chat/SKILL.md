@@ -49,47 +49,7 @@ Before writing any component:
 
 ## Quick Start
 
-### Angular
-
-```typescript
-// Standalone component — always OnPush + signals
-@Component({
-  selector: 'app-chat',
-  standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [StreamingMessageComponent, ChatInputComponent, TokenIndicatorComponent],
-  template: `
-    <div class="flex flex-col h-full">
-      <app-token-indicator [usage]="tokenUsage()" />
-      <div #scrollContainer class="flex-1 overflow-y-auto p-4 space-y-2"
-           aria-live="polite" aria-label="Conversation">
-        @for (msg of messages(); track msg.id) {
-          <app-streaming-message [message]="msg" />
-        }
-      </div>
-      <app-chat-input (send)="onSend($event)" (stop)="onStop()" [streaming]="isStreaming()" />
-    </div>
-  `
-})
-export class ChatComponent { ... }
-```
-
-### Flutter
-
-```dart
-// ConsumerWidget — always watch AsyncNotifier
-class ChatScreen extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(chatNotifierProvider);
-    return Column(children: [
-      TokenIndicatorWidget(usage: state.tokenUsage),
-      Expanded(child: ChatMessageList(messages: state.messages)),
-      ChatInputWidget(onSend: (text) => ref.read(chatNotifierProvider.notifier).send(text)),
-    ]);
-  }
-}
-```
+See `reference/quick-start.md` for entry-point wiring (Angular `ChatComponent` + Flutter `ChatScreen`).
 
 ## Key Patterns (brief — details in reference files)
 
@@ -125,6 +85,7 @@ class ChatScreen extends ConsumerWidget {
 
 | File | Contents |
 |------|----------|
+| `reference/quick-start.md` | Entry-point wiring for Angular ChatComponent and Flutter ChatScreen |
 | `reference/streaming-patterns.md` | Streaming UX, auto-scroll, memoization, stop controls |
 | `reference/context-management.md` | Token indicator, threshold logic, summarization trigger |
 | `reference/ai-error-handling.md` | Refusal, rate limit, context exceeded, timeout, hallucination flag |
