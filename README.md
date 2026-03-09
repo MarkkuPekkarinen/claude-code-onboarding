@@ -82,6 +82,7 @@ Clone it, install Claude Code, and start building.
     - [CLAUDE.md (Project Context)](#claudemd-project-context)
     - [Slash Commands — Reusable Prompt Shortcuts](#slash-commands--reusable-prompt-shortcuts)
     - [Agents (Subagents) — Specialist AI Personas](#agents-subagents--specialist-ai-personas)
+    - [Subagent-Driven Development (SDD) — Plan-to-PR Pipeline](#subagent-driven-development-sdd--plan-to-pr-pipeline)
     - [Skills — Auto-Activated Knowledge](#skills--auto-activated-knowledge)
     - [MCP Servers — External Tool Integrations](#mcp-servers--external-tool-integrations)
     - [settings.json Configuration](#settingsjson-configuration)
@@ -670,6 +671,39 @@ Use `$ARGUMENTS` in the command file (`.claude/commands/scaffold-spring-api.md`)
 > @database-designer Design the schema for an e-commerce platform
 > @architect Design the system architecture for a real-time chat feature
 ```
+
+### Subagent-Driven Development (SDD) — Plan-to-PR Pipeline
+
+**What:** A 3-role autonomous pipeline that turns an approved plan file into reviewed, committed code — without you shepherding each step.
+
+**Pipeline:** Research (optional) → Implementer → Spec Reviewer → Quality Reviewer → PR
+
+| Role | What it does |
+|------|-------------|
+| **Research** *(optional)* | Explores unfamiliar APIs or domains, produces `docs/research/<feature>.md` |
+| **Implementer** | Writes code + tests for each task in the plan |
+| **Spec Reviewer** | Checks implementation against the plan's acceptance criteria |
+| **Quality Reviewer** | Tech-stack-specific review (Spring, NestJS, Flutter, etc.) |
+
+**When to use:** A plan file exists at `docs/plans/YYYY-MM-DD-<feature>.md` (created via `/plan-review`) and the work spans 3+ tasks.
+
+**Research phase — when it helps:** When the feature touches an external API or service your team hasn't integrated before (e.g., Stripe Connect, a new compliance standard, an unfamiliar third-party SDK). The research agent produces a committed `docs/research/<feature>.md` artifact that the spec reviewer uses to validate API usage in Step 2. Skip it when the stack is familiar.
+
+**Two dispatch modes:**
+- **Subagent mode** — `Agent` tool, general-purpose agents, sequential. Best for ≤5 tasks.
+- **Team mode** — `TeamCreate` with tech-specific agents running concurrently. Best for 6+ tasks.
+
+**How to trigger:**
+```
+> Run the SDD pipeline for docs/plans/2026-03-01-payments.md
+> Use subagent-driven-development to implement the auth feature plan
+```
+
+Or Claude auto-activates the `subagent-driven-development` skill when it detects a plan file and 3+ tasks.
+
+**Skill:** `.claude/skills/subagent-driven-development/`
+
+---
 
 ### Skills — Auto-Activated Knowledge
 
