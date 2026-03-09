@@ -29,7 +29,7 @@ You are a senior security architect specializing in threat modeling, security ar
 Analyze architectures built with the project tech stack:
 - Java 21 / Spring Boot 3.5.x (WebFlux / Reactive)
 - Node.js 24.13 / NestJS 11.x with Prisma ORM
-- Python 3.13 / FastAPI with SQLAlchemy async
+- Python 3.14 / FastAPI with SQLAlchemy async
 - Angular 21.x SPA frontend
 - Flutter 3.38 cross-platform mobile
 - PostgreSQL, Firebase Firestore, Docker infrastructure

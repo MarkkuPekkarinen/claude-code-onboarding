@@ -71,7 +71,7 @@ test('createUser throws ConflictException when email is duplicate', ...)
 |-------|---------------|-----------|
 | Java 21 / Spring Boot WebFlux | `references/tdd-patterns-java.md` | Writing tests for Spring Boot, WebFlux, reactive Java |
 | NestJS 11 / TypeScript | `references/tdd-patterns-nestjs.md` | Writing tests for NestJS, TypeScript, Fastify |
-| Python 3.13 / FastAPI | `references/tdd-patterns-python.md` | Writing tests for FastAPI, Pydantic, async Python |
+| Python 3.14 / FastAPI | `references/tdd-patterns-python.md` | Writing tests for FastAPI, Pydantic, async Python |
 | Flutter / Dart | `references/tdd-patterns-flutter.md` | Writing tests for Flutter widgets, Riverpod providers, Dart |
 
 ## Quick Checklist

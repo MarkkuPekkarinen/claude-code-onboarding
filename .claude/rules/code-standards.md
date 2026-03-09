@@ -12,8 +12,16 @@ About to write code?
     |   NO  -> Use Context7 MCP as fallback.
     |
     +-- Does the code use an API you haven't verified this session?
-        YES -> Check signature, params, return type against MCP/docs before using.
-        NO  -> Proceed.
+    |   YES -> Check signature, params, return type against MCP/docs before using.
+    |   NO  -> Continue.
+    |
+    +-- Does this change touch the database (schema, queries, migrations)?
+    |   YES -> Follow postgres-best-practices. Run `postgresql-database-reviewer` agent.
+    |   NO  -> Continue.
+    |
+    +-- Is this the simplest correct solution?
+        NO  -> Simplify before proceeding. Re-read core-behaviors.md §4.
+        YES -> Proceed.
 ```
 
 **Non-negotiable:**
@@ -138,6 +146,37 @@ Before creating or writing ANY file containing diagrams or structured content:
 - No raw HTML in markdown files unless the render target is confirmed to support it
 - No emoji in code comments or rule files unless the project explicitly uses them
 - Special characters in file paths must be escaped per the target shell
+
+## Performance
+
+Never optimize without evidence. Profile first.
+
+- Use DevTools (Chrome for Angular, Flutter DevTools for mobile, JProfiler/VisualVM for Java) before assuming a bottleneck
+- Follows the naive-then-optimize pattern: correct first, then profile, then optimize the proven bottleneck
+- Quantify improvements: "Reduced load time from 1200ms to 400ms" not "made it faster"
+- No premature optimization — measure before and after, or don't optimize
+- Database queries: use `EXPLAIN ANALYZE` before rewriting. Verify index usage
+
+## Security and Accessibility Baseline
+
+These rules apply to ALL code changes — not just when a reviewer agent is dispatched.
+
+### Security
+
+- All API endpoints MUST validate and sanitize inputs
+- Never trust client-side data — validate server-side
+- No secrets, keys, or credentials in code — use environment variables
+- Parameterized queries only — no string concatenation for SQL
+- Encode output to prevent XSS (use framework defaults, never bypass)
+- Authentication and authorization checks on every protected endpoint
+
+### Accessibility
+
+- All UI changes must follow WCAG 2.1 AA baseline
+- Semantic HTML (Angular) / proper widget semantics (Flutter)
+- Interactive elements must be keyboard-navigable and screen-reader accessible
+- Color contrast ratio >= 4.5:1 for normal text, >= 3:1 for large text
+- Touch targets >= 48dp (Flutter) / 44px (Angular)
 
 ## Pre-Submit Checklist
 

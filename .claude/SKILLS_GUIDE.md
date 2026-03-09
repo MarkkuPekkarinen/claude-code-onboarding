@@ -10,13 +10,13 @@
 
 ### Backend (8 skills)
 - **agentic-ai-coding-standard**: Provides coding standards for Python agentic AI services with LangChain/LangGraph, covering state management, tool definitions, graph structure, error handling, and observability.
-- **agentic-ai-dev**: Provides patterns and templates for building production AI agents with Python 3.13, LangChain v1.2.8, LangGraph v1.0.7, and FastAPI 0.128.x.
+- **agentic-ai-dev**: Provides patterns and templates for building production AI agents with Python 3.14, LangChain v1.2.8, LangGraph v1.0.7, and FastAPI 0.128.x.
 - **java-coding-standard**: Activated when reviewing Java code or enforcing coding standards in Spring Boot services, covering naming conventions, immutability patterns, Optional usage, streams, and exception handling.
 - **java-spring-api**: Provides patterns and templates for Java 21 Spring Boot 3.5.x WebFlux REST API development, activated when creating controllers, services, repositories, DTOs, or reactive tests.
 - **mcp-builder**: Used when building MCP (Model Context Protocol) servers to integrate external APIs or services, providing guides for Python (FastMCP) and Node/TypeScript (MCP SDK) implementations.
 - **nestjs-api**: Provides patterns and templates for NestJS 11.x with Fastify, Prisma ORM, and TypeScript 5.x development, activated when creating modules, controllers, services, DTOs, guards, interceptors, or tests.
 - **nestjs-coding-standard**: Activated when reviewing NestJS/TypeScript code or enforcing coding standards in NestJS 11.x services, covering naming conventions, TypeScript strictness, DTO patterns, and module organization.
-- **python-dev**: Provides patterns and templates for Python 3.13 development with FastAPI and modern tooling, activated when creating Python APIs, scripts, data processing pipelines, or pytest tests.
+- **python-dev**: Provides patterns and templates for Python 3.14 development with FastAPI and modern tooling, activated when creating Python APIs, scripts, data processing pipelines, or pytest tests.
 
 ### Frontend (5 skills)
 - **angular-spa**: Angular 21.x SPA development skill with TailwindCSS 4.x and daisyUI 5.5.5, covering component scaffolding, UI/UX design, accessibility audits, and design systems.

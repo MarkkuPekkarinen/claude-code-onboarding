@@ -34,7 +34,7 @@ This repository is a pre-configured starter kit packed with agents, skills, slas
 | Layer | Technologies |
 |---|---|
 | **Backend** | Java 21, Spring Boot WebFlux v3.5.x, Node.js v24.13, NestJS v11.x, Python v3.13 |
-| **Agentic AI** | Python 3.13, LangChain v1.2.8, LangGraph v1.0.7, FastAPI 0.128.x |
+| **Agentic AI** | Python 3.14, LangChain v1.2.8, LangGraph v1.0.7, FastAPI 0.128.x |
 | **Frontend** | Angular 21.x, TypeScript 5.x |
 | **Mobile** | Flutter 3.38, Dart 3.11 |
 | **Data & Infra** | PostgreSQL, Firebase |
@@ -359,7 +359,7 @@ Tell me when each step completes and flag any errors before moving to the next s
 ### Manual Setup
 #### Prerequisites
 
-- Python 3.13+
+- Python 3.14+
 - A microphone and speakers (or headphones)
 - An OpenAI API key (for Whisper STT and OpenAI TTS)
 
@@ -1784,7 +1784,7 @@ claude-code-onboarding/
         │                                 # circuit breakers, feature flags, messaging (BullMQ/RabbitMQ/Kafka),
         │                                 # REST controllers, security, debugging, testing (23 reference files)
         ├── nestjs-coding-standard/       # NestJS naming, module patterns, DTO conventions (1 reference file)
-        ├── python-dev/                   # Python 3.13: FastAPI patterns, Pydantic v2, async SQLAlchemy,
+        ├── python-dev/                   # Python 3.14: FastAPI patterns, Pydantic v2, async SQLAlchemy,
         │                                 # pytest fixtures, ruff/mypy config (1 reference file)
         │
         │  # — Agentic AI skills —

@@ -1,6 +1,6 @@
 # FastAPI Templates, Code Patterns, and Project Configuration
 
-This reference contains production-ready code templates and project configuration for Python 3.13 + FastAPI development.
+This reference contains production-ready code templates and project configuration for Python 3.14 + FastAPI development.
 
 ## FastAPI App Template
 

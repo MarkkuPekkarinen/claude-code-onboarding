@@ -23,7 +23,7 @@ Verify prerequisites are installed at correct versions:
 - Java 21 (`java -version`)
 - Node.js 24.13 (`node -v`)
 - Flutter 3.38 (`flutter --version`)
-- Python 3.13 (`python3 --version`)
+- Python 3.14 (`python3 --version`)
 - Docker + Docker Compose (`docker --version`)
 
 Detect version mismatches and create remediation scripts or Makefile targets that

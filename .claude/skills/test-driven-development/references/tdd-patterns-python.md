@@ -1,4 +1,4 @@
-# TDD Patterns — Python 3.13 / FastAPI
+# TDD Patterns — Python 3.14 / FastAPI
 
 ## Test Structure (pytest + httpx)
 

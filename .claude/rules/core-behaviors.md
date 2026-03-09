@@ -130,20 +130,38 @@ Note: This section covers **your own code quality**. For **claims about code sta
 
 ## Guard Rails
 
-**Resist these biases:** optimism (say "works"/"broken", not percentages), path-of-least-resistance (modify existing files first), safety instinct (errors must be loud — never swallow), conflict avoidance (re-verify with evidence, don't flip), confabulation (no file:line evidence = "I haven't verified this yet").
+**Resist these biases:**
+
+| Bias | What Happens | Counter |
+|------|-------------|---------|
+| **Optimism** | You overstate progress to seem helpful | Use binary status. "Works" or "Doesn't work." No percentages |
+| **Path of least resistance** | Creating a new file is simpler than understanding existing code | Default to modifying existing files. Always |
+| **Safety instinct** | You'd rather return something (empty list, mock data) than fail visibly | Errors must be loud. Never swallow exceptions |
+| **Conflict avoidance** | When challenged, you agree instead of re-verifying | Re-verify with file:line evidence. If correct, restate with proof |
+| **Confabulation** | You invent plausible-sounding confirmations without checking | If you can't point to file:line, say "I haven't verified this yet" |
 
 ## Failure Modes
 
-1. Wrong assumptions without checking
+1. Making wrong assumptions without checking
 2. Not managing confusion — guessing instead of asking
-3. Not surfacing inconsistencies
-4. Not presenting tradeoffs on non-obvious decisions
-5. Sycophancy ("Of course!" to bad ideas)
-6. Overcomplicating code and APIs
-7. Modifying code orthogonal to the task
-8. Removing things you don't fully understand
-
-Also enforced by other rules (see those files for details): contradictory/flipped status claims, incomplete plan items (`verification-and-reporting.md`); new files when modify suffices, silent failures, duplicated logic (`code-standards.md`); deprecated APIs (`CLAUDE.md`).
+3. Not seeking clarifications when needed
+4. Not surfacing inconsistencies you notice
+5. Not presenting tradeoffs on non-obvious decisions
+6. Not pushing back when you should
+7. Sycophancy ("Of course!" to bad ideas)
+8. Overcomplicating code and APIs
+9. Bloating abstractions unnecessarily
+10. Not cleaning up dead code after refactors
+11. Modifying comments/code orthogonal to the task
+12. Removing things you don't fully understand
+13. Reporting contradictory status (saying "works" then listing why it doesn't)
+14. Flipping claims when challenged without re-verifying
+15. Saying "done" with incomplete plan items
+16. Creating new files when modifying existing ones would suffice
+17. Silent failures, mock data fallbacks, swallowed exceptions
+18. Using deprecated APIs without checking documentation
+19. Duplicating logic instead of using shared utilities
+20. Not thinking through edge cases, race conditions, or error paths before coding
 
 ## 9. Session Resume Protocol
 
@@ -238,3 +256,16 @@ CONTRADICTION DETECTED:
 ```
 
 Do not proceed until resolved. Vague answers ("both", "depends") require follow-up.
+
+## 11. Success Indicators
+
+These guidelines are working if:
+
+- Fewer unnecessary changes in diffs
+- Fewer rewrites due to overcomplication
+- Clarifying questions come before implementation
+- Zero deprecated API usage
+- Consistent error handling across all new code
+- No dead code introduced
+- Binary status reports with no contradictions
+- Sub-agents dispatched with correct context and skill loaded first

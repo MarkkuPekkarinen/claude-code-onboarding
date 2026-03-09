@@ -1,5 +1,5 @@
 ---
-description: Scaffold a new Agentic AI service with Python 3.13, LangChain v1.2.8, LangGraph v1.0.7, FastAPI 0.128.x, and production infrastructure
+description: Scaffold a new Agentic AI service with Python 3.14, LangChain v1.2.8, LangGraph v1.0.7, FastAPI 0.128.x, and production infrastructure
 argument-hint: "[project name]"
 allowed-tools: Bash, Read, Write, Edit
 disable-model-invocation: true
