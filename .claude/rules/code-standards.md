@@ -169,6 +169,8 @@ These rules apply to ALL code changes — not just when a reviewer agent is disp
 - Parameterized queries only — no string concatenation for SQL
 - Encode output to prevent XSS (use framework defaults, never bypass)
 - Authentication and authorization checks on every protected endpoint
+- Passwords MUST be hashed (bcrypt cost>=12 or argon2) — never store or compare plaintext
+- File uploads MUST be validated (type, size, content) and size-limited — never accept unbounded uploads
 
 ### Accessibility
 

@@ -2,7 +2,7 @@
 
 > Complete skill catalog for Claude Code Onboarding Kit. Use this to find the right skill for any task.
 >
-> 37 skills across 7 domains. Each skill is loaded with `/skill-name` or via `Skill` tool.
+> 39 skills across 7 domains. Each skill is loaded with `/skill-name` or via `Skill` tool.
 
 ---
 
@@ -18,7 +18,8 @@
 - **nestjs-coding-standard**: Activated when reviewing NestJS/TypeScript code or enforcing coding standards in NestJS 11.x services, covering naming conventions, TypeScript strictness, DTO patterns, and module organization.
 - **python-dev**: Provides patterns and templates for Python 3.14 development with FastAPI and modern tooling, activated when creating Python APIs, scripts, data processing pipelines, or pytest tests.
 
-### Frontend (5 skills)
+### Frontend (6 skills)
+- **ai-chat**: AI chat interface patterns for Angular 21.x and Flutter 3.38 — streaming markdown rendering, auto-scroll heuristics, memoized computed(), token context indicators, thumbs up/down feedback, multi-modal input, and AI error states.
 - **angular-spa**: Angular 21.x SPA development skill with TailwindCSS 4.x and daisyUI 5.5.5, covering component scaffolding, UI/UX design, accessibility audits, and design systems.
 - **flutter-mobile**: Provides patterns and templates for Flutter 3.38 / Dart 3.11 cross-platform mobile development, activated when building Flutter screens, Riverpod providers, Freezed models, or widget tests.
 - **frontend-design**: Creative frontend design skill providing visual design principles, typography and color guidance, motion patterns, and anti-patterns for building distinctive production-grade UIs.
@@ -57,6 +58,7 @@
 - **writing-skills**: Used when creating a new Claude Code skill from scratch, extending an existing skill, or reviewing a skill for structure compliance.
 - **the-fool**: Challenge ideas, plans, and decisions using structured adversarial reasoning — devil's advocate, pre-mortem, red team, Socratic questioning, and evidence falsification.
 - **feature-forge**: Used when defining new features, gathering requirements, or writing specifications before implementation starts. Runs PM+Dev dual-perspective interview, produces EARS-format functional requirements and Given/When/Then acceptance criteria saved to `specs/{feature}.spec.md`.
+- **iterate-pr**: Autonomous PR completion loop — fetches CI failures and review feedback, fixes and pushes until all checks are green. Classifies feedback by LOGAF scale (high/medium auto-fix, low asks user), polls CI, and posts GitHub thread replies.
 
 ---
 
@@ -90,6 +92,11 @@
 3. **browser-testing** — E2E test the new flow
 4. **code-reviewer** — Final review
 
+### AI Chat UI Feature (Angular or Flutter)
+1. **ai-chat** — Streaming messages, auto-scroll, token indicator, feedback, error states
+2. **angular-spa** or **flutter-mobile** — Platform-specific component patterns
+3. **security-reviewer** — File upload, innerHTML rendering, token exposure
+
 ### AI Agent Development
 1. **agentic-ai-dev** — Build LangGraph agent, RAG system, tools
 2. **agentic-ai-coding-standard** — Enforce state management, tool definitions, guardrails
@@ -119,6 +126,7 @@
 - **NestJS REST API / TypeScript service** -> nestjs-api
 - **Python FastAPI service** -> python-dev
 - **AI agent or RAG pipeline** -> agentic-ai-dev
+- **AI chat UI (streaming, copilot, chatbot)** -> ai-chat
 - **Angular SPA** -> angular-spa
 - **Flutter mobile app (iOS/Android)** -> flutter-mobile
 - **MCP server integration** -> mcp-builder
@@ -129,7 +137,8 @@
 - **Security vulnerabilities / OWASP** -> security-reviewer
 - **Static analysis configuration** -> sast-configuration
 - **Threat model for new system** -> threat-modeling
-- **PR review for GitHub** -> pr-review
+- **PR review for GitHub (before merge)** -> pr-review
+- **Fix CI failures + feedback loop after PR opened** -> iterate-pr
 - **Receiving feedback on my PR** -> receiving-code-review
 - **Duplicate code / tech debt** -> dedup-code-agent
 - **Plan or architecture review** -> plan-mode-review
@@ -161,6 +170,7 @@
 - **Verify work before claiming done** -> verification-before-completion
 - **Debug unexpected behavior** -> systematic-debugging
 - **Multi-agent implementation pipeline** -> subagent-driven-development
+- **Iterate PR until CI is green** -> iterate-pr
 - **Create a new skill** -> writing-skills
 - **Find a domain name** -> domain-finder
 
@@ -181,6 +191,12 @@ flutter-mobile + riverpod-patterns + ui-standards-tokens + code-reviewer
 
 ### Angular SPA
 angular-spa + frontend-design + ui-standards-tokens + browser-testing
+
+### AI Chat UI (Angular or Flutter)
+ai-chat + angular-spa (or flutter-mobile) + security-reviewer
+
+### PR Lifecycle (full loop)
+pr-review + iterate-pr + verification-before-completion
 
 ### AI Agent Stack
 agentic-ai-dev + agentic-ai-coding-standard + python-dev + security-reviewer
@@ -214,6 +230,9 @@ writing-skills + subagent-driven-development + plan-mode-review
 - "Design the database schema for a SaaS platform" -> database-schema-designer + architecture-design
 - "Do a DDD analysis for our e-commerce domain" -> ddd-architect + architecture-decision-records
 - "Review this PR for security issues" -> code-reviewer + security-reviewer
+- "Fix all CI failures and address review comments" -> iterate-pr
+- "Build a streaming chat UI with Angular" -> ai-chat + angular-spa + security-reviewer
+- "Build a Flutter chat screen with streaming AI" -> ai-chat + flutter-mobile + riverpod-patterns
 - "Debug this NullPointerException in production" -> systematic-debugging + verification-before-completion
 - "Set up Semgrep rules for our Python codebase" -> sast-configuration + security-reviewer
 - "Generate OpenAPI spec from my Spring controllers" -> openapi-spec-generation + java-spring-api
@@ -232,6 +251,7 @@ writing-skills + subagent-driven-development + plan-mode-review
 |-------|--------|------|-------|--------|
 | agentic-ai-coding-standard | backend | specialist | review | report |
 | agentic-ai-dev | backend | specialist | implementation | code |
+| ai-chat | frontend | specialist | implementation | code |
 | angular-spa | frontend | specialist | implementation | code |
 | architecture-decision-records | api-architecture | architect | design | document |
 | architecture-design | api-architecture | architect | design | architecture |
@@ -266,4 +286,5 @@ writing-skills + subagent-driven-development + plan-mode-review
 | verification-before-completion | workflow | specialist | review | report |
 | writing-skills | workflow | specialist | design | document |
 | the-fool | workflow | expert | review | report |
+| iterate-pr | workflow | autonomous | pr-lifecycle | actions |
 | feature-forge | workflow | specialist | design | document |

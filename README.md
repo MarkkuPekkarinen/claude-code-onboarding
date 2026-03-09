@@ -1613,6 +1613,8 @@ Claude Desktop monitors PRs in the background and auto-fixes CI failures:
 
 Claude watches the PR, catches CI failures, pushes fixes, and can auto-merge when green — all while you continue working on the next task.
 
+For CLI users, the same loop is available as a slash command: `/iterate-pr` — see [After Opening a PR](#after-opening-a-pr--autonomous-ci--feedback-loop).
+
 ### Remote SSH Debugging
 
 Connect to any remote server (EC2, GCP VM, Azure VM, dev containers) and debug directly from the Desktop GUI. Claude Code must be installed on the remote machine.
@@ -1770,6 +1772,7 @@ claude-code-onboarding/
     │   ├── add-feature.md                # /add-feature <feature description>
     │   ├── review-code.md                # /review-code [focus area]
     │   ├── audit-security.md             # /audit-security [scope]
+    │   ├── iterate-pr.md                 # /iterate-pr [PR#] — fix CI + feedback loop until green
     │   ├── status-check.md               # /status-check — binary works/broken report
     │   └── project-status.md             # /project-status — codebase summary
     │
@@ -2149,6 +2152,26 @@ These are **manual** — run them yourself before pushing.
 **`/review-pr`** dispatches 6 specialist agents in parallel: comment accuracy, test coverage gaps, silent failures, type design, code quality, and unnecessary complexity. Findings are aggregated by severity — CRITICAL / IMPORTANT / SUGGESTIONS.
 
 Run `/pr-risk` first. If the score is High or Critical, fix the structural issues before spending 6 agents on a review that will change anyway.
+
+#### After Opening a PR — Autonomous CI + Feedback Loop
+
+```
+/iterate-pr          # current branch PR
+/iterate-pr 123      # specific PR number
+```
+
+**`/iterate-pr`** runs a continuous loop until all checks are green:
+
+1. Fetches review feedback and classifies it by [LOGAF scale](https://develop.sentry.dev/engineering-practices/code-review/#logaf-scale) — auto-fixes `high`/`medium`, asks you about `low`
+2. Polls CI via `gh`; for each failure reads the actual log snippet and traces the root cause
+3. Fixes, verifies locally, commits, pushes — restarting the CI run
+4. Repeats until all checks pass and no unaddressed high/medium feedback remains
+
+It also posts reply comments on inline review threads (via GitHub GraphQL) so reviewers see what was changed.
+
+**Trigger naturally:** Say "fix the CI failures" or "address the review comments" — Claude auto-activates the skill without the slash command.
+
+**When not to use:** Before a PR exists (use `/pr-risk` + `/review-pr` first), or when failures are infrastructure-level flakiness that code changes can't fix.
 
 ### Phase 5: Evolve Your Setup
 
