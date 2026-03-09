@@ -46,7 +46,7 @@ scan_file() {
     fi
 
     # Non-ASCII near sensitive keywords
-    if grep -P '[^\x00-\x7F]' "$file" 2>/dev/null | grep -qiE "instruction|ignore|run|execute"; then
+    if LC_ALL=C grep -v $'[\x01-\x7F]' "$file" 2>/dev/null | grep -qiE "instruction|ignore|run|execute"; then
         WARNINGS+=("$file has non-ASCII characters near sensitive keywords")
     fi
 }
@@ -56,6 +56,8 @@ scan_file ".claude/CLAUDE.md"
 
 if [[ -d ".claude" ]]; then
     for md_file in .claude/*.md; do
+        # Skip hookify rule files — they contain regex patterns that trigger false positives
+        [[ "$md_file" == .claude/hookify.* ]] && continue
         [[ -f "$md_file" ]] && scan_file "$md_file"
     done
 fi

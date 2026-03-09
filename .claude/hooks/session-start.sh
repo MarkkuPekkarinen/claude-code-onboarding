@@ -40,5 +40,5 @@ s="${s//$'\n'/\\n}"
 s="${s//$'\r'/}"
 s="${s//$'\t'/\\t}"
 
-printf '{"hookSpecificOutput":{"additionalContext":"%s"}}' "$s"
+printf '{"additionalContext":"%s"}' "$s"
 exit 0
