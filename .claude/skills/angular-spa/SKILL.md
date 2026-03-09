@@ -110,6 +110,12 @@ Detailed patterns are in `reference/`:
 - **NEVER** use `document.getElementById` or direct DOM manipulation — use `viewChild()` signal or Angular CDK
 - **NEVER** use inline `style=""` attributes — use TailwindCSS utilities or SCSS
 
+### Design Tokens
+- **NEVER** use `style="color: #3B82F6"` inline — use `class="text-primary"`
+- **NEVER** use hardcoded Tailwind primitive color classes like `bg-blue-500` — use semantic `bg-primary`
+- **NEVER** use `style="padding: 16px"` — use `class="p-4"`
+- **NEVER** use `style="font-size: 16px"` — use `class="text-base"`
+
 ## Error Handling
 
 **Build failures (`NG0908`, `NullInjectorError`)**: Read `reference/angular-troubleshooting.md` for common errors and fixes.
@@ -129,3 +135,59 @@ ng lint                           # ESLint check
 ng generate component features/my-feature/my-component --standalone   # Scaffold component
 ng generate service features/my-feature/my-service                    # Scaffold service
 ```
+
+## Design Token System
+
+Full token definitions are in `.claude/skills/ui-standards-tokens/reference/ui-design-tokens.md`. This section covers Angular-specific usage.
+
+### Token Hierarchy (3 Tiers)
+
+```
+Primitive → Semantic → Component
+```
+
+```css
+/* Primitive */
+--color-blue-500: #3B82F6;
+
+/* Semantic */
+--color-primary: var(--color-blue-500);
+
+/* Component */
+--button-bg-primary: var(--color-primary);
+```
+
+Never use primitive tokens directly in component CSS. Components reference component tokens; component tokens reference semantic tokens.
+
+### daisyUI Token Mapping
+
+| Category | daisyUI / Tailwind classes |
+|---|---|
+| Colors | `bg-primary`, `text-base-content`, `bg-base-100/200/300`, `text-error`, `bg-success` |
+| Spacing | `p-2` = 8px, `p-4` = 16px, `p-6` = 24px (4px base scale) |
+| Typography | `text-sm`, `text-base`, `text-lg`, `font-semibold`, `font-bold` |
+| Borders | `rounded-sm`, `rounded-md`, `rounded-lg`, `rounded-full`, `border border-base-300` |
+| Shadows | `shadow-sm`, `shadow-md`, `shadow-xl` |
+| Motion | `transition-all duration-200` |
+| Z-index | custom CSS vars: `--z-dropdown: 1000`, `--z-modal: 1050`, `--z-tooltip: 1070` |
+
+### Theme Switching
+
+```typescript
+// theme.service.ts
+import { Injectable } from '@angular/core';
+
+@Injectable({ providedIn: 'root' })
+export class ThemeService {
+  setTheme(theme: 'light' | 'dark' | 'custom'): void {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }
+
+  getTheme(): string {
+    return localStorage.getItem('theme') ?? 'light';
+  }
+}
+```
+
+daisyUI v5.5.5 uses the `data-theme` attribute on `<html>`. All daisyUI semantic classes switch automatically — no additional CSS is needed per component.
