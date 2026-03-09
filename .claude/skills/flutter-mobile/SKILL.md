@@ -39,10 +39,11 @@ dart run build_runner build --delete-conflicting-outputs
 
 Before creating or modifying any widget, screen, or visual component:
 
-1. **Load `ui-standards-tokens` skill** — read `reference/ui-design-tokens.md` for spacing, color, typography, radius tokens
-2. **Verify token awareness** — can you name the spacing token (`AppSpacing.md`), color approach (`Theme.of(context).colorScheme`), and typography pattern (`Theme.of(context).textTheme`) you will use?
-3. If not → read the reference file before writing any widget code
-4. For accessibility: read `reference/ui-accessibility-patterns.md` before adding interactive elements
+1. **Run MFRI scoring** — read `reference/mfri-scoring.md` and complete the checkpoint template. Score < 3 = stop and redesign. Score 3-5 = add a validation milestone.
+2. **Load `ui-standards-tokens` skill** — read `reference/ui-design-tokens.md` for spacing, color, typography, radius tokens
+3. **Verify token awareness** — can you name the spacing token (`AppSpacing.md`), color approach (`Theme.of(context).colorScheme`), and typography pattern (`Theme.of(context).textTheme`) you will use?
+4. If not → read the reference file before writing any widget code
+5. For accessibility: read `reference/ui-accessibility-patterns.md` before adding interactive elements
 
 ## Process
 

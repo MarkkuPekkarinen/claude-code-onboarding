@@ -49,6 +49,35 @@ Tests are your loop condition.
 
 Correctness first. Performance second. Never skip step 1.
 
+### Three-Pass Development Pattern
+
+For any non-trivial implementation, apply these passes in order. Each pass is independently testable and releasable before moving to the next.
+
+**Pass 1 — Make it work**
+- Write the simplest code that passes the tests
+- Acceptable: verbose, repetitive, naive algorithms, hardcoded values
+- Not acceptable: broken tests, silent failures
+- Gate: all tests pass → commit
+
+**Pass 2 — Make it clear**
+- Rename variables to reflect intent
+- Extract functions where logic is non-obvious (see Rule of Three before extracting)
+- Remove dead code your changes created
+- No behavior change — tests must still pass identically
+- Gate: tests pass, diff is only naming/structure changes → commit
+
+**Pass 3 — Make it efficient** (only if evidence demands it)
+- Profile first — identify the actual bottleneck (DevTools / EXPLAIN ANALYZE / benchmarks)
+- Optimize only the proven bottleneck
+- Measure before and after: "Reduced X from Yms to Zms"
+- Gate: tests pass, performance improvement measured → commit
+
+**Rules:**
+- Never skip to Pass 3 without completing Passes 1 and 2
+- Never run Pass 3 without profiling evidence
+- If human says "just ship it" — Pass 1 output is shippable. Stop there.
+- For trivial changes (renaming, config tweaks): single pass is fine — don't over-process
+
 ## Browser MCP in the Loop
 
 When applicable, use a browser MCP for real-time validation. Verify against actual rendered output or live behavior, not just static code analysis.

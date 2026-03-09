@@ -192,15 +192,27 @@ Include: task title, acceptance criteria, files affected, and any prior reviewer
 
 ---
 
+## Parallel Dispatch — Independence Check
+
+Before dispatching agents in parallel, verify independence first.
+
+Read [reference/parallel-dispatch-checklist.md](reference/parallel-dispatch-checklist.md) for the decision tree, pre-dispatch checklist, post-completion conflict check, and examples.
+
+**Rule:** If tasks share files, config, or have ordering dependencies → sequential only.
+
+---
+
 ## Red Flags — Never Do These
 
 - **Never dispatch parallel implementers** — file conflicts are guaranteed
+- **Never skip the independence checklist** before parallel dispatch — assumption of independence is not sufficient
 - **Never skip spec review** — quality review does not check spec compliance
 - **Never reverse pipeline order** — spec compliance before quality review, always
 - **Never skip a review loop** — reviewer found issues = implementer fixes = re-review required
 - **Never let implementer self-review replace spec/quality review** — both are required
 - **Never tell implementer or reviewer to read the plan file** — provide full task text inline
 - **Never declare a task complete while a reviewer has open issues**
+- **Never skip the post-completion conflict check** after parallel agent dispatch
 
 ---
 

@@ -91,6 +91,22 @@ Before writing ANY code:
 | Duplicate code blocks | 0 | Extract to shared |
 | Inline utilities | 0 | Move to shared |
 
+### Rule of Three — Abstraction Threshold
+
+Use this to decide WHEN to create a shared utility or abstraction:
+
+| Occurrences | Action |
+|-------------|--------|
+| 1 use | Inline — no abstraction |
+| 2 uses | Accept the duplication — abstracting now is premature |
+| 3+ uses | Create a shared utility/service — abstraction is justified |
+
+**Why:** Abstracting at 1-2 uses means guessing at the right interface. At 3 uses, the pattern is proven and the correct abstraction is usually obvious.
+
+**Exception:** If a shared utility is already < 50 lines AND is used consistently across the codebase, extracting at 2 uses is acceptable — but not required.
+
+**Code review check:** Before approving a new helper, service, or base class, ask: "Is this abstraction backed by 3+ actual use cases today?" If not, inline it.
+
 ## Logging Standards
 
 - **Structured:** All logs include context (user type, action, timestamp)

@@ -3,6 +3,8 @@
 > Complete skill catalog for Claude Code Onboarding Kit. Use this to find the right skill for any task.
 >
 > 39 skills across 7 domains. Each skill is loaded with `/skill-name` or via `Skill` tool.
+>
+> **Lazy-load pattern:** Each SKILL.md is a routing document only. Detailed patterns live in `reference/` files within each skill directory. Load the reference file explicitly when the detail is needed — do not expect it to be loaded automatically.
 
 ---
 
@@ -21,7 +23,7 @@
 ### Frontend (6 skills)
 - **ai-chat**: AI chat interface patterns for Angular 21.x and Flutter 3.38 — streaming markdown rendering, auto-scroll heuristics, memoized computed(), token context indicators, thumbs up/down feedback, multi-modal input, and AI error states.
 - **angular-spa**: Angular 21.x SPA development skill with TailwindCSS 4.x and daisyUI 5.5.5, covering component scaffolding, UI/UX design, accessibility audits, and design systems.
-- **flutter-mobile**: Provides patterns and templates for Flutter 3.38 / Dart 3.11 cross-platform mobile development, activated when building Flutter screens, Riverpod providers, Freezed models, or widget tests.
+- **flutter-mobile**: Provides patterns and templates for Flutter 3.38 / Dart 3.11 cross-platform mobile development, activated when building Flutter screens, Riverpod providers, Freezed models, or widget tests. Reference files: `mfri-scoring.md` (risk scoring before any UI implementation), `flutter-templates.md`, `flutter-architecture-patterns.md`, `flutter-performance-ux.md`, `flutter-design-polish.md`, `accessibility-audit-checklist.md`, `flutter-security-hardening.md`.
 - **frontend-design**: Creative frontend design skill providing visual design principles, typography and color guidance, motion patterns, and anti-patterns for building distinctive production-grade UIs.
 - **riverpod-patterns**: Provides Riverpod state management patterns and best practices for Flutter applications, covering providers, AsyncValue handling, ref usage, and provider lifecycle management.
 - **ui-standards-tokens**: Provides design token definitions, theming patterns, and UI standards for Flutter applications, used when auditing UI compliance, implementing design systems, or ensuring consistent token usage.
@@ -53,7 +55,7 @@
 - **domain-finder**: Used when starting a new project or brand and needing to find a registrable domain by brainstorming creative names and checking real availability via DNS/WHOIS.
 - **plan-mode-review**: Structured plan review with Phase 0 self-review, 5-phase code review, approval scope triage, decision logging, and blast radius assessment for non-trivial changes.
 - **receiving-code-review**: Used when receiving code review feedback before implementing any suggestion, requiring verification and technical rigor rather than performative agreement.
-- **subagent-driven-development**: 3-role pipeline (Implementer -> Spec Reviewer -> Quality Reviewer) for plan-driven multi-task implementation supporting subagent dispatch and Agent Teams.
+- **subagent-driven-development**: 3-role pipeline (Implementer -> Spec Reviewer -> Quality Reviewer) for plan-driven multi-task implementation supporting subagent dispatch and Agent Teams. Reference files: `parallel-dispatch-checklist.md` (independence check + conflict detection before/after parallel dispatch), `implementer-prompt.md`, `spec-reviewer-prompt.md`.
 - **verification-before-completion**: Used when about to claim work is complete, fixed, or passing, requiring verification commands and confirmed output before any success claims.
 - **writing-skills**: Used when creating a new Claude Code skill from scratch, extending an existing skill, or reviewing a skill for structure compliance.
 - **the-fool**: Challenge ideas, plans, and decisions using structured adversarial reasoning — devil's advocate, pre-mortem, red team, Socratic questioning, and evidence falsification.
