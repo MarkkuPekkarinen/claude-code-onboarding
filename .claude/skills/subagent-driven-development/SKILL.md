@@ -46,6 +46,20 @@ Plan: [file]. [N] tasks detected.
 
 This pipeline runs identically in both modes — only the dispatch mechanism differs.
 
+### Step -1 — Research Phase (optional)
+
+Use when the feature touches an unfamiliar external API, a new compliance domain, or a third-party service the team hasn't integrated before.
+
+Dispatch a `general-purpose` agent with:
+- The feature name and the specific unknown (e.g., "Stripe Connect payouts API — we haven't used this before")
+- Output target: `docs/research/<feature>.md`
+
+The research agent should produce: API capabilities, key constraints, auth model, rate limits, SDK options, and gotchas. Save to `docs/research/<feature>.md` and commit before starting Step 0.
+
+The spec reviewer in Step 2 receives this file path inline — include it in the spec reviewer prompt so it can verify the implementer's API usage against the research findings.
+
+**Skip when:** the tech stack is familiar, no external unknowns, or the plan was produced from a previous research session.
+
 ### Step 0 — Parse the Plan Once
 
 Read the full plan file once. Extract every task as a structured object:
