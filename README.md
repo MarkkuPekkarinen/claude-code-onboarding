@@ -19,7 +19,9 @@
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.128.x-009688?style=flat&logo=fastapi&logoColor=white)
 ![LangChain](https://img.shields.io/badge/LangChain-1.2.8-1C3C3C?style=flat&logo=langchain&logoColor=white)
 ![LangGraph](https://img.shields.io/badge/LangGraph-1.0.7-1C3C3C?style=flat)
+![Google ADK](https://img.shields.io/badge/Google%20ADK-1.0.0-4285F4?style=flat&logo=google&logoColor=white)
 ![Angular](https://img.shields.io/badge/Angular-21.x-DD0031?style=flat&logo=angular&logoColor=white)
+![A2UI](https://img.shields.io/badge/A2UI-v0.8-0F9D58?style=flat&logo=google&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat&logo=typescript&logoColor=white)
 ![Flutter](https://img.shields.io/badge/Flutter-3.38-02569B?style=flat&logo=flutter&logoColor=white)
 ![Dart](https://img.shields.io/badge/Dart-3.11-0175C2?style=flat&logo=dart&logoColor=white)
@@ -34,8 +36,8 @@ This repository is a pre-configured starter kit packed with agents, skills, slas
 | Layer | Technologies |
 |---|---|
 | **Backend** | Java 21, Spring Boot WebFlux v3.5.x, Node.js v24.13, NestJS v11.x, Python v3.13 |
-| **Agentic AI** | Python 3.14, LangChain v1.2.8, LangGraph v1.0.7, FastAPI 0.128.x |
-| **Frontend** | Angular 21.x, TypeScript 5.x |
+| **Agentic AI** | Python 3.14, LangChain v1.2.8, LangGraph v1.0.7, Google ADK, FastAPI 0.128.x |
+| **Frontend** | Angular 21.x, TypeScript 5.x, A2UI v0.8 (Agent-to-User Interface renderer) |
 | **Mobile** | Flutter 3.38, Dart 3.11 |
 | **Data & Infra** | PostgreSQL, Firebase |
 | **AI Tooling** | Claude Code, MCP servers |
@@ -124,6 +126,8 @@ Clone it, install Claude Code, and start building.
     - [Exercise 8: Build an AI Agent Service (Agentic AI)](#exercise-8-build-an-ai-agent-service-agentic-ai)
     - [Exercise 9: Domain-Driven Design with DDD Architect](#exercise-9-domain-driven-design-with-ddd-architect)
     - [Exercise 10: Add a Feature End-to-End](#exercise-10-add-a-feature-end-to-end)
+    - [Exercise 11: Build an A2UI Renderer (Agent-to-User Interface)](#exercise-11-build-an-a2ui-renderer-agent-to-user-interface)
+    - [Exercise 12: Build a Google ADK Agent Service](#exercise-12-build-a-google-adk-agent-service)
     - [What's Next?](#whats-next)
   - [17. Development Workflow — Putting It All Together](#17-development-workflow--putting-it-all-together)
     - [How Components Interact](#how-components-interact)
@@ -1729,7 +1733,7 @@ Every time you send a prompt in Claude Code, it assembles a **context window** �
 
 ## 15. What's in This Repo
 
-**76 components** — 20 skills, 13 commands, 20 agents, 4 rules, 4 hooks, 12 MCP servers, 2 settings files, 1 CLAUDE.md.
+**79 components** — 21 skills, 14 commands, 21 agents, 4 rules, 4 hooks, 12 MCP servers, 2 settings files, 1 CLAUDE.md.
 
 ```
 claude-code-onboarding/
@@ -1761,7 +1765,9 @@ claude-code-onboarding/
     │   ├── nestjs-api.md                 # NestJS / Fastify / Prisma expert
     │   ├── python-dev.md                 # Python / FastAPI expert
     │   ├── agentic-ai-dev.md             # LangChain / LangGraph AI agent builder
+    │   ├── google-adk.md                 # Google ADK (Gemini agents) builder
     │   ├── angular-spa.md                # Angular frontend expert
+    │   ├── a2ui-angular.md              # A2UI renderer developer (Angular)
     │   ├── flutter-mobile.md             # Flutter mobile expert
     │   ├── frontend-design.md            # Creative UI/UX design specialist
     │   ├── database-designer.md          # PostgreSQL + Firestore architect
@@ -1795,7 +1801,9 @@ claude-code-onboarding/
     │   ├── scaffold-nestjs-api.md        # /scaffold-nestjs-api <name>
     │   ├── scaffold-python-api.md        # /scaffold-python-api <name>
     │   ├── scaffold-agentic-ai.md        # /scaffold-agentic-ai <name>
+    │   ├── scaffold-google-adk.md        # /scaffold-google-adk <name>
     │   ├── scaffold-angular-app.md       # /scaffold-angular-app <name>
+    │   ├── scaffold-a2ui.md             # /scaffold-a2ui <name> — A2UI renderer module
     │   ├── scaffold-flutter-app.md       # /scaffold-flutter-app <name>
     │   │
     │   │  # — Design —
@@ -1829,11 +1837,17 @@ claude-code-onboarding/
         │                                 # tool definitions, multi-provider LLM routing, guardrails,
         │                                 # prompt injection detection, PII redaction (17 reference files)
         ├── agentic-ai-coding-standard/   # Agentic AI naming, TypedDict state, async patterns (1 reference file)
+        ├── google-adk/                   # Google ADK (Agent Development Kit): Agent, SequentialAgent,
+        │                                 # ParallelAgent, LoopAgent, FunctionTool, McpToolset, callbacks,
+        │                                 # session management, memory, artifacts, FastAPI integration (8 reference files)
         │
         │  # — Frontend & mobile skills —
         ├── angular-spa/                  # Angular 21.x: standalone components, signals, control flow,
         │                                 # TailwindCSS 4.x + daisyUI 5.x setup, zoneless testing,
         │                                 # accessibility checklist, troubleshooting (12 reference files)
+        ├── a2ui-angular/                 # A2UI (Agent-to-User Interface): recursive renderer,
+        │                                 # component catalog allowlist, agent service (REST/SSE),
+        │                                 # security validation, streaming support (5 reference files)
         ├── flutter-mobile/               # Flutter 3.38: clean architecture layers, Riverpod 3.x,
         │                                 # Freezed models, GoRouter, Firebase integration (2 reference files)
         ├── riverpod-patterns/            # Riverpod: AsyncNotifier, AsyncValue.when, ref.watch vs ref.read,
@@ -1878,6 +1892,7 @@ claude-code-onboarding/
 | `docker` | stdio | Docker container management |
 | `xcodebuild` | stdio | Xcode build, run, debug, test — iOS simulator, device, and macOS (replaces `ios-simulator`) |
 | `maestro` | stdio | Mobile UI testing framework |
+| `adk-docs` | stdio | Google Agent Development Kit docs via mcpdoc (`https://google.github.io/adk-docs/llms.txt`) |
 
 ### Browser Automation
 
@@ -2068,6 +2083,88 @@ This is the real-world workflow — a single command that triggers scaffolding, 
 
 ```
 > /add-feature User profile management — users can update their name, avatar, and preferences. Backend API + Angular settings page + Flutter profile screen
+```
+
+### Exercise 11: Build an A2UI Renderer (Agent-to-User Interface)
+
+**Components used:** Slash Command + Agent + Skill + MCP
+
+A2UI is Google's declarative protocol (v0.8) that lets AI agents describe rich, interactive UIs as structured JSONL instead of generating executable code. The agent sends four message types (`surfaceUpdate`, `dataModelUpdate`, `beginRendering`, `deleteSurface`); your Angular app validates each component type against an approved catalog and renders it with native daisyUI components.
+
+**Official component types:** Row, Column, Text, Image, Icon, Button, TextField, CheckBox, DateTimeInput, Card, Modal, Tabs, List. Components reference their children via `{"explicitList": ["id1", "id2"]}` and all text fields use typed value objects: `{"literalString": "value"}` or `{"path": "/data/pointer"}` for reactive data binding.
+
+**Scaffold with the slash command:**
+
+```
+> /scaffold-a2ui travel-assistant
+```
+
+This creates a complete A2UI feature module: models (`SurfaceState`, `A2UIMessage`, `A2UIAgentAction`), catalog service, sanitizer, recursive renderer, agent service (REST + SSE/JSONL), chat page, routes, and tests.
+
+**Or use the specialist agent for custom work:**
+
+```
+> @a2ui-angular Build an A2UI renderer that supports flight cards, hotel listings, and booking forms. The agent backend is at /api/travel/chat and streams via SSE as JSONL.
+```
+
+```
+> @a2ui-angular Add a "table" component type (Angular extension, not in core spec) to our existing A2UI catalog and renderer. Use daisyUI table classes.
+```
+
+```
+> @a2ui-angular Review our A2UI renderer for security issues — make sure all component types are validated against the catalog allowlist and property values use the literalString/path format.
+```
+
+**Key concept:** A2UI payloads are untrusted. Every component type from the agent is validated against a client-side catalog allowlist before rendering. Unknown types are silently skipped. Agent-provided code is never executed. Actions use a structured format `{"name": "...", "context": [...]}` — never executable strings.
+
+### Exercise 12: Build a Google ADK Agent Service
+
+**Components used:** Slash Command + Agent + Skill + MCP (Context7)
+
+Google ADK (Agent Development Kit) is Google's framework for building Gemini-powered agents. Unlike LangGraph's graph-based state machines, ADK uses composable agent primitives: `SequentialAgent` for pipelines, `ParallelAgent` for concurrent analysis, `LoopAgent` for iterative refinement, and `transfer_to_agent` for multi-agent routing. Tools are plain Python functions — no decorators needed.
+
+**Scaffold a new ADK service with the slash command:**
+
+```
+> /scaffold-google-adk travel-agent
+```
+
+This creates a complete ADK project: `Agent` with `gemini-2.5-flash`, `FunctionTool` examples, `InMemorySessionService`, FastAPI `/chat` and `/stream` (SSE) endpoints, `InMemoryRunner`-based tests, `.env` template, and Dockerfile.
+
+**Or build directly with the specialist agent:**
+
+```
+> @google-adk Build a research pipeline using SequentialAgent: researcher → writer → editor. Each agent should pass its output via output_key so the next stage can read it from session state.
+```
+
+```
+> @google-adk Add a ParallelAgent that runs technical_analyst, market_analyst, and risk_analyst concurrently. Wire it into a SequentialAgent so a synthesizer receives all three analyses and produces a final report.
+```
+
+```
+> @google-adk Expose the agent via FastAPI — POST /chat returns the final response, GET /stream returns SSE. Use InMemorySessionService. Close the runner in the lifespan shutdown.
+```
+
+```
+> @google-adk Add a before_model_callback to enforce rate limiting (max 100 calls per session) and an on_tool_error_callback that returns a structured error dict instead of raising.
+```
+
+```
+> @google-adk Write tests for the pipeline using InMemoryRunner — basic response, tool invoked, output_key passed between agents, LoopAgent exits within max_iterations, FastAPI /chat returns 200.
+```
+
+**Key concepts:**
+- Tools are plain Python functions — full docstring (Args + Returns) required for schema auto-generation
+- `ToolContext` is auto-injected when typed `tool_context: ToolContext` — access session state via `tool_context.state`
+- `output_key="key"` stores an agent's final output into session state; downstream agents read it as `{key}` in `instruction`
+- `InMemoryRunner` for tests — never call real Gemini API in unit tests
+- Always `await runner.close()` in FastAPI lifespan shutdown to release MCP connections
+
+**Review your work:**
+
+```
+> @agentic-ai-reviewer Review the ADK agent service for correctness, safety guardrails, and production readiness
+> @security-reviewer Check tool input validation and session state handling in the ADK service
 ```
 
 ### What's Next?

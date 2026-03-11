@@ -124,6 +124,22 @@
       ],
       "timeout": 60000
     },
+    "adk-docs": {
+      "type": "stdio",
+      "disabled": false,
+      "description": "Google Agent Development Kit documentation via mcpdoc.",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "mcpdoc",
+        "mcpdoc",
+        "--urls",
+        "AgentDevelopmentKit:https://google.github.io/adk-docs/llms.txt",
+        "--transport",
+        "stdio"
+      ],
+      "timeout": 60000
+    },
     "voicemode": {
       "type": "stdio",
       "disabled": false,

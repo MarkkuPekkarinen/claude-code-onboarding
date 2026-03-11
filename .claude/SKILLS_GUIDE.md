@@ -2,7 +2,7 @@
 
 > Complete skill catalog for Claude Code Onboarding Kit. Use this to find the right skill for any task.
 >
-> 39 skills across 7 domains. Each skill is loaded with `/skill-name` or via `Skill` tool.
+> 44 skills across 7 domains. Each skill is loaded with `/skill-name` or via `Skill` tool.
 >
 > **Lazy-load pattern:** Each SKILL.md is a routing document only. Detailed patterns live in `reference/` files within each skill directory. Load the reference file explicitly when the detail is needed — do not expect it to be loaded automatically.
 
@@ -10,9 +10,13 @@
 
 ## Quick Reference by Domain
 
-### Backend (8 skills)
+### Backend (12 skills)
+- **adk-deploy-guide**: Used before deploying any ADK agent to Google Cloud — covers Cloud Run, Agent Engine, event-driven (Pub/Sub, Eventarc, BigQuery Remote Function), Terraform, and CI/CD.
+- **adk-eval-guide**: Used when evaluating ADK agents, running `adk eval`, writing evalsets, configuring eval metrics (all 8 criteria), LLM-as-judge configuration, user simulation, multimodal evaluation, and debugging eval failures.
+- **adk-observability-guide**: Used when configuring tracing (Cloud Trace), prompt-response logging, or BigQuery Agent Analytics for ADK agents — covers 3 observability tiers.
 - **agentic-ai-coding-standard**: Provides coding standards for Python agentic AI services with LangChain/LangGraph, covering state management, tool definitions, graph structure, error handling, and observability.
 - **agentic-ai-dev**: Provides patterns and templates for building production AI agents with Python 3.14, LangChain v1.2.8, LangGraph v1.0.7, and FastAPI 0.128.x.
+- **google-adk**: Google ADK (Agent Development Kit) Python skill for building AI agents with Gemini models, SequentialAgent, ParallelAgent, LoopAgent, FunctionTool, McpToolset, session management, memory, callbacks, and FastAPI integration. Reference files: `adk-core-patterns.md`, `adk-structured-output.md`, `adk-agent-types.md`, `adk-agent-handoff.md`, `adk-tools-basic.md`, `adk-tools-callbacks.md`, `adk-memory-artifacts.md`, `adk-fastapi-integration.md`, `adk-testing.md`, `adk-project-config.md`.
 - **java-coding-standard**: Activated when reviewing Java code or enforcing coding standards in Spring Boot services, covering naming conventions, immutability patterns, Optional usage, streams, and exception handling.
 - **java-spring-api**: Provides patterns and templates for Java 21 Spring Boot 3.5.x WebFlux REST API development, activated when creating controllers, services, repositories, DTOs, or reactive tests.
 - **mcp-builder**: Used when building MCP (Model Context Protocol) servers to integrate external APIs or services, providing guides for Python (FastMCP) and Node/TypeScript (MCP SDK) implementations.
@@ -20,7 +24,8 @@
 - **nestjs-coding-standard**: Activated when reviewing NestJS/TypeScript code or enforcing coding standards in NestJS 11.x services, covering naming conventions, TypeScript strictness, DTO patterns, and module organization.
 - **python-dev**: Provides patterns and templates for Python 3.14 development with FastAPI and modern tooling, activated when creating Python APIs, scripts, data processing pipelines, or pytest tests.
 
-### Frontend (6 skills)
+### Frontend (7 skills)
+- **a2ui-angular**: A2UI (Agent-to-User Interface) renderer development for Angular 21.x — protocol implementation, component catalog, recursive renderer, action handling, streaming A2UI payloads, and security validation. Reference files: `a2ui-protocol.md`, `a2ui-protocol-advanced.md`, `a2ui-security.md`, `a2ui-component-catalog.md`, `a2ui-component-containers.md`, `a2ui-renderer-patterns.md`, `a2ui-renderer-template.md`, `a2ui-chat-template.md`, `a2ui-renderer-services.md`.
 - **ai-chat**: AI chat interface patterns for Angular 21.x and Flutter 3.38 — streaming markdown rendering, auto-scroll heuristics, memoized computed(), token context indicators, thumbs up/down feedback, multi-modal input, and AI error states.
 - **angular-spa**: Angular 21.x SPA development skill with TailwindCSS 4.x and daisyUI 5.5.5, covering component scaffolding, UI/UX design, accessibility audits, and design systems.
 - **flutter-mobile**: Provides patterns and templates for Flutter 3.38 / Dart 3.11 cross-platform mobile development, activated when building Flutter screens, Riverpod providers, Freezed models, or widget tests. Reference files: `mfri-scoring.md` (risk scoring before any UI implementation), `flutter-templates.md`, `flutter-architecture-patterns.md`, `flutter-performance-ux.md`, `flutter-design-polish.md`, `accessibility-audit-checklist.md`, `flutter-security-hardening.md`.
@@ -106,6 +111,19 @@
 4. **mcp-builder** — Add MCP server integration if needed
 5. **security-reviewer** — Review for prompt injection, data exposure
 
+### Google ADK Agent Development
+1. **google-adk** — Scaffold agent, define tools, configure session management
+2. **adk-eval-guide** — Write evalsets and run `adk eval` before shipping
+3. **adk-observability-guide** — Enable Cloud Trace and prompt logging
+4. **adk-deploy-guide** — Deploy to Agent Engine or Cloud Run with Terraform
+5. **security-reviewer** — Review tools that call external APIs or handle user PII
+
+### A2UI Agent-Driven UI (Angular)
+1. **a2ui-angular** — Build A2UI renderer, catalog, and action handler
+2. **angular-spa** — Platform-specific Angular component patterns
+3. **google-adk** (or **agentic-ai-dev**) — Agent backend that emits A2UI payloads
+4. **security-reviewer** — Validate allowlist enforcement and injection prevention
+
 ### Security Hardening Session
 1. **threat-modeling** — STRIDE analysis, DFD mapping, risk scoring
 2. **sast-configuration** — Configure Semgrep/Bandit/gosec rules
@@ -128,6 +146,8 @@
 - **NestJS REST API / TypeScript service** -> nestjs-api
 - **Python FastAPI service** -> python-dev
 - **AI agent or RAG pipeline** -> agentic-ai-dev
+- **Google ADK agent (Gemini-based)** -> google-adk
+- **A2UI agent-driven UI** -> a2ui-angular
 - **AI chat UI (streaming, copilot, chatbot)** -> ai-chat
 - **Angular SPA** -> angular-spa
 - **Flutter mobile app (iOS/Android)** -> flutter-mobile
@@ -218,6 +238,12 @@ verification-before-completion + changelog-generator + pr-review
 ### New Skill Authoring
 writing-skills + subagent-driven-development + plan-mode-review
 
+### Google ADK Agent (Full Stack)
+google-adk + adk-eval-guide + adk-observability-guide + adk-deploy-guide + security-reviewer
+
+### A2UI Agent-Driven UI (Angular)
+a2ui-angular + angular-spa + google-adk + security-reviewer
+
 ---
 
 ## Examples
@@ -242,6 +268,10 @@ writing-skills + subagent-driven-development + plan-mode-review
 - "Generate release notes from our git history" -> changelog-generator
 - "Build an MCP server for our internal Jira API" -> mcp-builder + python-dev
 - "Model threats for our new auth microservice" -> threat-modeling + security-reviewer + architecture-design
+- "Build a Gemini-based ADK agent with tools and sessions" -> google-adk + adk-eval-guide + security-reviewer
+- "Deploy an ADK agent to Cloud Run with Terraform" -> adk-deploy-guide + google-adk
+- "Build an A2UI renderer for an Angular agent-driven UI" -> a2ui-angular + angular-spa + security-reviewer
+- "Evaluate ADK agent quality with rubric-based scoring" -> adk-eval-guide + google-adk
 
 ---
 
@@ -251,6 +281,10 @@ writing-skills + subagent-driven-development + plan-mode-review
 
 | Skill | Domain | Role | Scope | Output |
 |-------|--------|------|-------|--------|
+| a2ui-angular | frontend | specialist | implementation | code |
+| adk-deploy-guide | infrastructure | specialist | deployment | code |
+| adk-eval-guide | agentic-ai | specialist | evaluation | code |
+| adk-observability-guide | backend | specialist | observability | code |
 | agentic-ai-coding-standard | backend | specialist | review | report |
 | agentic-ai-dev | backend | specialist | implementation | code |
 | ai-chat | frontend | specialist | implementation | code |
@@ -267,6 +301,7 @@ writing-skills + subagent-driven-development + plan-mode-review
 | domain-finder | workflow | specialist | analysis | report |
 | flutter-mobile | frontend | specialist | implementation | code |
 | frontend-design | frontend | specialist | design | code |
+| google-adk | backend | specialist | implementation | code |
 | java-coding-standard | backend | specialist | review | report |
 | java-spring-api | backend | specialist | implementation | code |
 | mcp-builder | backend | specialist | implementation | code |
