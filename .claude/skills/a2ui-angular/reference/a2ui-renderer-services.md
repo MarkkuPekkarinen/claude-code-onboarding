@@ -83,6 +83,13 @@ export class A2UIAgentService {
       }
       // deleteSurface: handled at the chat component level, not here
     }
+
+    // Gemini resilience: if agent sent surfaceUpdate with a 'root' component but
+    // omitted beginRendering, auto-set rootComponentId so the renderer doesn't silently show nothing.
+    if (!state.rootComponentId && state.componentMap.has('root')) {
+      state.rootComponentId = 'root';
+    }
+
     return state;
   }
 }

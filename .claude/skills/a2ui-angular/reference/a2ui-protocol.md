@@ -265,3 +265,94 @@ Sent from the **client to the agent** when the user interacts with an A2UI compo
 
 
 > Action model, streaming protocol, A2A integration, and versioning are in `a2ui-protocol-advanced.md`.
+
+---
+
+## Gemini Output Quirks (Production Lessons)
+
+When using Gemini models (gemini-2.5-flash, gemini-2.0-flash, etc.) as the agent, two output quirks require defensive handling in the backend SSE parser.
+
+### Quirk 1: Missing `surfaceUpdate` Wrapper Key
+
+**Problem:** Gemini sometimes returns the surface payload without the outer `"surfaceUpdate"` key:
+
+```json
+// Gemini outputs this (WRONG — missing outer key):
+{"surfaceId": "main", "components": [...]}
+
+// Protocol requires this:
+{"surfaceUpdate": {"surfaceId": "main", "components": [...]}}
+```
+
+**Fix — normalize in backend before yielding SSE:**
+
+```python
+# In your SSE streaming handler, after parsing each JSON object:
+if (isinstance(parsed, dict)
+        and "surfaceId" in parsed
+        and "components" in parsed
+        and "surfaceUpdate" not in parsed):
+    parsed = {"surfaceUpdate": parsed}
+yield f"data: {json.dumps(parsed)}\n\n"
+```
+
+**Frontend fallback** — also add this resilience in the Angular `buildSurfaceState()` function:
+
+```typescript
+// After the fold loop, if beginRendering never arrived but 'root' component exists:
+if (!state.rootComponentId && state.componentMap.has('root')) {
+  state.rootComponentId = 'root';
+}
+```
+
+---
+
+### Quirk 2: Concatenated JSON Objects on One Line
+
+**Problem:** Gemini concatenates multiple JSON objects on a single line with no separator:
+
+```
+{"surfaceUpdate":{...}}{"beginRendering":{"surfaceId":"main","root":"root"}}
+```
+
+`json.loads()` fails on this string. `str.split('\n')` produces one line containing two objects — only the first is parsed, `beginRendering` is silently dropped. The frontend never receives `rootComponentId` and renders nothing.
+
+**Fix — use `json.JSONDecoder().raw_decode()` to extract all objects:**
+
+```python
+import json
+
+def stream_jsonl(response_text: str):
+    decoder = json.JSONDecoder()
+    text = response_text.strip()
+    pos = 0
+    while pos < len(text):
+        # Skip whitespace
+        while pos < len(text) and text[pos] in ' \t\n\r':
+            pos += 1
+        if pos >= len(text):
+            break
+        # Skip to next '{'
+        if text[pos] != '{':
+            next_brace = text.find('{', pos)
+            if next_brace == -1:
+                break
+            pos = next_brace
+            continue
+        try:
+            parsed, consumed = decoder.raw_decode(text, pos)
+            # Apply Quirk 1 normalization here too
+            if (isinstance(parsed, dict)
+                    and "surfaceId" in parsed
+                    and "components" in parsed
+                    and "surfaceUpdate" not in parsed):
+                parsed = {"surfaceUpdate": parsed}
+            yield f"data: {json.dumps(parsed)}\n\n"
+            pos += consumed - pos
+        except json.JSONDecodeError:
+            pos += 1
+```
+
+`raw_decode(text, pos)` parses one valid JSON value starting at `pos` and returns `(parsed_object, end_pos)` — allowing the loop to continue from `end_pos` to find the next object.
+
+**Why this matters:** If only `surfaceUpdate` is received but `beginRendering` is dropped, `rootComponentId` stays empty and the renderer shows nothing — the user sees a blank response with no error, making it very hard to debug.

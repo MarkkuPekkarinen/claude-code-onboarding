@@ -57,6 +57,7 @@ Never commit `.env` to version control. Add it to `.gitignore`.
 
 ```python
 # src/config.py
+import os
 from pydantic_settings import BaseSettings
 
 
@@ -67,14 +68,20 @@ class Settings(BaseSettings):
     app_name: str = "my-adk-service"
     log_level: str = "INFO"
 
-    model_config = {"env_file": ".env"}
+    model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 
 
 settings = Settings()
+
+# CRITICAL: ADK reads GOOGLE_API_KEY directly from os.environ, NOT from the
+# pydantic-settings object. pydantic-settings loads into Settings but does NOT
+# automatically populate os.environ. Must explicitly export:
+os.environ["GOOGLE_API_KEY"] = settings.google_api_key
 ```
 
-Import `settings` wherever config values are needed — do not read `os.environ`
-directly in application code.
+> **Why this matters:** `google-adk` and `google-genai` call `os.environ["GOOGLE_API_KEY"]` internally. If you only use pydantic-settings without the `os.environ` export, the ADK will raise `"No API key was provided"` even though your `.env` file is correct and `settings.google_api_key` has the value.
+
+Import `settings` wherever config values are needed. For ADK-specific env vars (`GOOGLE_API_KEY`, `GOOGLE_CLOUD_PROJECT`), always export them to `os.environ` at startup.
 
 ---
 

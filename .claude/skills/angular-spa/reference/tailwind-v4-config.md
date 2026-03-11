@@ -66,6 +66,49 @@ TailwindCSS v4 is a complete rewrite using CSS-native configuration:
 }
 ```
 
+## daisyUI v5 Import (CRITICAL)
+
+> **Do NOT use `@plugin "daisyui"` in TailwindCSS 4.x with Angular.** The `@plugin` directive requires the daisyUI PostCSS plugin which is not bundled with `@tailwindcss/postcss` in Angular builds. It silently fails — no styles applied.
+
+```css
+/* src/styles.css — correct for Angular + TailwindCSS v4 + daisyUI v5 */
+@import "tailwindcss";
+@import "daisyui/daisyui.css";   /* Direct CSS import — always works */
+```
+
+Install:
+```bash
+npm install daisyui@latest
+```
+
+## TailwindCSS v4 Utility Class Scanning in Angular (CRITICAL)
+
+> **TailwindCSS v4 with `@tailwindcss/postcss` does NOT auto-scan Angular inline templates in `.ts` files.** Utility classes used only in TypeScript template strings (e.g. `px-6`, `mx-auto`, `max-w-4xl`) will NOT be generated — only daisyUI component classes (from the direct CSS import) will work.
+
+**Symptom:** daisyUI buttons/badges/cards render correctly, but spacing/layout/typography utilities (padding, margin, flex, grid, max-width) are completely missing.
+
+**Fix — add explicit source directives:**
+```css
+/* src/styles.css */
+@import "tailwindcss";
+@import "daisyui/daisyui.css";
+@source "./**/*.ts";
+@source "./**/*.html";
+```
+
+**If `@source` still doesn't work** (path resolution can be inconsistent with PostCSS), safelist critical utilities directly in `styles.css`:
+```css
+@layer utilities {
+  .px-4 { padding-left: 1rem; padding-right: 1rem; }
+  .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+  .mx-auto { margin-left: auto; margin-right: auto; }
+  .max-w-4xl { max-width: 56rem; }
+  /* ...add any utilities used in TypeScript template strings */
+}
+```
+
+**Root cause:** `@tailwindcss/postcss` runs PostCSS transforms but its content scanner is invoked differently than the Tailwind CLI. Angular's build pipeline does not pass TypeScript source paths to the PostCSS plugin's scanner by default.
+
 ## Breakpoints
 
 ```css
