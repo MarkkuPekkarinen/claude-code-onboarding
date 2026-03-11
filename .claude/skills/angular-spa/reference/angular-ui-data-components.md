@@ -912,3 +912,113 @@ export class ExpandableSectionComponent {
   protected readonly isExpanded = signal(false);
 }
 ```
+
+---
+
+## Chat / Agent UI — Visual Quality Baseline
+
+When building any chat or conversational agent UI (message list + input bar pattern), apply ALL of the following from the first scaffold. Do not wait for user feedback to add these.
+
+### Layout
+- Outer container: `h-screen flex flex-col overflow-hidden` — never `min-h-screen` (causes footer scroll-away)
+- Header: `flex-shrink-0` — must not grow or shrink
+- Message list: `flex-1 overflow-y-auto` — scrolls independently
+- Input bar: `flex-shrink-0` at bottom — always visible, never scrolls away
+- Empty state: center the input bar vertically with `min-h-[55vh] flex flex-col items-center justify-center`
+- After first message: move input bar to sticky footer pattern
+
+### Cards
+- Use `card bg-base-100 shadow-sm border border-base-200` — not plain divs
+- Card content: `card-body p-4` with `card-title text-sm font-semibold`
+- Price / key stats: `text-lg font-bold text-neutral` for emphasis
+- Secondary text: `text-base-content/60 text-xs`
+
+### Buttons
+- Primary action: `btn btn-neutral rounded-xl` — not `btn btn-primary` (often invisible on dark themes)
+- Text on dark buttons must be `text-neutral-content` — always verify contrast
+- Disabled state: `[disabled]="loading()"` on all submit buttons
+
+### Loading states
+- Inline spinner in button: `<span class="loading loading-spinner loading-sm"></span>`
+- Agent thinking indicator: `<span class="loading loading-dots loading-sm text-neutral"></span>` with explanatory text
+- Never show a blank area while waiting — always show a loading indicator
+
+### Empty state
+- Show branded icon, headline, subtitle, and suggestion chips
+- Suggestion chips: `btn btn-sm bg-base-100 border border-base-300 hover:bg-neutral hover:text-neutral-content`
+
+### Auto-scroll
+- Inject `viewChild<ElementRef>('messageContainer')`
+- Use `effect()` to watch the messages signal and scroll to bottom: `el.scrollTop = el.scrollHeight` inside a `setTimeout(..., 50)`
+
+### Smoke test before reporting done
+Open the app and verify:
+- [ ] Header visible and not overlapping content
+- [ ] Input bar always visible at bottom (even when messages overflow)
+- [ ] Cards have visible borders/shadows — not flat invisible boxes
+- [ ] Buttons have visible text (check contrast on dark background)
+- [ ] Loading spinner appears when request is in-flight
+
+---
+
+## Bug 10 — Missing left padding after layout change
+
+**What happened:** After modifying the outer container's CSS class, the `px-4`/`px-6` padding was dropped. Content rendered flush against the left edge of the viewport with zero margin.
+
+## Layout Padding — Always Preserve on Refactor
+
+When refactoring the outer container or changing flex/grid structure, ALWAYS verify padding is carried forward.
+
+Checklist when changing `<div class="...">` on an outer container:
+- [ ] `px-4` or `px-6` still present on content wrapper (not just outer container)
+- [ ] `max-w-4xl mx-auto` still applied to centre-constrain content
+- [ ] Inner `<main>` and `<footer>` both have their own horizontal padding
+
+Pattern that survives layout refactors:
+```html
+<!-- Outer: layout only, no padding -->
+<div class="h-screen flex flex-col overflow-hidden">
+  <!-- Inner: content width and padding -->
+  <main class="flex-1 overflow-y-auto">
+    <div class="max-w-4xl mx-auto px-4 py-8">
+      <!-- content here -->
+    </div>
+  </main>
+  <footer class="flex-shrink-0 px-4 py-4">
+    <div class="max-w-4xl mx-auto">
+      <!-- input bar here -->
+    </div>
+  </footer>
+</div>
+```
+
+Never put padding only on the outermost div — it gets lost when structure changes.
+
+---
+
+## Bug 11 — Invisible text on dark button
+
+**What happened:** A button used `btn btn-neutral` but the text color was not set to `text-neutral-content`. On a dark neutral background, the text was invisible.
+
+## Button Text Contrast — Always Verify
+
+When using DaisyUI semantic button classes, never assume text color is set automatically.
+
+| Button class | Required text class |
+|---|---|
+| `btn btn-neutral` | `text-neutral-content` (explicit or via DaisyUI) |
+| `btn btn-primary` | `text-primary-content` |
+| `btn btn-base-100` (custom) | `text-base-content` explicitly |
+
+❌ Common mistake:
+```html
+<button class="btn btn-neutral">Search</button>
+<!-- text may be invisible if neutral bg = dark and text defaults to dark -->
+```
+
+✅ Safe pattern — always include text color:
+```html
+<button class="btn btn-neutral text-neutral-content">Search</button>
+```
+
+**Smoke test:** After adding any button, visually verify the label is readable against its background. Do not skip this for "obviously styled" components.

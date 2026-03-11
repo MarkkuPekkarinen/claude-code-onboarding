@@ -44,6 +44,36 @@
 - Do NOT install `zone.js` as a dependency
 - Do NOT add `provideZonelessChangeDetection()` either — it is the default and unnecessary in v21+
 
+## Pitfalls
+
+### Angular 21+ is Zoneless — Never Import zone.js
+
+Angular 21 uses signal-based change detection. Zone.js must NOT be used.
+
+❌ FORBIDDEN in Angular 21+:
+- `import 'zone.js'` anywhere (main.ts, polyfills, angular.json)
+- `provideZoneChangeDetection()` in app.config.ts
+- `NgZone` injection
+
+✅ CORRECT bootstrap (Angular 21):
+```typescript
+// main.ts
+bootstrapApplication(AppComponent, appConfig);
+
+// app.config.ts
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideRouter(routes),
+    provideHttpClient(),
+    // NO provideZoneChangeDetection()
+  ],
+};
+```
+
+- Use `ChangeDetectionStrategy.OnPush` on all components
+- Use `signal()`, `computed()`, `effect()` for reactive state
+- Use `@if`, `@for`, `@switch` control flow blocks (NOT *ngIf, *ngFor)
+
 ## Accessibility (WCAG 2.1 AA minimum)
 - Must pass all AXE checks
 - Must follow WCAG AA minimums: focus management, color contrast, ARIA attributes

@@ -242,3 +242,32 @@ Key patterns:
 - **Unknown type rejection**: `getComponent()` returns `undefined` and logs a warning for non-allowlisted types; template uses `@if (comp)` to skip rendering
 
 > Agent service (REST + SSE) and unit test templates are in `a2ui-renderer-services.md`.
+
+---
+
+## Bug 9 — SVG/Image fills full viewport and hides all content
+
+**What happened:** The A2UI renderer rendered an Image or SVG component with no size constraints. The element expanded to 100% viewport width and height, hiding the rest of the UI. The user saw a blank or black screen.
+
+## Image and SVG Size Constraints (Required)
+
+All Image components rendered by the A2UI renderer MUST have explicit size constraints. Never render images or SVGs without capping their dimensions.
+
+❌ FORBIDDEN — unconstrained image:
+```html
+<img [src]="src" />
+```
+
+✅ CORRECT — always constrain width and height:
+```html
+<img [src]="src" class="max-w-full max-h-64 object-contain rounded-lg" />
+```
+
+For SVG components embedded via innerHTML or iframe, add a wrapper:
+```html
+<div class="w-full max-h-64 overflow-hidden flex items-center justify-center">
+  <!-- SVG or image here -->
+</div>
+```
+
+**Rule:** Before shipping any A2UI renderer, test rendering a card that contains an oversized image. If it breaks the layout, the constraint is missing. Fix before reporting done.

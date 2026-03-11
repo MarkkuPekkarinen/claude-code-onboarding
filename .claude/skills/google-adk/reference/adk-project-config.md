@@ -14,6 +14,7 @@ dependencies = [
     "uvicorn[standard]>=0.30.0",
     "pydantic>=2.0.0",
     "pydantic-settings>=2.0.0",
+    "python-dotenv>=1.0.0",
     "structlog>=24.0.0",
 ]
 
@@ -50,6 +51,43 @@ LOG_LEVEL=INFO
 ```
 
 Never commit `.env` to version control. Add it to `.gitignore`.
+
+---
+
+### .env File — API Key Loading (Critical)
+
+Google ADK and Gemini SDK do NOT auto-load `.env` files. You MUST explicitly load them.
+
+**Step 1 — Install python-dotenv** (already included in the pyproject.toml template above).
+
+**Step 2 — Load at app startup** (before any ADK/Gemini initialization):
+
+```python
+# main.py or app entry point — FIRST lines before any other imports that use env vars
+from dotenv import load_dotenv
+load_dotenv()  # loads .env from current working directory
+```
+
+**Step 3 — .env file format** (in project root, never committed):
+
+```
+GOOGLE_API_KEY=your-key-here
+# OR
+GEMINI_API_KEY=your-key-here
+```
+
+**Step 4 — .gitignore** must contain `.env`.
+
+**Verification:** After startup, confirm the key loaded:
+
+```python
+import os
+assert os.getenv("GOOGLE_API_KEY"), "GOOGLE_API_KEY not loaded — check .env file and load_dotenv() call"
+```
+
+❌ Common mistake: placing `load_dotenv()` AFTER importing ADK modules that read env vars at import time. Always call it FIRST.
+
+> **Note:** The pydantic-settings approach in section 3 uses `env_file: ".env"` which also loads `.env`, but only into the `Settings` object — not into `os.environ`. ADK reads directly from `os.environ`, so the explicit `os.environ["GOOGLE_API_KEY"] = settings.google_api_key` export at the end of `config.py` is still required. If you skip pydantic-settings entirely and use `load_dotenv()` alone, ADK can read the key directly from `os.environ` after `load_dotenv()` populates it.
 
 ---
 

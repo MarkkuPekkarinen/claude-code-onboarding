@@ -109,6 +109,49 @@ npm install daisyui@latest
 
 **Root cause:** `@tailwindcss/postcss` runs PostCSS transforms but its content scanner is invoked differently than the Tailwind CLI. Angular's build pipeline does not pass TypeScript source paths to the PostCSS plugin's scanner by default.
 
+## Verification Checklist
+
+### DaisyUI + Tailwind v4 — Setup Verification Checklist
+
+After scaffolding, ALWAYS verify these before writing any UI components:
+
+1. **Packages installed** — check package.json:
+   - `tailwindcss` (v4.x)
+   - `@tailwindcss/postcss`
+   - `daisyui` (v5.x)
+
+2. **CSS entry point** (`src/styles.css`) must contain:
+   ```css
+   @import "tailwindcss";
+   @import "daisyui/daisyui.css";
+   @source "./**/*.ts";
+   @source "./**/*.html";
+   ```
+   ❌ Old Tailwind v3 syntax is WRONG for v4:
+   ```css
+   /* DO NOT USE */
+   @tailwind base;
+   @tailwind components;
+   @tailwind utilities;
+   ```
+   ❌ Do NOT use `@plugin "daisyui"` — it silently fails in Angular builds (see daisyUI v5 Import section above).
+
+3. **Angular JSON styles** — `angular.json` must reference `src/styles.css`:
+   ```json
+   "styles": ["src/styles.css"]
+   ```
+
+4. **PostCSS config** — `.postcssrc.json` (not `postcss.config.js`) must exist in the project root:
+   ```json
+   {
+     "plugins": {
+       "@tailwindcss/postcss": {}
+     }
+   }
+   ```
+
+5. **Smoke test after scaffold**: Open the app and confirm a `<button class="btn btn-neutral">Test</button>` renders with DaisyUI styling. If it renders as a plain browser button, styles are broken — fix before writing any feature UI.
+
 ## Breakpoints
 
 ```css
