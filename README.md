@@ -767,6 +767,47 @@ This repo comes pre-configured with:
 | **Maestro** | Cross-platform mobile E2E testing — run test flows on iOS simulator and Android emulator using natural language |
 | **Filesystem** | Secure file search and manipulation with configurable directory permissions |
 | **LangChain Docs** | Live LangChain documentation lookup |
+| **Weaviate Docs** | Live Weaviate documentation lookup |
+
+## Weaviate Docs MCP Server
+
+Gives Claude Code instant access to Weaviate documentation inside your editor.
+
+### Configuration
+
+Add the following to your `.mcp.json`:
+```json
+{
+  "mcpServers": {
+    "weaviate-docs": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "https://weaviate-docs.mcp.kapa.ai"
+      ],
+      "timeout": 60000,
+      "env": {}
+    }
+  }
+}
+```
+
+### Authentication
+
+The server requires a one-time OAuth login. Run the following command and follow the browser prompt to sign in with Google or GitHub:
+```bash
+npx mcp-remote https://weaviate-docs.mcp.kapa.ai
+```
+
+Your session will be cached at `~/.mcp-remote/` — you won't need to re-authenticate on subsequent uses.
+
+Verify the server is connected:
+```bash
+claude mcp get weaviate-docs
+```
+
+You should see `Status: ✓ Connected`.
 
 ### settings.json Configuration
 
