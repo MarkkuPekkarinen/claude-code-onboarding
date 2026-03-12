@@ -64,6 +64,9 @@ Consult official docs via MCP before writing ANY code. Zero tolerance for deprec
 | Angular | `.claude/skills/angular-spa/` | `angular-spa` | `/scaffold-angular-app` |
 | Flutter | `.claude/skills/flutter-mobile/` | `flutter-mobile` | `/scaffold-flutter-app` |
 | Database | `.claude/skills/database-schema-designer/` | `database-designer` | `/design-database` |
+| Vector DB (pgvector + Weaviate) | `.claude/skills/vector-database/` | `pgvector-schema-reviewer`, `weaviate-schema-reviewer` | `/design-vector-schema`, `/design-weaviate-collection`, `/scaffold-rag-pipeline`, `/tune-vector-index`, `/migrate-embedding-model` |
+| Weaviate Operations | `.claude/skills/weaviate/` | — | `/weaviate:search`, `/weaviate:ask`, `/weaviate:collections`, `/weaviate:quickstart` |
+| Weaviate App Patterns | `.claude/skills/weaviate-cookbooks/` | — | — |
 | Architecture | `.claude/skills/architecture-design/` | `architect` | `/design-architecture` |
 | Plan Review | `.claude/skills/plan-mode-review/` | — | `/plan-review` |
 | Browser Testing | `.claude/skills/browser-testing/` | `browser-testing` | — |
@@ -84,6 +87,9 @@ Consult official docs via MCP before writing ANY code. Zero tolerance for deprec
 | Flutter | `riverpod-reviewer`, `flutter-security-expert` |
 | Security | `security-reviewer` |
 | Database | `postgresql-database-reviewer` |
+| pgvector schema | `pgvector-schema-reviewer` |
+| Weaviate schema | `weaviate-schema-reviewer` |
+| RAG pipeline | `rag-pipeline-reviewer` |
 | UI/UX | `ui-standards-expert`, `frontend-design`, `accessibility-auditor` |
 | Tech debt | `dedup-code-agent` |
 

@@ -2,7 +2,7 @@
 
 > Complete skill catalog for Claude Code Onboarding Kit. Use this to find the right skill for any task.
 >
-> 57 skills across 8 domains. Each skill is loaded with `/skill-name` or via `Skill` tool.
+> 60 skills across 9 domains. Each skill is loaded with `/skill-name` or via `Skill` tool.
 >
 > **Lazy-load pattern:** Each SKILL.md is a routing document only. Detailed patterns live in `reference/` files within each skill directory. Load the reference file explicitly when the detail is needed — do not expect it to be loaded automatically.
 
@@ -55,6 +55,11 @@
 - **gpd-betagroups**: Manage internal/beta tester groups and build distribution — use for beta testing rollout management.
 - **gpd-release-flow**: End-to-end Google Play release workflow covering upload, staged rollout, track promotions, and production release — the primary Android release skill.
 - **gpd-submission-health**: Preflight checklist for Google Play production releases — run all 5 checks before promoting to production. Reference: `reference/submission-preflight-checklist.md`.
+
+### Vector Database (3 skills)
+- **vector-database**: Use for all vector database work — pgvector schema design, Weaviate collection creation, RAG pipeline scaffolding, embedding model selection, HNSW vs IVFFlat index tuning, and embedding model migration. Iron law: pin dimensions at model selection. Reference files: `references/pgvector-migration-template.md`, `references/weaviate-collection-patterns.md`, `references/rag-pipeline-patterns.md`, `references/embedding-migration-guide.md`.
+- **weaviate**: Search, query, and manage Weaviate vector database collections — semantic search, hybrid search, keyword search, natural language queries, data import, collection inspection, and filtered fetching. Includes Python scripts in `scripts/`. Required env: `WEAVIATE_URL`, `WEAVIATE_API_KEY`.
+- **weaviate-cookbooks**: Build complete AI applications with Weaviate — Query Agent Chatbot, PDF Multimodal RAG, Basic/Advanced/Agentic RAG, Basic Agents with DSPy. High-level blueprints and end-to-end project patterns. Read `references/project_setup.md` and `references/environment_requirements.md` first.
 
 ### API & Architecture (6 skills)
 - **architecture-decision-records**: Used when documenting significant technical decisions, reviewing past architectural choices, or establishing decision processes; provides ADR templates and best practices.
@@ -146,6 +151,20 @@
 2. **angular-spa** or **flutter-mobile** — Platform-specific component patterns
 3. **security-reviewer** — File upload, innerHTML rendering, token exposure
 
+### pgvector Schema + RAG Pipeline
+1. **vector-database** — Design pgvector migration (model, dimensions, index type, distance metric)
+2. **database-schema-designer** — Design surrounding relational schema for the table
+3. **pgvector-schema-reviewer** agent — Review migration for operator/index alignment, dimension match, null guards
+4. **agentic-ai-dev** (or **python-dev**) — Implement embedding + retrieval layer
+5. **rag-pipeline-reviewer** agent — Review pipeline for model pinning, batch embedding, silent failure risks
+
+### Weaviate Collection + Application
+1. **weaviate** — Inspect existing cluster, list collections, explore schema
+2. **vector-database** — Design collection schema (vectorizer, named vectors, multi-tenancy)
+3. **weaviate-schema-reviewer** agent — Review collection for v4 API, distance metric, multi-tenancy flag
+4. **weaviate-cookbooks** — Pick application blueprint (RAG, chatbot, agentic RAG, DSPy agent)
+5. **agentic-ai-dev** (or **python-dev**) — Implement FastAPI layer
+
 ### AI Agent Development
 1. **agentic-ai-dev** — Build LangGraph agent, RAG system, tools
 2. **agentic-ai-coding-standard** — Enforce state management, tool definitions, guardrails
@@ -199,6 +218,13 @@
 - **TestFlight crash investigation** -> asc-crash-triage
 - **MCP server integration** -> mcp-builder
 - **Database schema** -> database-schema-designer
+- **pgvector schema / vector column migration** -> vector-database → `/design-vector-schema`
+- **Weaviate collection creation** -> vector-database → `/design-weaviate-collection`
+- **RAG pipeline (chunk → embed → retrieve → rerank)** -> vector-database → `/scaffold-rag-pipeline`
+- **Vector index tuning (HNSW vs IVFFlat)** -> vector-database → `/tune-vector-index`
+- **Switch embedding model (re-embedding migration)** -> vector-database → `/migrate-embedding-model`
+- **Search/query an existing Weaviate cluster** -> weaviate → `/weaviate:search` or `/weaviate:ask`
+- **Build a Weaviate-based application (chatbot, RAG app)** -> weaviate-cookbooks
 
 ### What review do I need?
 - **General code quality** -> code-reviewer
@@ -272,6 +298,12 @@ ai-chat + angular-spa (or flutter-mobile) + security-reviewer
 ### PR Lifecycle (full loop)
 pr-review + iterate-pr + verification-before-completion
 
+### pgvector RAG Stack
+vector-database + database-schema-designer + agentic-ai-dev + python-dev + pgvector-schema-reviewer agent + rag-pipeline-reviewer agent
+
+### Weaviate Application Stack
+weaviate + vector-database + weaviate-cookbooks + agentic-ai-dev + weaviate-schema-reviewer agent
+
 ### AI Agent Stack
 agentic-ai-dev + agentic-ai-coding-standard + python-dev + security-reviewer
 
@@ -332,6 +364,15 @@ a2ui-angular + angular-spa + google-adk + security-reviewer
 - "Staged rollout to 10% on Google Play" -> gpd-release-flow + gpd-submission-health
 - "Add testers to our Android beta group" -> gpd-betagroups + gpd-id-resolver
 - "Run preflight before promoting Android to production" -> gpd-submission-health
+- "Add pgvector to Cloud SQL for vendor matching" -> vector-database + database-schema-designer
+- "Design a Weaviate collection for scraped reviews" -> vector-database → `/design-weaviate-collection`
+- "Build a RAG pipeline for PDF documents" -> vector-database + weaviate-cookbooks + agentic-ai-dev
+- "Switch from text-embedding-3-small to voyage-3-large" -> vector-database → `/migrate-embedding-model`
+- "Tune HNSW index for 500K vendor embeddings" -> vector-database → `/tune-vector-index`
+- "Search Weaviate collection with hybrid search" -> weaviate → `/weaviate:search`
+- "Build a Query Agent chatbot on Weaviate" -> weaviate-cookbooks + agentic-ai-dev
+- "Review my pgvector migration for correctness" -> pgvector-schema-reviewer agent
+- "Set up Weaviate Cloud and load example data" -> weaviate → `/weaviate:quickstart`
 
 ---
 
@@ -398,3 +439,6 @@ a2ui-angular + angular-spa + google-adk + security-reviewer
 | gpd-betagroups | mobile-deployment | specialist | deployment | commands |
 | gpd-release-flow | mobile-deployment | specialist | deployment | commands |
 | gpd-submission-health | mobile-deployment | specialist | deployment | commands |
+| vector-database | vector-db | specialist | implementation | code |
+| weaviate | vector-db | specialist | implementation | code |
+| weaviate-cookbooks | vector-db | specialist | implementation | code |
