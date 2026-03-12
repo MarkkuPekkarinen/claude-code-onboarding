@@ -115,6 +115,8 @@ Clone it, install Claude Code, and start building.
     - [MCP Servers (`.mcp.json`)](#mcp-servers-mcpjson)
     - [Browser Automation](#browser-automation)
       - [Sample Prompts](#sample-prompts)
+  - [16. iOS App Store Release Pipeline](#16-ios-app-store-release-pipeline)
+  - [17. Android Google Play Release Pipeline](#17-android-google-play-release-pipeline)
   - [16. Hands-On Exercises](#16-hands-on-exercises)
     - [Exercise 1: Scaffold a Flutter Fitness App](#exercise-1-scaffold-a-flutter-fitness-app)
     - [Exercise 2: Build a Weather REST API (Java)](#exercise-2-build-a-weather-rest-api-java)
@@ -247,6 +249,20 @@ After copying, you'll want to:
    cp git-hooks/pre-commit-secrets.sh .git/hooks/pre-commit
    chmod +x .git/hooks/pre-commit
    ```
+
+> **Customize for your tech stack and team.**
+> This kit ships with skills, agents, rules, and commands covering Java, NestJS, Python, Angular, Flutter, iOS, Android, and more — but you don't need all of them. Keep only what matches your stack and workflow:
+>
+> | Component | Where | What to trim |
+> |-----------|-------|--------------|
+> | **Skills** | `.claude/skills/` | Delete skill folders for stacks you don't use (e.g. remove `java-spring-api/` if you're Python-only) |
+> | **Agents** | `.claude/agents/` | Remove agent `.md` files for domains outside your stack — each one adds ~150 tokens to every session |
+> | **Rules** | `.claude/rules/` | Keep `core-behaviors.md`, `lessons.md`, and `code-standards.md` as a minimum. Add team-specific rules as new files in this folder — they are always loaded |
+> | **Commands** | `.claude/commands/` | Keep slash commands your team will actually use; delete the rest |
+> | **Hooks** | `.claude/hooks/` + `settings.json` | Disable hooks you don't need by removing their entry from `settings.json` under `hooks:` |
+> | **MCP servers** | `.mcp.json` | Remove servers for tools you don't use — each connected server adds to session startup time |
+>
+> The goal is a lean, focused setup: fewer agents means less context overhead per session, fewer rules means clearer signal, and fewer commands means less noise in `/` autocomplete. Start minimal and add back what you find yourself needing.
 
 ## 3. Set Up Your Editor (Install VS Code)
 
@@ -1922,6 +1938,365 @@ Run a performance trace on localhost:4200 and analyze the LCP breakdown
 
 Claude automatically picks the right tool (or both) based on the task — no need to specify which MCP server to use. See `.claude/skills/browser-testing/SKILL.md` and `.claude/agents/browser-testing.md` for the full workflow guide.
 
+## 16. iOS App Store Release Pipeline
+
+Flutter developers build the app — but the journey doesn't end at the IPA. This section covers the full pipeline from Xcode build to App Store review, powered by two complementary tools in this kit.
+
+### How the Tools Fit Together
+
+```
+Flutter Development          XcodeBuildMCP                  ASC Skills
+──────────────────           ──────────────────             ───────────────────────────
+Write Dart/Flutter code  ->  Build iOS project         ->  Upload IPA to App Store Connect
+flutter build ios        ->  Archive & export IPA       ->  Distribute to TestFlight groups
+Riverpod + Freezed       ->  Debug on simulator         ->  Submit to App Store review
+Widget tests             ->  Capture screenshots        ->  Monitor review status
+                         ->  Inspect signing config     ->  Triage crash reports
+```
+
+**XcodeBuildMCP** (`xcodebuild` in `.mcp.json`) handles everything that requires a live Xcode environment: building, archiving, running on simulator, attaching a debugger, and capturing logs.
+
+**ASC Skills** handle everything that happens after the IPA is built: uploading, TestFlight distribution, signing asset management, App Store submission, and post-release monitoring.
+
+### Step 1 — Build the IPA (XcodeBuildMCP)
+
+The `xcodebuild` MCP server executes these steps natively. Load the `flutter-mobile` skill and use XcodeBuildMCP tools:
+
+```
+1. discover_projs -> finds ios/Runner.xcworkspace
+2. list_schemes   -> identifies the Runner scheme
+3. build_sim      -> builds for simulator (development)
+4. build_run_sim  -> builds + launches on simulator
+5. show_build_settings -> verifies signing config
+```
+
+For a release build that produces an IPA for upload:
+
+```bash
+# Run once to generate Xcode project and Pods
+flutter build ios --release
+
+# XcodeBuildMCP then handles archive + export
+# (or use xcodebuild directly via asc-xcode-build skill)
+```
+
+### Step 2 — Set Up Signing (asc-signing-setup skill)
+
+Before uploading, ensure signing assets are in place:
+
+```bash
+asc bundle-ids list --paginate
+asc certificates list --certificate-type IOS_DISTRIBUTION
+asc profiles create --name "AppStore Profile" --profile-type IOS_APP_STORE \
+  --bundle "BUNDLE_ID" --certificate "CERT_ID"
+asc profiles download --id "PROFILE_ID" --output "./profiles/"
+```
+
+Load skill: `.claude/skills/asc-signing-setup/`
+
+### Step 3 — Upload & Distribute (asc-release-flow skill)
+
+```bash
+# Preferred: single command for TestFlight
+asc publish testflight --app APP_ID --ipa ./build/ios/ipa/MyApp.ipa --group GROUP_ID --wait
+
+# Preferred: single command for App Store
+asc publish appstore --app APP_ID --ipa ./build/ios/ipa/MyApp.ipa --version 1.2.3 --wait --submit --confirm
+```
+
+Load skill: `.claude/skills/asc-release-flow/`
+
+### Step 4 — Manage Beta (asc-testflight-orchestration skill)
+
+```bash
+asc testflight beta-groups list --app APP_ID --paginate
+asc testflight beta-testers add --app APP_ID --email tester@example.com --group "Beta"
+asc builds add-groups --build BUILD_ID --group GROUP_ID
+asc builds test-notes create --build BUILD_ID --locale en-US --whats-new "Bug fixes"
+```
+
+Load skill: `.claude/skills/asc-testflight-orchestration/`
+
+### Step 5 — Preflight & Submit (asc-submission-health skill)
+
+Run all 7 preflight checks before submitting. See `reference/submission-preflight-checklist.md` for the full checklist.
+
+```bash
+asc builds info --build BUILD_ID                        # Must be VALID
+asc encryption declarations list --app APP_ID           # Must exist + assigned
+asc submit create --app APP_ID --version 1.2.3 --build BUILD_ID --confirm
+asc submit status --id SUBMISSION_ID
+```
+
+Load skill: `.claude/skills/asc-submission-health/`
+
+### Step 6 — Monitor & Triage (asc-crash-triage skill)
+
+After release, monitor crashes and beta feedback:
+
+```bash
+asc crashes --app APP_ID --sort -createdDate --limit 10
+asc feedback --app APP_ID --sort -createdDate --limit 10
+asc performance diagnostics list --build BUILD_ID
+```
+
+Load skill: `.claude/skills/asc-crash-triage/`
+
+### ASC Skills in This Kit
+
+These skills were adapted from the open-source [app-store-connect-cli-skills](https://github.com/rudrankriyam/app-store-connect-cli-skills) repository by [@rudrankriyam](https://github.com/rudrankriyam), and enhanced to match this kit's skill standards (Iron Law, progressive disclosure, metadata blocks, Documentation Sources).
+
+| Skill | Directory | When to Load |
+|-------|-----------|-------------|
+| `asc-cli-usage` | `.claude/skills/asc-cli-usage/` | Before running any `asc` command |
+| `asc-id-resolver` | `.claude/skills/asc-id-resolver/` | When you need APP_ID, BUILD_ID, GROUP_ID |
+| `asc-signing-setup` | `.claude/skills/asc-signing-setup/` | Setting up or rotating signing assets |
+| `asc-release-flow` | `.claude/skills/asc-release-flow/` | Uploading IPA, TestFlight or App Store release |
+| `asc-testflight-orchestration` | `.claude/skills/asc-testflight-orchestration/` | Managing beta groups, testers, build notes |
+| `asc-submission-health` | `.claude/skills/asc-submission-health/` | Preflight checks and App Store submission |
+| `asc-crash-triage` | `.claude/skills/asc-crash-triage/` | Crash reports, beta feedback, performance |
+
+### Prerequisites
+
+```bash
+# Install the asc CLI
+brew install rudrankriyam/tap/app-store-connect-cli
+
+# Authenticate (keychain — recommended)
+asc auth login
+
+# Or set environment variables
+export ASC_KEY_ID="your-key-id"
+export ASC_ISSUER_ID="your-issuer-id"
+export ASC_PRIVATE_KEY_PATH="/path/to/AuthKey.p8"
+```
+
+### Example Prompts
+
+Copy any of these directly into Claude Code to trigger the iOS release skills:
+
+**Upload & TestFlight distribution**
+```
+Upload the IPA at ./build/ios/ipa/MyApp.ipa to TestFlight for app APP_ID and distribute it to the "Internal Testers" group.
+```
+
+**Full App Store release**
+```
+Run all preflight submission checks for my iOS app APP_ID version 2.1.0, then submit it to App Store review.
+```
+
+**Signing setup**
+```
+Create a new App Store distribution certificate and provisioning profile for bundle ID com.example.myapp on iOS.
+```
+
+**Check review status**
+```
+What is the current App Store review status for my app APP_ID? Show me if there are any active submissions.
+```
+
+**Crash triage**
+```
+Show me the top 10 TestFlight crash reports for app APP_ID sorted by most recent, grouped by crash signature.
+```
+
+**Resolve IDs**
+```
+Find the app ID, latest build ID, and Internal Testers group ID for my app with bundle ID com.example.myapp.
+```
+
+**Rotate expired certificate**
+```
+My iOS distribution certificate is expiring. Check what exists, revoke the old one, and create a new certificate and provisioning profile for com.example.myapp.
+```
+
+**TestFlight What to Test notes**
+```
+Set the What to Test notes for build BUILD_ID in en-US locale to "Fixed login crash on iOS 18. Please test the onboarding flow."
+```
+
+> Skills used by these prompts: `asc-cli-usage` → `asc-id-resolver` → `asc-signing-setup` → `asc-release-flow` → `asc-testflight-orchestration` → `asc-submission-health` → `asc-crash-triage`
+>
+> Source: [github.com/rudrankriyam/app-store-connect-cli-skills](https://github.com/rudrankriyam/app-store-connect-cli-skills)
+
+---
+
+## 17. Android Google Play Release Pipeline
+
+Flutter developers build Android apps — but the journey doesn't end at the AAB. This section covers the full pipeline from Android build to Google Play production, powered by the GPD skills in this kit.
+
+### How the Tools Fit Together
+
+```
+Flutter Development          flutter CLI / Maestro MCP       GPD Skills
+──────────────────           ──────────────────────────      ────────────────────────────────
+Write Dart/Flutter code  →   Build Android AAB           →   Upload AAB to Google Play
+flutter build appbundle  →   Run E2E tests (Maestro)     →   Release to internal/beta track
+Riverpod + Freezed       →   Inspect on emulator         →   Staged rollout to production
+Widget tests             →   Cross-platform E2E flows     →   Monitor vitals and reviews
+```
+
+**Flutter CLI** handles the Android build: `flutter build appbundle` produces the `.aab` file.
+
+**Maestro MCP** (`maestro` in `.mcp.json`) runs cross-platform E2E test flows on Android emulator before release.
+
+**GPD Skills** handle everything after the AAB is built: uploading to Google Play, track management, staged rollouts, submission health checks, and post-release monitoring.
+
+### Step 1 — Build the AAB (Flutter CLI)
+
+```bash
+# Build release AAB
+flutter build appbundle --release
+
+# Output: build/app/outputs/bundle/release/app-release.aab
+```
+
+Then run E2E flows on Android emulator via Maestro MCP before uploading.
+
+### Step 2 — Resolve IDs (gpd-id-resolver skill)
+
+Before running any release commands, resolve your package name and track names:
+
+```bash
+gpd publish tracks --package com.example.app
+gpd publish status --package com.example.app --track production
+```
+
+Load skill: `.claude/skills/gpd-id-resolver/`
+
+### Step 3 — Upload & Release (gpd-release-flow skill)
+
+```bash
+# Upload AAB to Google Play
+gpd publish upload app.aab --package com.example.app
+
+# Release to internal track
+gpd publish release --package com.example.app --track internal --status completed
+
+# Promote to beta
+gpd publish promote --package com.example.app --from-track internal --to-track beta
+
+# Staged rollout to production: 5% → 50% → 100%
+gpd publish release --package com.example.app --track production --status inProgress --version-code 123
+gpd publish rollout --package com.example.app --track production --percentage 5
+gpd publish rollout --package com.example.app --track production --percentage 50
+gpd publish rollout --package com.example.app --track production --percentage 100
+```
+
+Load skill: `.claude/skills/gpd-release-flow/`
+
+### Step 4 — Manage Beta Testers (gpd-betagroups skill)
+
+```bash
+gpd publish testers list --package com.example.app --track internal
+gpd publish testers add --package com.example.app --track internal --group testers@example.com
+gpd publish release --package com.example.app --track beta --status completed
+```
+
+Load skill: `.claude/skills/gpd-betagroups/`
+
+### Step 5 — Preflight Before Production (gpd-submission-health skill)
+
+Run all 5 preflight checks before releasing to production. See `reference/submission-preflight-checklist.md` for full commands.
+
+```bash
+gpd publish edit validate EDIT_ID --package com.example.app   # Must pass
+gpd publish status --package com.example.app --track production
+gpd publish listing get --package com.example.app             # Metadata complete
+gpd publish images list phoneScreenshots --package com.example.app --locale en-US
+```
+
+Load skill: `.claude/skills/gpd-submission-health/`
+
+### Step 6 — Monitor Build State (gpd-build-lifecycle skill)
+
+```bash
+gpd publish status --package com.example.app --track production
+gpd publish tracks --package com.example.app
+
+# Emergency: halt bad rollout
+gpd publish halt --package com.example.app --track production --confirm
+gpd publish rollback --package com.example.app --track production --confirm
+```
+
+Load skill: `.claude/skills/gpd-build-lifecycle/`
+
+### GPD Skills in This Kit
+
+These skills were adapted from the open-source [gpd-cli-skills](https://github.com/rudrankriyam/gpd-cli-skills) repository by [@rudrankriyam](https://github.com/rudrankriyam), and enhanced to match this kit's skill standards (Iron Law, progressive disclosure, metadata blocks, Documentation Sources).
+
+| Skill | Directory | When to Load |
+|-------|-----------|-------------|
+| `gpd-cli-usage` | `.claude/skills/gpd-cli-usage/` | Before running any `gpd` command |
+| `gpd-id-resolver` | `.claude/skills/gpd-id-resolver/` | When you need package name, track, version code, or product ID |
+| `gpd-release-flow` | `.claude/skills/gpd-release-flow/` | Uploading AAB, track releases, staged rollout |
+| `gpd-betagroups` | `.claude/skills/gpd-betagroups/` | Managing internal/beta testers and track promotion |
+| `gpd-submission-health` | `.claude/skills/gpd-submission-health/` | Preflight checks before production release |
+| `gpd-build-lifecycle` | `.claude/skills/gpd-build-lifecycle/` | Build upload status, internal sharing, halt/rollback |
+
+### Prerequisites
+
+```bash
+# Install the gpd CLI
+brew install rudrankriyam/tap/google-play-developer-cli
+
+# Set service account credentials
+export GPD_SERVICE_ACCOUNT_KEY="/path/to/service-account.json"
+
+# Validate access
+gpd auth check --package com.example.app
+```
+
+### Example Prompts
+
+Copy any of these directly into Claude Code to trigger the Android release skills:
+
+**Upload AAB and release to internal track**
+```
+Upload ./build/app/outputs/bundle/release/app-release.aab to Google Play for package com.example.myapp and release it to the internal testing track.
+```
+
+**Staged rollout to production**
+```
+Promote my app com.example.myapp from beta to production with a staged rollout — start at 5%, then 50%, then 100%.
+```
+
+**Full preflight check before production**
+```
+Run all preflight submission checks for com.example.myapp version code 123 before I release to the production track.
+```
+
+**Add beta testers**
+```
+Add tester@example.com to the internal testing track for com.example.myapp and distribute the latest build to them.
+```
+
+**Check release status**
+```
+What is the current release status of com.example.myapp on the production track? Show version code and rollout percentage.
+```
+
+**Halt a bad rollout**
+```
+Halt the production rollout for com.example.myapp immediately — there's a critical crash in the latest release.
+```
+
+**Resolve IDs before release**
+```
+List all available tracks and the current version codes for com.example.myapp on Google Play.
+```
+
+**Manage store listing**
+```
+Export the current Play Store listing for com.example.myapp to a local Fastlane metadata folder, then validate it.
+```
+
+> Skills used by these prompts: `gpd-cli-usage` → `gpd-id-resolver` → `gpd-build-lifecycle` → `gpd-release-flow` → `gpd-betagroups` → `gpd-submission-health`
+>
+> Source: [github.com/rudrankriyam/gpd-cli-skills](https://github.com/rudrankriyam/gpd-cli-skills)
+
+---
+
 ## 16. Hands-On Exercises
 
 Work through these exercises to get familiar with Claude Code. Each one uses different components from this kit.
@@ -3570,5 +3945,7 @@ use context7                        # Append to any prompt for live docs
 | VS Code Download | [code.visualstudio.com/download](https://code.visualstudio.com/download) |
 | Awesome Claude Code (Community) | [github.com/hesreallyhim/awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code) |
 | Awesome Claude Skills | [github.com/travisvn/awesome-claude-skills](https://github.com/travisvn/awesome-claude-skills) |
+| App Store Connect CLI Skills | [github.com/rudrankriyam/app-store-connect-cli-skills](https://github.com/rudrankriyam/app-store-connect-cli-skills) |
+| Google Play Developer CLI Skills | [github.com/rudrankriyam/gpd-cli-skills](https://github.com/rudrankriyam/gpd-cli-skills) |
 | MCP Specification | [modelcontextprotocol.io](https://modelcontextprotocol.io) |
 | Prompting Guide | [docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview) |

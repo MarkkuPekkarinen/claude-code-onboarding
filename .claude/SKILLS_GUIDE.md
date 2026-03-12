@@ -2,7 +2,7 @@
 
 > Complete skill catalog for Claude Code Onboarding Kit. Use this to find the right skill for any task.
 >
-> 44 skills across 7 domains. Each skill is loaded with `/skill-name` or via `Skill` tool.
+> 57 skills across 8 domains. Each skill is loaded with `/skill-name` or via `Skill` tool.
 >
 > **Lazy-load pattern:** Each SKILL.md is a routing document only. Detailed patterns live in `reference/` files within each skill directory. Load the reference file explicitly when the detail is needed — do not expect it to be loaded automatically.
 
@@ -32,6 +32,25 @@
 - **frontend-design**: Creative frontend design skill providing visual design principles, typography and color guidance, motion patterns, and anti-patterns for building distinctive production-grade UIs.
 - **riverpod-patterns**: Provides Riverpod state management patterns and best practices for Flutter applications, covering providers, AsyncValue handling, ref usage, and provider lifecycle management.
 - **ui-standards-tokens**: Provides design token definitions, theming patterns, and UI standards for Flutter applications, used when auditing UI compliance, implementing design systems, or ensuring consistent token usage.
+
+### Mobile Deployment (13 skills)
+
+**iOS App Store (7 skills — powered by `asc` CLI):**
+- **asc-cli-usage**: Command discovery, flags, output formats, auth, and pagination for the `asc` CLI — load first before running any asc command.
+- **asc-id-resolver**: Resolve App Store Connect IDs (app, build, version, group, tester, submission) from human-friendly names — use whenever a command requires an ID parameter.
+- **asc-signing-setup**: Set up bundle IDs, capabilities, signing certificates, and provisioning profiles — use when onboarding a new app or rotating expired certs.
+- **asc-release-flow**: End-to-end TestFlight and App Store release workflow covering upload, processing, version creation, submission, and release — the primary iOS release skill.
+- **asc-testflight-orchestration**: Manage TestFlight groups, testers, build distribution, and What to Test notes — use for beta rollout management.
+- **asc-submission-health**: Preflight checklist and submission health for App Store review — run all 7 checks before submitting. Reference: `reference/submission-preflight-checklist.md`.
+- **asc-crash-triage**: Triage TestFlight crashes, beta feedback, and performance diagnostics — use when investigating crash reports after a build is distributed.
+
+**Android Google Play (6 skills — powered by `gpd` CLI):**
+- **gpd-cli-usage**: Command discovery, flags, output formats, auth, and edit lifecycle for the `gpd` CLI — load first before running any gpd command.
+- **gpd-id-resolver**: Resolve Google Play identifiers (package names, track names, version codes, product IDs) — use whenever a command requires an exact identifier.
+- **gpd-build-lifecycle**: Upload AAB, track build processing, check release status, and manage version codes — primary upload skill.
+- **gpd-betagroups**: Manage internal/beta tester groups and build distribution — use for beta testing rollout management.
+- **gpd-release-flow**: End-to-end Google Play release workflow covering upload, staged rollout, track promotions, and production release — the primary Android release skill.
+- **gpd-submission-health**: Preflight checklist for Google Play production releases — run all 5 checks before promoting to production. Reference: `reference/submission-preflight-checklist.md`.
 
 ### API & Architecture (6 skills)
 - **architecture-decision-records**: Used when documenting significant technical decisions, reviewing past architectural choices, or establishing decision processes; provides ADR templates and best practices.
@@ -93,6 +112,25 @@
 3. **ui-standards-tokens** — Audit design token compliance
 4. **code-reviewer** — Final quality review
 
+### iOS App Store Release
+1. **flutter-mobile** — Build and archive the iOS app (`flutter build ios --release`)
+2. **asc-cli-usage** — Verify asc auth and learn flags before running any command
+3. **asc-signing-setup** — Verify bundle ID, capabilities, and provisioning profiles
+4. **asc-id-resolver** — Resolve app ID, group IDs, and build IDs
+5. **asc-release-flow** — Upload IPA, wait for processing, create version, submit
+6. **asc-testflight-orchestration** — Distribute to groups and manage What to Test notes
+7. **asc-submission-health** — Run all 7 preflight checks before App Store submission
+8. **asc-crash-triage** — Investigate crashes after TestFlight distribution
+
+### Android Google Play Release
+1. **flutter-mobile** — Build the Android AAB (`flutter build appbundle --release`)
+2. **gpd-cli-usage** — Verify gpd auth and learn flags before running any command
+3. **gpd-id-resolver** — Resolve package name, track names, and version codes
+4. **gpd-build-lifecycle** — Upload AAB and wait for build processing
+5. **gpd-betagroups** — Distribute to internal/beta tester groups
+6. **gpd-release-flow** — Staged rollout and promotion to production track
+7. **gpd-submission-health** — Run all 5 preflight checks before production release
+
 ### Angular SPA Feature
 1. **angular-spa** — Build standalone components, services, routes with TailwindCSS
 2. **frontend-design** — Apply visual design principles
@@ -151,6 +189,10 @@
 - **AI chat UI (streaming, copilot, chatbot)** -> ai-chat
 - **Angular SPA** -> angular-spa
 - **Flutter mobile app (iOS/Android)** -> flutter-mobile
+- **iOS App Store release / TestFlight distribution** -> asc-release-flow (+ asc-cli-usage, asc-id-resolver)
+- **Android Google Play release / staged rollout** -> gpd-release-flow (+ gpd-cli-usage, gpd-id-resolver)
+- **App Store signing / certificates / provisioning** -> asc-signing-setup
+- **TestFlight crash investigation** -> asc-crash-triage
 - **MCP server integration** -> mcp-builder
 - **Database schema** -> database-schema-designer
 
@@ -210,6 +252,12 @@ nestjs-api + nestjs-coding-standard + openapi-spec-generation + database-schema-
 
 ### Flutter Mobile App
 flutter-mobile + riverpod-patterns + ui-standards-tokens + code-reviewer
+
+### iOS App Store Release Pipeline
+flutter-mobile + asc-cli-usage + asc-signing-setup + asc-id-resolver + asc-release-flow + asc-testflight-orchestration + asc-submission-health
+
+### Android Google Play Release Pipeline
+flutter-mobile + gpd-cli-usage + gpd-id-resolver + gpd-build-lifecycle + gpd-betagroups + gpd-release-flow + gpd-submission-health
 
 ### Angular SPA
 angular-spa + frontend-design + ui-standards-tokens + browser-testing
@@ -272,6 +320,14 @@ a2ui-angular + angular-spa + google-adk + security-reviewer
 - "Deploy an ADK agent to Cloud Run with Terraform" -> adk-deploy-guide + google-adk
 - "Build an A2UI renderer for an Angular agent-driven UI" -> a2ui-angular + angular-spa + security-reviewer
 - "Evaluate ADK agent quality with rubric-based scoring" -> adk-eval-guide + google-adk
+- "Upload my Flutter iOS build to TestFlight" -> asc-cli-usage + asc-id-resolver + asc-release-flow
+- "Submit my iOS app to App Store review" -> asc-submission-health + asc-release-flow
+- "Rotate expired iOS signing certificate" -> asc-signing-setup + asc-id-resolver
+- "Investigate TestFlight crash after beta release" -> asc-crash-triage + asc-id-resolver
+- "Upload Android AAB to Google Play internal track" -> gpd-cli-usage + gpd-id-resolver + gpd-build-lifecycle
+- "Staged rollout to 10% on Google Play" -> gpd-release-flow + gpd-submission-health
+- "Add testers to our Android beta group" -> gpd-betagroups + gpd-id-resolver
+- "Run preflight before promoting Android to production" -> gpd-submission-health
 
 ---
 
@@ -325,3 +381,16 @@ a2ui-angular + angular-spa + google-adk + security-reviewer
 | the-fool | workflow | expert | review | report |
 | iterate-pr | workflow | autonomous | pr-lifecycle | actions |
 | feature-forge | workflow | specialist | design | document |
+| asc-cli-usage | mobile-deployment | specialist | deployment | commands |
+| asc-id-resolver | mobile-deployment | specialist | deployment | commands |
+| asc-signing-setup | mobile-deployment | specialist | deployment | commands |
+| asc-release-flow | mobile-deployment | specialist | deployment | commands |
+| asc-testflight-orchestration | mobile-deployment | specialist | deployment | commands |
+| asc-submission-health | mobile-deployment | specialist | deployment | commands |
+| asc-crash-triage | mobile-deployment | specialist | deployment | report |
+| gpd-cli-usage | mobile-deployment | specialist | deployment | commands |
+| gpd-id-resolver | mobile-deployment | specialist | deployment | commands |
+| gpd-build-lifecycle | mobile-deployment | specialist | deployment | commands |
+| gpd-betagroups | mobile-deployment | specialist | deployment | commands |
+| gpd-release-flow | mobile-deployment | specialist | deployment | commands |
+| gpd-submission-health | mobile-deployment | specialist | deployment | commands |
