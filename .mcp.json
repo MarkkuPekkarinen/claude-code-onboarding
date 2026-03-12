@@ -152,11 +152,14 @@
       "timeout": 60000
     },
     "weaviate-docs": {
-      "type": "http",
-      "disabled": false,
-      "description": "Weaviate documentation MCP server — search and retrieve Weaviate docs for schema design, vector config, hybrid search, and multi-tenancy.",
-      "url": "https://weaviate-docs.mcp.kapa.ai",
-      "timeout": 60000
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "https://weaviate-docs.mcp.kapa.ai"
+      ],
+      "timeout": 60000,
+      "env": {}
     }
   }
 }
