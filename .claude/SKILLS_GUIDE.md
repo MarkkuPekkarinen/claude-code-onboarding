@@ -16,7 +16,11 @@
 - **adk-observability-guide**: Used when configuring tracing (Cloud Trace), prompt-response logging, or BigQuery Agent Analytics for ADK agents — covers 3 observability tiers.
 - **agentic-ai-coding-standard**: Provides coding standards for Python agentic AI services with LangChain/LangGraph, covering state management, tool definitions, graph structure, error handling, and observability.
 - **agentic-ai-dev**: Provides patterns and templates for building production AI agents with Python 3.14, LangChain v1.2.8, LangGraph v1.0.7, and FastAPI 0.128.x.
-- **google-adk**: Google ADK (Agent Development Kit) Python skill for building AI agents with Gemini models, SequentialAgent, ParallelAgent, LoopAgent, FunctionTool, McpToolset, session management, memory, callbacks, and FastAPI integration. Reference files: `adk-core-patterns.md`, `adk-structured-output.md`, `adk-agent-types.md`, `adk-agent-handoff.md`, `adk-tools-basic.md`, `adk-tools-callbacks.md`, `adk-memory-artifacts.md`, `adk-fastapi-integration.md`, `adk-testing.md`, `adk-project-config.md`.
+- **google-adk**: Google ADK (Agent Development Kit) Python skill for building AI agents with Gemini models,
+  SequentialAgent, ParallelAgent, LoopAgent, FunctionTool, McpToolset, session management, memory, callbacks,
+  and FastAPI integration. Reference files: `adk-core-patterns.md`, `adk-structured-output.md`,
+  `adk-agent-types.md`, `adk-agent-handoff.md`, `adk-tools-basic.md`, `adk-tools-callbacks.md`,
+  `adk-memory-artifacts.md`, `adk-fastapi-integration.md`, `adk-testing.md`, `adk-project-config.md`.
 - **java-coding-standard**: Activated when reviewing Java code or enforcing coding standards in Spring Boot services, covering naming conventions, immutability patterns, Optional usage, streams, and exception handling.
 - **java-spring-api**: Provides patterns and templates for Java 21 Spring Boot 3.5.x WebFlux REST API development, activated when creating controllers, services, repositories, DTOs, or reactive tests.
 - **mcp-builder**: Used when building MCP (Model Context Protocol) servers to integrate external APIs or services, providing guides for Python (FastMCP) and Node/TypeScript (MCP SDK) implementations.
