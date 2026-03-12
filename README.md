@@ -2,15 +2,6 @@
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/kumaran-is/claude-code-onboarding)
 [![Built with Claude Code](https://img.shields.io/badge/Built%20with-Claude%20Code-blueviolet?style=flat&logo=anthropic&logoColor=white)](https://docs.anthropic.com/en/docs/claude-code)
-[![Blog: My Setup](https://img.shields.io/badge/Medium-My%20Claude%20Code%20Setup-000000?style=flat&logo=medium&logoColor=white)](https://medium.com/@kumaran.isk/my-claude-code-setup-heres-what-i-learned-d0403b1b1fec)
-[![Blog: Practices](https://img.shields.io/badge/Medium-Practices%20That%20Fixed%20My%20Workflow-000000?style=flat&logo=medium&logoColor=white)](https://medium.com/@kumaran.isk/the-practices-that-fixed-my-claude-code-workflow-f72ada6a52a5)
-[![Blog: Agent Teams](https://img.shields.io/badge/Medium-Orchestrating%20Peer--to--Peer%20AI%20Agent%20Teams-000000?style=flat&logo=medium&logoColor=white)](https://medium.com/@kumaran.isk/claude-code-beyond-sub-agents-orchestrating-peer-to-peer-ai-with-agent-teams-3406d2169bfd)
-[![Blog: 7-Agent Playbook](https://img.shields.io/badge/Medium-7--Agent%20Full--Stack%20App%20Playbook-000000?style=flat&logo=medium&logoColor=white)](https://medium.com/@kumaran.isk/claude-code-agent-teams-a-7-agent-full-stack-app-playbook-f584a7fa1a69)
-[![Blog: Voice Mode](https://img.shields.io/badge/Medium-Voice%20Mode%20in%205%20Minutes-000000?style=flat&logo=medium&logoColor=white)](https://medium.com/@kumaran.isk/how-i-added-voice-mode-to-claude-code-hands-free-coding-in-5-minutes-101a5086968f)
-[![Blog: Cheaper Model](https://img.shields.io/badge/Medium-New%20Post-000000?style=flat&logo=medium&logoColor=white)](https://medium.com/@kumaran.isk/2c7333c10988)
-[![Blog: Claude CLI Desktop Web](https://img.shields.io/badge/Medium-3%20Ways%20to%20Run%20Claude%20Code-000000?style=flat&logo=medium&logoColor=white)](https://medium.com/@kumaran.isk/3-ways-to-run-claude-code-cli-desktop-and-web-a-developers-workflow-guide-fe6f2581b2a8)
-[![Blog: Scheduled Tasks](https://img.shields.io/badge/Medium-Scheduled%20Tasks%3A%2024%2F7%20Autonomous%20Agent-000000?style=flat&logo=medium&logoColor=white)](https://medium.com/@kumaran.isk/scheduled-tasks-in-claude-desktop-your-machine-is-now-a-24-7-autonomous-agent-1ba126bc94e8)
-
 ![Java](https://img.shields.io/badge/Java-21-ED8B00?style=flat&logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.x-6DB33F?style=flat&logo=springboot&logoColor=white)
 ![Node.js](https://img.shields.io/badge/Node.js-24.13-339933?style=flat&logo=nodedotjs&logoColor=white)
@@ -30,6 +21,15 @@
 ![Weaviate](https://img.shields.io/badge/Weaviate-serverless-4AC37E?style=flat&logo=weaviate&logoColor=white)
 ![Firebase](https://img.shields.io/badge/Firebase-DD2C00?style=flat&logo=firebase&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
+
+[![Blog: My Setup](https://img.shields.io/badge/Medium-My%20Claude%20Code%20Setup-000000?style=flat&logo=medium&logoColor=white)](https://medium.com/@kumaran.isk/my-claude-code-setup-heres-what-i-learned-d0403b1b1fec)
+[![Blog: Practices](https://img.shields.io/badge/Medium-Practices%20That%20Fixed%20My%20Workflow-000000?style=flat&logo=medium&logoColor=white)](https://medium.com/@kumaran.isk/the-practices-that-fixed-my-claude-code-workflow-f72ada6a52a5)
+[![Blog: Agent Teams](https://img.shields.io/badge/Medium-Orchestrating%20Peer--to--Peer%20AI%20Agent%20Teams-000000?style=flat&logo=medium&logoColor=white)](https://medium.com/@kumaran.isk/claude-code-beyond-sub-agents-orchestrating-peer-to-peer-ai-with-agent-teams-3406d2169bfd)
+[![Blog: 7-Agent Playbook](https://img.shields.io/badge/Medium-7--Agent%20Full--Stack%20App%20Playbook-000000?style=flat&logo=medium&logoColor=white)](https://medium.com/@kumaran.isk/claude-code-agent-teams-a-7-agent-full-stack-app-playbook-f584a7fa1a69)
+[![Blog: Voice Mode](https://img.shields.io/badge/Medium-Voice%20Mode%20in%205%20Minutes-000000?style=flat&logo=medium&logoColor=white)](https://medium.com/@kumaran.isk/how-i-added-voice-mode-to-claude-code-hands-free-coding-in-5-minutes-101a5086968f)
+[![Blog: Cheaper Model](https://img.shields.io/badge/Medium-New%20Post-000000?style=flat&logo=medium&logoColor=white)](https://medium.com/@kumaran.isk/2c7333c10988)
+[![Blog: Claude CLI Desktop Web](https://img.shields.io/badge/Medium-3%20Ways%20to%20Run%20Claude%20Code-000000?style=flat&logo=medium&logoColor=white)](https://medium.com/@kumaran.isk/3-ways-to-run-claude-code-cli-desktop-and-web-a-developers-workflow-guide-fe6f2581b2a8)
+[![Blog: Scheduled Tasks](https://img.shields.io/badge/Medium-Scheduled%20Tasks%3A%2024%2F7%20Autonomous%20Agent-000000?style=flat&logo=medium&logoColor=white)](https://medium.com/@kumaran.isk/scheduled-tasks-in-claude-desktop-your-machine-is-now-a-24-7-autonomous-agent-1ba126bc94e8)
 
 **Get your team from zero to productive with Claude Code in under 30 minutes.**
 
