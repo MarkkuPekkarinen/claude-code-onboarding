@@ -26,6 +26,8 @@
 ![Flutter](https://img.shields.io/badge/Flutter-3.38-02569B?style=flat&logo=flutter&logoColor=white)
 ![Dart](https://img.shields.io/badge/Dart-3.11-0175C2?style=flat&logo=dart&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat&logo=postgresql&logoColor=white)
+![pgvector](https://img.shields.io/badge/pgvector-vector%20search-4169E1?style=flat&logo=postgresql&logoColor=white)
+![Weaviate](https://img.shields.io/badge/Weaviate-serverless-4AC37E?style=flat&logo=weaviate&logoColor=white)
 ![Firebase](https://img.shields.io/badge/Firebase-DD2C00?style=flat&logo=firebase&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
 
@@ -39,7 +41,7 @@ This repository is a pre-configured starter kit packed with agents, skills, slas
 | **Agentic AI** | Python 3.14, LangChain v1.2.8, LangGraph v1.0.7, Google ADK, FastAPI 0.128.x |
 | **Frontend** | Angular 21.x, TypeScript 5.x, A2UI v0.8 (Agent-to-User Interface renderer) |
 | **Mobile** | Flutter 3.38, Dart 3.11 |
-| **Data & Infra** | PostgreSQL, Firebase |
+| **Data & Infra** | PostgreSQL, pgvector (vector search), Weaviate Serverless, Firebase |
 | **AI Tooling** | Claude Code, MCP servers |
 
 Clone it, install Claude Code, and start building.
