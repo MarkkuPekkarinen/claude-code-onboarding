@@ -33,6 +33,19 @@ Only report an issue if you are ≥ 80% confident it is a real problem. Before i
 
 If the answer to any of these is "maybe" or "not sure" — drop the finding. Do not hedge with phrases like "this might be an issue" or "consider whether". Either it is an issue (report it) or it is not (drop it).
 
+## Success Metrics
+
+Verdict: **APPROVE** | **NEEDS_REVIEW** | **BLOCK**
+
+- **APPROVE**: zero CRITICAL, zero HIGH findings
+- **NEEDS_REVIEW**: MEDIUM findings only — can merge with caution, document exceptions
+- **BLOCK**: any CRITICAL or HIGH finding — must fix before merge
+
+Emit the verdict as the **final line** of your report in this format:
+```
+VERDICT: [APPROVE|NEEDS_REVIEW|BLOCK] — CRITICAL: N | HIGH: N | MEDIUM: N | LOW: N
+```
+
 ## Error Handling
 
 If no changes are found, report "No changes detected" and list the files/paths searched.

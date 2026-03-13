@@ -70,3 +70,17 @@ All design token definitions (spacing, radius, size), accessibility patterns (Se
 - Reviewing motion/animation patterns
 - Ensuring theme consistency
 - Dark mode implementation
+
+## Success Metrics
+
+Verdict: **✅ COMPLIANT** | **⚠️ VIOLATIONS FOUND** | **❌ BLOCK**
+
+- **COMPLIANT**: zero design token violations; zero unexcused accessibility violations
+- **VIOLATIONS FOUND**: violations present without `ignore-design:` exception markers — fix before PR
+- **BLOCK**: hardcoded colors, hardcoded spacing, or raw TextStyle in production code without documented exception
+
+Emit these as the **final two lines** of your report:
+```
+Token violations: N | Accessibility violations: N | Exception markers: N
+VERDICT: [COMPLIANT|VIOLATIONS FOUND|BLOCK]
+```

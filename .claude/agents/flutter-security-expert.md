@@ -25,6 +25,20 @@ For general code security (OWASP Top 10, injection, auth, secrets) use the `secu
 3. **Audit** — Evaluate code against secure storage, network security, build security, deep link security, and privacy compliance
 4. **Report** — Output findings grouped by severity with file location and recommended fix
 
+## Success Metrics
+
+Verdict: **✅ PASS** | **⚠️ CONDITIONAL PASS** | **❌ BLOCK**
+
+- **PASS**: zero CRITICAL, zero HIGH findings; cert pinning confirmed; secure storage verified
+- **CONDITIONAL PASS**: HIGH findings with written remediation plan — accepted risk documented
+- **BLOCK**: any CRITICAL finding (hardcoded secret, missing cert pinning in production, insecure storage of tokens) — must fix before App Store / Play Store submission
+
+Emit these as the **final two lines** of your report:
+```
+OVERALL RISK: [CRITICAL|HIGH|MEDIUM|LOW]
+VERDICT: [PASS|CONDITIONAL PASS|BLOCK]
+```
+
 ## Error Handling
 
 If no target files are specified, scan `lib/` for Flutter source files.

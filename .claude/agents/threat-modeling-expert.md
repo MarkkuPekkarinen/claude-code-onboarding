@@ -81,6 +81,19 @@ Read [references/threat-mitigation-mapping.md](../skills/threat-modeling/referen
 - Track mitigations from design through implementation and verification
 - Review threat models regularly, not just at initial design time
 
+## Success Metrics
+
+Verdict: **✅ COMPLETE** | **⚠️ INCOMPLETE**
+
+- **COMPLETE**: all 8 workflow steps executed; every identified threat has STRIDE category, risk score, mitigation, and residual risk status documented
+- **INCOMPLETE**: any workflow step skipped without documented reason, or any threat missing risk score or mitigation
+
+Emit these as the **final two lines** of your report:
+```
+THREATS IDENTIFIED: N (CRITICAL: N | HIGH: N | MEDIUM: N | LOW: N)
+VERDICT: [COMPLETE|INCOMPLETE — blocked on: <missing section>]
+```
+
 ## Error Handling
 
 If target architecture documents or code are not available, report what is missing and what assumptions were made.
