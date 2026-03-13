@@ -134,6 +134,8 @@ If Step 7 required code changes from new feedback, return to Step 2 for a fresh 
 
 **Stop:** No PR exists, branch needs rebase.
 
+**Circuit breaker:** 6 full cycles completed without reaching Success. Escalate with full attempt history. Do not continue autonomously.
+
 ---
 
 ## Fallback (if scripts fail)

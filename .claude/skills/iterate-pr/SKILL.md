@@ -35,6 +35,36 @@ uv run ${CLAUDE_SKILL_ROOT}/scripts/fetch_pr_feedback.py [--pr NUMBER]
 7. Monitor CI in a poll loop — address new feedback as it arrives
 8. Repeat from Step 2 if new feedback required changes
 
+## Circuit Breaker — 6-Cycle Limit
+
+Track the number of full fix→push→CI cycles completed. **After 6 cycles without reaching exit conditions, stop and escalate.**
+
+A "cycle" = one complete pass through Steps 2–8 (gather feedback → fix → push → CI result).
+
+**On hitting cycle 6 with no resolution:**
+```
+ESCALATION — Cycle limit reached (6/6)
+
+What was attempted:
+- Cycle 1: [what was fixed, what CI returned]
+- Cycle 2: [what was fixed, what CI returned]
+- Cycle 3: [what was fixed, what CI returned]
+- Cycle 4: [what was fixed, what CI returned]
+- Cycle 5: [what was fixed, what CI returned]
+- Cycle 6: [what was fixed, what CI returned]
+
+Still failing:
+- [check name]: [error description] — [log snippet or file:line]
+
+Options:
+A) Provide direction on the specific failure above
+B) Approve the PR with known failures (describe what to accept)
+C) Close the PR and start fresh with a different approach
+→ Which do you prefer?
+```
+
+Do NOT attempt a 7th cycle. Do NOT make any more code changes. Wait for human direction.
+
 ## LOGAF Scale
 
 | Level | Labels | Action |
