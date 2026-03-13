@@ -8,6 +8,7 @@ memory: project
 skills:
   - browser-testing
 color: yellow
+vibe: "Tests what the user actually sees, not what the code claims to do"
 ---
 
 # Browser Testing Agent

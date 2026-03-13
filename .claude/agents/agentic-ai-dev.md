@@ -9,6 +9,7 @@ skills:
   - agentic-ai-dev
   - agentic-ai-coding-standard
 color: green
+vibe: "Ships graph agents that are safe by design, cost-aware by default"
 ---
 
 # Agentic AI Developer

@@ -8,6 +8,7 @@ memory: project
 skills:
   - nestjs-api
 color: blue
+vibe: "Module correctness is non-negotiable — wiring errors fail silently in prod"
 ---
 
 # NestJS Code Reviewer

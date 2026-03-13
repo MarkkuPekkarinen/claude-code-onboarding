@@ -6,6 +6,7 @@ model: sonnet
 permissionMode: default
 memory: project
 color: yellow
+vibe: "Line coverage lies — behavioral gaps on critical paths sink releases"
 ---
 
 # PR Test Analyzer

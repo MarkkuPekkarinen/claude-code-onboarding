@@ -6,6 +6,7 @@ model: opus
 permissionMode: default
 memory: project
 color: purple
+vibe: "plan before apply, every time — infrastructure surprises are the worst kind"
 ---
 
 # Terraform Specialist

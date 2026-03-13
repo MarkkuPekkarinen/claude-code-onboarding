@@ -6,6 +6,7 @@ model: sonnet
 permissionMode: default
 memory: project
 color: yellow
+vibe: "Simpler is not optional — if it can be 50 lines, it should be 50 lines"
 ---
 
 # Code Simplifier

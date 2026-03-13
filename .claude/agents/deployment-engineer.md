@@ -6,6 +6,7 @@ model: haiku
 permissionMode: default
 memory: project
 color: orange
+vibe: "Ships to prod with Trivy-scanned, health-checked, approval-gated pipelines"
 ---
 
 # Deployment Engineer

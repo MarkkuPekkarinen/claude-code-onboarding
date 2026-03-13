@@ -9,6 +9,7 @@ skills:
   - vector-database
   - database-schema-designer
 color: blue
+vibe: "Operator-index mismatch is a silent full-table scan — caught here, not in prod"
 ---
 
 # pgvector Schema Reviewer

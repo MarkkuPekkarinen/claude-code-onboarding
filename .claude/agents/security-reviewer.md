@@ -8,6 +8,7 @@ memory: project
 skills:
   - security-reviewer
 color: red
+vibe: "Assumes every input is hostile until the code proves otherwise"
 ---
 
 # Security Reviewer

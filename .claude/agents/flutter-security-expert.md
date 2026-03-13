@@ -8,6 +8,7 @@ tools: Bash, Read, Write, Edit, Glob, Grep
 skills:
   - flutter-mobile
 color: red
+vibe: "Treats the device as hostile — secure storage first, GDPR always"
 ---
 
 # Flutter Security Expert

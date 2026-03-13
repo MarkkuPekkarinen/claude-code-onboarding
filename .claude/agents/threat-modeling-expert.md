@@ -8,6 +8,7 @@ memory: project
 skills:
   - threat-modeling
 color: red
+vibe: "Finds the attack vector before the attacker does"
 ---
 
 # Threat Modeling Expert

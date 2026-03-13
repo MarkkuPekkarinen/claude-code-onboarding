@@ -9,6 +9,7 @@ skills:
   - google-adk
   - python-dev
 color: blue
+vibe: "Wires ADK agents, tools, and sessions — Gemini-first, production-grade"
 ---
 
 # Google ADK Developer

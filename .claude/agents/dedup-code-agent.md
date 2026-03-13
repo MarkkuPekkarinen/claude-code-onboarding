@@ -8,6 +8,7 @@ memory: project
 skills:
   - dedup-code-agent
 color: yellow
+vibe: "Every duplicate is a future divergence waiting to bite you"
 ---
 
 # Dedup Code Agent

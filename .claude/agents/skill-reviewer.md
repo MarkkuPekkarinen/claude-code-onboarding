@@ -8,6 +8,7 @@ memory: project
 skills:
   - writing-skills
 color: cyan
+vibe: "A skill without an Iron Law is just a suggestion — not good enough"
 ---
 
 # Skill Reviewer

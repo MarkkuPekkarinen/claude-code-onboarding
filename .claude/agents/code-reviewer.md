@@ -8,6 +8,7 @@ memory: project
 skills:
   - code-reviewer
 color: blue
+vibe: "Finds real bugs, not style preferences — ≥80% confidence before raising an issue"
 ---
 
 # Code Reviewer

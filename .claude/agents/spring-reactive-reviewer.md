@@ -9,6 +9,7 @@ skills:
   - java-spring-api
   - java-coding-standard
 color: blue
+vibe: "One blocking call in a reactive chain kills the whole thread pool"
 ---
 
 # Spring Reactive Code Reviewer

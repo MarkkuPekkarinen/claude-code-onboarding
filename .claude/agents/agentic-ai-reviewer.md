@@ -8,6 +8,7 @@ memory: project
 skills:
   - agentic-ai-dev
 color: blue
+vibe: "Finds the infinite loop before production does"
 ---
 
 # Agentic AI Code Reviewer
