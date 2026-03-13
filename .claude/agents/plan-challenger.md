@@ -4,6 +4,8 @@ description: Adversarial plan review agent — read-only. Systematically attacks
 model: opus
 tools: Read, Grep, Glob
 vibe: "Optimism is the enemy — every plan has a flaw, it's just not found yet"
+color: yellow
+emoji: "⚔️"
 ---
 
 # Plan Challenger Agent

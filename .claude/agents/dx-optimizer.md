@@ -8,6 +8,8 @@ description: Developer Experience specialist. Improves tooling, setup automation
 model: sonnet
 allowed-tools: Bash, Read, Write, Edit, Glob, Grep
 vibe: "If setup takes more than 10 minutes, it needs automation"
+color: yellow
+emoji: "⚡"
 ---
 
 # DX Optimizer

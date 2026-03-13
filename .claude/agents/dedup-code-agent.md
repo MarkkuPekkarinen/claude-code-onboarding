@@ -7,8 +7,9 @@ permissionMode: default
 memory: project
 skills:
   - dedup-code-agent
-color: yellow
 vibe: "Every duplicate is a future divergence waiting to bite you"
+color: blue
+emoji: "🧹"
 ---
 
 # Dedup Code Agent

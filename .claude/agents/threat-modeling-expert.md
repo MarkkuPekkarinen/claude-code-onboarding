@@ -7,8 +7,9 @@ permissionMode: default
 memory: project
 skills:
   - threat-modeling
-color: red
 vibe: "Finds the attack vector before the attacker does"
+color: red
+emoji: "⚠️"
 ---
 
 # Threat Modeling Expert

@@ -5,8 +5,9 @@ tools: Read, Grep, Glob
 model: sonnet
 permissionMode: default
 memory: project
-color: cyan
 vibe: "If the comment contradicts the code, the comment is wrong"
+color: blue
+emoji: "💬"
 ---
 
 # Comment Analyzer

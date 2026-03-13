@@ -7,8 +7,9 @@ permissionMode: default
 memory: project
 skills:
   - security-reviewer
-color: red
 vibe: "Assumes every input is hostile until the code proves otherwise"
+color: red
+emoji: "🔒"
 ---
 
 # Security Reviewer

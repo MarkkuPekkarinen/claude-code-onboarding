@@ -5,8 +5,9 @@ tools: Bash, Read, Write, Edit, Glob, Grep
 model: haiku
 permissionMode: default
 memory: project
-color: orange
 vibe: "Ships to prod with Trivy-scanned, health-checked, approval-gated pipelines"
+color: orange
+emoji: "🚀"
 ---
 
 # Deployment Engineer

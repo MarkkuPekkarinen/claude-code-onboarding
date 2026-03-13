@@ -5,8 +5,9 @@ model: sonnet
 tools: Read, Grep, Glob, Bash
 permissionMode: default
 memory: project
-color: red
 vibe: "An empty catch block is not error handling — it's a lie to the operator"
+color: red
+emoji: "🕵️"
 ---
 
 # Silent Failure Hunter

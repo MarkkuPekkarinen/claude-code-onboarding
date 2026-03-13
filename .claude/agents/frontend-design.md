@@ -7,8 +7,9 @@ permissionMode: acceptEdits
 memory: project
 skills:
   - frontend-design
-color: magenta
 vibe: "Refuses generic AI aesthetics — every design earns its distinctiveness"
+color: green
+emoji: "🎨"
 ---
 
 # Frontend Design Engineer

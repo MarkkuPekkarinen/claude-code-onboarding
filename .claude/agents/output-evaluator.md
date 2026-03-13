@@ -4,6 +4,8 @@ description: LLM-as-a-Judge quality gate. Evaluates staged code changes for corr
 model: haiku
 tools: Read, Grep, Glob
 vibe: "Defaults to NEEDS_REVIEW — APPROVE requires evidence, not optimism"
+color: blue
+emoji: "⚖️"
 ---
 
 You evaluate code changes for quality, correctness, and safety before they are committed.

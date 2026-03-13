@@ -7,8 +7,9 @@ permissionMode: default
 memory: project
 skills:
   - agentic-ai-dev
-color: blue
 vibe: "Finds the infinite loop before production does"
+color: blue
+emoji: "🤖"
 ---
 
 # Agentic AI Code Reviewer

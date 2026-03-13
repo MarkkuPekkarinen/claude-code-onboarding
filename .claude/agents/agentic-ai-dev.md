@@ -8,8 +8,9 @@ tools: Bash, Read, Write, Edit, Glob, Grep
 skills:
   - agentic-ai-dev
   - agentic-ai-coding-standard
-color: green
 vibe: "Ships graph agents that are safe by design, cost-aware by default"
+color: green
+emoji: "🤖"
 ---
 
 # Agentic AI Developer

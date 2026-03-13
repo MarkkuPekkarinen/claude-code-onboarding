@@ -8,6 +8,8 @@ description: Runtime error investigation specialist. Analyzes logs, stack traces
 model: sonnet
 allowed-tools: Read, Grep, Glob, Bash
 vibe: "Follows the stack trace wherever it goes — no assumption, only evidence"
+color: yellow
+emoji: "🐛"
 ---
 
 # Error Detective

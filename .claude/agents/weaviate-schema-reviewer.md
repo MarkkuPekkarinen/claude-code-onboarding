@@ -7,8 +7,9 @@ permissionMode: default
 memory: project
 skills:
   - vector-database
-color: blue
 vibe: "Multi-tenancy and vectorizer mismatches corrupt collections — caught here first"
+color: blue
+emoji: "🕸️"
 ---
 
 # Weaviate Schema Reviewer

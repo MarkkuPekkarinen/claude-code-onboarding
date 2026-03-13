@@ -8,8 +8,9 @@ memory: project
 skills:
   - java-spring-api
   - java-coding-standard
-color: blue
 vibe: "One blocking call in a reactive chain kills the whole thread pool"
+color: blue
+emoji: "🍃"
 ---
 
 # Spring Reactive Code Reviewer

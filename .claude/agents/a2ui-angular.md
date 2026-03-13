@@ -8,8 +8,9 @@ tools: Bash, Read, Write, Edit, Glob, Grep, WebFetch, mcp__context7__resolve-lib
 skills:
   - a2ui-angular
   - angular-spa
-color: blue
 vibe: "Renders what the agent says, faithfully and safely — JSON in, pixels out"
+color: green
+emoji: "🖼️"
 ---
 
 # A2UI Angular Renderer Developer

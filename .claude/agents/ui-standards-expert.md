@@ -8,8 +8,9 @@ memory: project
 skills:
   - design-system
   - ui-standards-tokens
-color: cyan
 vibe: "No hardcoded colors, no raw spacing — the design system exists for a reason"
+color: purple
+emoji: "🎯"
 ---
 
 # UI Standards Expert Agent

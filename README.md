@@ -1933,7 +1933,13 @@ claude-code-onboarding/
         ├── domain-finder/                # Domain name availability checking via WHOIS (1 reference file)
         └── changelog-generator/          # Git history parsing, semantic versioning,
                                           # release notes generation (1 reference file)
+│
+└── docs/
+    └── workflows/                        # 43 multi-phase workflow guides (humans + Claude Code)
+        └── README.md                     # ← Index of all workflows by category
 ```
+
+> **Workflow guides**: [`docs/workflows/README.md`](docs/workflows/README.md) — covers every development process from ideation to deployment, organized by phase (Feature Dev, Testing, Security, Shipping, Ops, Tooling).
 
 ### MCP Servers (`.mcp.json`)
 

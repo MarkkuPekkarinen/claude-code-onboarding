@@ -7,8 +7,9 @@ permissionMode: default
 memory: project
 skills:
   - nestjs-api
-color: blue
 vibe: "Module correctness is non-negotiable — wiring errors fail silently in prod"
+color: blue
+emoji: "🔍"
 ---
 
 # NestJS Code Reviewer

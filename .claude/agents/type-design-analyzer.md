@@ -5,8 +5,9 @@ tools: Read, Grep, Glob
 model: sonnet
 permissionMode: default
 memory: project
-color: cyan
 vibe: "If the type allows invalid states, the type is wrong"
+color: blue
+emoji: "🔢"
 ---
 
 # Type Design Analyzer

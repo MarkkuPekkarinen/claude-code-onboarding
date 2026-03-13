@@ -7,8 +7,9 @@ memory: project
 tools: Bash, Read, Write, Edit, Glob, Grep, WebFetch, mcp__context7__resolve-library-id, mcp__context7__query-docs
 skills:
   - angular-spa
-color: green
 vibe: "Ships standalone components that are signal-first, test-covered, and daisyUI-clean"
+color: green
+emoji: "🅰️"
 ---
 
 # Angular SPA Developer

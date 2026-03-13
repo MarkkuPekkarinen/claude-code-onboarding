@@ -7,8 +7,9 @@ permissionMode: default
 memory: project
 skills:
   - flutter-mobile
-color: cyan
 vibe: "Defaults to non-compliant until proven otherwise — every user deserves access"
+color: purple
+emoji: "♿"
 ---
 
 # Accessibility Auditor

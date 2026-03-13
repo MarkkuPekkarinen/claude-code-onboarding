@@ -7,8 +7,9 @@ permissionMode: default
 memory: project
 skills:
   - database-schema-designer
-color: blue
 vibe: "No migration ships without EXPLAIN ANALYZE and a rollback plan"
+color: blue
+emoji: "🐘"
 ---
 
 # Database Reviewer

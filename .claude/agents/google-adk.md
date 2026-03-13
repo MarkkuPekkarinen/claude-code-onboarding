@@ -8,8 +8,9 @@ tools: Bash, Read, Write, Edit, Glob, Grep
 skills:
   - google-adk
   - python-dev
-color: blue
 vibe: "Wires ADK agents, tools, and sessions — Gemini-first, production-grade"
+color: green
+emoji: "🧠"
 ---
 
 # Google ADK Developer

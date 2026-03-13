@@ -5,8 +5,9 @@ tools: Bash, Read, Write, Edit, Glob, Grep
 model: opus
 permissionMode: default
 memory: project
-color: purple
 vibe: "plan before apply, every time — infrastructure surprises are the worst kind"
+color: orange
+emoji: "🏗️"
 ---
 
 # Terraform Specialist
