@@ -166,7 +166,7 @@ Before declaring any workflow type complete, the following gates must pass. Thes
 
 ### Release / Merge Gate
 - [ ] `/review-code` verdict = **APPROVE** (NEEDS_REVIEW requires written justification in PR; REJECT = hard block)
-- [ ] `/audit-security` run with no Critical findings unresolved
+- [ ] `/audit-security` verdict = **APPROVED** — Lock Document exists at `docs/approvals/security-YYYY-MM-DD-<commit>.md` (no file = audit was not run or failed; `/ship` will block without it)
 - [ ] CLAUDE.md tech stack versions still accurate
 - [ ] No TODOs or stub implementations in changed files
 

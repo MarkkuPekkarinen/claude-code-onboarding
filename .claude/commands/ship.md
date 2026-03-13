@@ -24,6 +24,29 @@ git status --short
 
 Run all applicable checks below for each detected stack.
 
+## Step 1b — Security Lock Document Check
+
+Before running any stack checks, verify a security approval exists for the current commit:
+
+```bash
+COMMIT=$(git rev-parse --short HEAD)
+ls docs/approvals/security-*-${COMMIT}.md 2>/dev/null && echo "LOCK: found" || echo "LOCK: missing"
+```
+
+**If missing:** STOP. Do not proceed with the ship check.
+
+```
+❌ BLOCKED: No security approval found for commit [COMMIT].
+
+Run /audit-security first. The Lock Document (docs/approvals/security-*-[COMMIT].md)
+must exist before /ship can proceed. This ensures the security audit was not skipped.
+
+If this is a staging deploy and you intentionally want to skip the security gate,
+pass --skip-security-lock with explicit justification.
+```
+
+**If found:** continue to Step 2.
+
 ## Step 2 — Blockers (must all pass)
 
 ### Java / Spring Boot

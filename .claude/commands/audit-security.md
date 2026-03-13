@@ -59,4 +59,49 @@ Run a comprehensive security audit on the codebase.
 - Status: ✅ PASS / ❌ FAIL
 ```
 
+7. **Write Lock Document** (only when audit PASSES — 0 CRITICAL, 0 HIGH findings):
+
+   Write the file `docs/approvals/security-YYYY-MM-DD-<short-commit>.md` where:
+   - `YYYY-MM-DD` is today's date
+   - `<short-commit>` is the output of `git rev-parse --short HEAD`
+
+   File contents:
+   ```markdown
+   # Security Audit Approval
+
+   **Date:** YYYY-MM-DD
+   **Commit:** <full commit hash> — <commit message>
+   **Scope:** <audited path or "full project">
+   **Audited by:** security-reviewer agent + /audit-security command
+
+   ## Findings Summary
+
+   - CRITICAL: 0
+   - HIGH: 0
+   - WARNING: N (listed below)
+   - INFO: N
+
+   ## Warnings (not blocking)
+
+   <!-- List each WARNING finding here with file:line and brief description -->
+   <!-- If none: "None" -->
+
+   ## Waivers
+
+   <!-- If any finding was explicitly waived, document it here:
+        - Finding: [description]
+        - Reason: [why it was waived]
+        - Approved by: [who waived it]
+   -->
+   <!-- If no waivers: "None" -->
+
+   ## Status
+
+   ✅ APPROVED FOR DEPLOY — No critical or high findings. Safe to proceed to production.
+   ```
+
+   If the audit FAILS (any CRITICAL or HIGH findings present):
+   - Do NOT write the Lock Document
+   - State clearly: "Lock Document not written — audit failed. Resolve all CRITICAL and HIGH findings, then re-run /audit-security."
+
 $ARGUMENTS
