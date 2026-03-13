@@ -85,27 +85,36 @@ Implementer flow:
 1. Implementer may ask clarifying questions → answer them → re-dispatch
 2. Implementer implements, writes tests (TDD per `leverage-patterns.md` test-first), self-reviews
 3. Implementer returns: what was built, tests, files changed, self-review findings
+4. Implementer writes the **implementer handoff tag** at the end of its response — read [reference/handoff-tags.md](reference/handoff-tags.md) for the exact format
+5. Orchestrator extracts the tag block verbatim for use in Step 2 — do NOT summarize it
 
 ### Step 2 — Spec Compliance Review
 
 Dispatch the spec reviewer with:
 - The task's full_text from Step 0 (the spec)
-- The implementer's output from Step 1
+- The implementer's full response from Step 1
+- The implementer handoff tag block verbatim (from `reference/handoff-tags.md` format)
 - The spec-reviewer-prompt.md template content
 
 Spec reviewer flow:
 - Issues found → implementer fixes → spec review re-runs (no cap on iterations)
 - No issues → advance to Step 3
+- Spec reviewer writes the **spec-reviewer handoff tag** at the end of its response — format in [reference/handoff-tags.md](reference/handoff-tags.md)
+- `CONDITIONAL PASS` = implementer must fix open issues before Step 3 starts
 
 ### Step 3 — Quality Review
 
 Dispatch the quality reviewer (routed by tech stack — see routing table below) with:
-- The files changed by the implementer
+- The files changed by the implementer (from implementer tag `FILES_CHANGED`)
+- The implementer handoff tag block verbatim
+- The spec-reviewer handoff tag block verbatim
 - Tech-stack reviewer instructions
 
 Quality reviewer flow:
-- Issues found → implementer fixes → quality review re-runs (no cap on iterations)
+- Issues found → implementer fixes → quality review re-runs (not spec review — only quality)
 - No issues → mark `TaskUpdate: completed` → advance to next task
+- Quality reviewer writes the **quality-reviewer handoff tag** at the end of its response — format in [reference/handoff-tags.md](reference/handoff-tags.md)
+- After all tasks: collect all `DEFERRED:` entries from implementer tags → add to PR body as **Known Gaps / Deferred**
 
 ### Step 4 — Final Pass and PR
 
@@ -225,6 +234,7 @@ Read [reference/parallel-dispatch-checklist.md](reference/parallel-dispatch-chec
 | Creating the PR | CLAUDE.md git workflow (conventional commits, feature branch, squash merge) |
 | Plan file must exist | `docs/plans/` convention — `/plan-review` creates it |
 | Security findings during review | `security-reviewer` agent |
+| Passing context between pipeline stages | [reference/handoff-tags.md](reference/handoff-tags.md) — structured tag format |
 
 ---
 
