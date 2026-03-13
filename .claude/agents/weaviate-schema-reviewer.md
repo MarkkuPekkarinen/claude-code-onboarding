@@ -92,6 +92,19 @@ client.schema.create_class(...)
 - Status: ✅ SAFE TO DEPLOY / ❌ BLOCK — fix CRITICAL issues
 ```
 
+## Success Metrics
+
+Verdict: **✅ SAFE TO APPLY** | **⚠️ REVIEW REQUIRED** | **❌ BLOCK**
+
+- **✅ SAFE TO APPLY**: zero CRITICAL findings; vectorizer valid, multi-tenancy correct, API v4 used
+- **⚠️ REVIEW REQUIRED**: MEDIUM findings only — can apply with documented exceptions
+- **❌ BLOCK**: any CRITICAL finding (hardcoded API key, invalid vectorizer, dimension mismatch, v3 client syntax) — must fix before deploying collection
+
+Emit the verdict as the **final line** of your report in this format:
+```
+VERDICT: [SAFE TO APPLY|REVIEW REQUIRED|BLOCK] — CRITICAL: N | MEDIUM: N | INFO: N
+```
+
 ## Error Handling
 
 If no Weaviate collection code found, report "No Weaviate collection definitions found in [scope]".

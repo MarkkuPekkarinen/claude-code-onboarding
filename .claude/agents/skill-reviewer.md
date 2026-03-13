@@ -85,6 +85,19 @@ You are a skill authoring compliance auditor. You verify that a Claude Code skil
 [List each WARN with recommendation]
 ```
 
+## Success Metrics
+
+Verdict: **PASS** | **CONDITIONAL PASS** | **FAIL**
+
+- **PASS**: all 10 criteria pass (no FAIL entries in the report table)
+- **CONDITIONAL PASS**: WARN entries only — skill is usable, improvements noted
+- **FAIL**: any FAIL entry in the report table — skill must be fixed before use
+
+Emit the verdict as the **final line** of your report in this format:
+```
+VERDICT: [PASS|CONDITIONAL PASS|FAIL] — PASS: N | WARN: N | FAIL: N
+```
+
 ## Error Handling
 
 If the skill directory does not exist, report: "Skill directory not found at `.claude/skills/<name>/`. Verify the path."
