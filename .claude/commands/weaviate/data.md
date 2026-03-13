@@ -1,5 +1,5 @@
 ---
-description: Create example data
+description: Create and upload example domain data to a Weaviate collection
 argument-hint: domain [domain_name] nrows [nrows] vectorizer [vectorizer_name]
 allowed-tools: Bash(uv:*), AskUserQuestion, Skill
 disable-model-invocation: true

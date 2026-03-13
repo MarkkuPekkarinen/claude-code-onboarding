@@ -1,6 +1,7 @@
 ---
 name: vector-database
 description: "Use for all vector database work — pgvector schema design, Weaviate collection creation, RAG pipeline scaffolding, embedding model selection, index tuning (HNSW vs IVFFlat), and embedding model migration. Triggers on: 'vector search', 'pgvector', 'weaviate', 'embedding', 'RAG pipeline', 'semantic search', 'hybrid search', 'nearest neighbor', 'vector index', 're-embedding', 'ANN index'. Use whenever vectors, embeddings, or similarity search are involved, even if not explicitly named."
+allowed-tools: Read, Glob, Grep
 metadata:
   triggers: pgvector, weaviate, embedding, vector search, RAG pipeline, semantic search, hybrid search, vector index, re-embedding, ANN index, HNSW, IVFFlat
   related-skills: weaviate, weaviate-cookbooks, agentic-ai-dev, database-schema-designer

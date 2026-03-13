@@ -1,6 +1,7 @@
 ---
 name: weaviate-cookbooks
 description: "Build complete AI applications with Weaviate — Query Agent chatbots, data explorers, multimodal PDF RAG, basic/advanced/agentic RAG pipelines, and DSPy tool-calling agents. Use when scaffolding a full-stack Weaviate application from scratch. Triggers: 'build a chatbot', 'RAG pipeline', 'Query Agent app', 'document search', 'data explorer', 'multimodal search', 'agentic RAG', 'Weaviate app'."
+allowed-tools: Read, Glob, Grep
 metadata:
   triggers: Query Agent, RAG pipeline, chatbot, Weaviate app, document search, data explorer, multimodal RAG, agentic RAG, DSPy agent
   related-skills: vector-database, weaviate, agentic-ai-dev, python-dev

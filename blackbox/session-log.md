@@ -32,3 +32,16 @@
 - .claude/agents/google-adk.md
 - .claude/agents/java-spring-api.md
 <!-- end-snapshot -->
+
+<!-- git-snapshot 2026-03-13T20:09:38Z -->
+- .claude/skills/vector-database/SKILL.md
+- .claude/skills/weaviate-cookbooks/SKILL.md
+- .claude/skills/weaviate/SKILL.md
+<!-- end-snapshot -->
+
+<!-- git-snapshot 2026-03-13T20:12:24Z -->
+- .claude/skills/vector-database/SKILL.md
+- .claude/skills/weaviate-cookbooks/SKILL.md
+- .claude/skills/weaviate/SKILL.md
+- blackbox/session-log.md
+<!-- end-snapshot -->

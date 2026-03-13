@@ -1,3 +1,8 @@
+---
+description: Autonomously iterate on the current PR until all CI checks pass and all high/medium review feedback is addressed
+allowed-tools: Bash, Read, Glob, Grep
+---
+
 Load and execute the `iterate-pr` skill.
 
 Autonomously iterate on the current branch's PR until all CI checks pass and all high/medium review feedback is addressed. Run from the repository root.

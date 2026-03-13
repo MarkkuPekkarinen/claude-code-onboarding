@@ -1,3 +1,8 @@
+---
+description: Scan changed files for design system violations — detects hardcoded colors, raw spacing, inline typography, and touch target issues across Flutter and Angular
+allowed-tools: Bash, Glob, Grep, Read
+---
+
 # /lint-design-system
 
 Scan changed files for design system violations. Detects hardcoded colors, raw spacing values, inline typography, and touch target issues.

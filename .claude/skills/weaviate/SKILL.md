@@ -1,6 +1,7 @@
 ---
 name: weaviate
 description: "Search, query, and manage Weaviate vector database collections. Use when running semantic search, hybrid search, keyword search, natural language Q&A with source citations, collection schema inspection, data exploration, filtered fetching, bulk imports, or creating example data. Triggers: 'Weaviate', 'vector search', 'hybrid search', 'semantic search', 'Query Agent', 'collection management', 'import data', 'explore collection'."
+allowed-tools: Read, Glob, Grep
 metadata:
   triggers: Weaviate, vector search, hybrid search, semantic search, Query Agent, collection management, data import, explore collection, keyword search
   related-skills: vector-database, weaviate-cookbooks, agentic-ai-dev
