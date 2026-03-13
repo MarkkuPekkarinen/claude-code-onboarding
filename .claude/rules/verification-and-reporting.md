@@ -139,7 +139,7 @@ Before declaring any workflow type complete, the following gates must pass. Thes
 ### Feature / PR Gate
 - [ ] All existing tests pass (run them — don't assume)
 - [ ] New logic has at least one test covering the happy path
-- [ ] `security-reviewer` agent has been run on changed files
+- [ ] `security-reviewer` agent verdict = **no CRITICAL or HIGH findings unresolved** (running it and ignoring findings does not pass this gate)
 - [ ] No new unused imports, variables, or functions introduced
 - [ ] `npm audit --audit-level=high` (Node.js) or `pip audit` (Python) or `mvn dependency-check:check` (Java) — zero critical/high CVEs
 - [ ] Change description written (CHANGES MADE / THINGS I DIDN'T TOUCH / POTENTIAL CONCERNS)
@@ -153,7 +153,7 @@ Before declaring any workflow type complete, the following gates must pass. Thes
 ### Database Schema Gate
 - [ ] Migration is reversible (has both up and down)
 - [ ] Indexes defined for expected query patterns
-- [ ] `postgresql-database-reviewer` agent run on migration files
+- [ ] `postgresql-database-reviewer` agent verdict = **SAFE TO APPLY** (running it and proceeding with open issues does not pass this gate)
 - [ ] No direct table drops without explicit human approval
 
 ### UI / Design System Gate
@@ -165,7 +165,7 @@ Before declaring any workflow type complete, the following gates must pass. Thes
 - [ ] Exception markers (`// ignore-design: [reason]`) reviewed and justified
 
 ### Release / Merge Gate
-- [ ] `/review-code` run and issues addressed
+- [ ] `/review-code` verdict = **APPROVE** (NEEDS_REVIEW requires written justification in PR; REJECT = hard block)
 - [ ] `/audit-security` run with no Critical findings unresolved
 - [ ] CLAUDE.md tech stack versions still accurate
 - [ ] No TODOs or stub implementations in changed files

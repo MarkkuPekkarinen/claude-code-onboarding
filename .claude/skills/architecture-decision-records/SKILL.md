@@ -64,6 +64,8 @@ Pick the format that fits the decision's complexity:
 | Retiring a decision | Deprecation ADR |
 | Major cross-team proposal | RFC Style (2-4 pages) |
 
+> **For Standard MADR (significant decisions):** Score each considered option using the dual-lens rubric in `reference/adr-scoring.md` before selecting a winner. Include the `## Option Scoring` table in the ADR. If the winning option is not ADOPT, state mitigations explicitly in the Decision section.
+
 Read `reference/adr-templates.md` for all template formats ready to copy-paste.
 
 ### 2. Write the ADR

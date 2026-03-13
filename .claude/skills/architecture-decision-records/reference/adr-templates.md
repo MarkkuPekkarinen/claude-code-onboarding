@@ -68,6 +68,18 @@ Include relevant technical context, business requirements, and team consideratio
 - **Pros**: [advantages]
 - **Cons**: [disadvantages]
 
+## Option Scoring
+
+Score each option using the dual-lens rubric in [`reference/adr-scoring.md`](adr-scoring.md).
+
+| Option | Systems /50 | Developer /50 | Combined /100 | Verdict |
+|--------|------------|---------------|---------------|---------|
+| Option 1: [Name] | | | | ADOPT / ADOPT WITH MITIGATIONS / REVISIT / REJECT |
+| Option 2: [Name] | | | | |
+| Option 3: [Name] | | | | |
+
+**Lens gap check:** [If any option's Systems and Developer scores differ by >20 points, name it here and explain what that gap means before proceeding to the decision.]
+
 ## Decision
 
 We will use **[chosen option]**.
