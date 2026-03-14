@@ -77,7 +77,8 @@
 - **systematic-debugging**: Used when encountering any bug, test failure, or unexpected behavior, before proposing fixes; always finds root cause before attempting a fix.
 - **test-driven-development**: Used when implementing new features or logic that requires tests before writing implementation code, covering Red-Green-Refactor cycle and stack-specific test patterns.
 
-### Security (3 skills)
+### Security (4 skills)
+- **claude-actions-auditor**: Audits GitHub Actions workflows for Claude Code Action security vulnerabilities — detects 9 attack vectors (env var intermediary, direct injection, PR target misuse, dangerous sandbox configs, wildcard allowlists). Run before adding `anthropics/claude-code-action` to any workflow or during a CI/CD security review.
 - **sast-configuration**: Static Application Security Testing (SAST) configuration skill for setting up security scanning, configuring Semgrep rules, running SAST in CI/CD, or writing custom security rules.
 - **security-reviewer**: Security vulnerability detection and remediation skill providing OWASP Top 10 checklists, secret scanning patterns, and security review methodology.
 - **threat-modeling**: Threat modeling skill for STRIDE analysis, attack tree construction, and security requirement extraction when designing new features or reviewing architecture.
@@ -419,6 +420,7 @@ a2ui-angular + angular-spa + google-adk + security-reviewer
 | python-dev | backend | specialist | implementation | code |
 | receiving-code-review | workflow | specialist | review | document |
 | riverpod-patterns | frontend | specialist | implementation | code |
+| claude-actions-auditor | security | specialist | review | report |
 | sast-configuration | security | specialist | infrastructure | document |
 | security-reviewer | security | specialist | review | report |
 | subagent-driven-development | workflow | architect | design | document |

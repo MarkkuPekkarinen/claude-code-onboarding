@@ -37,7 +37,21 @@ Run a comprehensive security audit on the codebase.
    Include the top 5 highest-priority CVEs (by priority score) in the final report.
    Flag any CVSS 9+ findings as blocking -- do not approve the release until resolved.
 
-6. **Report findings**:
+6. **Agentic CI/CD audit** (if `.github/workflows/` directory exists):
+
+   Load skill: `claude-actions-auditor`
+
+   Glob `.github/workflows/*.yml` and `.github/workflows/*.yaml`. If any workflow file contains `anthropics/claude-code-action`, run the full 5-step audit from the `claude-actions-auditor` skill.
+
+   Add findings to the final report under a new section:
+   ```
+   ### Agentic CI/CD
+   - [workflow-file:line] [vector name] [description]
+   ```
+
+   If no workflows or no Claude Code Action steps found: note "No Claude Code Action workflows detected — agentic CI/CD audit skipped."
+
+7. **Report findings**:
 
 ```
 ## Security Audit: [scope]

@@ -175,6 +175,29 @@ this.sanitizer.bypassSecurityTrustHtml(userInput);
 
 ---
 
+### Phase 7 — Agentic CI/CD Security (Claude Code Action)
+
+**Skill**: `claude-actions-auditor`
+**When**: Any time `.github/workflows/` contains `anthropics/claude-code-action`, or before adding Claude Code Action to a new workflow
+
+**9 attack vectors checked**:
+
+| Vector | What it detects |
+|--------|----------------|
+| A — Env Var Intermediary | `${{ github.event.* }}` flows through `env:` block into Claude's prompt — looks clean, isn't |
+| B — Direct Expression Injection | `${{ github.event.* }}` directly inside `prompt:` or `claude_args:` |
+| C — CLI Data Fetch | `gh issue view` / `gh pr view` in prompt fetches attacker content at runtime |
+| D — PR Target + Checkout | `pull_request_target` + checkout pointing to PR head — attacker's code runs with base branch secrets |
+| E — Error Log Injection | CI logs or `workflow_dispatch` inputs passed to Claude's prompt |
+| F — Subshell Expansion | `allowed_tools` lists tools supporting `$()` — exfiltration via `echo $(env)` |
+| G — Eval of AI Output | Claude step output consumed by `eval`/`bash -c`/`$()` in a downstream `run:` step |
+| H — Dangerous Sandbox Configs | `--dangerously-skip-permissions`, `Bash(*)`, `--yolo` in `claude_args` |
+| I — Wildcard Allowlists | `allowed_non_write_users: "*"` — any GitHub user can trigger Claude |
+
+**Gate**: Zero HIGH findings. No `--dangerously-skip-permissions` or wildcard allowlists in production workflows.
+
+---
+
 ### Phase 6 — Mobile Security (Flutter)
 
 **Agent**: `flutter-security-expert`
