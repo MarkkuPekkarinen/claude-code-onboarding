@@ -228,6 +228,7 @@ flutter build ipa --obfuscate --split-debug-info=build/symbols/
 | 4 — Dependencies | `/security-dependencies` | Zero CRITICAL CVEs |
 | 5 — XSS | `/xss-scan` | Zero unvalidated user → DOM paths |
 | 6 — Mobile | `flutter-security-expert` agent | Cert pinning, secure storage confirmed |
+| 7 — Agentic CI/CD | `claude-actions-auditor` skill | Zero HIGH findings; no wildcard allowlists or `--dangerously-skip-permissions` |
 
 ---
 

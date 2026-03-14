@@ -64,6 +64,7 @@ Multi-phase workflow guides for every development process in this workspace. Eac
 |----------|------------|
 | [security-audit.md](security-audit.md) | OWASP audit, SAST, CVE scan before release |
 | [security-hardening.md](security-hardening.md) | Remediating findings from security audit |
+| `claude-actions-auditor` skill | Auditing GitHub Actions workflows that invoke `anthropics/claude-code-action` for 9 CI/CD attack vectors |
 
 ---
 
