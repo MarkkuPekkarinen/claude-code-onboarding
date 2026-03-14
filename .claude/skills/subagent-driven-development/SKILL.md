@@ -58,12 +58,15 @@ Use when the feature touches an unfamiliar external API, a new compliance domain
 Dispatch a `general-purpose` agent with:
 - The feature name and the specific unknown (e.g., "Stripe Connect payouts API — we haven't used this before")
 - Output target: `docs/research/<feature>.md`
+- **Mandatory constraint in prompt:** "Your role is RESEARCH ONLY. Describe what exists — APIs, constraints, auth model, rate limits, SDK options, gotchas. Do NOT propose improvements, suggest refactors, or recommend implementation approaches. If you notice problems in the existing code, note them as observations only — not as suggestions. The Spec agent will decide what to build."
 
 The research agent should produce: API capabilities, key constraints, auth model, rate limits, SDK options, and gotchas. Save to `docs/research/<feature>.md` and commit before starting Step 0.
 
 The spec reviewer in Step 2 receives this file path inline — include it in the spec reviewer prompt so it can verify the implementer's API usage against the research findings.
 
 **Skip when:** the tech stack is familiar, no external unknowns, or the plan was produced from a previous research session.
+
+**Context Isolation:** After the Research agent completes and `docs/research/<feature>.md` is committed, issue `/clear` before dispatching the Spec/Implementer. Pass the research doc path as the only context carry-forward — do NOT carry the Research agent's conversation into Step 0.
 
 ### Step 0 — Parse the Plan Once
 
@@ -216,8 +219,54 @@ Read [reference/parallel-dispatch-checklist.md](reference/parallel-dispatch-chec
 
 ---
 
+## Context Isolation Protocol
+
+Context contamination is the #1 silent failure in multi-phase pipelines. A Research agent that mentions "the auth layer is messy" will cause a Spec agent to include auth cleanup in scope — work that was never requested.
+
+### Why It Matters
+
+```
+Without isolation:
+  Research agent → analyzes codebase → notices auth is messy → mentions it
+  → Spec agent absorbs the mention → adds auth refactor to spec
+  → Implementer touches auth it was never asked to touch
+  → Scope creep introduced silently, never caught
+
+With isolation:
+  Research agent → outputs ONLY facts to docs/research/<feature>.md
+  /clear → Spec/Implementer starts fresh with only the research doc
+  → Scope stays exactly what was planned
+```
+
+### The Three Rules
+
+**1. Research mandate — "NO improvement suggestions"**
+The Research agent prompt MUST include: *"Describe what exists. Do NOT propose changes."*
+Violations: suggesting refactors, flagging tech debt for fixing, recommending alternatives.
+Allowed: noting constraints, documenting gotchas, describing current behavior.
+
+**2. `/clear` between Research and Step 0**
+After `docs/research/<feature>.md` is committed:
+- Issue `/clear` (or equivalent context reset between agent dispatches)
+- The ONLY carry-forward is the research doc file path
+- The Research agent's conversation, opinions, and analysis do NOT pass to Step 0
+
+**3. Per-phase context containment**
+Each phase receives exactly what it needs — no more:
+
+| Phase | What to pass in | What NOT to pass in |
+|-------|----------------|---------------------|
+| Step -1 Research | Plan file path, specific unknowns | Nothing else |
+| Step 0–1 Implementer | Task full_text + research doc path (if exists) | Research agent conversation |
+| Step 2 Spec Reviewer | Task spec + implementer output + handoff tag | Research agent opinions |
+| Step 3 Quality Reviewer | Files changed + handoff tags | Prior reviewer conversations |
+
+---
+
 ## Red Flags — Never Do These
 
+- **Never carry Research agent conversation into Step 0** — `/clear` after research, pass only the doc path
+- **Never let Research agent propose improvements** — Research describes what exists; Spec decides what to build
 - **Never dispatch parallel implementers** — file conflicts are guaranteed
 - **Never skip the independence checklist** before parallel dispatch — assumption of independence is not sufficient
 - **Never skip spec review** — quality review does not check spec compliance

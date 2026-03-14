@@ -51,10 +51,54 @@ Run a comprehensive security audit on the codebase.
 
    If no workflows or no Claude Code Action steps found: note "No Claude Code Action workflows detected — agentic CI/CD audit skipped."
 
-7. **Report findings**:
+7. **Compute 007 Security Score** (run after all findings are collected from steps 2–6):
+
+   Calculate a 0–100 weighted score across 8 domains. For each domain, start at 100 and apply deductions:
+   - CRITICAL finding in domain: −15 pts
+   - HIGH finding in domain: −8 pts
+   - MEDIUM finding in domain: −3 pts
+   - LOW finding in domain: −1 pt
+   - Floor at 0 per domain
+
+   Map findings to domains using this table:
+
+   | Finding Type | Domain |
+   |---|---|
+   | Hardcoded secrets, API keys, tokens, passwords | Secrets & Credentials (20%) |
+   | SQL injection, XSS, SSRF, input validation, eval/exec | Input Validation (15%) |
+   | Broken auth, missing authz, session issues, weak tokens | Auth & Authorization (15%) |
+   | Unencrypted PII, weak crypto, data exposure | Data Protection (15%) |
+   | Missing error handling, no timeouts, swallowed exceptions | Resilience (10%) |
+   | Missing audit logs, no security event logging, debug in prod | Monitoring (10%) |
+   | CVEs in dependencies, unsafe base images, CI/CD misconfig | Supply Chain (10%) |
+   | OWASP violations, compliance gaps (aggregated) | Compliance (5%) |
+
+   **Final score** = Σ(domain_score × weight). Round to integer.
+
+   **Verdict:**
+   - 90–100 → ✅ **Approved** — production-ready
+   - 70–89 → ⚠️ **Approved with Caveats** — document mitigations, fix before next release
+   - 50–69 → 🔶 **Partially Blocked** — fix HIGH/CRITICAL findings before deploy
+   - 0–49 → ❌ **Blocked** — insecure, do not deploy
+
+8. **Report findings**:
 
 ```
 ## Security Audit: [scope]
+
+### 007 Security Score: [N]/100 — [Verdict]
+
+| Domain | Weight | Score | Key Findings |
+|--------|--------|-------|--------------|
+| Secrets & Credentials | 20% | N/100 | [top finding or "None"] |
+| Input Validation | 15% | N/100 | [top finding or "None"] |
+| Auth & Authorization | 15% | N/100 | [top finding or "None"] |
+| Data Protection | 15% | N/100 | [top finding or "None"] |
+| Resilience | 10% | N/100 | [top finding or "None"] |
+| Monitoring | 10% | N/100 | [top finding or "None"] |
+| Supply Chain | 10% | N/100 | [top finding or "None"] |
+| Compliance | 5% | N/100 | [top finding or "None"] |
+| **Weighted Total** | 100% | **N/100** | **[Verdict]** |
 
 ### Critical
 - [file:line] [vulnerability type] [description]
@@ -68,12 +112,15 @@ Run a comprehensive security audit on the codebase.
 ### Dependencies
 - [package@version] [CVE if known]
 
+### Agentic CI/CD
+- [findings or "No Claude Code Action workflows detected — agentic CI/CD audit skipped."]
+
 ### Summary
 - Critical: N | Warning: N | Info: N
-- Status: ✅ PASS / ❌ FAIL
+- Score: N/100 | Verdict: [Approved / Approved with Caveats / Partially Blocked / Blocked]
 ```
 
-7. **Write Lock Document** (only when audit PASSES — 0 CRITICAL, 0 HIGH findings):
+9. **Write Lock Document** (only when verdict is Approved or Approved with Caveats — 0 CRITICAL, 0 HIGH findings):
 
    Write the file `docs/approvals/security-YYYY-MM-DD-<short-commit>.md` where:
    - `YYYY-MM-DD` is today's date
@@ -87,6 +134,21 @@ Run a comprehensive security audit on the codebase.
    **Commit:** <full commit hash> — <commit message>
    **Scope:** <audited path or "full project">
    **Audited by:** security-reviewer agent + /audit-security command
+
+   ## 007 Security Score
+
+   **Score:** N/100 — [Verdict]
+
+   | Domain | Weight | Score |
+   |--------|--------|-------|
+   | Secrets & Credentials | 20% | N/100 |
+   | Input Validation | 15% | N/100 |
+   | Auth & Authorization | 15% | N/100 |
+   | Data Protection | 15% | N/100 |
+   | Resilience | 10% | N/100 |
+   | Monitoring | 10% | N/100 |
+   | Supply Chain | 10% | N/100 |
+   | Compliance | 5% | N/100 |
 
    ## Findings Summary
 
@@ -114,8 +176,8 @@ Run a comprehensive security audit on the codebase.
    ✅ APPROVED FOR DEPLOY — No critical or high findings. Safe to proceed to production.
    ```
 
-   If the audit FAILS (any CRITICAL or HIGH findings present):
+   If the verdict is Partially Blocked or Blocked (score < 70, or any CRITICAL/HIGH findings):
    - Do NOT write the Lock Document
-   - State clearly: "Lock Document not written — audit failed. Resolve all CRITICAL and HIGH findings, then re-run /audit-security."
+   - State clearly: "Lock Document not written — score [N]/100 ([verdict]). Resolve all CRITICAL and HIGH findings, then re-run /audit-security."
 
 $ARGUMENTS

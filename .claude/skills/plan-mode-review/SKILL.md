@@ -1,6 +1,6 @@
 ---
 name: plan-mode-review
-description: Structured plan review with Phase 0 self-review, 5-phase code review (Architecture, Code Quality, Tests, Performance, Production Readiness), approval scope triage, decision logging, and blast radius assessment. Use when reviewing plans, PRs, or preparing non-trivial changes for implementation.
+description: Structured plan review with Phase 0 self-review, 5-phase code review (Architecture, Code Quality, Tests, Performance, Production Readiness), optional Phase 6 Debate-Based Verification for architecture decisions, approval scope triage, decision logging, and blast radius assessment. Use when reviewing plans, PRs, or preparing non-trivial changes for implementation.
 allowed-tools: Read, Glob, Grep
 metadata:
   triggers: plan review, review plan, technical plan, implementation plan, architectural plan, plan approval
@@ -26,7 +26,7 @@ Ask the user which mode to use:
 
 | Mode | When | Phases |
 |------|------|--------|
-| **Big Change** | New features, architectural changes, multi-service work | Phase 0 + all 5 review sections (up to 4 issues each) |
+| **Big Change** | New features, architectural changes, multi-service work | Phase 0 + all 5 review sections (up to 4 issues each) + Phase 6 if architecture decision present |
 | **Small Change** | Focused feature, single-service change | Phase 0 + top issue per section only |
 | **Review Only** | PR review, existing code audit, refactor | Skip Phase 0 (lightweight outcome check only) + all 5 review sections |
 
@@ -99,6 +99,51 @@ Generate an annotated request/data flow diagram showing timing or complexity.
 1. Read [reference/production-readiness-gate.md](reference/production-readiness-gate.md)
 2. Execute all subsections: blast radius, rollback, dependency health, second-order effects, cost/infra, data migration
 3. Verify the production readiness gate checklist before approving
+
+### Phase 6: Debate-Based Verification (Optional — Big Change with architecture decision)
+
+**When to trigger:** Phase 1 (Architecture Review) identified two or more competing valid approaches, OR the change is irreversible (schema migration, public API contract, auth architecture, major refactor).
+
+**Skip when:** The approach is already decided and uncontested, or the change is scoped to a single service with no structural impact.
+
+**3-role structure:**
+
+```
+Proponent  →  Presents the chosen approach with supporting evidence
+     ↓
+Opponent   →  Identifies flaws, raises the strongest case for an alternative
+     ↓
+Synthesizer →  Weighs both sides, produces a verdict with explicit trade-off reasoning
+     ↓
+If unresolved → Escalate to human with both positions documented
+```
+
+**How to run:**
+
+1. **Proponent pass** — Argue FOR the current plan: what evidence supports it, what constraints it satisfies, what risks it mitigates.
+2. **Opponent pass** — Argue AGAINST: what the alternative approach achieves better, what failure modes the plan has, what the proponent's evidence overlooks.
+3. **Synthesizer verdict** — State which position is stronger and why. Name the deciding factors explicitly. If genuinely tied, list what additional information would break the tie.
+4. **Escalate if unresolved** — If the synthesizer cannot produce a clear verdict, surface both positions to the human with a specific question: "This decision requires human judgement because [reason]."
+
+**Output format:**
+
+```
+## Debate: [decision being evaluated]
+
+### Proponent
+[Strongest case FOR the chosen approach — evidence-backed]
+
+### Opponent
+[Strongest case AGAINST — concrete failure scenarios or better alternative]
+
+### Synthesizer Verdict
+**Winner:** [Chosen approach / Alternative / Inconclusive]
+**Deciding factors:** [What tipped the balance]
+**Accepted trade-offs:** [What the winning side gives up]
+**Escalate to human:** [Yes/No — if yes, state the specific question]
+```
+
+**Relationship to `plan-challenger` agent:** `plan-challenger` runs one-sided attack (finds holes). Phase 6 debate runs two-sided structured opposition (proponent + opponent + neutral verdict). Use `plan-challenger` first to find weaknesses, then Phase 6 when two competing valid positions remain after the challenge.
 
 ## Cross-Skill Delegation
 

@@ -229,6 +229,16 @@ flutter build ipa --obfuscate --split-debug-info=build/symbols/
 | 5 — XSS | `/xss-scan` | Zero unvalidated user → DOM paths |
 | 6 — Mobile | `flutter-security-expert` agent | Cert pinning, secure storage confirmed |
 | 7 — Agentic CI/CD | `claude-actions-auditor` skill | Zero HIGH findings; no wildcard allowlists or `--dangerously-skip-permissions` |
+| — Score | 007 scoring (built into `/audit-security`) | Score ≥ 70 → Approved or Approved with Caveats |
+
+## 007 Score Verdicts
+
+| Score | Verdict | Action |
+|-------|---------|--------|
+| 90–100 | ✅ Approved | Production-ready — write Lock Document |
+| 70–89 | ⚠️ Approved with Caveats | Write Lock Document + document mitigations; fix before next release |
+| 50–69 | 🔶 Partially Blocked | Do NOT write Lock Document — fix HIGH/CRITICAL before deploy |
+| 0–49 | ❌ Blocked | Do NOT deploy — insecure, requires redesign |
 
 ---
 
