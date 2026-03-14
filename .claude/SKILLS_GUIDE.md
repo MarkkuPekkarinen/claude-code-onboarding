@@ -61,12 +61,13 @@
 - **weaviate**: Search, query, and manage Weaviate vector database collections — semantic search, hybrid search, keyword search, natural language queries, data import, collection inspection, and filtered fetching. Includes Python scripts in `scripts/`. Required env: `WEAVIATE_URL`, `WEAVIATE_API_KEY`.
 - **weaviate-cookbooks**: Build complete AI applications with Weaviate — Query Agent Chatbot, PDF Multimodal RAG, Basic/Advanced/Agentic RAG, Basic Agents with DSPy. High-level blueprints and end-to-end project patterns. Read `references/project_setup.md` and `references/environment_requirements.md` first.
 
-### API & Architecture (6 skills)
+### API & Architecture (7 skills)
 - **architecture-decision-records**: Used when documenting significant technical decisions, reviewing past architectural choices, or establishing decision processes; provides ADR templates and best practices.
 - **architecture-design**: Used when designing system architecture, API contracts, deployment topologies, or making technology decisions for full-stack applications.
 - **database-schema-designer**: Used when designing database schemas for SQL or NoSQL databases, providing normalization guidelines, indexing strategies, migration patterns, and performance optimization. (domain: infrastructure)
 - **ddd-architect**: Comprehensive Domain-Driven Design analysis and architecture generation for bounded contexts, domain models, aggregates, context maps, and microservice decomposition.
 - **openapi-spec-generation**: Used when creating API documentation, generating SDKs, or ensuring API contract compliance by generating and maintaining OpenAPI 3.1 specifications.
+- **api-design-principles**: Use before designing any REST API endpoint — covers URL structure, HTTP method semantics, pagination, caching, idempotency, and bulk operations across Python FastAPI, NestJS 11.x, and Spring Boot WebFlux 3.5.x. Reference files: `reference/rest-design-principles.md` (patterns with examples for all 3 stacks), `assets/api-design-checklist.md` (60-item pre-implementation checklist).
 - **mcp-builder**: Used when building MCP servers to integrate external APIs — also listed under Backend as it produces implementation code.
 
 ### Quality & Testing (6 skills)
@@ -106,18 +107,20 @@
 > Ordered sequences for common development tasks.
 
 ### New Java/Spring API Feature
-1. **java-spring-api** — Scaffold controller, service, repository, DTOs
-2. **java-coding-standard** — Enforce naming, immutability, Optional patterns
-3. **openapi-spec-generation** — Generate OpenAPI 3.1 spec from the new endpoints
-4. **database-schema-designer** — Design schema for new entities
-5. **code-reviewer** — Final quality and security review
+1. **api-design-principles** — Run checklist, choose pagination/versioning/caching strategy
+2. **java-spring-api** — Scaffold controller, service, repository, DTOs
+3. **java-coding-standard** — Enforce naming, immutability, Optional patterns
+4. **openapi-spec-generation** — Generate OpenAPI 3.1 spec from the new endpoints
+5. **database-schema-designer** — Design schema for new entities
+6. **code-reviewer** — Final quality and security review
 
 ### New NestJS API Feature
-1. **nestjs-api** — Scaffold module, controller, service, DTOs, Prisma queries
-2. **nestjs-coding-standard** — Enforce TypeScript strictness, DTO patterns
-3. **openapi-spec-generation** — Generate API spec
-4. **database-schema-designer** — Design Prisma schema
-5. **code-reviewer** — Final review
+1. **api-design-principles** — Run checklist, choose pagination/versioning/caching strategy
+2. **nestjs-api** — Scaffold module, controller, service, DTOs, Prisma queries
+3. **nestjs-coding-standard** — Enforce TypeScript strictness, DTO patterns
+4. **openapi-spec-generation** — Generate API spec
+5. **database-schema-designer** — Design Prisma schema
+6. **code-reviewer** — Final review
 
 ### Flutter Mobile Feature
 1. **flutter-mobile** — Build screens, Riverpod providers, Freezed models
@@ -415,6 +418,7 @@ a2ui-angular + angular-spa + google-adk + security-reviewer
 | nestjs-api | backend | specialist | implementation | code |
 | nestjs-coding-standard | backend | specialist | review | report |
 | openapi-spec-generation | api-architecture | specialist | design | specification |
+| api-design-principles | api-architecture | specialist | design | specification |
 | plan-mode-review | workflow | architect | review | report |
 | pr-review | quality | specialist | review | report |
 | python-dev | backend | specialist | implementation | code |
