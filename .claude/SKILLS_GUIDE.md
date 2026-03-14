@@ -267,6 +267,7 @@
 - **Iterate PR until CI is green** -> iterate-pr
 - **Create a new skill** -> writing-skills
 - **Find a domain name** -> domain-finder
+- **Get copy-paste agent invocation templates** -> `docs/workflows/agent-activation-prompts.md`
 
 ---
 
