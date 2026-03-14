@@ -71,7 +71,16 @@ Read `reference/validation-and-linting.md` for:
 - Validation commands
 - Custom linting rules (naming conventions, required fields)
 
-### Step 5: Generate SDKs and Set Up CI/CD
+### Step 5a: Write the Developer Guide (if needed)
+
+Read `reference/developer-guide-patterns.md` for:
+- 9-section documentation structure (Introduction → Authentication → Quick Start → Endpoints → Data Models → Errors → Rate Limiting → Changelog → SDKs)
+- Auth flow documentation template (obtain → use → refresh token)
+- Multi-language code examples for all 3 backend stacks: Java/Spring Boot WebFlux (WebClient), Python/FastAPI (httpx async), TypeScript/NestJS (HttpService + fetch)
+- Error handling reference (status codes, error response format, per-stack handling patterns)
+- 4 common pitfalls with solutions (sync drift, missing errors, broken examples, unclear parameters)
+
+### Step 5b: Generate SDKs and Set Up CI/CD
 
 Read `reference/sdk-and-cicd.md` for:
 - SDK generation commands (TypeScript, Python, Java, Dart)
@@ -87,6 +96,7 @@ Read `reference/sdk-and-cicd.md` for:
 | `reference/validation-and-linting.md` | Spectral rules, Redocly config, validation commands, common mistakes and best practices | ~5KB |
 | `reference/sdk-and-cicd.md` | SDK generation commands, GitHub Actions workflows | ~5KB |
 | `reference/complete-api-example.md` | Full User Management API with all OpenAPI features | ~10KB |
+| `reference/developer-guide-patterns.md` | 9-section doc structure, auth flow template, multi-language code examples (Java WebFlux / Python FastAPI / TypeScript NestJS), error handling reference, 4 common pitfalls | ~8KB |
 
 ## Resources
 
