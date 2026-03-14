@@ -2685,9 +2685,12 @@ Slash commands trigger multi-agent reviews; hooks catch what slips through.
 |---------|----------|---------|
 | `/review-code` | 9 stack-specific reviewer agents | Code quality, patterns, architecture |
 | `/audit-security` | `security-reviewer` agent | OWASP Top 10, secrets, dependencies |
+| `/audit-skills` | Read-only skill scanner | Iron Law, staleness, description quality, line count |
 | Every edit | `post-edit-format.sh` hook | Formatting inconsistencies |
 | Every command | `pre-bash-guard.sh` hook | Destructive operations |
 | Session end | `stop-secret-scan.sh` hook | Leaked secrets in git diff |
+
+**`/audit-skills`** scans all 61 skills and outputs a PASS/WARN/FAIL report across 7 dimensions: Iron Law presence, `last-reviewed` staleness (WARN at 90 days, FAIL at 180), description quality, `allowed-tools` declaration, body line count, reference directory existence, and name/directory match. Run it monthly or after adding a batch of new skills to catch drift before it affects code generation quality.
 
 #### Before Opening a PR — Two Commands, Always in This Order
 

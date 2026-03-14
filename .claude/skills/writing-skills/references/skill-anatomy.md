@@ -66,6 +66,17 @@ Available tool names:
 
 **Principle:** List the MINIMUM tools the skill needs. Do not grant Write/Edit if the skill is read-only (reviewers). Do not grant Bash if no shell commands are needed.
 
+### `last-reviewed` (Recommended)
+
+```yaml
+last-reviewed: "2026-03-14"
+```
+
+- ISO-8601 date of last substantive review (content verified against current docs/APIs)
+- Updated whenever the skill body or references are meaningfully revised
+- Used by `/audit-skills` to flag skills not reviewed in 90+ days
+- Do NOT update just for typo fixes — only when content correctness was verified
+
 ### `metadata` (Optional)
 
 ```yaml

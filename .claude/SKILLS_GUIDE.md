@@ -95,6 +95,7 @@
 - **feature-forge**: Used when defining new features, gathering requirements, or writing specifications before implementation starts. Runs PM+Dev dual-perspective interview, produces EARS-format functional requirements and Given/When/Then acceptance criteria saved to `specs/{feature}.spec.md`.
 - **brainstorm** (`/brainstorm`): Divergent exploration before committing to an approach — generates ≥3 distinct alternatives with trade-offs and Mermaid diagram. No code; use before feature-forge or architecture-design when the solution space is still open.
 - **debug** (`/debug`): Slash command entry point for systematic-debugging skill. Enforces root-cause-first investigation with structured Symptom → Root Cause → Fix → Prevention output format.
+- **audit-skills** (`/audit-skills`): Periodic health audit of all 61 skills — checks Iron Law, `last-reviewed` staleness (90/180-day thresholds), description quality, `allowed-tools` declaration, and body line count. Outputs aggregate PASS/WARN/FAIL report with recommended actions. Run monthly or after adding multiple skills.
 - **iterate-pr**: Autonomous PR completion loop — fetches CI failures and review feedback, fixes and pushes until all checks are green. Classifies feedback by LOGAF scale (high/medium auto-fix, low asks user), polls CI, and posts GitHub thread replies.
 
 ---
@@ -432,6 +433,7 @@ a2ui-angular + angular-spa + google-adk + security-reviewer
 | feature-forge | workflow | specialist | design | document |
 | brainstorm | workflow | specialist | exploration | document |
 | debug | quality | specialist | analysis | analysis |
+| audit-skills | workflow | specialist | governance | report |
 | asc-cli-usage | mobile-deployment | specialist | deployment | commands |
 | asc-id-resolver | mobile-deployment | specialist | deployment | commands |
 | asc-signing-setup | mobile-deployment | specialist | deployment | commands |
