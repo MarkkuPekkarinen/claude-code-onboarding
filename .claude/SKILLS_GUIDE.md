@@ -93,6 +93,8 @@
 - **writing-skills**: Used when creating a new Claude Code skill from scratch, extending an existing skill, or reviewing a skill for structure compliance.
 - **the-fool**: Challenge ideas, plans, and decisions using structured adversarial reasoning — devil's advocate, pre-mortem, red team, Socratic questioning, and evidence falsification.
 - **feature-forge**: Used when defining new features, gathering requirements, or writing specifications before implementation starts. Runs PM+Dev dual-perspective interview, produces EARS-format functional requirements and Given/When/Then acceptance criteria saved to `specs/{feature}.spec.md`.
+- **brainstorm** (`/brainstorm`): Divergent exploration before committing to an approach — generates ≥3 distinct alternatives with trade-offs and Mermaid diagram. No code; use before feature-forge or architecture-design when the solution space is still open.
+- **debug** (`/debug`): Slash command entry point for systematic-debugging skill. Enforces root-cause-first investigation with structured Symptom → Root Cause → Fix → Prevention output format.
 - **iterate-pr**: Autonomous PR completion loop — fetches CI failures and review feedback, fixes and pushes until all checks are green. Classifies feedback by LOGAF scale (high/medium auto-fix, low asks user), polls CI, and posts GitHub thread replies.
 
 ---
@@ -247,7 +249,7 @@
 ### What testing task?
 - **Write tests first (TDD cycle)** -> test-driven-development
 - **E2E browser / UI testing** -> browser-testing
-- **Debug failing test or error** -> systematic-debugging
+- **Debug failing test or error** -> `/debug` (loads systematic-debugging)
 
 ### What security task?
 - **STRIDE threat model** -> threat-modeling
@@ -262,7 +264,8 @@
 
 ### What workflow / process task?
 - **Verify work before claiming done** -> verification-before-completion
-- **Debug unexpected behavior** -> systematic-debugging
+- **Debug unexpected behavior** -> `/debug` (loads systematic-debugging)
+- **Explore options before committing to an approach** -> `/brainstorm`
 - **Multi-agent implementation pipeline** -> subagent-driven-development
 - **Iterate PR until CI is green** -> iterate-pr
 - **Create a new skill** -> writing-skills
@@ -427,6 +430,8 @@ a2ui-angular + angular-spa + google-adk + security-reviewer
 | the-fool | workflow | expert | review | report |
 | iterate-pr | workflow | autonomous | pr-lifecycle | actions |
 | feature-forge | workflow | specialist | design | document |
+| brainstorm | workflow | specialist | exploration | document |
+| debug | quality | specialist | analysis | analysis |
 | asc-cli-usage | mobile-deployment | specialist | deployment | commands |
 | asc-id-resolver | mobile-deployment | specialist | deployment | commands |
 | asc-signing-setup | mobile-deployment | specialist | deployment | commands |

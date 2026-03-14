@@ -3336,14 +3336,24 @@ Works in both regular prompts and slash command arguments. Reduces token usage c
 
 ### Context Window Management
 
-Your 200K context window is your most precious resource. Mismanaging degrades performance and output quality.
+Sonnet 4.6 and Opus 4.6 have a **1M token context window** with automatic compaction (GA 2026-03-13, no long-context premium). Mismanaging context still degrades performance and output quality — a larger window just moves the problem further out.
 
 | Problem | Impact | Fix |
 |---------|--------|-----|
-| Too many MCPs enabled | Each MCP's tool definitions eat context before you even start. 20+ MCPs can cut usable context from 200K to ~70K | Keep MCPs in config but disable unused ones — enable ≤ 10 servers / ≤ 80 tools at a time |
+| Too many MCPs enabled | Each MCP's tool definitions eat context before you even start. 20+ MCPs can cut usable context significantly | Keep MCPs in config but disable unused ones — enable ≤ 10 servers / ≤ 80 tools at a time |
 | Too many plugins active | Same issue — each plugin adds tool definitions | Install many, enable only 4–5 per project |
 | Long sessions without compacting | Context fills up, Claude loses track of earlier work | Use `/compact` to manually trigger compaction, or let auto-compact handle it |
-| Oversized CLAUDE.md | Goes into every prompt, crowding out actual task context | Keep < 300 lines or <40 KB , use progressive disclosure |
+| Oversized CLAUDE.md | Goes into every prompt, crowding out actual task context | Keep < 300 lines or <40 KB, use progressive disclosure |
+
+**Three principles for long sessions:**
+
+| Principle | Rule |
+|-----------|------|
+| **Tokens-per-task** | Optimize total tokens for the whole task, not per-request. Losing a file path or decision costs more to re-fetch than it saved to compress. |
+| **Degradation threshold** | Onset at ~700K tokens (70% of 1M). Signs: repeating earlier steps, forgetting which files were modified, losing track of decisions. Begin compression here. |
+| **Structured summary** | Before `/compact` or sub-agent handoff, produce the 6-section template: Session Intent → Files Modified → Decisions Made → Current State → Next Steps. Prose summaries silently drop file paths and decisions; structure forces preservation. |
+
+> Full rules in `.claude/rules/leverage-patterns.md §Context Window Management`
 
 **Check your current state anytime:**
 

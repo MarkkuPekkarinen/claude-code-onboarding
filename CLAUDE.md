@@ -70,11 +70,12 @@ Consult official docs via MCP before writing ANY code. Zero tolerance for deprec
 | Architecture | `.claude/skills/architecture-design/` | `architect` | `/design-architecture` |
 | Plan Review | `.claude/skills/plan-mode-review/` | — | `/plan-review` |
 | Browser Testing | `.claude/skills/browser-testing/` | `browser-testing` | — |
-| Debugging | `.claude/skills/systematic-debugging/` | — | — |
+| Debugging | `.claude/skills/systematic-debugging/` | — | `/debug` |
 | Verification | `.claude/skills/verification-before-completion/` | — | — |
 | SDD Pipeline | `.claude/skills/subagent-driven-development/` | — | — |
 | Critical Reasoning | `.claude/skills/the-fool/` | — | — |
 | Requirements / Feature Spec | `.claude/skills/feature-forge/` | — | — |
+| Brainstorm / Explore Options | — | — | `/brainstorm` |
 
 ### Code Review Agents
 

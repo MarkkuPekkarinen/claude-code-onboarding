@@ -44,16 +44,22 @@ Do not touch code until you can reproduce the bug.
 
 ---
 
-### Phase 2 — Load Systematic-Debugging Skill
+### Phase 2 — Enter Debug Mode
 
-**Skill**: Load `systematic-debugging` (`.claude/skills/systematic-debugging/SKILL.md`)
+**Command**: `/debug [paste error message or describe the bug]`
 
-**5-step debugging protocol** (from skill):
-1. **Reproduce** — confirm you can trigger the bug reliably
-2. **Isolate** — narrow to the smallest failing case
-3. **Hypothesize** — form 2–3 specific hypotheses for root cause
-4. **Test hypothesis** — verify each hypothesis with evidence, not guesses
-5. **Fix and confirm** — apply fix, confirm bug is gone AND nothing else broke
+This loads the `systematic-debugging` skill and enforces the 4-phase root-cause-first protocol automatically. Output format:
+```
+🔍 Symptom → 🔎 Investigation → 🎯 Root Cause → ✅ Fix → 🛡️ Prevention
+```
+
+**4-phase protocol** (from `.claude/skills/systematic-debugging/SKILL.md`):
+1. **Root Cause Investigation** — read errors completely, reproduce consistently, check recent changes
+2. **Pattern Analysis** — find working equivalent, list every difference
+3. **Hypothesis and Testing** — form one hypothesis, test minimally, one variable at a time
+4. **Implementation** — write failing test first, fix root cause, verify
+
+**Iron Law** (`systematic-debugging/SKILL.md:28`): NO fixes without root cause investigation first.
 
 ---
 
@@ -193,7 +199,7 @@ Dispatch error-detective with:
 | Phase | Action | Gate |
 |-------|--------|------|
 | 1 — Classify | Signal clarity: CLEAR / MODERATE / AMBIGUOUS | Clarity determined |
-| 2 — Load skill | `systematic-debugging` | Skill loaded |
+| 2 — Debug mode | `/debug [description]` — loads systematic-debugging | Root cause identified |
 | 3 — Reproduce | Write failing test; confirm it fails | Test output shows FAIL |
 | 4 — Root cause | Trace + hypothesize + evidence | Specific cause identified (file:line) |
 | 5 — Fix | Apply minimum fix; run regression test | Regression test PASSES |

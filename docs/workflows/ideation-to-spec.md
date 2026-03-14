@@ -2,13 +2,24 @@
 
 > **When to use**: Before writing a single line of code — when you have a feature idea and need a validated spec and approved plan.
 > **Time estimate**: 30 min – 2 hours depending on feature complexity
-> **Prerequisites**: None — this is the starting point
+> **Prerequisites**: None — this is the starting point. If the solution space is still open (you don't know yet which approach to take), run `/brainstorm` first.
 
 ## Overview
 
 Transforms a raw feature idea into a challenge-tested specification and an approved implementation plan. Uses structured elicitation (feature-forge skill), adversarial critical reasoning (the-fool skill), and a gated plan review (plan-mode-review skill + plan-challenger agent) before any implementation begins.
 
 ## Phases
+
+### Phase 0 — Divergent Exploration (optional, run when approach is undecided)
+
+**Trigger**: You have a problem but haven't decided on an approach yet (e.g. "should this be REST or GraphQL?", "which DB fits here?", "WebSockets vs SSE?")
+**Command**: `/brainstorm [topic]`
+
+Generates ≥3 distinct alternatives with trade-offs and a Mermaid diagram. No code — exploration only. Run this before Phase 1 to avoid committing to the wrong approach in the spec.
+
+**Gate**: An approach is selected (or explicitly left open) before proceeding to Phase 1.
+
+---
 
 ### Phase 1 — Feature Elicitation
 
@@ -113,6 +124,7 @@ Transforms a raw feature idea into a challenge-tested specification and an appro
 
 | Phase | What to Run | Produces | Gate |
 |-------|-------------|----------|------|
+| 0 — Explore (optional) | `/brainstorm [topic]` | Approach selected | Approach decided |
 | 1 — Elicitation | Load feature-forge skill | `docs/specs/YYYY-MM-DD-<feature>.md` | User confirms spec |
 | 2 — Pre-mortem | Load the-fool skill | Risk list + open questions | Risks resolved or accepted |
 | 3 — Plan review | `/plan-review` | `docs/plans/YYYY-MM-DD-<feature>.md` | All 5 phases pass |

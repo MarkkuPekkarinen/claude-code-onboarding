@@ -8,6 +8,7 @@ Multi-phase workflow guides for every development process in this workspace. Eac
 
 | Workflow | When to Use |
 |----------|------------|
+| `/brainstorm [topic]` | Solution space still open — explore ≥3 alternatives with trade-offs before committing to an approach |
 | [ideation-to-spec.md](ideation-to-spec.md) | Turning an idea into a reviewed spec and plan |
 | [architecture-design.md](architecture-design.md) | Designing a new service or system before coding |
 | [plan-review.md](plan-review.md) | Structured review + adversarial challenge of an implementation plan |
@@ -83,7 +84,7 @@ Multi-phase workflow guides for every development process in this workspace. Eac
 
 | Workflow | When to Use |
 |----------|------------|
-| [bug-fix.md](bug-fix.md) | Structured bug fix with regression test |
+| [bug-fix.md](bug-fix.md) | Structured bug fix with regression test — use `/debug` as entry point |
 | [production-incident.md](production-incident.md) | Detect → mitigate → diagnose → post-mortem |
 | [tech-debt-cleanup.md](tech-debt-cleanup.md) | Deduplication, dead code removal, dependency audit |
 | [documentation-generation.md](documentation-generation.md) | OpenAPI specs, CHANGELOG, diagrams, guides |

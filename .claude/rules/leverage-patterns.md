@@ -111,6 +111,21 @@ About to write or modify code?
 
 **Rule:** Load the skill BEFORE writing code, not after. Skills contain patterns, templates, and MCP server references that prevent mistakes.
 
+### Auto Mode Detection — Trigger Words → Behavior
+
+When a request contains these trigger words, adopt the corresponding behavior automatically. No announcement needed — just behave accordingly.
+
+| Trigger words in request | Mode | Behavior |
+|--------------------------|------|----------|
+| "what if", "options", "alternatives", "explore", "compare", "should we use", "which approach" | **BRAINSTORM** | Use `/brainstorm` — ≥3 options with trade-offs, Mermaid diagram, no code yet |
+| "build", "create", "add", "implement", "write", "scaffold" | **IMPLEMENT** | Code only, max 2-sentence summary, no tutorial comments, no over-engineering (`core-behaviors.md §4`) |
+| "not working", "error", "bug", "failing", "broken", "crash", "exception", "why does" | **DEBUG** | Use `/debug` — load `systematic-debugging`, root cause first, no fixes before investigation |
+| "review", "check", "audit", "is this right", "look at" | **REVIEW** | Load tech-specific reviewer agent, severity-bucketed findings |
+| "explain", "how does", "what is", "teach me", "help me understand" | **TEACH** | Fundamentals first, analogy, example, then technical detail |
+| "deploy", "release", "ship", "production", "ready to merge" | **SHIP** | Run `/ship` — full pre-deploy gate across all stacks |
+
+**Important:** These are defaults, not locks. If the request mixes signals (e.g. "explain then build"), acknowledge both and ask which to start with.
+
 ### When to Dispatch a Reviewer Agent
 
 Reviewer agents are dispatched AFTER code is written, not before. Match by domain:
@@ -193,6 +208,48 @@ The context window is finite. Protect it:
 - **Summarize at boundaries.** When a task spans many steps, summarize completed work before continuing — this is cheaper than re-reading everything.
 - **Prefer Grep/Glob over exploratory reads.** Find the exact file:line first, then read a narrow range.
 - **Don't load blackbox/session-log.md** or other append-only logs into context unless explicitly asked.
+
+#### Optimization Target: Tokens-per-Task, Not Tokens-per-Request
+
+The correct metric is **tokens-per-task** — total tokens consumed from task start to completion, including re-fetching costs. Aggressive compression that loses a file path or decision forces the agent to re-read files and re-explore approaches, wasting more tokens than were saved. When deciding what to compress, preserve file paths, function names, error messages, and decisions — these are the most expensive to re-fetch.
+
+#### Degradation Threshold (This Workspace: Sonnet 4.6)
+
+This workspace runs `claude-sonnet-4-6` with a **1M token context window** (GA as of 2026-03-13, no long-context premium). Context compaction is also available — the API automatically summarizes earlier conversation when the window approaches its limit, enabling effectively unbounded sessions.
+
+Despite the large window, degradation still occurs well before the limit. Degradation is a function of attention mechanics, not window size. **Begin active compression at ~700–800K tokens** (70–80% of 1M) — this matches the empirically validated 70–80% trigger point regardless of model generation. Signs of onset: repeating earlier steps, forgetting which files were modified, losing track of decisions made.
+
+Known degradation patterns to watch for:
+- **Lost-in-middle**: Information in the center of context gets ~10–40% lower recall than content at the start or end. Place critical constraints and the current task at the top; put supporting detail in the middle.
+- **Context poisoning**: A hallucination or wrong output that enters context gets reinforced on every subsequent turn. If outputs start diverging from what was agreed, treat context as potentially poisoned — summarize from scratch using only verified information.
+- **Context distraction**: Irrelevant files or tool outputs in context reduce performance even if they're clearly not relevant. Even a single irrelevant document degrades recall. Trim aggressively.
+
+#### Structured Summary Template (use before `/compact` or at ~700K tokens)
+
+Structure forces preservation — each section is a checklist the summarizer must populate, preventing silent loss of file paths or decisions (`context-compression/SKILL.md:29`).
+
+```markdown
+## Session Intent
+[What the user is trying to accomplish — one sentence]
+
+## Files Modified
+- [file path]: [what changed and why]
+- [file path]: [what changed and why]
+
+## Decisions Made
+- [decision]: [reason]
+- [decision]: [reason]
+
+## Current State
+- [tests: N passing, N failing]
+- [what is working, what is not]
+
+## Next Steps
+1. [immediate next action]
+2. [follow-on action]
+```
+
+**When to use:** Before `/compact`, before handing off to a sub-agent, or at ~700K tokens in a multi-step session. With 1M context and automatic compaction available, manual compression is rarely needed — but when it is triggered (manually or by compaction), this template ensures the right information survives. Everything not in these sections can be lost.
 
 ### When to Break Tasks vs Do In-Session
 
