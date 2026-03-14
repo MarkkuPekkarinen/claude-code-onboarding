@@ -9,7 +9,12 @@ metadata:
   role: specialist
   scope: implementation
   output-format: code
+last-reviewed: "2026-03-14"
 ---
+
+## Iron Law
+
+**NO ANGULAR CODE WITHOUT READING `reference/angular-conventions.md` FIRST — conventions, folder structure, and daisyUI token rules are all there**
 
 # Angular 21.x SPA Development Skill
 

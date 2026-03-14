@@ -9,7 +9,12 @@ metadata:
   role: specialist
   scope: implementation
   output-format: code
+last-reviewed: "2026-03-14"
 ---
+
+## Iron Law
+
+**NO REACTIVE CODE WITHOUT READING `reference/spring-boot-conventions.md` FIRST — blocking calls inside reactive chains cause thread starvation**
 
 # Java 21 + Spring Boot 3.5.x WebFlux REST API Skill
 

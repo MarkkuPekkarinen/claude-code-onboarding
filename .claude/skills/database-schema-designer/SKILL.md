@@ -12,7 +12,12 @@ metadata:
   role: architect
   scope: design
   output-format: document
+last-reviewed: "2026-03-14"
 ---
+
+## Iron Law
+
+**NO SCHEMA MIGRATION WITHOUT A DOWN (ROLLBACK) SCRIPT AND AN INDEX ON EVERY FOREIGN KEY — unindexed FKs cause full table scans; irreversible migrations cause production incidents**
 
 # Database Schema Designer
 

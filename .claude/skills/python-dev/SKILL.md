@@ -9,7 +9,12 @@ metadata:
   role: specialist
   scope: implementation
   output-format: code
+last-reviewed: "2026-03-14"
 ---
+
+## Iron Law
+
+**NO FASTAPI ENDPOINT WITHOUT A PYDANTIC v2 INPUT MODEL — never trust raw request data; validate at the boundary, always**
 
 # Python 3.14 Development Skill
 

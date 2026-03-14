@@ -9,7 +9,12 @@ metadata:
   role: architect
   scope: design
   output-format: document
+last-reviewed: "2026-03-14"
 ---
+
+## Iron Law
+
+**NO AGENT DISPATCH WITHOUT A COMMITTED PLAN FILE IN `docs/plans/` — agents without a written plan produce unreviewed, unverifiable output**
 
 # Subagent-Driven Development (SDD)
 

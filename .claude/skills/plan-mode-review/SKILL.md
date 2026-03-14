@@ -9,7 +9,12 @@ metadata:
   role: architect
   scope: review
   output-format: report
+last-reviewed: "2026-03-14"
 ---
+
+## Iron Law
+
+**NO PLAN APPROVAL WITHOUT ALL 5 PHASES REVIEWED — Phase 0 self-review runs first; skipping any phase voids the review**
 
 # Plan Mode Review
 

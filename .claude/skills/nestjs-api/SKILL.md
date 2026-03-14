@@ -9,7 +9,12 @@ metadata:
   role: specialist
   scope: implementation
   output-format: code
+last-reviewed: "2026-03-14"
 ---
+
+## Iron Law
+
+**NO NESTJS MODULE WITHOUT READING `reference/nestjs-conventions.md` FIRST — Fastify adapter quirks, Prisma 7.x patterns, and DTO validation rules are defined there**
 
 # NestJS 11.x + Fastify + Prisma REST API Skill
 

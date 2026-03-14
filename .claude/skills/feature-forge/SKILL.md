@@ -12,7 +12,12 @@ metadata:
   scope: design
   output-format: document
   related-skills: plan-mode-review, architecture-design, subagent-driven-development
+last-reviewed: "2026-03-14"
 ---
+
+## Iron Law
+
+**NO SPEC WITHOUT EXPLICIT USER CONFIRMATION — never hand off requirements the user has not reviewed and approved; assumptions embedded in specs become bugs in production**
 
 # Feature Forge
 

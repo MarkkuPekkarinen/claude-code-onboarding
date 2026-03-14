@@ -9,7 +9,12 @@ metadata:
   role: specialist
   scope: implementation
   output-format: code
+last-reviewed: "2026-03-14"
 ---
+
+## Iron Law
+
+**NO AGENT GRAPH WITHOUT AN ITERATION LIMIT AND A HUMAN-IN-THE-LOOP CHECKPOINT — unbounded loops and silent runaway agents are production incidents**
 
 # Agentic AI Development Skill — Python 3.14 + LangChain + LangGraph + FastAPI
 
