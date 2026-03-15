@@ -11,7 +11,10 @@ metadata:
   role: architect
   scope: review
   output-format: assessment
+last-reviewed: "2026-03-15"
 ---
+
+**Iron Law:** Never approve an architecture without evidence-based analysis; always provide concrete trade-offs with file:line references, not opinions.
 
 # Architect Review Skill
 

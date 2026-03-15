@@ -9,7 +9,10 @@ metadata:
   role: autonomous
   scope: pr-lifecycle
   output-format: actions
+last-reviewed: "2026-03-15"
 ---
+
+**Iron Law:** Never mark a PR iteration complete without all CI checks passing; always show actual CI output as evidence, not inference.
 
 # Iterate PR Until CI Passes
 

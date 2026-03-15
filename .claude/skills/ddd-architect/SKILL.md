@@ -16,7 +16,11 @@ metadata:
   role: architect
   scope: system-design
   output-format: architecture
+last-reviewed: "2026-03-15"
 ---
+
+**Iron Law:** Never design domain boundaries without analyzing existing bounded contexts first; always map ubiquitous language before proposing aggregates.
+
 
 # DDD Architect Skill
 

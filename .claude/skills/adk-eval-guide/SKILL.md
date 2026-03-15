@@ -9,6 +9,7 @@ metadata:
   role: specialist
   scope: evaluation
   output-format: code
+last-reviewed: "2026-03-15"
 ---
 
 # ADK Evaluation Guide

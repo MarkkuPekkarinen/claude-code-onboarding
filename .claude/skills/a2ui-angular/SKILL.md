@@ -9,6 +9,7 @@ metadata:
   role: specialist
   scope: implementation
   output-format: code
+last-reviewed: "2026-03-15"
 ---
 
 # A2UI Angular Renderer Development Skill

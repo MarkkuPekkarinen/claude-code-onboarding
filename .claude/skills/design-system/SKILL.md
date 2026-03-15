@@ -9,7 +9,10 @@ metadata:
   role: specialist
   scope: design
   output-format: document
+last-reviewed: "2026-03-15"
 ---
+
+**Iron Law:** Never hardcode colors, spacing, or typography — always use design tokens; run /lint-design-system before declaring any UI change complete.
 
 # Design System — Unified Routing Hub
 

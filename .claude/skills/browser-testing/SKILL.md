@@ -11,7 +11,10 @@ metadata:
   role: specialist
   scope: testing
   output-format: report
+last-reviewed: "2026-03-15"
 ---
+
+**Iron Law:** Never claim a UI flow works without running it in a real browser; always use Chrome DevTools MCP or Browser-Use MCP for validation evidence.
 
 # Browser Automation & Testing Skill
 

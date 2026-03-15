@@ -9,7 +9,10 @@ metadata:
   role: specialist
   scope: implementation
   output-format: code
+last-reviewed: "2026-03-15"
 ---
+
+**Iron Law:** Never publish an MCP server without testing all tool schemas against the MCP spec; always validate tool descriptions are >= 10 words and parameters are fully typed.
 
 # MCP Server Development Guide
 

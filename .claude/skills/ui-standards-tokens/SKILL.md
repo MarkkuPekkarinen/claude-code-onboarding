@@ -9,7 +9,10 @@ metadata:
   role: specialist
   scope: design
   output-format: document
+last-reviewed: "2026-03-15"
 ---
+
+**Iron Law:** Never use raw color hex values, spacing literals, or inline TextStyles — always reference design tokens; run /lint-design-system before any UI PR.
 
 # UI Standards - Design Tokens & Patterns
 

@@ -9,7 +9,10 @@ metadata:
   role: specialist
   scope: implementation
   output-format: code
+last-reviewed: "2026-03-15"
 ---
+
+**Iron Law:** Always use the correct Riverpod provider type for the use case; never use StateProvider for async data or FutureProvider for mutable state.
 
 # Riverpod Patterns
 

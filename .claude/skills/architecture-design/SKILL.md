@@ -12,7 +12,10 @@ metadata:
   role: architect
   scope: design
   output-format: architecture
+last-reviewed: "2026-03-15"
 ---
+
+**Iron Law:** Never start implementation without an approved architecture plan; always produce API contracts and sequence diagrams before code.
 
 # Architecture Design Skill
 

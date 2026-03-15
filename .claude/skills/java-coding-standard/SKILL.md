@@ -9,7 +9,10 @@ metadata:
   role: specialist
   scope: review
   output-format: report
+last-reviewed: "2026-03-15"
 ---
+
+**Iron Law:** Always load the java-spring-api skill and consult Spring MCP before writing Java code; never generate Spring WebFlux patterns from memory.
 
 # Java Coding Standards
 

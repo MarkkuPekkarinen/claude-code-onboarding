@@ -13,6 +13,7 @@ metadata:
   role: specialist
   scope: deployment
   output-format: code
+last-reviewed: "2026-03-15"
 ---
 
 # ADK Deployment Guide

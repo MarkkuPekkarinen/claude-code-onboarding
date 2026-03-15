@@ -9,6 +9,7 @@ metadata:
   role: specialist
   scope: query
   output-format: results
+last-reviewed: "2026-03-15"
 ---
 
 # Weaviate Database Operations

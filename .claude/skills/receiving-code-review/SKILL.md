@@ -9,7 +9,10 @@ metadata:
   role: specialist
   scope: review
   output-format: document
+last-reviewed: "2026-03-15"
 ---
+
+**Iron Law:** Never dismiss review feedback without re-reading the flagged code; always respond to each finding with file:line evidence for your position.
 
 # Receiving Code Review
 

@@ -9,6 +9,7 @@ metadata:
   role: specialist
   scope: design
   output-format: code
+last-reviewed: "2026-03-15"
 ---
 
 ## Iron Law

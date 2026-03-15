@@ -9,7 +9,10 @@ metadata:
   role: specialist
   scope: review
   output-format: report
+last-reviewed: "2026-03-15"
 ---
+
+**Iron Law:** Always consult the agentic-ai-dev skill and its MCP sources before writing agent code; never generate LangGraph/LangChain patterns from memory.
 
 # Agentic AI Coding Standards
 

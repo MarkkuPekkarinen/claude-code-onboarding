@@ -10,6 +10,7 @@ metadata:
   role: architect
   scope: design
   output-format: document
+last-reviewed: "2026-03-15"
 ---
 
 ## Iron Law: NO ARCHITECTURE REVIEW WITHOUT THREAT MODELING FIRST

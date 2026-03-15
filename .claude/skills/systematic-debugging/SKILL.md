@@ -9,6 +9,7 @@ metadata:
   role: specialist
   scope: analysis
   output-format: analysis
+last-reviewed: "2026-03-15"
 ---
 
 # Systematic Debugging

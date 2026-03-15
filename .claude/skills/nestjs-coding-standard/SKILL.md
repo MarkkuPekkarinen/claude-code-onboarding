@@ -9,7 +9,10 @@ metadata:
   role: specialist
   scope: review
   output-format: report
+last-reviewed: "2026-03-15"
 ---
+
+**Iron Law:** Always load the nestjs-api skill before writing NestJS code; never generate Prisma or Fastify patterns without consulting current documentation.
 
 # NestJS + TypeScript Coding Standards
 

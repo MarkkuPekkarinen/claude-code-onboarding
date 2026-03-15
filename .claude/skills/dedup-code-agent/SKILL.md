@@ -11,7 +11,10 @@ metadata:
   role: specialist
   scope: analysis
   output-format: report
+last-reviewed: "2026-03-15"
 ---
+
+**Iron Law:** Never delete code labeled as duplicate without verifying all call sites are updated; always confirm zero remaining references before removing.
 
 # Code Deduplication Skill
 

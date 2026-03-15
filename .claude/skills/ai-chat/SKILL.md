@@ -9,7 +9,10 @@ metadata:
   role: specialist
   scope: implementation
   output-format: code
+last-reviewed: "2026-03-15"
 ---
+
+**Iron Law:** Load this skill before building any chat interface; never hardcode streaming or message formats without verifying against the skill's patterns.
 
 # AI Chat Interface Skill
 

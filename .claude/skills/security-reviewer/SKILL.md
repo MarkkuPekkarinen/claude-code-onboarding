@@ -11,7 +11,10 @@ metadata:
   role: specialist
   scope: review
   output-format: report
+last-reviewed: "2026-03-15"
 ---
+
+**Iron Law:** Never approve a security review with unresolved CRITICAL or HIGH findings; always escalate to the human before proceeding past a security gate.
 
 # Security Review Skill
 

@@ -1,6 +1,7 @@
 ---
 name: clean-code
 description: "Applies principles from Robert C. Martin's 'Clean Code'. Use when writing, reviewing, or refactoring code to ensure high quality, readability, and maintainability. Covers naming, functions, comments, formatting, error handling, unit tests, classes, and code smells. Language-agnostic — applies to Java, TypeScript, Python, Dart, and all workspace stacks."
+allowed-tools: "Read, Grep, Glob, Edit, Write"
 metadata:
   risk: safe
   source: "ClawForge (https://github.com/jackjin1997/ClawForge)"
