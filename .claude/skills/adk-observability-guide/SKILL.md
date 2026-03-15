@@ -24,6 +24,7 @@ last-reviewed: "2026-03-15"
 |------|----------|
 | `reference/cloud-trace-and-logging.md` | Cloud Trace setup, prompt-response logging infrastructure, environment variables, enabling/disabling locally, verification commands |
 | `reference/bigquery-agent-analytics.md` | BigQuery Agent Analytics plugin — enabling, key features, tool provenance tracking |
+| `reference/slo-alerting.md` | SLO-based burn-rate alerting (vs threshold alerting), multi-window pattern, error budget tracking, PromQL examples for availability/latency/safety SLOs | Setting up production alerts for agentic AI services |
 
 ---
 
@@ -34,8 +35,9 @@ last-reviewed: "2026-03-15"
 | **Tier 1: Cloud Trace** | Distributed tracing — execution flow, latency, errors via OpenTelemetry spans | Always-on | Debugging latency, understanding agent execution flow |
 | **Tier 2: Prompt-Response Logging** | GenAI interactions exported to GCS, BigQuery, and Cloud Logging | Disabled locally; enabled when deployed | Auditing LLM interactions, compliance |
 | **Tier 3: BigQuery Agent Analytics** | Structured agent events (LLM calls, tool use, outcomes) to BigQuery | Opt-in (`--bq-analytics` at scaffold time) | Conversational analytics, custom dashboards, LLM-as-judge evals |
+| **Tier 4: SLO Alerting** | SLO-based burn-rate alerts (availability, latency, safety) via Prometheus — fires only when error budget is genuinely at risk | Opt-in — requires Prometheus + Alertmanager stack | Production alerting for agentic AI services; replaces naive threshold alerts |
 
-Ask the user which tier(s) they need — they can be combined. Tier 1 is mandatory; Tiers 2 and 3 are additive.
+Ask the user which tier(s) they need — they can be combined. Tier 1 is mandatory; Tiers 2, 3, and 4 are additive.
 
 ---
 

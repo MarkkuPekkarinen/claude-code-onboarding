@@ -12,7 +12,7 @@ For each skill, check:
 
 | # | Check | PASS | WARN | FAIL |
 |---|-------|------|------|------|
-| 1 | **Iron Law** | Present in body | — | Absent |
+| 1 | **Iron Law** | Present in body — any of: `## Iron Law` heading, `**Iron Law:**` bold text, or `> **Iron Law:**` blockquote | — | Absent (none of the above formats found) |
 | 2 | **last-reviewed** | ≤ 90 days ago | 91–180 days | Missing or > 180 days |
 | 3 | **Description quality** | ≥ 2 sentences + trigger words | 1 sentence | Missing or < 10 words |
 | 4 | **allowed-tools** | Declared | — | Missing |
@@ -29,7 +29,7 @@ For each skill, check:
 ## Steps
 
 1. Glob `.claude/skills/*/SKILL.md` to get all skill files
-2. For each skill file, read the frontmatter and first 50 lines of body
+2. For each skill file, read the frontmatter and first 50 lines of body (increase to 60 lines if no Iron Law found in first 50)
 3. Apply the 7 checks above
 4. Output results in the report format below
 

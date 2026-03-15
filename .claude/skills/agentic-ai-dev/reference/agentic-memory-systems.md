@@ -340,3 +340,150 @@ async def trim_or_summarize(
 | Personal assistant | 1 + 2 + 3 (Episodic) | Medium |
 | Enterprise knowledge | 1 + 2 + 4 (Graph) | High |
 | Learning agent | 1 + 2 + 5 (Procedural) | High |
+
+## Parallel Multi-Layer Retrieval Pattern
+
+When an agent retrieves from multiple memory layers (e.g., semantic + episodic), running them sequentially wastes time — each layer is independent. Use `asyncio.gather()` to run all layers concurrently.
+
+**Measured performance (from weather-agent `manager.py`):**
+- Sequential retrieval: 15–30s (each layer waits for previous)
+- Parallel retrieval: 6–10s (independent layers run concurrently)
+- Improvement: 2–3x faster at the same correctness
+
+### Core Pattern
+
+```python
+import asyncio
+
+async def get_memory_context(user_id: str, session_id: str) -> dict:
+    """Retrieve from multiple memory layers in parallel."""
+
+    # Step 1: Short-term context MUST be sequential — required before long-term
+    session_context = await short_term.get_context(user_id, session_id)
+    if not session_context:
+        session_context = await short_term.create_context(user_id, session_id)
+
+    # Step 2: Build parallel tasks — only enabled layers
+    parallel_tasks: list[tuple[str, any]] = []
+
+    if config.ENABLE_SEMANTIC_MEMORY:
+        parallel_tasks.append((
+            "semantic",
+            _retrieve_with_timeout(semantic_memory.recall(user_id), timeout=5.0)
+        ))
+
+    if config.ENABLE_EPISODIC_MEMORY:
+        parallel_tasks.append((
+            "episodes",
+            _retrieve_with_timeout(episodic_memory.recall(user_id), timeout=5.0)
+        ))
+
+    if not parallel_tasks:
+        return {"session": session_context}
+
+    # Step 3: Run all layers concurrently — return_exceptions=True is critical
+    task_names = [name for name, _ in parallel_tasks]
+    task_coros = [coro for _, coro in parallel_tasks]
+
+    results = await asyncio.gather(*task_coros, return_exceptions=True)
+
+    # Step 4: Build response with graceful degradation
+    response = {"session": session_context}
+    for task_name, result in zip(task_names, results):
+        if isinstance(result, Exception):
+            # One layer failed — continue with partial context
+            logger.warning(f"Layer '{task_name}' failed: {result}. Using safe default.")
+            response[task_name] = [] if task_name == "episodes" else None
+        else:
+            response[task_name] = result
+
+    return response
+```
+
+### Per-Layer Timeout Protection
+
+Each layer wraps its coroutine in `asyncio.wait_for()`. This prevents a slow vector store or graph DB from blocking the entire retrieval.
+
+```python
+async def _retrieve_with_timeout(coro, timeout: float = 5.0):
+    """Wrap any memory retrieval coroutine with timeout protection.
+
+    Returns safe default on timeout — never raises. The caller (asyncio.gather)
+    receives None/[] instead of a TimeoutError bubbling up.
+    """
+    try:
+        return await asyncio.wait_for(coro, timeout=timeout)
+    except TimeoutError:
+        logger.warning(f"Memory retrieval timed out after {timeout}s")
+        return None   # Caller checks isinstance(result, Exception) — None is safe
+    except Exception as e:
+        logger.error(f"Memory retrieval failed: {e}")
+        raise          # Re-raise so asyncio.gather catches it as an exception
+```
+
+**Why `return_exceptions=True` is required:**
+Without it, the first layer to fail cancels all other layers and raises immediately. With it, all layers run to completion (or timeout), and failures are returned as exception objects in the results list — the caller handles them individually.
+
+### Handling Partial Failures
+
+```python
+# After asyncio.gather returns:
+succeeded = sum(1 for r in results if not isinstance(r, Exception))
+failed    = sum(1 for r in results if isinstance(r, Exception))
+
+logger.info(
+    "parallel_retrieval_complete",
+    succeeded=succeeded,
+    failed=failed,
+    total=len(results),
+)
+
+# Agent proceeds with whatever layers succeeded.
+# Missing layers = empty context for that layer, not a hard failure.
+```
+
+### Adapting for LangGraph State
+
+In a LangGraph node, inject parallel retrieval results into state before invoking the LLM:
+
+```python
+async def memory_retrieval_node(state: AgentState) -> dict:
+    """LangGraph node: parallel memory retrieval."""
+    user_id = state["user_id"]
+    session_id = state["session_id"]
+
+    memory = await get_memory_context(user_id, session_id)
+
+    return {
+        "session_context": memory.get("session"),
+        "semantic_context": memory.get("semantic"),    # None if disabled/failed
+        "episode_context":  memory.get("episodes", []),
+    }
+```
+
+State keys are set to `None`/`[]` rather than missing entirely — downstream nodes can safely check truthiness without `KeyError`.
+
+### When to Use Parallel vs Sequential
+
+| Situation | Approach | Reason |
+|-----------|----------|--------|
+| Layers are independent (different stores) | Parallel | No data dependency between layers |
+| Layer B needs Layer A's output | Sequential | Dependency — B cannot start until A completes |
+| Debugging — isolate layer behavior | Sequential (feature flag) | Easier to trace which layer causes issues |
+| Single memory layer | No gather needed | `asyncio.gather` with one item adds overhead with no benefit |
+
+**Feature flag pattern (from weather-agent):** Keep a `MEMORY_PARALLEL_RETRIEVAL` config flag. Set to `False` in development to get clean sequential logs; `True` in production for performance. Fallback path must exist.
+
+### Safe Defaults on Timeout
+
+Never raise on timeout in a memory retrieval helper. Missing memory context degrades quality gracefully; a hard exception fails the entire user request.
+
+```python
+# Correct safe defaults by layer type:
+"semantic"   -> None        # Agent proceeds without semantic context
+"episodes"   -> []          # Agent proceeds with empty episode list
+"procedural" -> {}          # Agent proceeds with no learned patterns
+"emotional"  -> None        # Agent uses neutral tone as default
+```
+
+The agent's prompt template must handle `None`/empty gracefully — check before interpolating memory context into the system prompt.

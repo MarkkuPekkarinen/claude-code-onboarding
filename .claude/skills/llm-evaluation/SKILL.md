@@ -46,7 +46,8 @@ What are you evaluating?
 ├── Text generation quality → reference/evaluation-metrics.md#text-generation
 ├── Comparing two prompts/models → reference/ab-testing.md
 ├── Detecting regression vs baseline → reference/ab-testing.md#regression
-└── Building full eval harness → reference/evaluation-harness.md
+├── Building full eval harness → reference/evaluation-harness.md
+└── Evaluating agent trajectory (tool calls, reasoning steps) → reference/trajectory-evaluation.md
 ```
 
 ## Reference Files
@@ -56,6 +57,7 @@ What are you evaluating?
 | `reference/evaluation-metrics.md` | BLEU, ROUGE, BERTScore, RAG metrics (MRR, NDCG, Precision@K), classification metrics, custom groundedness | Implementing metrics for any eval task |
 | `reference/ab-testing.md` | A/B test with t-test + Cohen's d, regression detector class, sample size calculator, CI/CD integration | Comparing prompts/models, detecting regressions |
 | `reference/evaluation-harness.md` | Full eval harness for LangGraph agents and ADK agents, benchmark runner, inter-rater agreement | Building end-to-end eval pipeline |
+| `reference/trajectory-evaluation.md` | 4-pillar evaluation (Effectiveness 40%, Efficiency 20%, Robustness 20%, Safety 20%), safety zero-tolerance, EvaluationResult structure, batch eval, pass/fail gates | Evaluating LangGraph agent trajectories end-to-end |
 
 ## Post-Code Review
 

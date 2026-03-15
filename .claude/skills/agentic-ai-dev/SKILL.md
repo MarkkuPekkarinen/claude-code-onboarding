@@ -58,6 +58,7 @@ uv add --dev pytest pytest-asyncio httpx ruff mypy
 | Structured Output | `.with_structured_output(PydanticModel)` | `agentic-prompt-engineering.md` |
 | Error Recovery | Retry node + fallback model + graceful degradation | `agentic-templates-resilience.md` |
 | Config | pydantic-settings + fail-fast validators | `agentic-config-project.md` |
+| Caching | 4-tier Q1→Q2→Q3→L3 with backfill; @cached_tool decorator | `agentic-caching-patterns.md` |
 
 ## Conventions & Rules
 
@@ -98,6 +99,8 @@ Before generating code, consult these sources for current syntax and APIs:
 | `agentic-review-checklist.md` | Agentic AI review checklist (used by `agentic-ai-reviewer` agent) | Code reviews |
 | `agentic-prompt-optimization.md` | Constitutional AI, Tree-of-Thoughts, model-specific templates (Claude/Gemini/GPT), prompt versioning registry, canary rollout, LLM-as-judge | Optimizing prompt quality; multi-model deployments; production prompt lifecycle |
 | `llm-judge-advanced.md` | Production LLM-as-Judge: bias taxonomy (position, length, self-enhancement), position swap protocol, rubric generation, PoLL ensemble, hierarchical eval | Evaluating agent outputs with reliability; high-stakes eval decisions |
+| `agentic-caching-patterns.md` | 4-tier cache (Q1 LRU→Q2 Redis→Q3 semantic→L3 Anthropic), backfill, @cached_tool decorator, cache key generation, Prometheus metrics | Adding caching to LangGraph agents |
+| `agentic-makefile-patterns.md` | 40+ Makefile commands for setup, testing, RAG, memory, evaluation, Docker, observability — reference patterns for agentic AI services | Setting up developer workflow automation |
 
 ## Common Commands
 
