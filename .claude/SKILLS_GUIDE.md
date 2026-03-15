@@ -38,7 +38,7 @@
 - **gcp-cloud-run**: Use for Cloud Run Functions (event-driven Pub/Sub, Storage, HTTP webhooks), cold start optimization, and anti-pattern prevention for all 4 backend stacks. For Cloud Run service deployment use deployment-engineer agent.
 - **gcp-finops**: GCP cost optimization, FinOps, and resilience skill. Use for GCP billing budget alerts, committed use discounts (CUD), sustained use discounts (SUD), cost allocation labels, GCP Recommender analysis, Cloud SQL PITR setup, multi-region DR planning, and RTO/RPO target mapping for Cloud Run + Cloud SQL + Firestore workloads.
 
-### Frontend (15 skills)
+### Frontend (16 skills)
 - **a2ui-angular**: A2UI (Agent-to-User Interface) renderer development for Angular 21.x — protocol implementation, component catalog, recursive renderer, action handling, streaming A2UI payloads, and security validation. Reference files: `a2ui-protocol.md`, `a2ui-protocol-advanced.md`, `a2ui-security.md`, `a2ui-component-catalog.md`, `a2ui-component-containers.md`, `a2ui-renderer-patterns.md`, `a2ui-renderer-template.md`, `a2ui-chat-template.md`, `a2ui-renderer-services.md`.
 - **ai-chat**: AI chat interface patterns for Angular 21.x and Flutter 3.38 — streaming markdown rendering, auto-scroll heuristics, memoized computed(), token context indicators, thumbs up/down feedback, multi-modal input, and AI error states.
 - **angular-spa**: Angular 21.x SPA development skill with TailwindCSS 4.x and daisyUI 5.5.5, covering component scaffolding, UI/UX design, accessibility audits, and design systems.
@@ -53,6 +53,7 @@
 - **web-performance-optimization**: Optimize Angular 21.x SPA performance — Core Web Vitals (LCP, INP, CLS), bundle analysis (`ng build --stats-json` + `webpack-bundle-analyzer`), lazy routes (`loadComponent`/`loadChildren`), `@defer` blocks for below-fold components, `NgOptimizedImage`, OnPush+Signals runtime performance, and SSR TransferState double-fetch prevention. Load alongside `angular-best-practices` for full coverage.
 - **riverpod-patterns**: Provides Riverpod state management patterns and best practices for Flutter applications, covering providers, AsyncValue handling, ref usage, and provider lifecycle management.
 - **tailwind-patterns**: Tailwind CSS v4 reference for Angular 21.x — CSS-first `@theme` config, container queries (`@container`/`@sm:`/named containers), OKLCH color system for daisyUI custom themes, Bento/asymmetric grid layouts, dark mode strategies, and v3→v4 anti-pattern migration table. Load alongside `angular-spa` when working on Tailwind v4 config or complex layouts.
+- **ui-ux-pro-max**: Design intelligence database — 50+ styles, 97 color palettes, 57 font pairings, 99 UX guidelines, BM25 Python search engine. Flutter has a dedicated stack CSV. Angular uses `html-tailwind` stack. Run `--design-system` first to get complete style+palette+typography recommendations. Load before `frontend-design` to inform DFII scoring.
 - **ui-standards-tokens**: Provides design token definitions, theming patterns, and UI standards for Flutter applications, used when auditing UI compliance, implementing design systems, or ensuring consistent token usage.
 
 ### Mobile Deployment (14 skills)
@@ -96,8 +97,9 @@
 - **mcp-builder**: Used when building MCP servers to integrate external APIs — also listed under Backend as it produces implementation code.
 - **nosql-expert**: Expert guidance for distributed NoSQL databases (Cassandra, DynamoDB, ScyllaDB) — query-first modeling, partition key design, hot partition prevention, single-table design (adjacency lists), denormalization patterns, and BASE vs ACID tradeoffs. Load when designing schemas for Cassandra/DynamoDB or troubleshooting hot partitions and high-latency scans.
 
-### Quality & Testing (9 skills)
+### Quality & Testing (10 skills)
 - **browser-testing**: Browser automation and testing using Chrome DevTools MCP and Browser-Use MCP for debugging, performance analysis, E2E flows, and UI interaction.
+- **ui-visual-validator**: CI/CD visual regression setup and pre-commit 13-item verification checklist. Scoped complement to `reality-checker` agent — adds Chromatic, Percy, Applitools, BackstopJS, and Playwright Visual tooling setup for GitHub Actions. Use alongside `reality-checker`: this skill provides the methodology and CI tooling; `reality-checker` provides the live browser verdict.
 - **accessibility-audit**: WCAG 2.1 AA accessibility audit for Angular 21.x and Flutter 3.38. Use when auditing UI for accessibility compliance, adding automated axe-core or flutter_test semantic testing, identifying barriers, or integrating accessibility gates into CI/CD. Reference files: `reference/angular-a11y-automated.md`, `reference/flutter-a11y-automated.md`, `reference/manual-testing-checklist.md`, `reference/cicd-integration.md`.
 - **clean-code**: Language-agnostic code quality skill based on Robert C. Martin's *Clean Code*. Use when writing, reviewing, or refactoring code across any stack — covers naming, functions, comments, formatting, Law of Demeter, error handling, F.I.R.S.T. test principles, classes, and code smells.
 - **code-reviewer**: General-purpose code review skill providing checklists for security, code quality, performance, and best practices when reviewing code changes, PRs, or performing quality audits.

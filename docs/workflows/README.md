@@ -29,6 +29,7 @@ Multi-phase workflow guides for every development process in this workspace. Eac
 | [feature-angular-spa.md](feature-angular-spa.md) | Angular 21.x / TailwindCSS / daisyUI |
 | [web-performance-optimization.md](web-performance-optimization.md) | Angular 21.x Core Web Vitals, bundle size, lazy loading, runtime perf |
 | [tailwind-v4-patterns.md](tailwind-v4-patterns.md) | Configure Tailwind v4 in Angular — `@theme`, container queries, OKLCH daisyUI themes, Bento layouts, v3→v4 migration |
+| [ui-ux-design.md](ui-ux-design.md) | Design system selection — style, palette, typography via ui-ux-pro-max database before writing Angular/Flutter UI |
 | [feature-a2ui-renderer.md](feature-a2ui-renderer.md) | Agent-to-UI renderer for Angular |
 | [feature-flutter-mobile.md](feature-flutter-mobile.md) | Flutter 3.38 / Riverpod / iOS + Android |
 | [mobile-developer.md](mobile-developer.md) | React Native / Native Swift-Kotlin / Mobile CI-CD (Fastlane, Codemagic, EAS) |
@@ -56,6 +57,7 @@ Multi-phase workflow guides for every development process in this workspace. Eac
 | [test-driven-development.md](test-driven-development.md) | Red-Green-Refactor TDD cycle, all stacks |
 | [api-testing.md](api-testing.md) | Integration and contract testing for REST APIs |
 | [browser-e2e-testing.md](browser-e2e-testing.md) | E2E testing with Chrome DevTools + Browser-Use MCPs |
+| [visual-regression-testing.md](visual-regression-testing.md) | Automated visual regression CI/CD for Angular (Playwright/Chromatic/BackstopJS) and Flutter (golden_toolkit) |
 | [code-review.md](code-review.md) | Giving code review — `/review-code`, `/review-pr` |
 | [receiving-code-review.md](receiving-code-review.md) | Processing and responding to review feedback |
 | [pre-commit-validation.md](pre-commit-validation.md) | `/pr-risk`, `/validate-changes` before committing |
