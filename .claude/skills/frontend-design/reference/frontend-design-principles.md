@@ -63,3 +63,73 @@ Before delivering any UI, verify:
 ## Key Principle
 
 Match implementation complexity to the aesthetic vision. Maximalist designs need elaborate animations and effects. Minimalist designs need restraint, precision, and meticulous spacing. Elegance comes from executing the vision well, not from intensity.
+
+---
+
+## DFII Quick-Score Card
+
+Use this when evaluating a design direction. Score each dimension 1–5 then apply the formula.
+
+```
+Project: _______________
+Aesthetic Direction: _______________
+
+Aesthetic Impact:           ___ / 5
+Context Fit:                ___ / 5
+Implementation Feasibility: ___ / 5
+Performance Safety:         ___ / 5
+Consistency Risk:           ___ / 5  (subtract)
+
+DFII = (Impact + Fit + Feasibility + Performance) − Risk = ___
+
+≥ 8 → proceed | 4–7 → reduce scope | ≤ 3 → rethink
+```
+
+---
+
+## Differentiation Anchor Examples
+
+Use these as inspiration. Your anchor must be original.
+
+| Aesthetic Direction | Potential Anchor |
+|---|---|
+| Editorial Brutalism | Full-bleed typography with raw grid breaks and monochrome photography |
+| Luxury Minimal | Extreme whitespace with one gold accent and custom serif display font |
+| Retro-futuristic | Scanline texture overlaid on bright neon palette with monospace UI font |
+| Industrial Utilitarian | 1px hairline borders, no border-radius, dense data tables, no decoration |
+| Organic Natural | Hand-drawn SVG borders, warm earth tones, variable-weight typeface |
+| Playful Toy-like | Oversized rounded corners, bold primary palette, bouncy entrance animations |
+
+---
+
+## Anti-Patterns (Immediate Failure — Restart)
+
+If any of these are present, do NOT ship. Restart the design direction:
+
+- **Fonts:** Inter, Roboto, Arial, Space Grotesk, system-ui as primary display font
+- **Colors:** Purple-on-white gradient, generic blue-on-gray, flat solid background with no atmosphere
+- **Layout:** Symmetrical hero → 3-column features → CTA footer (the AI template)
+- **Components:** Default Tailwind card, default ShadCN layout, default Material card
+- **Motion:** No animation on a maximalist design, OR decorative micro-motion spam on a minimalist design
+- **Differentiation:** Cannot answer "how would someone recognize this without the logo?"
+
+---
+
+## Framework-Specific Execution Notes
+
+### Angular (daisyUI 5.5.5 + TailwindCSS 4.x)
+- Use daisyUI semantic tokens for all colors: `bg-primary`, `text-base-content`, `bg-base-100`
+- Custom aesthetics: extend daisyUI theme in CSS — do NOT hardcode hex values
+- Typography: load custom fonts via `@font-face` in global styles, reference via Tailwind `font-*` utility
+- Motion: use `angular-spa/reference/animations.md` timing standards; add CSS `@keyframes` in component SCSS
+
+### Flutter (Theme + AppSpacing tokens)
+- All colors via `Theme.of(context).colorScheme.*` — never `Colors.blue` or `Color(0xFF...)`
+- All spacing via `AppSpacing.xs/sm/md/lg/xl` — never `EdgeInsets.all(16)`
+- Custom aesthetic: extend `ThemeData` in `flutter-design-polish.md` patterns
+- Motion: use `flutter-mobile/reference/flutter-performance-ux.md` animation patterns
+
+### HTML/CSS (Standalone)
+- Define all design tokens in `:root { --color-primary: ...; --spacing-base: ...; }`
+- CSS-first animations; Framer Motion only if already in the project and justified
+- Prefer `clamp()` for fluid type scaling; `CSS Grid` + `subgrid` for layout

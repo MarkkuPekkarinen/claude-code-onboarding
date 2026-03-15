@@ -27,6 +27,8 @@ Multi-phase workflow guides for every development process in this workspace. Eac
 | [feature-agentic-ai.md](feature-agentic-ai.md) | LangChain v1.2.8 / LangGraph v1.0.7 |
 | [feature-google-adk.md](feature-google-adk.md) | Google ADK / Gemini agents |
 | [feature-angular-spa.md](feature-angular-spa.md) | Angular 21.x / TailwindCSS / daisyUI |
+| [web-performance-optimization.md](web-performance-optimization.md) | Angular 21.x Core Web Vitals, bundle size, lazy loading, runtime perf |
+| [tailwind-v4-patterns.md](tailwind-v4-patterns.md) | Configure Tailwind v4 in Angular — `@theme`, container queries, OKLCH daisyUI themes, Bento layouts, v3→v4 migration |
 | [feature-a2ui-renderer.md](feature-a2ui-renderer.md) | Agent-to-UI renderer for Angular |
 | [feature-flutter-mobile.md](feature-flutter-mobile.md) | Flutter 3.38 / Riverpod / iOS + Android |
 | [mobile-developer.md](mobile-developer.md) | React Native / Native Swift-Kotlin / Mobile CI-CD (Fastlane, Codemagic, EAS) |

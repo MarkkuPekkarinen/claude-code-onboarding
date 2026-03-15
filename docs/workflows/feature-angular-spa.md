@@ -257,6 +257,11 @@ ng test --watch=false
 - Color contrast ≥ 4.5:1 for normal text
 - Keyboard navigation for all interactive elements
 
+**Step 3**: `web-design-guidelines` skill
+- Load skill and fetch guidelines from source URL
+- Run against all changed component files
+- Verify: loading states present, error states present, empty states present, focus management correct
+
 **Gate**: `/lint-design-system` returns zero violations. Both agents pass.
 
 ---
@@ -300,4 +305,5 @@ ng test --watch=false
 - [`design-system-compliance.md`](design-system-compliance.md) — enforcing design tokens
 - [`browser-e2e-testing.md`](browser-e2e-testing.md) — E2E testing the Angular app
 - [`angular-best-practices`](../../.claude/skills/angular-best-practices/SKILL.md) — performance-ranked rules for PR review
+- [`web-design-guidelines`](./../.claude/skills/web-design-guidelines/SKILL.md) — run after Phase 3 to audit component against Vercel Web Interface Guidelines (third review layer after `/lint-design-system` and `accessibility-auditor`)
 - [`angular-ui-patterns`](../../.claude/skills/angular-ui-patterns/SKILL.md) — loading/error/empty state doctrine
