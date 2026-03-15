@@ -17,7 +17,7 @@ Full Python/FastAPI feature lifecycle from scaffold through TDD to reviewed, sec
 **15-step process** (from `commands/scaffold-python-api.md`):
 1. Create `.gitignore` first
 2. Initialize project with `pyproject.toml`
-3. Set up virtual environment with `uv`
+3. Set up virtual environment with `uv` — see `uv-package-manager` skill for lockfile setup (`uv lock` + `uv sync --frozen`)
 4. Create folder structure
 5. Create `main.py` with FastAPI app
 6. Create `config.py` with `pydantic-settings`
@@ -33,6 +33,20 @@ Full Python/FastAPI feature lifecycle from scaffold through TDD to reviewed, sec
 
 **Produces**: Production-ready FastAPI service scaffold
 **Gate**: `pytest` passes, `ruff check .` clean, `mypy .` clean
+
+---
+
+### Phase 1.5 — Architecture Decision (new features or unclear approach)
+
+**Trigger**: Framework choice unclear, or async vs sync strategy not confirmed
+**Skill**: `python-patterns`
+**Decision checklist**:
+- Framework: FastAPI (API-only) / Django (full-stack+admin) / Flask (simple/script)
+- Async: Use `async def` for all I/O-bound FastAPI routes (workspace default)
+- Structure: Layer-based (medium APIs) vs feature-based (5+ domain areas)
+- Background tasks: `BackgroundTasks` (fire-and-forget) vs Celery/ARQ (distributed, retry)
+
+**Gate**: Framework, async strategy, and structure confirmed before writing code
 
 ---
 
@@ -53,6 +67,8 @@ Full Python/FastAPI feature lifecycle from scaffold through TDD to reviewed, sec
 - **Testing** — `pytest-asyncio`, `httpx.AsyncClient` for E2E, `pytest-cov`
 
 **Gate**: Skill loaded, MCP queried for any API signatures being used
+
+**Also load**: `uv-package-manager` skill if setting up CI/CD or Docker for this service
 
 ---
 
@@ -76,11 +92,26 @@ Full Python/FastAPI feature lifecycle from scaffold through TDD to reviewed, sec
 
 ---
 
+### Phase 3.5 — Test Infrastructure (new projects only)
+
+**Trigger**: No `conftest.py` exists or test suite needs restructuring
+**Skill**: `python-testing-patterns`
+**Setup**:
+1. Create `tests/conftest.py` with `AsyncClient` fixture
+2. Configure `pyproject.toml` — `asyncio_mode = "auto"`, testpaths, markers
+3. Add test markers: `@pytest.mark.slow`, `@pytest.mark.integration`
+4. Set coverage gate: `--cov-fail-under=80`
+
+**Gate**: `pytest -q` passes, `pytest --cov=src --cov-report=term-missing` shows coverage
+
+---
+
 ### Phase 4 — Implement Feature
 
 **Build order**:
 1. Pydantic model → `src/<service>/models/<name>.py`
 2. Request/Response schemas → `src/<service>/schemas/<name>.py`
+   - Use `pydantic-models-py` skill for Base/Create/Update/Response model pattern
 3. Repository → `src/<service>/repositories/<name>_repository.py`
 4. Service → `src/<service>/services/<name>_service.py`
 5. Router → `src/<service>/routers/<name>.py`
@@ -140,8 +171,9 @@ Full Python/FastAPI feature lifecycle from scaffold through TDD to reviewed, sec
 | Phase | What to Run | Produces | Gate |
 |-------|-------------|----------|------|
 | 1 — Scaffold | `/scaffold-python-api` | Full FastAPI skeleton | `pytest` passes |
-| 2 — Load skill | `python-dev` skill | Pattern reference | MCP queried |
+| 2 — Load skill | `python-dev` + `uv-package-manager` | Pattern reference | MCP queried |
 | 3 — TDD | Write failing pytest | Failing test | `FAILED` status |
+| 3.5 — Test infra | `python-testing-patterns` | conftest.py, markers, coverage | `pytest -q` passes |
 | 4 — Implement | model → schema → repo → service → router | Working code | `pytest` green |
 | 5 — Review | `code-reviewer` + `silent-failure-hunter` + `security-reviewer` | Findings | Zero CRITICAL |
 | 6 — Pre-commit | `/validate-changes` | APPROVE/NEEDS_REVIEW/REJECT | APPROVE |
@@ -164,3 +196,8 @@ Full Python/FastAPI feature lifecycle from scaffold through TDD to reviewed, sec
 - [`feature-agentic-ai.md`](feature-agentic-ai.md) — LangGraph/LangChain AI agents on FastAPI
 - [`security-audit.md`](security-audit.md) — deeper security audit
 - [`pr-shipping.md`](pr-shipping.md) — PR lifecycle after review
+- `python-patterns` skill — architecture decisions before implementation
+- `pydantic-models-py` skill — API schema design with multi-model pattern
+- `uv-package-manager` skill — lockfiles, Docker, CI caching for Python projects
+- `python-testing-patterns` skill — pytest infrastructure, fixtures, coverage config
+- `python-packaging` skill — internal CLI tools and project structure

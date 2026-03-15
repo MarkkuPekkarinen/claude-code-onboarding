@@ -2,7 +2,7 @@
 
 > Complete skill catalog for Claude Code Onboarding Kit. Use this to find the right skill for any task.
 >
-> 63 skills across 9 domains. Each skill is loaded with `/skill-name` or via `Skill` tool.
+> 68 skills across 9 domains. Each skill is loaded with `/skill-name` or via `Skill` tool.
 >
 > **Lazy-load pattern:** Each SKILL.md is a routing document only. Detailed patterns live in `reference/` files within each skill directory. Load the reference file explicitly when the detail is needed — do not expect it to be loaded automatically.
 
@@ -10,7 +10,7 @@
 
 ## Quick Reference by Domain
 
-### Backend (18 skills)
+### Backend (22 skills)
 - **adk-deploy-guide**: Used before deploying any ADK agent to Google Cloud — covers Cloud Run, Agent Engine, event-driven (Pub/Sub, Eventarc, BigQuery Remote Function), Terraform, and CI/CD.
 - **adk-eval-guide**: Used when evaluating ADK agents, running `adk eval`, writing evalsets, configuring eval metrics (all 8 criteria), LLM-as-judge configuration, user simulation, multimodal evaluation, and debugging eval failures.
 - **adk-observability-guide**: Used when configuring tracing (Cloud Trace), prompt-response logging, or BigQuery Agent Analytics for ADK agents — covers 3 observability tiers.
@@ -30,6 +30,10 @@
 - **typescript-expert**: TypeScript infrastructure specialist for monorepo project references (`composite: true`), tsc performance diagnostics (`--extendedDiagnostics`), ESM/CJS interop, strict mode migration, and `.d.ts` authoring. Use for project-level TypeScript decisions; defer to framework-specific skills for implementation patterns. Ships with `tsconfig-strict.json`, `utility-types.ts`, `typescript-cheatsheet.md`, and `ts_diagnostic.py`.
 - **typescript-pro**: TypeScript architecture design for strict type safety, decorator and metadata programming, type-safe configuration hierarchies, and module-level type contracts — use when architecting enterprise-grade shared types for NestJS, Angular, or MCP servers.
 - **python-dev**: Provides patterns and templates for Python 3.14 development with FastAPI and modern tooling, activated when creating Python APIs, scripts, data processing pipelines, or pytest tests.
+- **python-patterns**: Python architecture decision-making for framework selection (FastAPI/Django/Flask), async vs sync patterns, type hint strategy, project structure, and background task selection. Load BEFORE `python-dev` when the approach is unclear or multiple frameworks are viable.
+- **pydantic-models-py**: Pydantic v2 multi-model pattern for clean API contracts — Base, Create, Update, Response variants with camelCase aliases and PATCH support. Use when defining FastAPI request/response schemas or data validation models.
+- **uv-package-manager**: Comprehensive uv workflows for Python 3.14 — lockfiles (`uv lock`, `uv sync --frozen`), Python version pinning, monorepo workspaces, Docker cache mounts, GitHub Actions CI caching, and migration from pip/Poetry. Load when working with uv beyond the basic `uv init`/`uv add` commands in `python-dev`.
+- **python-packaging**: Python project structure patterns — pyproject.toml for services and internal tools, source vs flat layout decision, CLI entry points with Click/argparse, dynamic versioning, and editable installs. Use when structuring a new Python project or building internal CLI tools.
 - **docker**: Use when writing or reviewing Dockerfiles, docker-compose files, or .dockerignore for any backend service. Covers multi-stage builds, container security hardening, and Docker Compose orchestration for NestJS/Node 24, Spring Boot WebFlux 3.5.x/Java 21, Python FastAPI 3.14, and TypeScript/Fastify/Node 24. Reference files: `reference/dockerfiles.md` (copy-ready Dockerfiles for all 5 stack variants), `reference/compose-patterns.md` (dev/prod compose, Docker secrets), `reference/advanced-patterns.md` (build cache, multi-arch, distroless, diagnostics), `assets/docker-review-checklist.md`.
 - **gcp-cloud-run**: Use for Cloud Run Functions (event-driven Pub/Sub, Storage, HTTP webhooks), cold start optimization, and anti-pattern prevention for all 4 backend stacks. For Cloud Run service deployment use deployment-engineer agent.
 - **gcp-finops**: GCP cost optimization, FinOps, and resilience skill. Use for GCP billing budget alerts, committed use discounts (CUD), sustained use discounts (SUD), cost allocation labels, GCP Recommender analysis, Cloud SQL PITR setup, multi-region DR planning, and RTO/RPO target mapping for Cloud Run + Cloud SQL + Firestore workloads.
@@ -76,7 +80,7 @@
 - **api-design-principles**: Use before designing any REST API endpoint — covers URL structure, HTTP method semantics, pagination, caching, idempotency, and bulk operations across Python FastAPI, NestJS 11.x, and Spring Boot WebFlux 3.5.x. Reference files: `reference/rest-design-principles.md` (patterns with examples for all 3 stacks), `assets/api-design-checklist.md` (60-item pre-implementation checklist).
 - **mcp-builder**: Used when building MCP servers to integrate external APIs — also listed under Backend as it produces implementation code.
 
-### Quality & Testing (8 skills)
+### Quality & Testing (9 skills)
 - **browser-testing**: Browser automation and testing using Chrome DevTools MCP and Browser-Use MCP for debugging, performance analysis, E2E flows, and UI interaction.
 - **accessibility-audit**: WCAG 2.1 AA accessibility audit for Angular 21.x and Flutter 3.38. Use when auditing UI for accessibility compliance, adding automated axe-core or flutter_test semantic testing, identifying barriers, or integrating accessibility gates into CI/CD. Reference files: `reference/angular-a11y-automated.md`, `reference/flutter-a11y-automated.md`, `reference/manual-testing-checklist.md`, `reference/cicd-integration.md`.
 - **clean-code**: Language-agnostic code quality skill based on Robert C. Martin's *Clean Code*. Use when writing, reviewing, or refactoring code across any stack — covers naming, functions, comments, formatting, Law of Demeter, error handling, F.I.R.S.T. test principles, classes, and code smells.
@@ -85,6 +89,7 @@
 - **pr-review**: Used when reviewing someone else's PR or preparing review comments for GitHub, implementing a two-stage approval process with internal analysis before any public posting.
 - **systematic-debugging**: Used when encountering any bug, test failure, or unexpected behavior, before proposing fixes; always finds root cause before attempting a fix.
 - **test-driven-development**: Used when implementing new features or logic that requires tests before writing implementation code, covering Red-Green-Refactor cycle and stack-specific test patterns.
+- **python-testing-patterns**: Comprehensive pytest patterns for Python 3.14 / FastAPI — fixtures, parametrize, async testing, database fixtures, test markers, coverage config, monkeypatch, and GitHub Actions CI integration. Load when setting up test infrastructure beyond the basic TDD cycle in `test-driven-development`.
 
 ### Security (4 skills)
 - **claude-actions-auditor**: Audits GitHub Actions workflows for Claude Code Action security vulnerabilities — detects 9 attack vectors (env var intermediary, direct injection, PR target misuse, dangerous sandbox configs, wildcard allowlists). Run before adding `anthropics/claude-code-action` to any workflow or during a CI/CD security review.
@@ -129,6 +134,17 @@
 4. **openapi-spec-generation** — Generate API spec
 5. **database-schema-designer** — Design Prisma schema
 6. **code-reviewer** — Final review
+
+### New Python FastAPI Feature
+1. **python-patterns** — Confirm framework (FastAPI/Django/Flask), async vs sync decision, project structure
+2. **uv-package-manager** — Set up lockfile, Python version pin, CI caching (new projects)
+3. **api-design-principles** — Run checklist, choose pagination/versioning/caching strategy
+4. **python-dev** — Scaffold routes, services, Pydantic models, tests
+5. **pydantic-models-py** — Define Base/Create/Update/Response model contracts
+6. **python-testing-patterns** — Set up test infrastructure, fixtures, coverage config
+7. **openapi-spec-generation** — Generate OpenAPI 3.1 spec from the new endpoints
+8. **database-schema-designer** — Design schema for new entities
+9. **code-reviewer** — Final quality and security review
 
 ### TypeScript Type System (NestJS, Angular, or MCP Builder)
 1. **typescript-advanced-types** — Load for type-level patterns: generics, conditional types, mapped types, utility types
@@ -241,6 +257,11 @@
 - **Java REST API / reactive service** -> java-spring-api
 - **NestJS REST API / TypeScript service** -> nestjs-api
 - **Python FastAPI service** -> python-dev
+- **Python framework or async architecture decision** -> python-patterns
+- **Pydantic request/response schema design** -> pydantic-models-py
+- **uv lockfiles, Docker, CI, or monorepo setup** -> uv-package-manager
+- **Python project structure or internal CLI tool** -> python-packaging
+- **pytest infrastructure, fixtures, or coverage config** -> python-testing-patterns
 - **AI agent or RAG pipeline** -> agentic-ai-dev
 - **Google ADK agent (Gemini-based)** -> google-adk
 - **A2UI agent-driven UI** -> a2ui-angular
