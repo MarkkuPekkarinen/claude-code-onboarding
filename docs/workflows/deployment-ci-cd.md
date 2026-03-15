@@ -301,3 +301,13 @@ gcloud run services update-traffic my-service \
 - [`cloud-run-terraform.md`](cloud-run-terraform.md) — detailed infrastructure provisioning
 - [`security-audit.md`](security-audit.md) — `/security-dependencies` and Trivy scan before deploy
 - [`pr-shipping.md`](pr-shipping.md) — merge gate before deploy pipeline runs
+
+## Cloud Run Functions (Event-Driven)
+
+> For event-driven workloads (Pub/Sub consumers, Cloud Storage triggers, HTTP webhooks),
+> load the `gcp-cloud-run` skill instead. It provides function handler patterns for all 4 backend
+> stacks (Python FastAPI, NestJS, Spring Boot WebFlux, TypeScript/Fastify) and cold start
+> optimization tuned for short-lived invocations.
+>
+> Use this `deployment-ci-cd.md` workflow for long-running Cloud Run **services**. Use the
+> `gcp-cloud-run` skill for short-lived event-driven **functions**.

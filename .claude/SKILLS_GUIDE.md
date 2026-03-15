@@ -10,7 +10,7 @@
 
 ## Quick Reference by Domain
 
-### Backend (13 skills)
+### Backend (15 skills)
 - **adk-deploy-guide**: Used before deploying any ADK agent to Google Cloud — covers Cloud Run, Agent Engine, event-driven (Pub/Sub, Eventarc, BigQuery Remote Function), Terraform, and CI/CD.
 - **adk-eval-guide**: Used when evaluating ADK agents, running `adk eval`, writing evalsets, configuring eval metrics (all 8 criteria), LLM-as-judge configuration, user simulation, multimodal evaluation, and debugging eval failures.
 - **adk-observability-guide**: Used when configuring tracing (Cloud Trace), prompt-response logging, or BigQuery Agent Analytics for ADK agents — covers 3 observability tiers.
@@ -28,6 +28,8 @@
 - **nestjs-coding-standard**: Activated when reviewing NestJS/TypeScript code or enforcing coding standards in NestJS 11.x services, covering naming conventions, TypeScript strictness, DTO patterns, and module organization.
 - **python-dev**: Provides patterns and templates for Python 3.14 development with FastAPI and modern tooling, activated when creating Python APIs, scripts, data processing pipelines, or pytest tests.
 - **docker**: Use when writing or reviewing Dockerfiles, docker-compose files, or .dockerignore for any backend service. Covers multi-stage builds, container security hardening, and Docker Compose orchestration for NestJS/Node 24, Spring Boot WebFlux 3.5.x/Java 21, Python FastAPI 3.14, and TypeScript/Fastify/Node 24. Reference files: `reference/dockerfiles.md` (copy-ready Dockerfiles for all 5 stack variants), `reference/compose-patterns.md` (dev/prod compose, Docker secrets), `reference/advanced-patterns.md` (build cache, multi-arch, distroless, diagnostics), `assets/docker-review-checklist.md`.
+- **gcp-cloud-run**: Use for Cloud Run Functions (event-driven Pub/Sub, Storage, HTTP webhooks), cold start optimization, and anti-pattern prevention for all 4 backend stacks. For Cloud Run service deployment use deployment-engineer agent.
+- **gcp-finops**: GCP cost optimization, FinOps, and resilience skill. Use for GCP billing budget alerts, committed use discounts (CUD), sustained use discounts (SUD), cost allocation labels, GCP Recommender analysis, Cloud SQL PITR setup, multi-region DR planning, and RTO/RPO target mapping for Cloud Run + Cloud SQL + Firestore workloads.
 
 ### Frontend (7 skills)
 - **a2ui-angular**: A2UI (Agent-to-User Interface) renderer development for Angular 21.x — protocol implementation, component catalog, recursive renderer, action handling, streaming A2UI payloads, and security validation. Reference files: `a2ui-protocol.md`, `a2ui-protocol-advanced.md`, `a2ui-security.md`, `a2ui-component-catalog.md`, `a2ui-component-containers.md`, `a2ui-renderer-patterns.md`, `a2ui-renderer-template.md`, `a2ui-chat-template.md`, `a2ui-renderer-services.md`.
@@ -64,7 +66,7 @@
 
 ### API & Architecture (7 skills)
 - **architecture-decision-records**: Used when documenting significant technical decisions, reviewing past architectural choices, or establishing decision processes; provides ADR templates and best practices.
-- **architecture-design**: Used when designing system architecture, API contracts, deployment topologies, or making technology decisions for full-stack applications.
+- **architecture-design**: Used when designing system architecture, API contracts, deployment topologies, or making technology decisions for full-stack applications. Reference files include `cloud-service-mapping.md` — GCP-primary cross-cloud service equivalents table (AWS/Azure/GCP compute, storage, database, messaging, security, networking, observability).
 - **database-schema-designer**: Used when designing database schemas for SQL or NoSQL databases, providing normalization guidelines, indexing strategies, migration patterns, and performance optimization. (domain: infrastructure)
 - **ddd-architect**: Comprehensive Domain-Driven Design analysis and architecture generation for bounded contexts, domain models, aggregates, context maps, and microservice decomposition.
 - **openapi-spec-generation**: Used when creating API documentation, generating SDKs, or ensuring API contract compliance by generating and maintaining OpenAPI 3.1 specifications.
@@ -193,6 +195,20 @@
 3. **google-adk** (or **agentic-ai-dev**) — Agent backend that emits A2UI payloads
 4. **security-reviewer** — Validate allowlist enforcement and injection prevention
 
+### Cloud Run Event-Driven Function
+1. **gcp-cloud-run** — Load skill, select stack pattern from `reference/cloud-run-functions.md`
+2. **docker** — Write multi-stage Dockerfile for the chosen stack
+3. **gcp-cloud-run** — Apply cold start flags from `reference/cold-start-optimization.md`
+4. **deployment-engineer** agent — GitHub Actions deploy pipeline
+5. **security-reviewer** agent — WIF and secret handling review
+
+### GCP Cost Optimization & DR Planning
+1. **gcp-finops** — Load skill, run GCP Recommender audit, apply cost allocation labels
+2. **gcp-finops** `reference/gcp-cost-optimization.md` — CUD analysis, billing budget setup
+3. **gcp-finops** `reference/gcp-resilience-dr.md` — DR tier assignment, Cloud SQL HA, multi-region
+4. **terraform-specialist** agent — Implement CUD reservations and billing budgets as Terraform
+5. **security-reviewer** agent — Review IAM for least-privilege on billing and cost exports
+
 ### Security Hardening Session
 1. **threat-modeling** — STRIDE analysis, DFD mapping, risk scoring
 2. **sast-configuration** — Configure Semgrep/Bandit/gosec rules
@@ -227,6 +243,8 @@
 - **MCP server integration** -> mcp-builder
 - **Database schema** -> database-schema-designer
 - **Dockerfile / docker-compose for any backend service** -> docker
+- **Cloud Run Function (Pub/Sub, Storage trigger, HTTP webhook)** -> gcp-cloud-run
+- **GCP cost optimization / billing budgets / CUD / DR planning** -> gcp-finops
 - **pgvector schema / vector column migration** -> vector-database → `/design-vector-schema`
 - **Weaviate collection creation** -> vector-database → `/design-weaviate-collection`
 - **RAG pipeline (chunk → embed → retrieve → rerank)** -> vector-database → `/scaffold-rag-pipeline`
@@ -412,6 +430,8 @@ a2ui-angular + angular-spa + google-adk + security-reviewer
 | code-reviewer | quality | specialist | review | report |
 | database-schema-designer | infrastructure | architect | design | document |
 | docker | infrastructure | specialist | implementation | code |
+| gcp-cloud-run | backend | specialist | deployment | code |
+| gcp-finops | infrastructure | specialist | operations | document |
 | ddd-architect | api-architecture | architect | system-design | architecture |
 | dedup-code-agent | quality | specialist | analysis | report |
 | documentation-generation | workflow | specialist | design | document |
