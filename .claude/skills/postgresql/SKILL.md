@@ -1,6 +1,6 @@
 ---
 name: postgresql
-description: PostgreSQL-specific schema design guide covering advanced data types (ENUM, array, range, network, domain), gotchas (MVCC, HOT updates, heap storage), TOAST, UNLOGGED tables, EXCLUDE constraints, extensions, and JSONB depth.
+description: "PostgreSQL-specific schema design reference for advanced data types (ENUM, array, range, network, domain), storage internals (MVCC, HOT updates, TOAST, heap), and advanced constraints (EXCLUDE, generated columns). Use when designing PostgreSQL schemas, choosing data types, working with extensions (pgvector, PostGIS, TimescaleDB), or handling schema evolution safely without downtime."
 argument-hint: "[table design goal, data type question, or schema scenario]"
 allowed-tools: Read
 context: fork

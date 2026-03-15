@@ -1,6 +1,6 @@
 ---
 name: architecture-decision-records
-description: This skill should be used when documenting significant technical decisions, reviewing past architectural choices, or establishing decision processes. It provides ADR templates and best practices.
+description: "Structured templates and process for capturing Architecture Decision Records (ADRs) — context, decision, consequences, and status. Use when making any significant or irreversible technical decision (framework selection, API design, database schema, infrastructure choice) to ensure every option considered and trade-off made is permanently documented before implementation begins."
 allowed-tools: Read
 metadata:
   triggers: ADR, architecture decision record, technical decision, document decision, decision log, architectural record
