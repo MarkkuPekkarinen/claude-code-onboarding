@@ -19,6 +19,7 @@ Review and validate a plan before implementation using a structured multi-phase 
    - **Small Change** — Phase 0 + top issue per section only
    - **Review Only** — Skip Phase 0, go straight to 5 review sections
 3. Execute the selected workflow per the skill's process
+   - For **Big Change** mode: after Phase 0 gate passes, run Phase 0.5 Confidence Gate (4-dimension scoring, threshold ≥ 80%; ≥ 95% for irreversible changes) before proceeding to Phase 1
 4. Maintain a Decision Log throughout — update after each section
 5. Present findings using the Structured Question Format from `review-interaction-protocol.md`
 6. Verify the Production Readiness Gate before final approval

@@ -38,6 +38,7 @@ Load references as needed per phase:
 |-------|---------------|----------|
 | Core | [reference/plan-mode-protocol.md](reference/plan-mode-protocol.md) | Approval scope triage, severity classification, Phase 0 gate requirements, multi-turn continuity, token limit triage |
 | Phase 0 | [reference/phase0-self-review.md](reference/phase0-self-review.md) | Outcome spec, 3 approaches, self-critique, deletion pass, gate check |
+| Phase 0.5 | [reference/confidence-gate.md](reference/confidence-gate.md) | 4-dimension confidence scoring rubric, thresholds, gap recovery | Big Change mode only |
 | Phase 5 | [reference/production-readiness-gate.md](reference/production-readiness-gate.md) | Blast radius, rollback strategy, dependency health, cost/infra impact, data migration, second-order effects |
 | All phases | [reference/review-interaction-protocol.md](reference/review-interaction-protocol.md) | Question format, decision log, visualization requirements, section pause protocol |
 
@@ -51,6 +52,34 @@ Load references as needed per phase:
 4. Do NOT proceed to Phase 1 until Phase 0 gate passes
 
 For **Review Only** mode: skip Phase 0 but run a lightweight outcome check — ask "Is this still the right thing to build/maintain? Has the original goal changed?"
+
+### Phase 0.5: Confidence Gate (Big Change only)
+
+Score the plan across 4 dimensions before allowing implementation to proceed. Each dimension is 0–100. Overall must reach **≥ 80** to proceed (≥ 95 for irreversible changes: migrations, public API contracts, auth architecture).
+
+| Dimension | Questions | Score |
+|-----------|-----------|-------|
+| **Requirement Clarity** | All user stories defined? Edge cases documented? Acceptance criteria measurable? Dependencies identified? | /100 |
+| **Technical Feasibility** | Architecture approach proven? No unknown unknowns? APIs/libs verified against docs? Performance implications understood? | /100 |
+| **Resource Assessment** | Scope realistic for session? Dependencies available? No unverified external APIs? | /100 |
+| **Quality Assurance** | Test strategy defined? Rollback plan exists? Security implications understood? | /100 |
+
+```
+OVERALL CONFIDENCE: (D1 + D2 + D3 + D4) / 4 = XX%
+
+[≥ 80%] → Proceed to implementation
+[60–79%] → Address gaps listed below before proceeding
+[< 60%] → STOP — plan needs significant work
+
+Gaps to resolve before proceeding:
+- [dimension]: [specific gap — what question couldn't be answered]
+```
+
+**Skip for:** Small Change and Review Only modes (qualitative Phase 0 gate is sufficient).
+
+**For irreversible changes** (schema migrations, public API contracts, auth changes): threshold is 95%, not 80%.
+
+Read [reference/confidence-gate.md](reference/confidence-gate.md) for the full scoring rubric, gap recovery actions, and examples.
 
 ### Phase 1: Architecture Review
 

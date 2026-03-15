@@ -21,8 +21,35 @@ Run a concern-specific review of code changes. Each role examines a different di
 
 ## Process
 
+## Step 0 — Risk-Gated Scope Assessment
+
+Before dispatching reviewers, calculate the PR risk score to calibrate review depth.
+
+```bash
+git diff --shortstat HEAD~1
+git diff --name-status HEAD~1
+```
+
+Apply the Size Risk factor from `/pr-risk`:
+
+| Files / Lines | Risk Tier | Review Depth |
+|--------------|-----------|--------------|
+| ≤ 5 files, ≤ 100 lines | 🟢 Low | Run roles: errors, code only (skip comment-analyzer, type-design-analyzer for speed) |
+| 6-20 files, ≤ 600 lines | 🟡 Medium | Run all 6 roles |
+| > 20 files OR > 600 lines | 🟠 High | Run all 6 roles + recommend running `/pr-risk` for full scoring |
+
+Check for security-sensitive patterns:
+
+```bash
+git diff --name-only HEAD~1 | grep -iE "auth|login|token|jwt|crypto|secret|password|permission|role|guard"
+```
+
+If security-sensitive files changed: always include `security-reviewer` via `code-reviewer` agent (flag it explicitly).
+
+Print the risk tier before dispatching agents so the user sees it.
+
 1. **Determine scope** — From `$ARGUMENTS`; if not specified use `git diff HEAD~1`
-2. **Determine roles** — Parse topic filter from `$ARGUMENTS` (see Topic Filters below); default: all 6
+2. **Determine roles** — Parse topic filter from `$ARGUMENTS` (see Topic Filters below); default: all 6 (adjusted by risk tier from Step 0)
 3. **Dispatch agents** — Run each selected agent against the scope; collect findings
 4. **Aggregate** — Group all findings by severity across all roles
 
