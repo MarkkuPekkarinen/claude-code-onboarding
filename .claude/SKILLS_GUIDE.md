@@ -10,7 +10,7 @@
 
 ## Quick Reference by Domain
 
-### Backend (12 skills)
+### Backend (13 skills)
 - **adk-deploy-guide**: Used before deploying any ADK agent to Google Cloud — covers Cloud Run, Agent Engine, event-driven (Pub/Sub, Eventarc, BigQuery Remote Function), Terraform, and CI/CD.
 - **adk-eval-guide**: Used when evaluating ADK agents, running `adk eval`, writing evalsets, configuring eval metrics (all 8 criteria), LLM-as-judge configuration, user simulation, multimodal evaluation, and debugging eval failures.
 - **adk-observability-guide**: Used when configuring tracing (Cloud Trace), prompt-response logging, or BigQuery Agent Analytics for ADK agents — covers 3 observability tiers.
@@ -27,6 +27,7 @@
 - **nestjs-api**: Provides patterns and templates for NestJS 11.x with Fastify, Prisma ORM, and TypeScript 5.x development, activated when creating modules, controllers, services, DTOs, guards, interceptors, or tests.
 - **nestjs-coding-standard**: Activated when reviewing NestJS/TypeScript code or enforcing coding standards in NestJS 11.x services, covering naming conventions, TypeScript strictness, DTO patterns, and module organization.
 - **python-dev**: Provides patterns and templates for Python 3.14 development with FastAPI and modern tooling, activated when creating Python APIs, scripts, data processing pipelines, or pytest tests.
+- **docker**: Use when writing or reviewing Dockerfiles, docker-compose files, or .dockerignore for any backend service. Covers multi-stage builds, container security hardening, and Docker Compose orchestration for NestJS/Node 24, Spring Boot WebFlux 3.5.x/Java 21, Python FastAPI 3.14, and TypeScript/Fastify/Node 24. Reference files: `reference/dockerfiles.md` (copy-ready Dockerfiles for all 5 stack variants), `reference/compose-patterns.md` (dev/prod compose, Docker secrets), `reference/advanced-patterns.md` (build cache, multi-arch, distroless, diagnostics), `assets/docker-review-checklist.md`.
 
 ### Frontend (7 skills)
 - **a2ui-angular**: A2UI (Agent-to-User Interface) renderer development for Angular 21.x — protocol implementation, component catalog, recursive renderer, action handling, streaming A2UI payloads, and security validation. Reference files: `a2ui-protocol.md`, `a2ui-protocol-advanced.md`, `a2ui-security.md`, `a2ui-component-catalog.md`, `a2ui-component-containers.md`, `a2ui-renderer-patterns.md`, `a2ui-renderer-template.md`, `a2ui-chat-template.md`, `a2ui-renderer-services.md`.
@@ -225,6 +226,7 @@
 - **TestFlight crash investigation** -> asc-crash-triage
 - **MCP server integration** -> mcp-builder
 - **Database schema** -> database-schema-designer
+- **Dockerfile / docker-compose for any backend service** -> docker
 - **pgvector schema / vector column migration** -> vector-database → `/design-vector-schema`
 - **Weaviate collection creation** -> vector-database → `/design-weaviate-collection`
 - **RAG pipeline (chunk → embed → retrieve → rerank)** -> vector-database → `/scaffold-rag-pipeline`
@@ -286,6 +288,9 @@
 ### Full Java API Feature
 java-spring-api + java-coding-standard + openapi-spec-generation + database-schema-designer + code-reviewer
 
+### Containerize a Backend Service
+docker (+ java-spring-api OR nestjs-api OR python-dev — depending on stack)
+
 ### Full NestJS API Feature
 nestjs-api + nestjs-coding-standard + openapi-spec-generation + database-schema-designer + code-reviewer
 
@@ -344,6 +349,7 @@ a2ui-angular + angular-spa + google-adk + security-reviewer
 > Real scenarios mapped to skills.
 
 - "Build a Spring Boot REST API for user management" -> java-spring-api + java-coding-standard + openapi-spec-generation
+- "Write a Dockerfile for my Spring Boot / NestJS / FastAPI service" -> docker
 - "Add JWT auth to my NestJS service" -> nestjs-api + security-reviewer + nestjs-coding-standard
 - "Create a Flutter screen with Riverpod state" -> flutter-mobile + riverpod-patterns + ui-standards-tokens
 - "Build an Angular dashboard with charts" -> angular-spa + frontend-design + browser-testing
@@ -405,6 +411,7 @@ a2ui-angular + angular-spa + google-adk + security-reviewer
 | changelog-generator | workflow | specialist | analysis | document |
 | code-reviewer | quality | specialist | review | report |
 | database-schema-designer | infrastructure | architect | design | document |
+| docker | infrastructure | specialist | implementation | code |
 | ddd-architect | api-architecture | architect | system-design | architecture |
 | dedup-code-agent | quality | specialist | analysis | report |
 | documentation-generation | workflow | specialist | design | document |
