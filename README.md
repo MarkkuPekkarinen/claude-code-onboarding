@@ -4017,6 +4017,7 @@ use context7                        # Append to any prompt for live docs
 | VS Code Download | [code.visualstudio.com/download](https://code.visualstudio.com/download) |
 | Awesome Claude Code (Community) | [github.com/hesreallyhim/awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code) |
 | Awesome Claude Skills | [github.com/travisvn/awesome-claude-skills](https://github.com/travisvn/awesome-claude-skills) |
+| Antigravity Awesome Skills | [github.com/sickn33/antigravity-awesome-skills](https://github.com/sickn33/antigravity-awesome-skills) |
 | App Store Connect CLI Skills | [github.com/rudrankriyam/app-store-connect-cli-skills](https://github.com/rudrankriyam/app-store-connect-cli-skills) |
 | Google Play Developer CLI Skills | [github.com/rudrankriyam/gpd-cli-skills](https://github.com/rudrankriyam/gpd-cli-skills) |
 | MCP Specification | [modelcontextprotocol.io](https://modelcontextprotocol.io) |
