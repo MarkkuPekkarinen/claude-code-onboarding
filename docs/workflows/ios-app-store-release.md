@@ -12,10 +12,11 @@ End-to-end iOS release workflow using the `asc` CLI (App Store Connect). Covers 
 
 ## Skills Reference
 
-All phases use `asc` CLI skills. Load the relevant skill before each phase:
+Load the relevant skill before each phase:
 
 | Skill | When to load |
 |-------|-------------|
+| `app-store-optimization` | Phase 0 — store listing, keywords, ASO health score |
 | `asc-cli-usage` | Before any `asc` command — covers flags, pagination, auth |
 | `asc-id-resolver` | When commands need bundle IDs, app IDs, build IDs |
 | `asc-signing-setup` | Phase 1 — code signing configuration |
@@ -27,6 +28,25 @@ All phases use `asc` CLI skills. Load the relevant skill before each phase:
 ---
 
 ## Phases
+
+### Phase 0 — Store Listing Optimization (before first release and each major update)
+
+**Skill**: Load `app-store-optimization`
+**Purpose**: Optimize keywords, metadata copy, and conversion before submitting to App Store review
+**When to run**: Before first App Store submission; revisit before each major update or international expansion
+
+**Steps**:
+1. Keyword research — identify high-volume, lower-competition keywords for your category
+2. Optimize title (30 chars), subtitle (30 chars), keyword field (100 chars — no spaces after commas, no plurals, no words already in title)
+3. Write conversion-focused description (up to 4,000 chars)
+4. Competitor analysis — identify keyword gaps and visual asset opportunities vs top 10 apps in category
+5. Run ASO health score via `aso_scorer.py` — target ≥ 70/100 before proceeding
+6. Plan A/B test for icon and first 2 screenshots via `ab_test_planner.py`
+7. Localization — use `localization_helper.py` to assess ROI for additional markets beyond en-US
+
+**Gate**: ASO health score ≥ 70/100; all field character limits validated; keyword field has no duplicates or spaces between commas
+
+---
 
 ### Phase 1 — Code Signing Setup (first time only)
 
@@ -146,8 +166,9 @@ asc power-performance-metrics list            # Performance data
 
 ## Quick Reference
 
-| Phase | Skill to Load | Key Command | Gate |
-|-------|--------------|-------------|------|
+| Phase | Skill to Load | Key Action | Gate |
+|-------|--------------|------------|------|
+| 0 — ASO | `app-store-optimization` | `aso_scorer.py` + `keyword_analyzer.py` | ASO score ≥ 70/100 |
 | 1 — Signing | `asc-signing-setup` | `asc certificates create` | `flutter build ipa` succeeds |
 | 2 — TestFlight | `asc-testflight-orchestration` | `asc builds upload` | Testers receive invite |
 | 3 — Preflight | `asc-submission-health` | `asc apps versions list` | All checks pass |

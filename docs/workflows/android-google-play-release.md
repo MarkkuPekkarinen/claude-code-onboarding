@@ -16,6 +16,7 @@ Load the relevant skill before each phase:
 
 | Skill | When to load |
 |-------|-------------|
+| `app-store-optimization` | Phase 0 — store listing, keywords, ASO health score |
 | `gpd-cli-usage` | Before any `gpd` command — covers flags, pagination, auth, safety conventions |
 | `gpd-id-resolver` | When commands need package names, track names, version codes, product IDs |
 | `gpd-build-lifecycle` | Phase 1 — AAB upload and build processing |
@@ -26,6 +27,25 @@ Load the relevant skill before each phase:
 ---
 
 ## Phases
+
+### Phase 0 — Store Listing Optimization (before first release and each major update)
+
+**Skill**: Load `app-store-optimization`
+**Purpose**: Optimize keywords, metadata copy, and conversion before promoting to Google Play production
+**When to run**: Before first production submission; revisit before each major update or international expansion
+
+**Steps**:
+1. Keyword research — identify keywords to embed in title and description (Google Play has no separate keyword field — all keywords must appear in title or description)
+2. Optimize title (50 chars) and short description (80 chars) with primary keywords front-loaded
+3. Write conversion-focused full description (up to 4,000 chars) with keywords distributed naturally
+4. Competitor analysis — identify keyword gaps vs top 10 apps in category
+5. Run ASO health score via `aso_scorer.py` — target ≥ 70/100 before proceeding to production
+6. Plan A/B test for icon and feature graphic via `ab_test_planner.py`
+7. Localization — use `localization_helper.py` to prioritize markets (pt-BR is typically high ROI for Android given Play Store's strength in Brazil)
+
+**Gate**: ASO health score ≥ 70/100; all field character limits validated; keywords appear naturally in title and description
+
+---
 
 ### Phase 1 — Build Upload and Processing
 
@@ -170,8 +190,9 @@ gpd publish tracks promote \
 
 ## Quick Reference
 
-| Phase | Skill to Load | Key Command | Gate |
-|-------|--------------|-------------|------|
+| Phase | Skill to Load | Key Action | Gate |
+|-------|--------------|------------|------|
+| 0 — ASO | `app-store-optimization` | `aso_scorer.py` + `keyword_analyzer.py` | ASO score ≥ 70/100 |
 | 1 — Upload | `gpd-build-lifecycle` | `gpd publish uploads create` | Build `ACTIVE` |
 | 2 — Beta | `gpd-betagroups` | `gpd publish tracks update --track internal` | Testers confirm |
 | 3 — Preflight | `gpd-submission-health` | `gpd publish listings list` | All checks pass |

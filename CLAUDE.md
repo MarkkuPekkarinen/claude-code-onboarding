@@ -63,6 +63,8 @@ Consult official docs via MCP before writing ANY code. Zero tolerance for deprec
 | Agentic AI | `.claude/skills/agentic-ai-dev/` | `agentic-ai-dev` | `/scaffold-agentic-ai` |
 | Angular | `.claude/skills/angular-spa/` | `angular-spa` | `/scaffold-angular-app` |
 | Flutter | `.claude/skills/flutter-mobile/` | `flutter-mobile` | `/scaffold-flutter-app` |
+| Mobile Design (all platforms) | `.claude/skills/mobile-design/` | — | — |
+| React Native / Native Modules / Mobile CI-CD | `.claude/skills/mobile-developer/` | `mobile-developer` | — |
 | Database | `.claude/skills/database-schema-designer/` | `database-designer` | `/design-database` |
 | Vector DB (pgvector + Weaviate) | `.claude/skills/vector-database/` | `pgvector-schema-reviewer`, `weaviate-schema-reviewer` | `/design-vector-schema`, `/design-weaviate-collection`, `/scaffold-rag-pipeline`, `/tune-vector-index`, `/migrate-embedding-model` |
 | Weaviate Operations | `.claude/skills/weaviate/` | — | `/weaviate:search`, `/weaviate:ask`, `/weaviate:collections`, `/weaviate:quickstart` |

@@ -119,13 +119,67 @@ Full Python/FastAPI feature lifecycle from scaffold through TDD to reviewed, sec
 
 **Standards**:
 - No `print()` — use `logging.getLogger(__name__)` with structured context
-- No bare `except:` — always catch specific exceptions, log, and either raise or return error state
+- No bare `except:` — always catch specific exceptions, log, and either rethrow or raise a domain exception (see `reference/fastapi-error-handling.md`)
 - All secrets via environment variables — never hardcoded
 - Pydantic v2 `model_validator` for cross-field validation
 - Async database sessions via `AsyncSession` context manager
 
 **Produces**: Working feature, `pytest` passes
 **Gate**: `pytest` green, `ruff check .` clean, `mypy .` clean
+
+---
+
+### Phase 4.5 — Authentication Setup (when endpoint requires auth)
+
+**Trigger**: Implementing any endpoint that requires user identity (login, protected routes, user-scoped data)
+**Skills**: `python-dev` → `reference/fastapi-auth-security.md` (JWT, bcrypt, RBAC, PBAC), `pydantic-models-py` (token schemas), `security-reviewer` agent after implementation
+
+**Auth strategy decision**:
+```
+Stateless API (microservice, mobile backend)?
+└── JWT tokens — access token + refresh token pattern
+
+Full-stack web app with sessions?
+└── OAuth2 password flow with session cookies
+
+Third-party login (Google, GitHub)?
+└── OAuth2 authorization code flow
+```
+
+**Implementation steps**:
+1. Choose auth strategy (JWT vs OAuth2 — see decision above)
+2. Create auth Pydantic schemas: `TokenResponse`, `LoginRequest`, `UserCreate`
+3. Implement `/auth/register` endpoint — hash password with `bcrypt` (cost ≥ 12)
+4. Implement `/auth/login` endpoint — verify password, return JWT access + refresh tokens
+5. Create `get_current_user` dependency — decode JWT, load user from DB
+6. Create `get_current_user_required` dependency — raises HTTP 401 if not authenticated
+7. Apply dependencies to protected routes via `Depends(get_current_user_required)`
+
+**Standards** (from `code-standards.md`):
+- Passwords MUST be hashed with bcrypt (cost ≥ 12) or argon2 — never store plaintext
+- JWT secrets via environment variable — never hardcoded
+- Access tokens: short-lived (15 min); refresh tokens: longer-lived (7 days), rotated on use
+- `get_current_user` → optional auth; `get_current_user_required` → raises 401
+
+```python
+# Dependency pattern — see reference/fastapi-auth-security.md §4 "OAuth2 Bearer"
+from typing import Optional
+from fastapi import Depends
+from app.core.security import get_current_user, get_current_user_required
+
+# Protected endpoint
+async def create_item(
+    request: ItemCreate,
+    current_user: User = Depends(get_current_user_required),
+) -> ItemResponse: ...
+
+# Optional auth endpoint
+async def list_public_items(
+    current_user: Optional[User] = Depends(get_current_user),
+) -> list[ItemResponse]: ...
+```
+
+**Gate**: `pytest` passes for auth endpoints, `security-reviewer` agent run — zero CRITICAL/HIGH on auth code
 
 ---
 
@@ -175,6 +229,7 @@ Full Python/FastAPI feature lifecycle from scaffold through TDD to reviewed, sec
 | 3 — TDD | Write failing pytest | Failing test | `FAILED` status |
 | 3.5 — Test infra | `python-testing-patterns` | conftest.py, markers, coverage | `pytest -q` passes |
 | 4 — Implement | model → schema → repo → service → router | Working code | `pytest` green |
+| 4.5 — Auth setup | `python-dev` Depends pattern + bcrypt | Login/register endpoints, auth deps | `pytest` green, `security-reviewer` APPROVE |
 | 5 — Review | `code-reviewer` + `silent-failure-hunter` + `security-reviewer` | Findings | Zero CRITICAL |
 | 6 — Pre-commit | `/validate-changes` | APPROVE/NEEDS_REVIEW/REJECT | APPROVE |
 | 7 — PR | `/review-pr` | 6-role review | CRITICAL+HIGH resolved |
@@ -198,6 +253,8 @@ Full Python/FastAPI feature lifecycle from scaffold through TDD to reviewed, sec
 - [`pr-shipping.md`](pr-shipping.md) — PR lifecycle after review
 - `python-patterns` skill — architecture decisions before implementation
 - `pydantic-models-py` skill — API schema design with multi-model pattern
+- `fastapi-auth-security.md` reference — JWT, RBAC, PBAC, password hashing, resource ownership (in `python-dev` skill)
+- `fastapi-error-handling.md` reference — exception hierarchy, async retry (`tenacity`), circuit breaker (`circuitbreaker`), exception handlers (in `python-dev` skill)
 - `uv-package-manager` skill — lockfiles, Docker, CI caching for Python projects
 - `python-testing-patterns` skill — pytest infrastructure, fixtures, coverage config
 - `python-packaging` skill — internal CLI tools and project structure

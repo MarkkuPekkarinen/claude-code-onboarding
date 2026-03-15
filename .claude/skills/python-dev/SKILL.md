@@ -49,6 +49,10 @@ pip install -e ".[dev]"
 
 **Advanced patterns and profiling**: Read `reference/python-advanced-patterns.md` for performance profiling (cProfile, py-spy, memory_profiler), pytest-benchmark, property-based testing with Hypothesis, structural pattern matching, descriptors, and memory optimization techniques.
 
+**Auth, security and authorization**: Read `reference/fastapi-auth-security.md` for JWT tokens (`python-jose`), bcrypt password hashing (cost 12), `OAuth2PasswordBearer` dependency injection, RBAC role hierarchy, PBAC permission maps, resource ownership checks, auth-specific rate limit configuration, and pytest auth test patterns.
+
+**Error handling, retry, and circuit breakers**: Read `reference/fastapi-error-handling.md` for custom exception hierarchy (`AppError` → `NotFoundError`/`ValidationError`/`ExternalServiceError`), FastAPI exception handlers, async retry with `tenacity`, async circuit breaker with `circuitbreaker`, error logging context middleware, and pytest patterns for error paths.
+
 ## Process
 
 1. **Scaffold project structure** using uv or pip commands above

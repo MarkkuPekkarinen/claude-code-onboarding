@@ -459,3 +459,218 @@ updated = user.model_copy(update={"email": "new@example.com"})
 # ✅ GOOD — deep copy when nested models must also be independent
 updated_deep = user.model_copy(update={"email": "new@example.com"}, deep=True)
 ```
+
+---
+
+## Repository Pattern Template
+
+Use the repository pattern to isolate database access from business logic. The repository owns all SQLAlchemy queries; the service owns all business rules.
+
+```python
+# repositories/base_repository.py
+from typing import Generic, TypeVar, Type, Optional, List
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+from pydantic import BaseModel
+
+ModelType = TypeVar("ModelType")
+CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
+UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
+
+class BaseRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
+    """Base repository for CRUD operations."""
+
+    def __init__(self, model: Type[ModelType]):
+        self.model = model
+
+    async def get(self, db: AsyncSession, id: int) -> Optional[ModelType]:
+        """Get by ID."""
+        result = await db.execute(
+            select(self.model).where(self.model.id == id)
+        )
+        return result.scalars().first()
+
+    async def get_multi(
+        self,
+        db: AsyncSession,
+        skip: int = 0,
+        limit: int = 100
+    ) -> List[ModelType]:
+        """Get multiple records."""
+        result = await db.execute(
+            select(self.model).offset(skip).limit(limit)
+        )
+        return result.scalars().all()
+
+    async def create(
+        self,
+        db: AsyncSession,
+        obj_in: CreateSchemaType
+    ) -> ModelType:
+        """Create new record."""
+        db_obj = self.model(**obj_in.dict())
+        db.add(db_obj)
+        await db.flush()
+        await db.refresh(db_obj)
+        return db_obj
+
+    async def update(
+        self,
+        db: AsyncSession,
+        db_obj: ModelType,
+        obj_in: UpdateSchemaType
+    ) -> ModelType:
+        """Update record."""
+        update_data = obj_in.dict(exclude_unset=True)
+        for field, value in update_data.items():
+            setattr(db_obj, field, value)
+        await db.flush()
+        await db.refresh(db_obj)
+        return db_obj
+
+    async def delete(self, db: AsyncSession, id: int) -> bool:
+        """Delete record."""
+        obj = await self.get(db, id)
+        if obj:
+            await db.delete(obj)
+            return True
+        return False
+
+# repositories/user_repository.py
+from app.repositories.base_repository import BaseRepository
+from app.models.user import User
+from app.schemas.user import UserCreate, UserUpdate
+
+class UserRepository(BaseRepository[User, UserCreate, UserUpdate]):
+    """User-specific repository."""
+
+    async def get_by_email(self, db: AsyncSession, email: str) -> Optional[User]:
+        """Get user by email."""
+        result = await db.execute(
+            select(User).where(User.email == email)
+        )
+        return result.scalars().first()
+
+    async def is_active(self, db: AsyncSession, user_id: int) -> bool:
+        """Check if user is active."""
+        user = await self.get(db, user_id)
+        return user.is_active if user else False
+
+user_repository = UserRepository(User)
+```
+
+---
+
+## Service Layer Template
+
+The service layer coordinates business logic, calls repositories, raises domain exceptions, and maps ORM entities to Pydantic response models. Routes stay thin — they delegate everything to the service.
+
+```python
+# services/user_service.py
+from typing import Optional
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.repositories.user_repository import user_repository
+from app.schemas.user import UserCreate, UserUpdate, User
+from app.core.security import get_password_hash, verify_password
+
+class UserService:
+    """Business logic for users."""
+
+    def __init__(self):
+        self.repository = user_repository
+
+    async def create_user(
+        self,
+        db: AsyncSession,
+        user_in: UserCreate
+    ) -> User:
+        """Create new user with hashed password."""
+        # Check if email exists
+        existing = await self.repository.get_by_email(db, user_in.email)
+        if existing:
+            raise ValueError("Email already registered")
+
+        # Hash password
+        user_in_dict = user_in.dict()
+        user_in_dict["hashed_password"] = get_password_hash(user_in_dict.pop("password"))
+
+        # Create user
+        user = await self.repository.create(db, UserCreate(**user_in_dict))
+        return user
+
+    async def authenticate(
+        self,
+        db: AsyncSession,
+        email: str,
+        password: str
+    ) -> Optional[User]:
+        """Authenticate user."""
+        user = await self.repository.get_by_email(db, email)
+        if not user:
+            return None
+        if not verify_password(password, user.hashed_password):
+            return None
+        return user
+
+    async def update_user(
+        self,
+        db: AsyncSession,
+        user_id: int,
+        user_in: UserUpdate
+    ) -> Optional[User]:
+        """Update user."""
+        user = await self.repository.get(db, user_id)
+        if not user:
+            return None
+
+        if user_in.password:
+            user_in_dict = user_in.dict(exclude_unset=True)
+            user_in_dict["hashed_password"] = get_password_hash(
+                user_in_dict.pop("password")
+            )
+            user_in = UserUpdate(**user_in_dict)
+
+        return await self.repository.update(db, user, user_in)
+
+user_service = UserService()
+```
+
+---
+
+## Authentication Dependency Patterns
+
+Use FastAPI `Depends()` for auth — choose optional or required based on whether the endpoint is public or protected.
+
+```python
+from typing import Optional
+from fastapi import Depends
+from app.core.security import get_current_user, get_current_user_required
+from app.models.user import User
+
+# Optional auth — endpoint works for both anonymous and authenticated users
+# Returns None if no valid token is present
+current_user: Optional[User] = Depends(get_current_user)
+
+# Required auth — raises HTTP 401 if no valid token is present
+# Use this on all protected endpoints
+current_user: User = Depends(get_current_user_required)
+```
+
+Example usage in route handlers:
+
+```python
+@router.get("/items", response_model=list[ItemResponse])
+async def list_items(
+    current_user: Optional[User] = Depends(get_current_user),
+) -> list[ItemResponse]:
+    """Public endpoint — shows public items; shows private items if authenticated."""
+    ...
+
+@router.post("/items", response_model=ItemResponse, status_code=201)
+async def create_item(
+    request: ItemCreate,
+    current_user: User = Depends(get_current_user_required),  # 401 if not logged in
+) -> ItemResponse:
+    """Protected endpoint — requires valid JWT token."""
+    ...
+```

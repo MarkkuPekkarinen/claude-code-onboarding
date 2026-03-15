@@ -12,6 +12,64 @@ Full Flutter mobile feature lifecycle from scaffold (if new app) through Riverpo
 
 ## Phases
 
+### Phase 0 — Mobile Design Thinking (MANDATORY before any UI work)
+
+**Trigger**: Before building any new Flutter screen or feature with UI complexity
+**Skill**: Load `mobile-design` skill (`skills/mobile-design/SKILL.md`)
+**Action**: Complete the Mobile Checkpoint template
+
+**Steps:**
+1. Read `skills/mobile-design/reference/touch-psychology.md` — Fitts' Law, thumb zones, gesture design
+2. Read `skills/mobile-design/reference/mobile-performance.md` — Flutter const patterns, Riverpod selectors, 60fps
+3. If iOS-specific UI: read `skills/mobile-design/reference/platform-ios.md`
+4. If Android-specific UI: read `skills/mobile-design/reference/platform-android.md`
+5. Complete MFRI scoring (score formula from `mobile-design` SKILL.md)
+6. Fill out Mobile Checkpoint — Platform, Framework, Files Read, MFRI Score, 3 principles, anti-patterns
+
+**MFRI gate:**
+- Score >= 6 -> proceed to Phase 1
+- Score 3-5 -> proceed with performance + UX validation milestone added
+- Score < 3 -> redesign before proceeding
+
+**Gate**: Mobile Checkpoint complete; MFRI >= 3
+
+---
+
+### Phase 0.5 — Plan Verification (MANDATORY gate before any implementation)
+
+**Trigger**: Before writing any code — applies to new features AND new screens in existing apps
+**Rule**: No implementation starts without a plan file in `docs/plans/`
+
+**Checkpoint:**
+```
+🔴 PLAN VERIFICATION
+
+Does docs/plans/YYYY-MM-DD-<feature-name>.md exist?
+  YES → Verify it contains: feature scope, affected files, provider types, screen list
+  NO  → STOP — create the plan first (see steps below)
+```
+
+**If plan does NOT exist — create it now:**
+1. Run `/brainstorm` if approach is unclear — ≥3 alternatives before committing
+2. Run `feature-forge` skill to produce EARS-format requirements + Given/When/Then criteria
+3. Write `docs/plans/YYYY-MM-DD-<feature-name>.md` with:
+   - **Feature scope** — what screens, providers, models are involved
+   - **Affected files** — list exact file paths that will be created or modified
+   - **Provider type decisions** — which Riverpod provider type per piece of state (and why)
+   - **MFRI score** — carry forward from Phase 0
+   - **Dependencies** — external packages or Firebase collections needed
+4. Get plan reviewed — use `/plan-review` for non-trivial features (>2 files changed)
+5. Only after plan exists → proceed to Phase 1
+
+**If plan EXISTS — verify it is current:**
+- Scope matches what is actually being built today
+- File paths are specific (not just "add a screen")
+- If stale or vague → update it before proceeding
+
+**Gate**: `docs/plans/YYYY-MM-DD-<feature-name>.md` exists AND contains specific file paths and provider decisions
+
+---
+
 ### Phase 1 — Project Scaffold (new apps only)
 
 **Trigger**: No existing Flutter project
@@ -185,6 +243,8 @@ appId: com.example.app
 
 | Phase | What to Run | Produces | Gate |
 |-------|-------------|----------|------|
+| 0 — Mobile Design | `mobile-design` skill + Mobile Checkpoint | MFRI score, checkpoint | MFRI >= 3 |
+| 0.5 — Plan | `/brainstorm` + `feature-forge` → `docs/plans/` | Plan file with scope + file paths | Plan file exists |
 | 1 — Scaffold | `/scaffold-flutter-app` | Full app skeleton | `flutter test` passes |
 | 2 — Load skill | `flutter-mobile` + `riverpod-patterns` | Patterns + MCP | MCP connected |
 | 3 — TDD | Write widget test | Failing test | `FAILED` status |

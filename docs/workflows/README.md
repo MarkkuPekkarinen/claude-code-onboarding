@@ -29,6 +29,7 @@ Multi-phase workflow guides for every development process in this workspace. Eac
 | [feature-angular-spa.md](feature-angular-spa.md) | Angular 21.x / TailwindCSS / daisyUI |
 | [feature-a2ui-renderer.md](feature-a2ui-renderer.md) | Agent-to-UI renderer for Angular |
 | [feature-flutter-mobile.md](feature-flutter-mobile.md) | Flutter 3.38 / Riverpod / iOS + Android |
+| [mobile-developer.md](mobile-developer.md) | React Native / Native Swift-Kotlin / Mobile CI-CD (Fastlane, Codemagic, EAS) |
 
 ---
 
@@ -41,6 +42,8 @@ Multi-phase workflow guides for every development process in this workspace. Eac
 | [weaviate-collection-pipeline.md](weaviate-collection-pipeline.md) | Weaviate collection design + RAG pipeline |
 | [weaviate-operations.md](weaviate-operations.md) | Day-to-day Weaviate search, Q&A, explore |
 | [embedding-model-migration.md](embedding-model-migration.md) | Migrating to a new embedding model (zero downtime) |
+| [database-query-optimization.md](database-query-optimization.md) | PostgreSQL query optimization: EXPLAIN analysis, N+1 elimination, cursor pagination, materialized views |
+| [postgresql-connection-setup.md](postgresql-connection-setup.md) | PostgreSQL connection pooling (PgBouncer, Prisma, asyncpg, R2DBC), SKIP LOCKED queues, deadlock prevention |
 
 ---
 

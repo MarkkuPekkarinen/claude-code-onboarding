@@ -2,7 +2,7 @@
 
 > Complete skill catalog for Claude Code Onboarding Kit. Use this to find the right skill for any task.
 >
-> 68 skills across 9 domains. Each skill is loaded with `/skill-name` or via `Skill` tool.
+> 74 skills across 9 domains. Each skill is loaded with `/skill-name` or via `Skill` tool.
 >
 > **Lazy-load pattern:** Each SKILL.md is a routing document only. Detailed patterns live in `reference/` files within each skill directory. Load the reference file explicitly when the detail is needed — do not expect it to be loaded automatically.
 
@@ -29,7 +29,7 @@
 - **typescript-advanced-types**: Master TypeScript's advanced type system for Angular 21.x, NestJS 11.x, and MCP Builder — covers generics, conditional types, mapped types, template literal types, and custom utility types (DeepPartial, DeepReadonly, Branded). Load alongside nestjs-api (DTO design), angular-spa (service factories), or mcp-builder (Zod schemas). 717-line implementation playbook in `resources/`.
 - **typescript-expert**: TypeScript infrastructure specialist for monorepo project references (`composite: true`), tsc performance diagnostics (`--extendedDiagnostics`), ESM/CJS interop, strict mode migration, and `.d.ts` authoring. Use for project-level TypeScript decisions; defer to framework-specific skills for implementation patterns. Ships with `tsconfig-strict.json`, `utility-types.ts`, `typescript-cheatsheet.md`, and `ts_diagnostic.py`.
 - **typescript-pro**: TypeScript architecture design for strict type safety, decorator and metadata programming, type-safe configuration hierarchies, and module-level type contracts — use when architecting enterprise-grade shared types for NestJS, Angular, or MCP servers.
-- **python-dev**: Provides patterns and templates for Python 3.14 development with FastAPI and modern tooling, activated when creating Python APIs, scripts, data processing pipelines, or pytest tests.
+- **python-dev**: Provides patterns and templates for Python 3.14 development with FastAPI and modern tooling, activated when creating Python APIs, scripts, data processing pipelines, or pytest tests. Reference files: `fastapi-templates.md` (project structure, models, routes), `python-advanced-patterns.md` (profiling, benchmarking), `fastapi-rate-limiting.md` (slowapi, Redis), `fastapi-auth-security.md` (JWT, bcrypt, RBAC, PBAC, OAuth2PasswordBearer), `fastapi-error-handling.md` (exception hierarchy, async retry, circuit breaker).
 - **python-patterns**: Python architecture decision-making for framework selection (FastAPI/Django/Flask), async vs sync patterns, type hint strategy, project structure, and background task selection. Load BEFORE `python-dev` when the approach is unclear or multiple frameworks are viable.
 - **pydantic-models-py**: Pydantic v2 multi-model pattern for clean API contracts — Base, Create, Update, Response variants with camelCase aliases and PATCH support. Use when defining FastAPI request/response schemas or data validation models.
 - **uv-package-manager**: Comprehensive uv workflows for Python 3.14 — lockfiles (`uv lock`, `uv sync --frozen`), Python version pinning, monorepo workspaces, Docker cache mounts, GitHub Actions CI caching, and migration from pip/Poetry. Load when working with uv beyond the basic `uv init`/`uv add` commands in `python-dev`.
@@ -38,16 +38,21 @@
 - **gcp-cloud-run**: Use for Cloud Run Functions (event-driven Pub/Sub, Storage, HTTP webhooks), cold start optimization, and anti-pattern prevention for all 4 backend stacks. For Cloud Run service deployment use deployment-engineer agent.
 - **gcp-finops**: GCP cost optimization, FinOps, and resilience skill. Use for GCP billing budget alerts, committed use discounts (CUD), sustained use discounts (SUD), cost allocation labels, GCP Recommender analysis, Cloud SQL PITR setup, multi-region DR planning, and RTO/RPO target mapping for Cloud Run + Cloud SQL + Firestore workloads.
 
-### Frontend (7 skills)
+### Frontend (9 skills)
 - **a2ui-angular**: A2UI (Agent-to-User Interface) renderer development for Angular 21.x — protocol implementation, component catalog, recursive renderer, action handling, streaming A2UI payloads, and security validation. Reference files: `a2ui-protocol.md`, `a2ui-protocol-advanced.md`, `a2ui-security.md`, `a2ui-component-catalog.md`, `a2ui-component-containers.md`, `a2ui-renderer-patterns.md`, `a2ui-renderer-template.md`, `a2ui-chat-template.md`, `a2ui-renderer-services.md`.
 - **ai-chat**: AI chat interface patterns for Angular 21.x and Flutter 3.38 — streaming markdown rendering, auto-scroll heuristics, memoized computed(), token context indicators, thumbs up/down feedback, multi-modal input, and AI error states.
 - **angular-spa**: Angular 21.x SPA development skill with TailwindCSS 4.x and daisyUI 5.5.5, covering component scaffolding, UI/UX design, accessibility audits, and design systems.
 - **flutter-mobile**: Provides patterns and templates for Flutter 3.38 / Dart 3.11 cross-platform mobile development, activated when building Flutter screens, Riverpod providers, Freezed models, or widget tests. Reference files: `mfri-scoring.md` (risk scoring before any UI implementation), `flutter-templates.md`, `flutter-architecture-patterns.md`, `flutter-performance-ux.md`, `flutter-design-polish.md`, `accessibility-audit-checklist.md`, `flutter-security-hardening.md`.
+- **mobile-design**: Load BEFORE `flutter-mobile` when building any Flutter UI — provides touch psychology (Fitts' Law, thumb zones), MFRI risk scoring, platform conventions (iOS HIG, Material 3), and performance doctrine. Reference files: `reference/touch-psychology.md`, `reference/mobile-performance.md`, `reference/platform-ios.md`, `reference/platform-android.md`, `reference/mobile-backend.md`, `reference/mobile-testing.md`, `reference/mobile-debugging.md`.
+- **mobile-developer**: Expert skill for React Native, native Swift/SwiftUI, Kotlin/Compose, and mobile CI/CD (Fastlane, Codemagic, Bitrise, EAS Update, CodePush, Detox). **NOT for Flutter** — use `flutter-mobile` for Flutter work. Use when the mobile task is outside Flutter's scope.
 - **frontend-design**: Creative frontend design skill providing visual design principles, typography and color guidance, motion patterns, and anti-patterns for building distinctive production-grade UIs.
 - **riverpod-patterns**: Provides Riverpod state management patterns and best practices for Flutter applications, covering providers, AsyncValue handling, ref usage, and provider lifecycle management.
 - **ui-standards-tokens**: Provides design token definitions, theming patterns, and UI standards for Flutter applications, used when auditing UI compliance, implementing design systems, or ensuring consistent token usage.
 
-### Mobile Deployment (13 skills)
+### Mobile Deployment (14 skills)
+
+**App Store Optimization (1 skill — load BEFORE any release workflow):**
+- **app-store-optimization**: Complete ASO toolkit for keyword research, metadata optimization, competitor analysis, A/B test planning, review sentiment analysis, and ASO health scoring (0–100). Load before the iOS or Android release workflow to optimize the store listing. **Gate: ASO score ≥ 70 before submitting.** Scripts: `keyword_analyzer.py`, `metadata_optimizer.py`, `competitor_analyzer.py`, `aso_scorer.py`, `ab_test_planner.py`, `localization_helper.py`, `review_analyzer.py`, `launch_checklist.py`. Covers Apple App Store (30-char title, 30-char subtitle, 100-char keyword field) and Google Play (50-char title, 80-char short description).
 
 **iOS App Store (7 skills — powered by `asc` CLI):**
 - **asc-cli-usage**: Command discovery, flags, output formats, auth, and pagination for the `asc` CLI — load first before running any asc command.
@@ -71,10 +76,14 @@
 - **weaviate**: Search, query, and manage Weaviate vector database collections — semantic search, hybrid search, keyword search, natural language queries, data import, collection inspection, and filtered fetching. Includes Python scripts in `scripts/`. Required env: `WEAVIATE_URL`, `WEAVIATE_API_KEY`.
 - **weaviate-cookbooks**: Build complete AI applications with Weaviate — Query Agent Chatbot, PDF Multimodal RAG, Basic/Advanced/Agentic RAG, Basic Agents with DSPy. High-level blueprints and end-to-end project patterns. Read `references/project_setup.md` and `references/environment_requirements.md` first.
 
-### API & Architecture (7 skills)
+### API & Architecture (11 skills)
 - **architecture-decision-records**: Used when documenting significant technical decisions, reviewing past architectural choices, or establishing decision processes; provides ADR templates and best practices.
 - **architecture-design**: Used when designing system architecture, API contracts, deployment topologies, or making technology decisions for full-stack applications. Reference files include `cloud-service-mapping.md` — GCP-primary cross-cloud service equivalents table (AWS/Azure/GCP compute, storage, database, messaging, security, networking, observability).
 - **database-schema-designer**: Used when designing database schemas for SQL or NoSQL databases, providing normalization guidelines, indexing strategies, migration patterns, and performance optimization. (domain: infrastructure)
+- **postgres-best-practices**: Supabase PostgreSQL best practices library — 33 impact-rated rules (CRITICAL→LOW) organized in 8 categories. Load when configuring connection pooling (PgBouncer, Prisma, asyncpg, R2DBC), implementing RLS, designing SKIP LOCKED worker queues, preventing deadlocks, tuning VACUUM/autovacuum, or adding full-text search. New rules not covered elsewhere: `conn-*.md` (4 connection rules), `lock-*.md` (4 locking rules), `security-rls-performance.md`, `monitor-vacuum-analyze.md`, `advanced-full-text-search.md`. Rule format: incorrect SQL → correct SQL → impact rating → Supabase reference.
+- **postgresql**: PostgreSQL-specific design reference — advanced data types (ENUM, array, range, network, domain, composite, TOAST), 7 PostgreSQL gotchas (MVCC, HOT updates, heap storage, sequence gaps, UNIQUE+NULLs), UNLOGGED tables, EXCLUDE constraints, `fillfactor=90` for HOT updates, volatile DEFAULT causes table rewrite, extensions guide (pg_trgm, timescaledb, postgis, pgvector, pgaudit), and complete DDL examples. Load when you need PostgreSQL-specific depth beyond the generic schema rules.
+- **sql-optimization-patterns**: Transform slow PostgreSQL queries into fast operations through systematic EXPLAIN analysis, N+1 elimination, cursor pagination, materialized views, and table partitioning. Load when debugging slow endpoints, replacing OFFSET pagination, or fixing ORM-induced N+1 queries. Reference: `resources/implementation-playbook.md` (full SQL code for all 8 patterns + monitoring queries).
+- **sql-pro**: Master modern SQL for cloud-native platforms (BigQuery, Snowflake, Redshift), HTAP systems (CockroachDB, TiDB), time-series (TimescaleDB, InfluxDB), dimensional modeling, and advanced PostgreSQL (recursive CTEs, window functions, SCD Type 2). Load when the workload extends beyond OLTP PostgreSQL — analytics tier, data warehouse, or multi-platform SQL architecture.
 - **ddd-architect**: Comprehensive Domain-Driven Design analysis and architecture generation for bounded contexts, domain models, aggregates, context maps, and microservice decomposition.
 - **openapi-spec-generation**: Used when creating API documentation, generating SDKs, or ensuring API contract compliance by generating and maintaining OpenAPI 3.1 specifications.
 - **api-design-principles**: Use before designing any REST API endpoint — covers URL structure, HTTP method semantics, pagination, caching, idempotency, and bulk operations across Python FastAPI, NestJS 11.x, and Spring Boot WebFlux 3.5.x. Reference files: `reference/rest-design-principles.md` (patterns with examples for all 3 stacks), `assets/api-design-checklist.md` (60-item pre-implementation checklist).
@@ -109,6 +118,7 @@
 - **the-fool**: Challenge ideas, plans, and decisions using structured adversarial reasoning — devil's advocate, pre-mortem, red team, Socratic questioning, and evidence falsification.
 - **feature-forge**: Used when defining new features, gathering requirements, or writing specifications before implementation starts. Runs PM+Dev dual-perspective interview, produces EARS-format functional requirements and Given/When/Then acceptance criteria saved to `specs/{feature}.spec.md`.
 - **brainstorm** (`/brainstorm`): Divergent exploration before committing to an approach — generates ≥3 distinct alternatives with trade-offs and Mermaid diagram. No code; use before feature-forge or architecture-design when the solution space is still open.
+- **new-project** (`/new-project`): Single entry point for starting any new project — detects tech stack from natural language description and routes to the correct scaffold command. Supports all 9 workspace stacks. Flutter requests automatically load mobile-design + flutter-mobile skills.
 - **debug** (`/debug`): Slash command entry point for systematic-debugging skill. Enforces root-cause-first investigation with structured Symptom → Root Cause → Fix → Prevention output format.
 - **audit-skills** (`/audit-skills`): Periodic health audit of all 61 skills — checks Iron Law, `last-reviewed` staleness (90/180-day thresholds), description quality, `allowed-tools` declaration, and body line count. Outputs aggregate PASS/WARN/FAIL report with recommended actions. Run monthly or after adding multiple skills.
 - **iterate-pr**: Autonomous PR completion loop — fetches CI failures and review feedback, fixes and pushes until all checks are green. Classifies feedback by LOGAF scale (high/medium auto-fix, low asks user), polls CI, and posts GitHub thread replies.
@@ -153,10 +163,17 @@
 4. **nestjs-coding-standard** or **angular-spa** — Enforce framework-specific TypeScript standards
 
 ### Flutter Mobile Feature
-1. **flutter-mobile** — Build screens, Riverpod providers, Freezed models
-2. **riverpod-patterns** — Review provider types, AsyncValue, ref usage
-3. **ui-standards-tokens** — Audit design token compliance
-4. **code-reviewer** — Final quality review
+1. **mobile-design** — Complete Mobile Checkpoint, MFRI scoring, read touch-psychology + platform files
+2. **flutter-mobile** — Build screens, Riverpod providers, Freezed models
+3. **riverpod-patterns** — Review provider types, AsyncValue, ref usage
+4. **ui-standards-tokens** — Audit design token compliance
+5. **code-reviewer** — Final quality review
+
+### React Native / Native Mobile Feature
+1. **mobile-design** — Complete Mobile Checkpoint before any UI work
+2. **mobile-developer** — Scaffold RN components, native modules, CI/CD
+3. **code-reviewer** — Final quality review
+4. **security-reviewer** — OWASP MASVS compliance
 
 ### iOS App Store Release
 1. **flutter-mobile** — Build and archive the iOS app (`flutter build ios --release`)
@@ -194,6 +211,32 @@
 3. **pgvector-schema-reviewer** agent — Review migration for operator/index alignment, dimension match, null guards
 4. **agentic-ai-dev** (or **python-dev**) — Implement embedding + retrieval layer
 5. **rag-pipeline-reviewer** agent — Review pipeline for model pinning, batch embedding, silent failure risks
+
+### SQL Query Optimization (PostgreSQL OLTP)
+1. **sql-optimization-patterns** — Run `pg_stat_statements` query to find slowest queries
+2. **sql-optimization-patterns** `resources/implementation-playbook.md` — Apply the right pattern (N+1, cursor, batch, materialized view)
+3. **postgresql-database-reviewer** agent — Review the index changes and query rewrites
+4. **database-schema-designer** — Update schema if partitioning or structural changes are needed
+
+### PostgreSQL Connection & Concurrency Setup
+1. **postgres-best-practices** `rules/conn-pooling.md` — Calculate pool size, choose transaction vs session mode
+2. **postgres-best-practices** `rules/conn-limits.md` — Set `max_connections` based on available RAM
+3. **postgres-best-practices** `rules/conn-idle-timeout.md` — Configure idle timeouts in DB and pooler
+4. **postgres-best-practices** `rules/conn-prepared-statements.md` — Resolve prepared statement conflicts in transaction mode
+5. **postgres-best-practices** `rules/lock-skip-locked.md` — Implement SKIP LOCKED for job queues
+6. **postgresql-database-reviewer** agent — Review connection and locking configuration
+
+### PostgreSQL Schema Design (New Table)
+1. **postgresql** — Review gotchas, data type selection, constraints, extensions for new table design
+2. **database-schema-designer** — Design normalized schema with FK/index rules
+3. **postgres-best-practices** `rules/schema-*.md` — Apply schema rules (PK strategy, FK indexes, data types)
+4. **postgresql-database-reviewer** agent — Review final DDL
+
+### Advanced SQL / Analytics Tier
+1. **sql-pro** — Classify workload (OLAP / HTAP / time-series / data warehouse)
+2. **sql-pro** — Design schema for platform (star schema, data vault, hypertables)
+3. **architecture-design** — Plan HTAP read/write path separation or analytics pipeline
+4. **database-schema-designer** — Design the PostgreSQL side of the hybrid system
 
 ### Weaviate Collection + Application
 1. **weaviate** — Inspect existing cluster, list collections, explore schema
@@ -268,12 +311,23 @@
 - **AI chat UI (streaming, copilot, chatbot)** -> ai-chat
 - **Angular SPA** -> angular-spa
 - **Flutter mobile app (iOS/Android)** -> flutter-mobile
+- **Mobile design thinking / touch psychology / MFRI scoring** -> mobile-design (load before flutter-mobile)
+- **React Native app** -> mobile-developer
+- **Native Swift/SwiftUI or Kotlin/Compose module** -> mobile-developer
+- **Mobile CI/CD (Fastlane, Codemagic, Bitrise, EAS Update, CodePush)** -> mobile-developer
 - **iOS App Store release / TestFlight distribution** -> asc-release-flow (+ asc-cli-usage, asc-id-resolver)
 - **Android Google Play release / staged rollout** -> gpd-release-flow (+ gpd-cli-usage, gpd-id-resolver)
 - **App Store signing / certificates / provisioning** -> asc-signing-setup
 - **TestFlight crash investigation** -> asc-crash-triage
 - **MCP server integration** -> mcp-builder
 - **Database schema** -> database-schema-designer
+- **Slow PostgreSQL query / N+1 / OFFSET pagination** -> sql-optimization-patterns
+- **Connection pooling / PgBouncer / pool size / max_connections** -> postgres-best-practices `rules/conn-*.md`
+- **SKIP LOCKED / worker queue / deadlock prevention / advisory lock** -> postgres-best-practices `rules/lock-*.md`
+- **RLS row level security / multi-tenant isolation** -> postgres-best-practices `rules/security-rls-*.md`
+- **PostgreSQL data types / ENUM / array / range / TOAST / gotchas** -> postgresql
+- **PostgreSQL extensions / pg_trgm / timescaledb / postgis / pgaudit** -> postgresql
+- **Analytics SQL / BigQuery / Snowflake / HTAP / data warehouse** -> sql-pro
 - **Dockerfile / docker-compose for any backend service** -> docker
 - **Cloud Run Function (Pub/Sub, Storage trigger, HTTP webhook)** -> gcp-cloud-run
 - **GCP cost optimization / billing budgets / CUD / DR planning** -> gcp-finops
@@ -351,7 +405,10 @@ nestjs-api + nestjs-coding-standard + openapi-spec-generation + database-schema-
 typescript-advanced-types + typescript-pro + nestjs-coding-standard (or angular-spa)
 
 ### Flutter Mobile App
-flutter-mobile + riverpod-patterns + ui-standards-tokens + code-reviewer
+mobile-design + flutter-mobile + riverpod-patterns + ui-standards-tokens + code-reviewer
+
+### React Native App
+mobile-design + mobile-developer + code-reviewer + security-reviewer
 
 ### iOS App Store Release Pipeline
 flutter-mobile + asc-cli-usage + asc-signing-setup + asc-id-resolver + asc-release-flow + asc-testflight-orchestration + asc-submission-health
@@ -408,6 +465,11 @@ a2ui-angular + angular-spa + google-adk + security-reviewer
 - "Write a Dockerfile for my Spring Boot / NestJS / FastAPI service" -> docker
 - "Add JWT auth to my NestJS service" -> nestjs-api + security-reviewer + nestjs-coding-standard
 - "Create a Flutter screen with Riverpod state" -> flutter-mobile + riverpod-patterns + ui-standards-tokens
+- "Apply touch psychology before building a Flutter screen" -> mobile-design (load first, then flutter-mobile)
+- "Score MFRI before implementing a complex Flutter feature" -> mobile-design
+- "Build a React Native screen with offline sync" -> mobile-developer + mobile-design
+- "Set up Fastlane + Codemagic CI/CD for iOS builds" -> mobile-developer
+- "Create a native Swift camera module for Flutter app" -> mobile-developer (native side) + flutter-mobile (Dart side)
 - "Build an Angular dashboard with charts" -> angular-spa + frontend-design + browser-testing
 - "Build a LangGraph RAG agent with FastAPI" -> agentic-ai-dev + agentic-ai-coding-standard + python-dev
 - "Design the database schema for a SaaS platform" -> database-schema-designer + architecture-design
@@ -480,6 +542,8 @@ a2ui-angular + angular-spa + google-adk + security-reviewer
 | documentation-generation | workflow | specialist | design | document |
 | domain-finder | workflow | specialist | analysis | report |
 | flutter-mobile | frontend | specialist | implementation | code |
+| mobile-design | frontend | specialist | design | document |
+| mobile-developer | frontend | specialist | implementation | code |
 | frontend-design | frontend | specialist | design | code |
 | google-adk | backend | specialist | implementation | code |
 | java-coding-standard | backend | specialist | review | report |

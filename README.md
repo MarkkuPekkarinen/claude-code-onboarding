@@ -536,6 +536,16 @@ You're set up. Before diving into components and theory, take Claude Code for a 
 
 Watch how Claude creates the full project structure, files, and boilerplate — all from a single command.
 
+Or, if you're not sure which scaffold command to use, describe what you want to build and let `/new-project` figure it out:
+
+```
+> /new-project flutter fitness tracker with Firebase
+> /new-project python REST API for invoices
+> /new-project angular dashboard for analytics
+```
+
+`/new-project` reads your description, maps it to the right tech stack, and routes to the correct scaffold command — including running the Mobile Design checkpoint and plan gate for Flutter projects. Supported stacks: Spring Boot, NestJS, Python/FastAPI, Agentic AI, Angular, Flutter, PostgreSQL schema, vector database.
+
 ### Use a sub-agent
 
 ```
