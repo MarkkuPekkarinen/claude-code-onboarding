@@ -214,3 +214,41 @@ PROMPT_METRICS = {
 | Add constraints | Off-topic responses | No boundaries | "ONLY answer questions about [domain]" |
 | Add verification | Logic errors | Single pass | "After answering, verify your answer against..." |
 | Split prompt | Too many tasks | One long instruction | Separate prompts per node/agent |
+
+---
+
+## Prompt Problem Diagnosis
+
+Before optimizing a prompt, identify the failure pattern:
+
+| Symptom | Root Cause | Primary Fix |
+|---------|-----------|-------------|
+| Generic, unhelpful answers | Missing role + context | Add explicit role, domain, and situation |
+| Inconsistent output format | No format specification | Add explicit output format with example |
+| Confident wrong answers (hallucination) | No uncertainty instruction | Add "if unsure, say 'I don't know'" |
+| Different answers each run (high variance) | No examples anchoring behavior | Add 2-3 few-shot examples covering edge cases |
+| Verbose padded responses | No length constraint | Add explicit word/sentence/bullet count limit |
+| Prompt works in playground, fails in prod | Token limit exceeded or system prompt missing | Check token count; verify system prompt delivery |
+| Output ignores format instructions | Instructions at wrong position | Move format instructions to END of prompt, after examples |
+
+---
+
+## Pre-Production Prompt Audit Checklist
+
+Before using a prompt in production, verify all items:
+
+```
+□ Role/persona explicitly defined (who the LLM IS in this interaction)
+□ Output format explicitly specified (JSON schema / markdown structure / plain prose)
+□ Length constraint present for responses that should be concise
+□ Hallucination guard present for factual tasks ("say I don't know if unsure")
+□ Edge cases tested: empty input, ambiguous data, out-of-domain question
+□ Tested on 5+ varied real inputs (not just happy path)
+□ Temperature set appropriately: 0.0-0.3 for factual/structured, 0.7 for creative
+□ Negative instructions paired with positive alternatives ("don't be verbose" → "respond in 3 bullets")
+□ User input uses delimiters (```, <tags>, ---) to separate from instructions
+□ Prompt versioned in source control with change log entry
+```
+
+**LangGraph:** Put this checklist in a PR description whenever `SystemMessage` content changes.
+**Google ADK:** Run this checklist whenever `LlmAgent(instruction=...)` is modified.

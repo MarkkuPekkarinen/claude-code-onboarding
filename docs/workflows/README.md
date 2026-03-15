@@ -26,6 +26,7 @@ Multi-phase workflow guides for every development process in this workspace. Eac
 | [feature-python-fastapi.md](feature-python-fastapi.md) | Python 3.14 / FastAPI / Pydantic v2 |
 | [feature-agentic-ai.md](feature-agentic-ai.md) | LangChain v1.2.8 / LangGraph v1.0.7 |
 | [feature-google-adk.md](feature-google-adk.md) | Google ADK / Gemini agents |
+| [voice-ai-development.md](voice-ai-development.md) | Gemini Live API real-time voice + TTS — LangGraph and ADK voice pipelines |
 | [prompt-engineering-patterns.md](prompt-engineering-patterns.md) | Designing agent system prompts, CoT/ToT reasoning, few-shot learning, prompt optimization — LangGraph + ADK |
 | [workflow-orchestration-patterns.md](workflow-orchestration-patterns.md) | Temporal durable workflow orchestration — Java 21, Python 3.14, NestJS 11.x |
 | [feature-angular-spa.md](feature-angular-spa.md) | Angular 21.x / TailwindCSS / daisyUI |

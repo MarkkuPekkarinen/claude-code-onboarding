@@ -2,7 +2,7 @@
 
 > Complete skill catalog for Claude Code Onboarding Kit. Use this to find the right skill for any task.
 >
-> 87 skills across 9 domains. Each skill is loaded with `/skill-name` or via `Skill` tool.
+> 89 skills across 9 domains. Each skill is loaded with `/skill-name` or via `Skill` tool.
 >
 > **Lazy-load pattern:** Each SKILL.md is a routing document only. Detailed patterns live in `reference/` files within each skill directory. Load the reference file explicitly when the detail is needed — do not expect it to be loaded automatically.
 
@@ -10,9 +10,10 @@
 
 ## Quick Reference by Domain
 
-### Backend (27 skills)
+### Backend (28 skills)
 - **adk-deploy-guide**: Used before deploying any ADK agent to Google Cloud — covers Cloud Run, Agent Engine, event-driven (Pub/Sub, Eventarc, BigQuery Remote Function), Terraform, and CI/CD.
 - **adk-eval-guide**: Used when evaluating ADK agents, running `adk eval`, writing evalsets, configuring eval metrics (all 8 criteria), LLM-as-judge configuration, user simulation, multimodal evaluation, and debugging eval failures.
+- **llm-evaluation**: Comprehensive evaluation for LangGraph and ADK agents — automated metrics (BLEU, ROUGE, BERTScore, RAG metrics: MRR, NDCG, Precision@K), A/B testing with statistical rigor (t-test, Cohen's d, effect size), regression detection, benchmark runner, and LLM-as-judge harness. Use when measuring agent quality, comparing prompts/models, or building CI eval pipelines. Reference files: `reference/evaluation-metrics.md` (metric implementations), `reference/ab-testing.md` (ABTest class, RegressionDetector, LangGraph/ADK integration), `reference/evaluation-harness.md` (BenchmarkRunner, inter-rater agreement). For advanced judge bias mitigation see `agentic-ai-dev/reference/llm-judge-advanced.md`.
 - **adk-observability-guide**: Used when configuring tracing (Cloud Trace), prompt-response logging, or BigQuery Agent Analytics for ADK agents — covers 3 observability tiers.
 - **agentic-ai-coding-standard**: Provides coding standards for Python agentic AI services with LangChain/LangGraph, covering state management, tool definitions, graph structure, error handling, and observability.
 - **agentic-ai-dev**: Provides patterns and templates for building production AI agents with Python 3.14, LangChain v1.2.8, LangGraph v1.0.7, and FastAPI 0.128.x.
@@ -23,6 +24,7 @@
   `adk-agent-types.md`, `adk-agent-handoff.md`, `adk-tools-basic.md`, `adk-tools-callbacks.md`,
   `adk-memory-artifacts.md`, `adk-fastapi-integration.md`, `adk-testing.md`, `adk-project-config.md`.
 - **gemini-api-dev**: Direct Gemini API development with `google-genai` (Python) and `@google/genai` (TypeScript/NestJS). Use when making direct Gemini model calls without the ADK framework — covers multimodal inputs (image/audio/video), function calling, structured JSON output, context caching, embeddings, and code execution sandbox. Current model: `gemini-3.1-flash` (default), `gemini-3.1-pro`. Iron law: always fetch `https://ai.google.dev/gemini-api/docs/llms.txt` before writing code. Distinct from `google-adk` (framework/agents) — this is the raw API layer.
+- **voice-ai-development**: Gemini voice AI development — real-time voice streaming with Gemini Live API (`gemini-live-2.5-flash-native-audio`, WebSocket, barge-in, ~600ms latency), text-to-speech with Gemini TTS models (`gemini-2.5-pro-tts-preview` high fidelity, `gemini-2.5-flash-tts-preview` fast), multi-speaker TTS, style control via natural language, 70+ language support. LangGraph StateGraph voice agent pipeline and Google ADK SequentialAgent voice pipeline with FastAPI integration. Iron law: always use WebSockets for Live API — never polling. Reference files: `reference/gemini-live-api.md`, `reference/gemini-tts.md`, `reference/voice-langgraph-integration.md`, `reference/voice-adk-integration.md`.
 - **prompt-engineering-patterns**: Advanced prompt engineering for LangGraph and Google ADK — few-shot learning, chain-of-thought, Tree-of-Thought, self-consistency, system prompt design, prompt optimization, and reusable templates. Use when designing agent system prompts, optimizing LLM outputs, implementing structured reasoning, or debugging inconsistent model responses. Supports both LangChain/LangGraph (`SystemMessage`) and Google ADK (`instruction=`). Reference files: `reference/chain-of-thought.md` (CoT, ToT, self-consistency + LangGraph/ADK code), `reference/few-shot-learning.md` (dynamic example selection), `reference/system-prompts.md` (role + constraints + format design), `reference/prompt-optimization.md` (A/B testing, versioning, metrics), `reference/prompt-templates.md` (reusable templates), `reference/prompt-template-library.md` (20+ copy-paste templates).
 - **java-coding-standard**: Activated when reviewing Java code or enforcing coding standards in Spring Boot services, covering naming conventions, immutability patterns, Optional usage, streams, and exception handling.
 - **java-spring-api**: Provides patterns and templates for Java 21 Spring Boot 3.5.x WebFlux REST API development, activated when creating controllers, services, repositories, DTOs, or reactive tests.
