@@ -21,7 +21,11 @@ Angular feature development using the `angular-spa` skill, Angular CLI MCP, and 
 
 ### Phase 1 — Load Skill and Query Docs
 
-**Skill**: Load `angular-spa` (`.claude/skills/angular-spa/SKILL.md`)
+**Skills to load**:
+- `angular-spa` — workspace conventions, TailwindCSS 4.x, daisyUI 5.5.5 (always load first)
+- `angular` — load when working with SSR, hydration, signal testing, or complex DI patterns
+- `angular-best-practices` — load when reviewing code or optimizing performance
+- `angular-ui-patterns` — load when building components with async data (loading/error/empty states)
 **MCP**: Angular CLI MCP → query for current patterns before writing
 
 ```
@@ -295,3 +299,5 @@ ng test --watch=false
 - [`feature-a2ui-renderer.md`](feature-a2ui-renderer.md) — agent-driven UI in Angular
 - [`design-system-compliance.md`](design-system-compliance.md) — enforcing design tokens
 - [`browser-e2e-testing.md`](browser-e2e-testing.md) — E2E testing the Angular app
+- [`angular-best-practices`](../../.claude/skills/angular-best-practices/SKILL.md) — performance-ranked rules for PR review
+- [`angular-ui-patterns`](../../.claude/skills/angular-ui-patterns/SKILL.md) — loading/error/empty state doctrine

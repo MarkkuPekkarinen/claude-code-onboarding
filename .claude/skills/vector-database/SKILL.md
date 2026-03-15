@@ -3,7 +3,7 @@ name: vector-database
 description: "Use for all vector database work — pgvector schema design, Weaviate collection creation, RAG pipeline scaffolding, embedding model selection, index tuning (HNSW vs IVFFlat), and embedding model migration. Triggers on: 'vector search', 'pgvector', 'weaviate', 'embedding', 'RAG pipeline', 'semantic search', 'hybrid search', 'nearest neighbor', 'vector index', 're-embedding', 'ANN index'. Use whenever vectors, embeddings, or similarity search are involved, even if not explicitly named."
 allowed-tools: Read, Glob, Grep
 metadata:
-  triggers: pgvector, weaviate, embedding, vector search, RAG pipeline, semantic search, hybrid search, vector index, re-embedding, ANN index, HNSW, IVFFlat
+  triggers: pgvector, weaviate, embedding, vector search, RAG pipeline, semantic search, hybrid search, vector index, re-embedding, ANN index, HNSW, IVFFlat, quantization, INT8, product quantization, binary quantization, HNSW benchmark, vector memory, index benchmarking
   related-skills: weaviate, weaviate-cookbooks, agentic-ai-dev, database-schema-designer
   domain: backend
   role: specialist
@@ -193,6 +193,7 @@ When building a system with both structured and unstructured data:
 | `references/weaviate-collection-patterns.md` | Named vectors, multi-tenancy, advanced queries | Weaviate collection design |
 | `references/rag-pipeline-patterns.md` | Chunking strategies, retrieval, reranking, LangChain wiring | Building RAG pipelines |
 | `references/embedding-migration-guide.md` | Step-by-step model switching procedure | Re-embedding migrations |
+| `references/vector-index-tuning-playbook.md` | Quantization strategies, HNSW benchmarking, memory estimation, Qdrant config | Index tuning and performance optimization |
 
 ## Documentation Sources
 
