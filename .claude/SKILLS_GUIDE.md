@@ -2,7 +2,7 @@
 
 > Complete skill catalog for Claude Code Onboarding Kit. Use this to find the right skill for any task.
 >
-> 77 skills across 9 domains. Each skill is loaded with `/skill-name` or via `Skill` tool.
+> 78 skills across 9 domains. Each skill is loaded with `/skill-name` or via `Skill` tool.
 >
 > **Lazy-load pattern:** Each SKILL.md is a routing document only. Detailed patterns live in `reference/` files within each skill directory. Load the reference file explicitly when the detail is needed — do not expect it to be loaded automatically.
 
@@ -75,11 +75,11 @@
 - **gpd-submission-health**: Preflight checklist for Google Play production releases — run all 5 checks before promoting to production. Reference: `reference/submission-preflight-checklist.md`.
 
 ### Vector Database (3 skills)
-- **vector-database**: Use for all vector database work — pgvector schema design, Weaviate collection creation, RAG pipeline scaffolding, embedding model selection, HNSW vs IVFFlat index tuning, and embedding model migration. Iron law: pin dimensions at model selection. Reference files: `references/pgvector-migration-template.md`, `references/weaviate-collection-patterns.md`, `references/rag-pipeline-patterns.md`, `references/embedding-migration-guide.md`.
+- **vector-database**: Use for all vector database work — pgvector schema design, Weaviate collection creation, RAG pipeline scaffolding, embedding model selection, HNSW vs IVFFlat index tuning, and embedding model migration. Iron law: pin dimensions at model selection. Reference files: `references/pgvector-migration-template.md`, `references/weaviate-collection-patterns.md`, `references/rag-pipeline-patterns.md`, `references/embedding-migration-guide.md`, `references/vector-index-tuning-playbook.md` (quantization strategies, HNSW benchmarking, memory estimation, Qdrant config).
 - **weaviate**: Search, query, and manage Weaviate vector database collections — semantic search, hybrid search, keyword search, natural language queries, data import, collection inspection, and filtered fetching. Includes Python scripts in `scripts/`. Required env: `WEAVIATE_URL`, `WEAVIATE_API_KEY`.
 - **weaviate-cookbooks**: Build complete AI applications with Weaviate — Query Agent Chatbot, PDF Multimodal RAG, Basic/Advanced/Agentic RAG, Basic Agents with DSPy. High-level blueprints and end-to-end project patterns. Read `references/project_setup.md` and `references/environment_requirements.md` first.
 
-### API & Architecture (11 skills)
+### API & Architecture (12 skills)
 - **architecture-decision-records**: Used when documenting significant technical decisions, reviewing past architectural choices, or establishing decision processes; provides ADR templates and best practices.
 - **architecture-design**: Used when designing system architecture, API contracts, deployment topologies, or making technology decisions for full-stack applications. Reference files include `cloud-service-mapping.md` — GCP-primary cross-cloud service equivalents table (AWS/Azure/GCP compute, storage, database, messaging, security, networking, observability).
 - **database-schema-designer**: Used when designing database schemas for SQL or NoSQL databases, providing normalization guidelines, indexing strategies, migration patterns, and performance optimization. (domain: infrastructure)
@@ -91,6 +91,7 @@
 - **openapi-spec-generation**: Used when creating API documentation, generating SDKs, or ensuring API contract compliance by generating and maintaining OpenAPI 3.1 specifications.
 - **api-design-principles**: Use before designing any REST API endpoint — covers URL structure, HTTP method semantics, pagination, caching, idempotency, and bulk operations across Python FastAPI, NestJS 11.x, and Spring Boot WebFlux 3.5.x. Reference files: `reference/rest-design-principles.md` (patterns with examples for all 3 stacks), `assets/api-design-checklist.md` (60-item pre-implementation checklist).
 - **mcp-builder**: Used when building MCP servers to integrate external APIs — also listed under Backend as it produces implementation code.
+- **nosql-expert**: Expert guidance for distributed NoSQL databases (Cassandra, DynamoDB, ScyllaDB) — query-first modeling, partition key design, hot partition prevention, single-table design (adjacency lists), denormalization patterns, and BASE vs ACID tradeoffs. Load when designing schemas for Cassandra/DynamoDB or troubleshooting hot partitions and high-latency scans.
 
 ### Quality & Testing (9 skills)
 - **browser-testing**: Browser automation and testing using Chrome DevTools MCP and Browser-Use MCP for debugging, performance analysis, E2E flows, and UI interaction.
