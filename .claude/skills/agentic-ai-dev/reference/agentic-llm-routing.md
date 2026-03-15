@@ -15,9 +15,9 @@ Multi-provider routing, cost calculation, fallback chains, and prompt caching.
 | OpenAI | gpt-4.1 | Long-context, tool calling | $2/$8 | 1M | Medium |
 | OpenAI | gpt-4.1-mini | Fast, cheap, tool calling | $0.40/$1.60 | 1M | Fast |
 | OpenAI | gpt-4o-mini | Legacy fast/cheap tasks | $0.15/$0.60 | 128k | Fast |
-| **Google** | gemini-3-pro-preview | Best multimodal, agentic | $2/$12 | 1M | Medium |
-| Google | gemini-3-flash-preview | Frontier speed, reasoning | $0.50/$3 | 1M | Fast |
-| Google | gemini-2.5-flash | Hybrid reasoning, thinking | $0.30/$2.50 | 1M | Fast |
+| **Google** | gemini-3.1-pro | Best multimodal, agentic | $2/$12 | 1M | Medium |
+| Google | gemini-3.1-flash | Frontier speed, reasoning | $0.50/$3 | 1M | Fast |
+| Google | gemini-3.1-flash | Hybrid reasoning, thinking | $0.30/$2.50 | 1M | Fast |
 
 ### Embeddings
 

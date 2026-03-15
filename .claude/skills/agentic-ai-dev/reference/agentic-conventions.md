@@ -57,3 +57,74 @@ src/<service_name>/
 3. **Use `StreamingResponse` with `text/event-stream`** — for streaming agent responses
 4. **Include `/api/v1/health`** — ping LLM providers, DB, vector store
 5. **Propagate `thread_id`** from request to graph config — enables conversation continuity
+
+## LangGraph Agent Implementation Checklist
+
+Pre-ship checklist for LangGraph agents. Run through before marking any agent implementation complete.
+
+```
+□ LLM initialized with pinned model version
+  □ Anthropic: "claude-sonnet-4-5" (or confirm current stable with MCP)
+  □ Google: "gemini-2.0-flash-exp" (see adk-gemini-prompt-templates.md)
+  □ OpenAI: confirm version from Context7 docs
+
+□ Embeddings configured (if RAG)
+  □ Model pinned (e.g., voyage-3-large, text-embedding-3-large)
+  □ Dimension matches pgvector schema (see pgvector-schema-reviewer agent)
+
+□ Tools implemented correctly
+  □ Every @tool has: docstring, Pydantic input schema, try/except, structured error return
+  □ Async tools use ainvoke, not invoke
+
+□ Memory system chosen and implemented
+  □ Short-term: PostgresSaver (prod) or MemorySaver (test only)
+  □ Long-term: Vector store semantic search (if needed)
+  □ thread_id propagated from request → graph config
+
+□ Iteration limit in state (REQUIRED — Iron Law)
+  □ iteration_count: int = 0 in TypedDict state
+  □ Routing function checks limit before continuing
+
+□ LangSmith tracing enabled
+  □ LANGCHAIN_TRACING_V2=true in .env
+  □ LANGCHAIN_PROJECT set to service name
+
+□ Streaming implemented (if user-facing)
+  □ astream() used instead of ainvoke
+  □ FastAPI StreamingResponse with text/event-stream
+
+□ Health checks configured
+  □ GET /api/v1/health pings LLM provider, DB, vector store
+  □ Returns 200 only when all dependencies healthy
+
+□ Caching layer (if needed for cost optimization)
+  □ Redis cache for repeated identical queries
+  □ Cache TTL appropriate for content freshness requirements
+
+□ Retry logic configured
+  □ tenacity @retry on LLM calls with exponential backoff
+  □ Max retries: 3; wait: 4s–10s
+
+□ Evaluation tests written
+  □ At least 1 test per tool (isolation test)
+  □ At least 1 end-to-end agent routing test
+  □ LangSmith eval dataset created for quality tracking
+
+□ API endpoints documented
+  □ POST /invoke and POST /stream with request/response schemas
+  □ thread_id handling documented (new vs. resuming conversation)
+```
+
+## Prompt Selection Quick Reference
+
+When writing prompts for agents, choose the template based on the LLM provider:
+
+| Provider | Model | Prompt structure | Reference |
+|----------|-------|-----------------|-----------|
+| Anthropic (LangChain) | claude-sonnet-4-5 | XML tags: `<context>`, `<task>`, `<thinking>` | `agentic-prompt-engineering.md` |
+| Google (ADK) | gemini-2.0-flash-exp | Markdown `**bold**` + numbered steps | `adk-gemini-prompt-templates.md` |
+| OpenAI (LangChain) | gpt-4o / gpt-5 | `##SECTION##` delimiters + JSON output block | `agentic-prompt-optimization.md` |
+
+For advanced techniques (Constitutional AI, Tree-of-Thoughts, canary rollout, prompt versioning):
+→ LangGraph agents: `agentic-prompt-optimization.md`
+→ ADK agents: `adk-gemini-prompt-templates.md`

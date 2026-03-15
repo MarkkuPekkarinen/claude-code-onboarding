@@ -75,7 +75,7 @@ class ResearchReport(BaseModel):
 
 research_agent = Agent(
     name="research_agent",
-    model="gemini-2.5-flash",
+    model="gemini-3.1-flash",
     instruction="Research the topic and produce a structured report.",
     output_schema=ResearchReport,
     output_key="research_report",  # stored in session state under this key

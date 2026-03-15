@@ -12,7 +12,7 @@ from google.genai import types
 
 researcher = Agent(
     name="researcher",
-    model="gemini-2.5-flash",
+    model="gemini-3.1-flash",
     description="Researches a topic and produces raw findings.",
     instruction=(
         "Research the topic provided by the user. "
@@ -24,7 +24,7 @@ researcher = Agent(
 
 writer = Agent(
     name="writer",
-    model="gemini-2.5-flash",
+    model="gemini-3.1-flash",
     description="Transforms research findings into a draft article.",
     instruction=(
         "You are a technical writer. Using the following research findings, "
@@ -35,7 +35,7 @@ writer = Agent(
 
 editor = Agent(
     name="editor",
-    model="gemini-2.5-flash",
+    model="gemini-3.1-flash",
     description="Edits and polishes a draft article.",
     instruction=(
         "You are a professional editor. Review and improve this draft article "
@@ -86,7 +86,7 @@ from google.genai import types
 
 technical_analyst = Agent(
     name="technical_analyst",
-    model="gemini-2.5-flash",
+    model="gemini-3.1-flash",
     description="Analyzes the technical aspects of a topic.",
     instruction=(
         "Analyze the technical feasibility and implementation details of: {topic}. "
@@ -97,7 +97,7 @@ technical_analyst = Agent(
 
 market_analyst = Agent(
     name="market_analyst",
-    model="gemini-2.5-flash",
+    model="gemini-3.1-flash",
     description="Analyzes the market opportunity and competitive landscape.",
     instruction=(
         "Analyze the market opportunity for: {topic}. "
@@ -108,7 +108,7 @@ market_analyst = Agent(
 
 risk_analyst = Agent(
     name="risk_analyst",
-    model="gemini-2.5-flash",
+    model="gemini-3.1-flash",
     description="Identifies and assesses risks.",
     instruction=(
         "Identify and assess the key risks for: {topic}. "
@@ -125,7 +125,7 @@ analysis_team = ParallelAgent(
 
 synthesizer = Agent(
     name="synthesizer",
-    model="gemini-2.5-flash",
+    model="gemini-3.1-flash",
     description="Synthesizes all analyses into a final recommendation.",
     instruction=(
         "You have three independent analyses. Synthesize them into a concise executive summary "
@@ -177,7 +177,7 @@ from google.genai import types
 
 code_improver = Agent(
     name="code_improver",
-    model="gemini-2.5-flash",
+    model="gemini-3.1-flash",
     description="Iteratively improves code quality until it meets the standard.",
     instruction=(
         "Review the code in session state under 'current_code'. "

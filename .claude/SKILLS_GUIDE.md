@@ -2,7 +2,7 @@
 
 > Complete skill catalog for Claude Code Onboarding Kit. Use this to find the right skill for any task.
 >
-> 82 skills across 9 domains. Each skill is loaded with `/skill-name` or via `Skill` tool.
+> 87 skills across 9 domains. Each skill is loaded with `/skill-name` or via `Skill` tool.
 >
 > **Lazy-load pattern:** Each SKILL.md is a routing document only. Detailed patterns live in `reference/` files within each skill directory. Load the reference file explicitly when the detail is needed — do not expect it to be loaded automatically.
 
@@ -10,17 +10,20 @@
 
 ## Quick Reference by Domain
 
-### Backend (25 skills)
+### Backend (27 skills)
 - **adk-deploy-guide**: Used before deploying any ADK agent to Google Cloud — covers Cloud Run, Agent Engine, event-driven (Pub/Sub, Eventarc, BigQuery Remote Function), Terraform, and CI/CD.
 - **adk-eval-guide**: Used when evaluating ADK agents, running `adk eval`, writing evalsets, configuring eval metrics (all 8 criteria), LLM-as-judge configuration, user simulation, multimodal evaluation, and debugging eval failures.
 - **adk-observability-guide**: Used when configuring tracing (Cloud Trace), prompt-response logging, or BigQuery Agent Analytics for ADK agents — covers 3 observability tiers.
 - **agentic-ai-coding-standard**: Provides coding standards for Python agentic AI services with LangChain/LangGraph, covering state management, tool definitions, graph structure, error handling, and observability.
 - **agentic-ai-dev**: Provides patterns and templates for building production AI agents with Python 3.14, LangChain v1.2.8, LangGraph v1.0.7, and FastAPI 0.128.x.
+- **multi-agent-patterns**: Architectural reference for multi-agent system design — Supervisor/Orchestrator, Peer-to-Peer/Swarm, and Hierarchical patterns with token economics (~15× cost multiplier), context isolation strategies, telephone game fix (`forward_message`), consensus mechanisms, and failure mitigations. Primary use: LangGraph, ADK, Claude Code orchestration design. Reference files: `architectural-patterns.md`, `token-economics.md`, `failure-modes.md`.
 - **google-adk**: Google ADK (Agent Development Kit) Python skill for building AI agents with Gemini models,
   SequentialAgent, ParallelAgent, LoopAgent, FunctionTool, McpToolset, session management, memory, callbacks,
   and FastAPI integration. Reference files: `adk-core-patterns.md`, `adk-structured-output.md`,
   `adk-agent-types.md`, `adk-agent-handoff.md`, `adk-tools-basic.md`, `adk-tools-callbacks.md`,
   `adk-memory-artifacts.md`, `adk-fastapi-integration.md`, `adk-testing.md`, `adk-project-config.md`.
+- **gemini-api-dev**: Direct Gemini API development with `google-genai` (Python) and `@google/genai` (TypeScript/NestJS). Use when making direct Gemini model calls without the ADK framework — covers multimodal inputs (image/audio/video), function calling, structured JSON output, context caching, embeddings, and code execution sandbox. Current model: `gemini-3.1-flash` (default), `gemini-3.1-pro`. Iron law: always fetch `https://ai.google.dev/gemini-api/docs/llms.txt` before writing code. Distinct from `google-adk` (framework/agents) — this is the raw API layer.
+- **prompt-engineering-patterns**: Advanced prompt engineering for LangGraph and Google ADK — few-shot learning, chain-of-thought, Tree-of-Thought, self-consistency, system prompt design, prompt optimization, and reusable templates. Use when designing agent system prompts, optimizing LLM outputs, implementing structured reasoning, or debugging inconsistent model responses. Supports both LangChain/LangGraph (`SystemMessage`) and Google ADK (`instruction=`). Reference files: `reference/chain-of-thought.md` (CoT, ToT, self-consistency + LangGraph/ADK code), `reference/few-shot-learning.md` (dynamic example selection), `reference/system-prompts.md` (role + constraints + format design), `reference/prompt-optimization.md` (A/B testing, versioning, metrics), `reference/prompt-templates.md` (reusable templates), `reference/prompt-template-library.md` (20+ copy-paste templates).
 - **java-coding-standard**: Activated when reviewing Java code or enforcing coding standards in Spring Boot services, covering naming conventions, immutability patterns, Optional usage, streams, and exception handling.
 - **java-spring-api**: Provides patterns and templates for Java 21 Spring Boot 3.5.x WebFlux REST API development, activated when creating controllers, services, repositories, DTOs, or reactive tests.
 - **mcp-builder**: Used when building MCP (Model Context Protocol) servers to integrate external APIs or services, providing guides for Python (FastMCP) and Node/TypeScript (MCP SDK) implementations.
@@ -39,6 +42,7 @@
 - **gcp-finops**: GCP cost optimization, FinOps, and resilience skill. Use for GCP billing budget alerts, committed use discounts (CUD), sustained use discounts (SUD), cost allocation labels, GCP Recommender analysis, Cloud SQL PITR setup, multi-region DR planning, and RTO/RPO target mapping for Cloud Run + Cloud SQL + Firestore workloads.
 - **terraform-skill**: Terraform/OpenTofu best practices, testing strategy, naming conventions, code structure standards, and CI/CD integration. Load BEFORE writing any Terraform module or environment config. Covers: testing decision tree (native `terraform test` 1.6+ with mock providers vs Terratest), naming conventions (`this` for singletons, context-prefixed variables), resource/variable block ordering, `count` vs `for_each` decision guide, version constraint strategy (`~> 1.9.0`, `~> 6.0` for google provider), and GitHub Actions pipeline (validate → test → plan → apply). GCP-primary for this workspace. Load before `terraform-module-library` when authoring modules.
 - **terraform-module-library**: Reusable GCP Terraform module patterns for Cloud Run v2, Cloud SQL PostgreSQL, Artifact Registry, VPC + Private Services Access, and Workload Identity Federation. Load when creating or consuming reusable Terraform modules for GCP. Reference file: `references/gcp-modules.md` — full HCL for all 6 GCP modules with variables, main, outputs, and native test examples using mock providers. Iron Law: every module needs tests with `mock_provider "google"` (no real GCP auth required). Load after `terraform-skill`.
+- **workflow-orchestration-patterns**: Durable workflow orchestration with Temporal for distributed systems. Use when building long-running, failure-resilient distributed business processes in Java 21, Python 3.14, or NestJS 11.x — covers Workflow vs Activity separation, Saga pattern with compensation, Entity workflows (actor model), Fan-out/Fan-in parallel execution, determinism constraints, retry policies, and idempotency. Reference: `reference/implementation-playbook.md` (full workflow + activity code for all 3 SDKs).
 
 ### Frontend (16 skills)
 - **a2ui-angular**: A2UI (Agent-to-User Interface) renderer development for Angular 21.x — protocol implementation, component catalog, recursive renderer, action handling, streaming A2UI payloads, and security validation. Reference files: `a2ui-protocol.md`, `a2ui-protocol-advanced.md`, `a2ui-security.md`, `a2ui-component-catalog.md`, `a2ui-component-containers.md`, `a2ui-renderer-patterns.md`, `a2ui-renderer-template.md`, `a2ui-chat-template.md`, `a2ui-renderer-services.md`.
@@ -121,7 +125,7 @@
 - **security-reviewer**: Security vulnerability detection and remediation skill providing OWASP Top 10 checklists, secret scanning patterns, and security review methodology.
 - **threat-modeling**: Threat modeling skill for STRIDE analysis, attack tree construction, and security requirement extraction when designing new features or reviewing architecture.
 
-### Workflow & Process (10 skills)
+### Workflow & Process (17 skills)
 - **changelog-generator**: Used when preparing releases, writing app store updates, or maintaining a CHANGELOG.md by parsing conventional commits and outputting polished release notes.
 - **documentation-generation**: Documentation generation skill for README creation, docstring patterns, and CI/CD doc pipelines when generating project documentation or creating README files.
 - **domain-finder**: Used when starting a new project or brand and needing to find a registrable domain by brainstorming creative names and checking real availability via DNS/WHOIS.
@@ -137,6 +141,8 @@
 - **debug** (`/debug`): Slash command entry point for systematic-debugging skill. Enforces root-cause-first investigation with structured Symptom → Root Cause → Fix → Prevention output format.
 - **audit-skills** (`/audit-skills`): Periodic health audit of all 61 skills — checks Iron Law, `last-reviewed` staleness (90/180-day thresholds), description quality, `allowed-tools` declaration, and body line count. Outputs aggregate PASS/WARN/FAIL report with recommended actions. Run monthly or after adding multiple skills.
 - **iterate-pr**: Autonomous PR completion loop — fetches CI failures and review feedback, fixes and pushes until all checks are green. Classifies feedback by LOGAF scale (high/medium auto-fix, low asks user), polls CI, and posts GitHub thread replies.
+- **multi-agent-brainstorming**: Structured design review using 5 constrained sequential roles (Primary Designer, Skeptic, Constraint Guardian, User Advocate, Arbiter) to validate designs before implementation. Produces mandatory Decision Log and APPROVED/REVISE/REJECT verdict. Use after `/brainstorm` and before `/plan-review` for high-stakes or irreversible decisions. Reference files: `agent-role-scripts.md`, `decision-log-template.md`, `exit-criteria-checklist.md`.
+- **parallel-agents**: Multi-agent orchestration for Claude Code's native Agent tool — coordinates this workspace's 42 actual agents across 6 orchestration patterns (comprehensive review, pre-deploy audit, Flutter feature, agentic AI review, DB schema review, architecture validation). Includes workspace agent catalog and synthesis protocol. Reference files: `workspace-agent-catalog.md`, `orchestration-patterns.md`, `synthesis-protocol.md`.
 
 ---
 

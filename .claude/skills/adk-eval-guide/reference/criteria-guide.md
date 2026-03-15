@@ -38,7 +38,7 @@ All LLM-as-judge criteria accept `judge_model_options`:
 ```json
 {
   "judge_model_options": {
-    "judge_model": "gemini-2.5-flash",
+    "judge_model": "gemini-3.1-flash",
     "num_samples": 5
   }
 }
@@ -87,7 +87,7 @@ All LLM-as-judge criteria accept `judge_model_options`:
     "final_response_match_v2": {
       "threshold": 0.8,
       "judge_model_options": {
-        "judge_model": "gemini-2.5-flash",
+        "judge_model": "gemini-3.1-flash",
         "num_samples": 5
       }
     },

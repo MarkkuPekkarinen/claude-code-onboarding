@@ -113,13 +113,13 @@ from google.genai import types
 def pipeline_runner():
     researcher = Agent(
         name="researcher",
-        model="gemini-2.5-flash",
+        model="gemini-3.1-flash",
         instruction="Summarize the topic in one sentence. Output stored in state key 'summary'.",
         output_key="summary",
     )
     writer = Agent(
         name="writer",
-        model="gemini-2.5-flash",
+        model="gemini-3.1-flash",
         instruction="Expand on this summary: {summary}",
     )
     pipeline = SequentialAgent(

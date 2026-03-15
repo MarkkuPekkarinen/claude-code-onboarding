@@ -47,7 +47,7 @@ Delegate to the `google-adk` skill for all patterns, templates, and reference fi
 
    Create directory structure per `adk-project-config.md`:
    - `src/config.py` — pydantic-settings with GOOGLE_API_KEY
-   - `src/agents/` — Agent definitions using gemini-2.5-flash
+   - `src/agents/` — Agent definitions using gemini-3.1-flash
    - `src/tools/` — Tool functions with full docstrings
    - `src/api/routes.py` — /chat and /stream endpoints
    - `src/main.py` — FastAPI app with lifespan + Runner init

@@ -319,3 +319,108 @@ def estimate_tokens(text: str) -> int:
 | Few-shot | 3-5 examples covering edge cases |
 | Token budget | Always track and respect context window limits |
 | CoT | Use for complex reasoning; skip for simple classification |
+
+---
+
+## Prompt Frameworks — 11-Framework Selection Guide
+
+When writing system prompts or agent instructions, select the framework that matches the task type. These frameworks apply to both LangGraph `SystemMessage` content and Google ADK `instruction=` parameters.
+
+| Framework | Best For | Structure |
+|-----------|----------|-----------|
+| **RTF** (Role-Task-Format) | Role-based expert tasks | Role → Task → Output Format |
+| **Chain of Thought** | Step-by-step reasoning, debugging, math | Problem → Step 1 → Step 2 → ... → Conclusion |
+| **RISEN** | Multi-phase projects with deliverables | Role, Instructions, Steps, End goal, Narrowing |
+| **RODES** | Complex design and system architecture | Role, Objective, Details, Examples, Sense check |
+| **Chain of Density** | Summarization and compression | Verbose → Iterative compression → Dense summary |
+| **RACE** | Communication, presentations, stakeholders | Role, Audience, Context, Expectation |
+| **RISE** | Analysis, investigation, research | Research, Investigate, Synthesize, Evaluate |
+| **STAR** | Problem-solving with rich context | Situation, Task, Action, Result |
+| **SOAP** | Structured documentation and incident reports | Subjective, Objective, Assessment, Plan |
+| **CLEAR** | Goal-setting and OKRs | Collaborative, Limited, Emotional, Appreciable, Refinable |
+| **GROW** | Coaching and development conversations | Goal, Reality, Options, Will |
+
+### Framework Blending
+
+Combine 2-3 frameworks when the task spans multiple types:
+
+| Task Type | Primary | Blend With | Result |
+|-----------|---------|------------|--------|
+| Complex technical design | RODES | Chain of Thought | Structured design + step-by-step reasoning |
+| Multi-agent project | RISEN | RTF | Phase structure + clear role per agent |
+| Strategic communication | RACE | STAR | Audience-aware + context-rich framing |
+| Incident investigation | RISE | SOAP | Systematic analysis + structured documentation |
+| Leadership decision | CLEAR | GROW | Measurable goals + action commitment |
+
+### RTF Example — LangGraph
+
+```python
+from langchain_core.messages import SystemMessage
+
+RTF_SYSTEM = SystemMessage(content="""Role: You are a senior Python backend developer specializing in FastAPI and async patterns.
+
+Task: Review the provided code for correctness, performance, and security issues.
+
+Format:
+**Issues Found:**
+- [Line X] [SEVERITY] Description — Fix: suggested fix
+
+**Summary:** [Total issues: N critical, M warnings]
+**Recommendation:** [One sentence — merge/revise/reject]""")
+```
+
+### RTF Example — Google ADK
+
+```python
+from google.adk.agents import LlmAgent
+
+rtf_agent = LlmAgent(
+    name="code_reviewer",
+    model="gemini-3.1-flash",
+    instruction="""Role: You are a senior Python backend developer specializing in FastAPI and async patterns.
+Task: Review the provided code for correctness, performance, and security issues.
+Format: Issues (line, severity, description, fix), Summary (N critical, M warnings), Recommendation (merge/revise/reject)."""
+)
+```
+
+### RODES + CoT Example — Complex Agent Design
+
+```python
+ARCHITECTURE_SYSTEM = SystemMessage(content="""Role: You are a distributed systems architect.
+
+Objective: Design a scalable event-driven architecture for the given requirements.
+
+Details:
+- Expected load and growth trajectory
+- Consistency requirements (eventual vs. strong)
+- Latency constraints (p50, p99 targets)
+- Team size and operational maturity
+
+Think step by step:
+1. Analyze the load and consistency requirements
+2. Identify service boundaries using DDD principles
+3. Design the event schema and message contracts
+4. Plan for failure modes and circuit breakers
+5. Define operational runbooks for common failure scenarios
+
+Examples: Provide sequence diagrams for the top 3 user flows.
+
+Sense Check: Validate that the design handles the stated load, meets latency targets, and is operable by the stated team size.""")
+```
+
+### Selection Rule
+
+```
+What is the primary nature of the task?
+├── Expert role + specific output → RTF
+├── Step-by-step reasoning needed → Chain of Thought
+├── Multi-phase project → RISEN
+├── Complex design/architecture → RODES (+ CoT)
+├── Summarize/compress → Chain of Density
+├── Stakeholder communication → RACE
+├── Research/analysis → RISE
+├── Problem with rich context → STAR
+├── Structured documentation → SOAP
+├── Goal/OKR setting → CLEAR
+└── Coaching/development → GROW
+```

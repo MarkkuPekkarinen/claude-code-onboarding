@@ -30,7 +30,7 @@ def calculate(expression: str) -> str:
 
 analysis_agent = Agent(
     name="analysis_agent",
-    model="gemini-2.5-flash",
+    model="gemini-3.1-flash",
     description="Analyzes data and produces structured analysis results.",
     instruction=(
         "You are a data analyst. Given the user's request, search for relevant "

@@ -96,6 +96,7 @@ Before generating code, consult these sources for current syntax and APIs:
 | `agentic-prompt-engineering.md` | Advanced prompting, structured output, templates | Writing better prompts |
 | `agentic-error-handling.md` | Agent, tool, LLM provider, and API error handling patterns | Error handling in agents |
 | `agentic-review-checklist.md` | Agentic AI review checklist (used by `agentic-ai-reviewer` agent) | Code reviews |
+| `agentic-prompt-optimization.md` | Constitutional AI, Tree-of-Thoughts, model-specific templates (Claude/Gemini/GPT), prompt versioning registry, canary rollout, LLM-as-judge | Optimizing prompt quality; multi-model deployments; production prompt lifecycle |
 
 ## Common Commands
 

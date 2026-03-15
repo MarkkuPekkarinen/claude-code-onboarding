@@ -30,7 +30,7 @@ from ..tools.my_tools import get_weather
 def build_agent() -> Agent:
     return Agent(
         name="my_assistant",
-        model="gemini-2.5-flash",
+        model="gemini-3.1-flash",
         description="A helpful assistant",
         instruction="You are a helpful assistant. Use available tools to answer questions.",
         tools=[get_weather],
@@ -226,7 +226,7 @@ runner = Runner(
 # In agent definition, add built-in memory tools:
 agent = Agent(
     name="my_assistant",
-    model="gemini-2.5-flash",
+    model="gemini-3.1-flash",
     instruction="...",
     tools=[load_memory, preload_memory, get_weather],
 )

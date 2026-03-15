@@ -12,7 +12,7 @@ from google.genai import types
 
 billing_agent = Agent(
     name="billing_agent",
-    model="gemini-2.5-flash",
+    model="gemini-3.1-flash",
     description="Handles billing questions, invoice issues, and payment disputes.",
     instruction=(
         "You are a billing specialist. Help the user with any billing-related questions: "
@@ -24,7 +24,7 @@ billing_agent = Agent(
 
 technical_agent = Agent(
     name="technical_agent",
-    model="gemini-2.5-flash",
+    model="gemini-3.1-flash",
     description="Handles technical support, bugs, and product usage questions.",
     instruction=(
         "You are a technical support specialist. Help the user with technical issues: "
@@ -36,7 +36,7 @@ technical_agent = Agent(
 
 router_agent = Agent(
     name="router_agent",
-    model="gemini-2.5-flash",
+    model="gemini-3.1-flash",
     description="Routes customer service requests to the correct specialist.",
     instruction=(
         "You are a customer service router. "
@@ -77,14 +77,14 @@ for event in runner.run(
 # output_key in a SequentialAgent pipeline — correct pattern
 stage_a = Agent(
     name="stage_a",
-    model="gemini-2.5-flash",
+    model="gemini-3.1-flash",
     instruction="Produce a summary of the topic.",
     output_key="stage_a_output",          # stored to state["stage_a_output"]
 )
 
 stage_b = Agent(
     name="stage_b",
-    model="gemini-2.5-flash",
+    model="gemini-3.1-flash",
     instruction="Expand on this summary: {stage_a_output}",  # read from state
     output_key="stage_b_output",
 )

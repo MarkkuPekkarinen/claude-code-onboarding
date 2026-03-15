@@ -101,7 +101,7 @@ async def multimodal_response_quality(
             ),
         ]
         response = await client.aio.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-3.1-flash",
             contents=genai.types.Content(role="user", parts=judge_parts),
         )
         try:

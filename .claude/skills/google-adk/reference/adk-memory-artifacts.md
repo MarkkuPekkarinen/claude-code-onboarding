@@ -37,7 +37,7 @@ from google.adk.tools import load_memory, preload_memory
 
 agent = Agent(
     name="memory_agent",
-    model="gemini-2.0-flash",
+    model="gemini-3.1-flash",
     instruction="Use your memory to provide personalized responses.",
     tools=[load_memory, preload_memory],
 )

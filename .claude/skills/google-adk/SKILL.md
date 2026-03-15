@@ -41,7 +41,7 @@ uv add --dev pytest pytest-asyncio httpx ruff mypy
 0. **Write DESIGN_SPEC.md** — Before any code, write a spec covering: purpose, example use cases, required tools, safety constraints, success criteria, edge cases. Save as `DESIGN_SPEC.md` in the project root. This is your contract — all implementation must align with it.
 1. **Scaffold** — `uv init` + install `google-adk` + `google-genai`; confirm `uv add google-adk` resolves without error
 2. **Configure** — `.env` with `GOOGLE_API_KEY` / `GOOGLE_CLOUD_PROJECT`; load via `pydantic-settings` `BaseSettings`; never hardcode keys
-3. **Define Agent** — `Agent(name, model, instruction, tools)` using `model="gemini-2.5-flash"`; write docstrings on every tool function
+3. **Define Agent** — `Agent(name, model, instruction, tools)` using `model="gemini-3.1-flash"`; write docstrings on every tool function
 4. **Compose Agents** — use `SequentialAgent`, `ParallelAgent`, or `LoopAgent` for multi-step workflows; set `output_key` on each sub-agent that passes state downstream
 5. **Define Tools** — plain Python functions with type hints and docstrings; use `pydantic.BaseModel` for complex inputs; accept `tool_context: ToolContext` to read/write session state
 6. **Add Callbacks** — `before_model_callback`, `after_model_callback`, `before_tool_callback`, `after_tool_callback`, `on_model_error_callback`, `on_tool_error_callback` for rate limiting, logging, and structured error handling
@@ -74,7 +74,7 @@ uv add --dev pytest pytest-asyncio httpx ruff mypy
 
 ## Code Preservation Rules
 
-- **NEVER change the model** in existing code unless explicitly asked — changing `gemini-2.5-flash` to another model is a breaking change
+- **NEVER change the model** in existing code unless explicitly asked — changing `gemini-3.1-flash` to another model is a breaking change
 - **NEVER rewrite working agent code** — if the agent works, refactor incrementally
 - **NEVER remove tools** from an agent without explicit approval — tools are part of the agent's contract
 - **NEVER rename output_key values** — downstream agents reference them by name
@@ -102,6 +102,7 @@ uv add --dev pytest pytest-asyncio httpx ruff mypy
 | `reference/adk-fastapi-integration.md` | FastAPI + StreamingResponse SSE, lifespan runner setup, request/response models |
 | `reference/adk-testing.md` | InMemoryRunner unit tests, pytest-asyncio patterns, tool isolation, agent routing |
 | `reference/adk-project-config.md` | pyproject.toml, .env setup, directory structure, Dockerfile, logging, commands |
+| `reference/adk-gemini-prompt-templates.md` | Gemini-specific `LlmAgent` instruction templates — base structure, RAG with citations, constitutional AI (2-agent SequentialAgent), Tree-of-Thoughts, multi-step analysis, model selection guide (Flash vs Pro) |
 
 ## Common Commands
 

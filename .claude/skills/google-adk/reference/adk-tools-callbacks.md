@@ -151,7 +151,7 @@ from google.adk import Agent
 
 agent = Agent(
     name="my_agent",
-    model="gemini-2.0-flash",
+    model="gemini-3.1-flash",
     instruction="You are a helpful assistant.",
     tools=[get_weather, remember_preference],
     before_model_callback=[rate_limit_check],   # list — multiple callbacks supported

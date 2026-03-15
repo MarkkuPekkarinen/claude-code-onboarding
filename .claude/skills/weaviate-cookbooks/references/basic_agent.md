@@ -112,7 +112,7 @@ Usage:
 
 ```python
 router = RouterAgent(
-    model="<model_name>",  # e.g. claude-sonnet-4-5, gpt-5.2, gemini-2.5-pro
+    model="<model_name>",  # e.g. claude-sonnet-4-5, gpt-5.2, gemini-3.1-pro
     tools=[your_tool_function]
 )
 response, tool_result = router.get_response("user query here")

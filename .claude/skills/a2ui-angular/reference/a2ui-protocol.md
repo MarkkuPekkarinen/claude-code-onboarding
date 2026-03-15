@@ -270,7 +270,7 @@ Sent from the **client to the agent** when the user interacts with an A2UI compo
 
 ## Gemini Output Quirks (Production Lessons)
 
-When using Gemini models (gemini-2.5-flash, gemini-2.0-flash, etc.) as the agent, two output quirks require defensive handling in the backend SSE parser.
+When using Gemini models (gemini-3.1-flash, gemini-3.1-pro, etc.) as the agent, two output quirks require defensive handling in the backend SSE parser.
 
 ### Quirk 1: Missing `surfaceUpdate` Wrapper Key
 

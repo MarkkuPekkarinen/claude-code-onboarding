@@ -78,7 +78,7 @@ Override default simulator behavior in `eval_config.json`:
 {
   "criteria": { },
   "user_simulator_config": {
-    "model": "gemini-2.5-flash",
+    "model": "gemini-3.1-flash",
     "model_configuration": {
       "thinking_config": {
         "include_thoughts": true,
@@ -146,7 +146,7 @@ Use `per_turn_user_simulator_quality_v1` to verify the simulator follows the con
     "per_turn_user_simulator_quality_v1": {
       "threshold": 1.0,
       "judge_model_options": {
-        "judge_model": "gemini-2.5-flash",
+        "judge_model": "gemini-3.1-flash",
         "num_samples": 5
       },
       "stop_signal": "</finished>"
