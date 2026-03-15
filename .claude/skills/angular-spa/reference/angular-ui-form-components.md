@@ -435,6 +435,359 @@ protected onSubmit(): void {
 
 ---
 
+## Section F: File Upload with Progress Tracking
+
+Two patterns depending on file destination:
+
+| Pattern | When to Use |
+|---------|-------------|
+| **Direct multipart POST** | Files ≤ 10 MB, backend stores or processes the file |
+| **GCS presigned URL** | Files > 10 MB, or you want to bypass server bandwidth — backend issues URL, client uploads directly to GCS |
+
+See `docs/workflows/file-uploads.md` for backend presigned URL endpoint implementations (NestJS, FastAPI, Spring Boot).
+
+---
+
+### Pattern 1 — Direct Multipart POST with Progress
+
+```typescript
+import {
+  Component, ChangeDetectionStrategy, signal, computed, inject
+} from '@angular/core';
+import { HttpClient, HttpEventType, HttpErrorResponse } from '@angular/common/http';
+
+type UploadState = 'idle' | 'uploading' | 'done' | 'error';
+
+// Allowed MIME types — validate client-side AND server-side
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
+const MAX_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
+
+@Component({
+  selector: 'app-file-upload',
+  standalone: true,
+  template: `
+    <div class="form-control w-full space-y-3">
+      <label class="label" for="file-input">
+        <span class="label-text font-medium">Upload File</span>
+        <span class="label-text-alt text-base-content/60">JPEG, PNG, WebP, PDF — max 10 MB</span>
+      </label>
+
+      <!-- File picker -->
+      <input
+        id="file-input"
+        type="file"
+        accept=".jpg,.jpeg,.png,.webp,.pdf"
+        class="file-input file-input-bordered w-full"
+        [class.file-input-error]="state() === 'error'"
+        [disabled]="state() === 'uploading'"
+        (change)="onFileSelected($event)"
+        aria-describedby="upload-status"
+      />
+
+      <!-- Validation error -->
+      @if (validationError()) {
+        <p class="text-error text-sm" role="alert">{{ validationError() }}</p>
+      }
+
+      <!-- Progress bar (uploading state) -->
+      @if (state() === 'uploading') {
+        <div aria-live="polite" aria-label="Upload progress">
+          <div class="flex justify-between text-sm mb-1">
+            <span>Uploading…</span>
+            <span>{{ progress() }}%</span>
+          </div>
+          <progress
+            class="progress progress-primary w-full"
+            [value]="progress()"
+            max="100"
+            [attr.aria-valuenow]="progress()"
+            aria-valuemin="0"
+            aria-valuemax="100">
+          </progress>
+        </div>
+      }
+
+      <!-- Success state -->
+      @if (state() === 'done') {
+        <div class="alert alert-success" role="status" aria-live="polite">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+          </svg>
+          <span>Upload complete — {{ uploadedUrl() }}</span>
+        </div>
+      }
+
+      <!-- Error state -->
+      @if (state() === 'error') {
+        <div class="alert alert-error" role="alert">
+          <span>{{ uploadError() }} — please try again.</span>
+        </div>
+      }
+
+      <!-- Upload button -->
+      <button
+        type="button"
+        class="btn btn-primary w-full"
+        [disabled]="!canUpload()"
+        (click)="upload()"
+        [attr.aria-busy]="state() === 'uploading'">
+        @if (state() === 'uploading') {
+          <span class="loading loading-spinner loading-sm" aria-hidden="true"></span>
+          Uploading…
+        } @else {
+          Upload
+        }
+      </button>
+    </div>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class FileUploadComponent {
+  private readonly http = inject(HttpClient);
+
+  protected readonly state = signal<UploadState>('idle');
+  protected readonly progress = signal(0);
+  protected readonly validationError = signal<string | null>(null);
+  protected readonly uploadError = signal<string | null>(null);
+  protected readonly uploadedUrl = signal<string | null>(null);
+
+  private selectedFile = signal<File | null>(null);
+
+  protected readonly canUpload = computed(
+    () => this.selectedFile() !== null && this.state() !== 'uploading'
+  );
+
+  protected onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] ?? null;
+
+    this.validationError.set(null);
+    this.state.set('idle');
+    this.selectedFile.set(null);
+
+    if (!file) return;
+
+    // Client-side validation — server MUST also validate (defense in depth)
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      this.validationError.set(
+        `File type not allowed. Accepted: JPEG, PNG, WebP, PDF. Got: ${file.type || 'unknown'}`
+      );
+      return;
+    }
+
+    if (file.size > MAX_SIZE_BYTES) {
+      this.validationError.set(
+        `File is too large (${(file.size / 1024 / 1024).toFixed(1)} MB). Maximum is 10 MB.`
+      );
+      return;
+    }
+
+    this.selectedFile.set(file);
+  }
+
+  protected upload(): void {
+    const file = this.selectedFile();
+    if (!file) return;
+
+    const form = new FormData();
+    form.append('file', file, file.name);
+
+    this.state.set('uploading');
+    this.progress.set(0);
+
+    this.http.post<{ url: string }>('/api/upload', form, {
+      reportProgress: true,
+      observe: 'events'
+    }).subscribe({
+      next: (event) => {
+        if (event.type === HttpEventType.UploadProgress && event.total) {
+          this.progress.set(Math.round(100 * event.loaded / event.total));
+        } else if (event.type === HttpEventType.Response) {
+          this.uploadedUrl.set(event.body?.url ?? null);
+          this.state.set('done');
+        }
+      },
+      error: (err: HttpErrorResponse) => {
+        this.uploadError.set(err.error?.message ?? 'Upload failed');
+        this.state.set('error');
+      }
+    });
+  }
+}
+```
+
+---
+
+### Pattern 2 — GCS Presigned URL Upload (large files, bypass server bandwidth)
+
+```
+Flow:
+1. Client requests presigned URL from your backend  POST /api/upload/presigned-url
+2. Backend generates GCS signed URL with 15-min expiry, returns { uploadUrl, objectKey }
+3. Client PUTs file directly to GCS using uploadUrl  (no backend bandwidth used)
+4. Client notifies backend of completion             POST /api/upload/confirm
+```
+
+```typescript
+import {
+  Component, ChangeDetectionStrategy, signal, computed, inject
+} from '@angular/core';
+import { HttpClient, HttpEventType, HttpErrorResponse, HttpRequest } from '@angular/common/http';
+
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'video/mp4'];
+const MAX_SIZE_BYTES = 500 * 1024 * 1024; // 500 MB
+
+interface PresignedUrlResponse {
+  uploadUrl: string;   // GCS signed URL — PUT directly to this
+  objectKey: string;   // GCS object path — send back on confirm
+  expiresAt: string;   // ISO timestamp — warn user if upload stalls
+}
+
+@Component({
+  selector: 'app-gcs-upload',
+  standalone: true,
+  template: `
+    <div class="space-y-4">
+      <input
+        type="file"
+        accept=".jpg,.jpeg,.png,.webp,.mp4"
+        class="file-input file-input-bordered w-full"
+        [disabled]="state() === 'uploading'"
+        (change)="onFileSelected($event)"
+      />
+
+      @if (validationError()) {
+        <p class="text-error text-sm" role="alert">{{ validationError() }}</p>
+      }
+
+      @if (state() === 'uploading') {
+        <div aria-live="polite">
+          <div class="flex justify-between text-sm mb-1">
+            <span>{{ statusLabel() }}</span>
+            <span>{{ progress() }}%</span>
+          </div>
+          <progress class="progress progress-primary w-full"
+            [value]="progress()" max="100"></progress>
+        </div>
+      }
+
+      @if (state() === 'done') {
+        <div class="alert alert-success" role="status">File uploaded successfully.</div>
+      }
+
+      @if (state() === 'error') {
+        <div class="alert alert-error" role="alert">{{ uploadError() }}</div>
+      }
+
+      <button type="button" class="btn btn-primary w-full"
+        [disabled]="!canUpload()"
+        (click)="uploadViaPresignedUrl()">
+        @if (state() === 'uploading') {
+          <span class="loading loading-spinner loading-sm"></span>
+        }
+        Upload
+      </button>
+    </div>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class GcsUploadComponent {
+  private readonly http = inject(HttpClient);
+
+  protected readonly state = signal<'idle' | 'requesting' | 'uploading' | 'confirming' | 'done' | 'error'>('idle');
+  protected readonly progress = signal(0);
+  protected readonly validationError = signal<string | null>(null);
+  protected readonly uploadError = signal<string | null>(null);
+  private selectedFile = signal<File | null>(null);
+
+  protected readonly canUpload = computed(
+    () => this.selectedFile() !== null && !['uploading', 'requesting', 'confirming'].includes(this.state())
+  );
+
+  protected readonly statusLabel = computed(() => {
+    switch (this.state()) {
+      case 'requesting': return 'Requesting upload URL…';
+      case 'uploading':  return 'Uploading to storage…';
+      case 'confirming': return 'Confirming…';
+      default: return '';
+    }
+  });
+
+  protected onFileSelected(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0] ?? null;
+    this.validationError.set(null);
+    this.selectedFile.set(null);
+    if (!file) return;
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      this.validationError.set(`File type not allowed: ${file.type}`);
+      return;
+    }
+    if (file.size > MAX_SIZE_BYTES) {
+      this.validationError.set(`File exceeds 500 MB limit.`);
+      return;
+    }
+    this.selectedFile.set(file);
+  }
+
+  protected uploadViaPresignedUrl(): void {
+    const file = this.selectedFile();
+    if (!file) return;
+
+    this.state.set('requesting');
+    this.progress.set(0);
+
+    // Step 1: request presigned URL from your backend
+    this.http.post<PresignedUrlResponse>('/api/upload/presigned-url', {
+      filename: file.name,
+      contentType: file.type,
+      size: file.size
+    }).subscribe({
+      next: ({ uploadUrl, objectKey }) => {
+        this.state.set('uploading');
+        // Step 2: PUT directly to GCS — no backend bandwidth used
+        const req = new HttpRequest('PUT', uploadUrl, file, {
+          headers: { 'Content-Type': file.type },
+          reportProgress: true
+        });
+        this.http.request(req).subscribe({
+          next: (event) => {
+            if (event.type === HttpEventType.UploadProgress && event.total) {
+              this.progress.set(Math.round(100 * event.loaded / event.total));
+            } else if (event.type === HttpEventType.Response) {
+              // Step 3: notify backend of completion
+              this.state.set('confirming');
+              this.http.post('/api/upload/confirm', { objectKey }).subscribe({
+                next: () => this.state.set('done'),
+                error: (err: HttpErrorResponse) => {
+                  this.uploadError.set('Upload succeeded but confirmation failed — contact support.');
+                  this.state.set('error');
+                }
+              });
+            }
+          },
+          error: (err: HttpErrorResponse) => {
+            this.uploadError.set('Upload to storage failed. Please try again.');
+            this.state.set('error');
+          }
+        });
+      },
+      error: (err: HttpErrorResponse) => {
+        this.uploadError.set(err.error?.message ?? 'Could not get upload URL.');
+        this.state.set('error');
+      }
+    });
+  }
+}
+```
+
+**Key rules:**
+- `reportProgress: true` + `observe: 'events'` on the `HttpRequest` enables `HttpEventType.UploadProgress`
+- For GCS PUT: set `Content-Type` header to match what was used when generating the signed URL — mismatch causes 403
+- Client-side type/size validation is UX only — the backend endpoint MUST also validate both before issuing a presigned URL
+- Never log or store the presigned URL — it is a credential valid for 15 minutes
+
+---
+
 ## Component Templates
 
 ---

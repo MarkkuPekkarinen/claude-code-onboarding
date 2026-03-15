@@ -60,3 +60,19 @@ Before making architecture decisions, consult these sources:
 **Unclear artifact type**: Ask user to specify (diagram, API contract, deployment, ADR).
 
 **Ambiguous tech stack**: Default to project conventions in CLAUDE.md or ask for clarification if multiple options exist.
+
+## Reference Files
+
+| File | When to Load |
+|------|-------------|
+| [reference/architecture-templates.md](reference/architecture-templates.md) | Always — diagram and deployment templates |
+| [reference/context-discovery.md](reference/context-discovery.md) | Before recommending any architecture — gather scale, team, timeline context first |
+| [reference/pattern-selection.md](reference/pattern-selection.md) | When choosing between architectural patterns — decision trees per concern |
+| [reference/implementation-patterns.md](reference/implementation-patterns.md) | When implementing Clean Architecture or Hexagonal Architecture — Python examples |
+| [reference/cloud-service-mapping.md](reference/cloud-service-mapping.md) | GCP-primary cross-cloud service equivalents |
+
+**Load order for new system design:**
+1. `context-discovery.md` — classify the project (MVP / SaaS / Enterprise)
+2. `pattern-selection.md` — choose the right pattern for the complexity
+3. `architecture-templates.md` — generate diagrams and deployment topology
+4. `implementation-patterns.md` — if Clean Arch or Hexagonal is chosen

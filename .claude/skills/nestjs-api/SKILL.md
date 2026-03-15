@@ -92,6 +92,8 @@ npx @nestjs/cli new my-service --package-manager npm --strict
 | `reference/nestjs-debugging-performance.md` | Memory leaks, performance profiling | Diagnosing memory leaks, profiling performance |
 | `reference/nestjs-debugging-production.md` | Production debugging, structured logging, tracing | Debugging production issues, structured logging |
 | `reference/nestjs-review-checklist.md` | NestJS review checklist (used by `nestjs-reviewer` agent) | Code review, pre-PR checklist |
+| `reference/nestjs-real-world-issues.md` | 9 framework-level issues from GitHub/SO with frequency ratings and Vitest-adapted solutions | Debugging DI errors, circular deps, JWT config, memory leaks |
+| `reference/nestjs-decision-trees.md` | Decision trees for module organization, auth method, testing strategy, caching, error responses | Architecture decisions before implementation |
 
 ## Common Commands
 

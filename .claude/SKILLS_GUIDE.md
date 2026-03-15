@@ -2,7 +2,7 @@
 
 > Complete skill catalog for Claude Code Onboarding Kit. Use this to find the right skill for any task.
 >
-> 80 skills across 9 domains. Each skill is loaded with `/skill-name` or via `Skill` tool.
+> 81 skills across 9 domains. Each skill is loaded with `/skill-name` or via `Skill` tool.
 >
 > **Lazy-load pattern:** Each SKILL.md is a routing document only. Detailed patterns live in `reference/` files within each skill directory. Load the reference file explicitly when the detail is needed — do not expect it to be loaded automatically.
 
@@ -10,7 +10,7 @@
 
 ## Quick Reference by Domain
 
-### Backend (22 skills)
+### Backend (24 skills)
 - **adk-deploy-guide**: Used before deploying any ADK agent to Google Cloud — covers Cloud Run, Agent Engine, event-driven (Pub/Sub, Eventarc, BigQuery Remote Function), Terraform, and CI/CD.
 - **adk-eval-guide**: Used when evaluating ADK agents, running `adk eval`, writing evalsets, configuring eval metrics (all 8 criteria), LLM-as-judge configuration, user simulation, multimodal evaluation, and debugging eval failures.
 - **adk-observability-guide**: Used when configuring tracing (Cloud Trace), prompt-response logging, or BigQuery Agent Analytics for ADK agents — covers 3 observability tiers.
@@ -37,6 +37,8 @@
 - **docker**: Use when writing or reviewing Dockerfiles, docker-compose files, or .dockerignore for any backend service. Covers multi-stage builds, container security hardening, and Docker Compose orchestration for NestJS/Node 24, Spring Boot WebFlux 3.5.x/Java 21, Python FastAPI 3.14, and TypeScript/Fastify/Node 24. Reference files: `reference/dockerfiles.md` (copy-ready Dockerfiles for all 5 stack variants), `reference/compose-patterns.md` (dev/prod compose, Docker secrets), `reference/advanced-patterns.md` (build cache, multi-arch, distroless, diagnostics), `assets/docker-review-checklist.md`.
 - **gcp-cloud-run**: Use for Cloud Run Functions (event-driven Pub/Sub, Storage, HTTP webhooks), cold start optimization, and anti-pattern prevention for all 4 backend stacks. For Cloud Run service deployment use deployment-engineer agent.
 - **gcp-finops**: GCP cost optimization, FinOps, and resilience skill. Use for GCP billing budget alerts, committed use discounts (CUD), sustained use discounts (SUD), cost allocation labels, GCP Recommender analysis, Cloud SQL PITR setup, multi-region DR planning, and RTO/RPO target mapping for Cloud Run + Cloud SQL + Firestore workloads.
+- **terraform-skill**: Terraform/OpenTofu best practices, testing strategy, naming conventions, code structure standards, and CI/CD integration. Load BEFORE writing any Terraform module or environment config. Covers: testing decision tree (native `terraform test` 1.6+ with mock providers vs Terratest), naming conventions (`this` for singletons, context-prefixed variables), resource/variable block ordering, `count` vs `for_each` decision guide, version constraint strategy (`~> 1.9.0`, `~> 6.0` for google provider), and GitHub Actions pipeline (validate → test → plan → apply). GCP-primary for this workspace. Load before `terraform-module-library` when authoring modules.
+- **terraform-module-library**: Reusable GCP Terraform module patterns for Cloud Run v2, Cloud SQL PostgreSQL, Artifact Registry, VPC + Private Services Access, and Workload Identity Federation. Load when creating or consuming reusable Terraform modules for GCP. Reference file: `references/gcp-modules.md` — full HCL for all 6 GCP modules with variables, main, outputs, and native test examples using mock providers. Iron Law: every module needs tests with `mock_provider "google"` (no real GCP auth required). Load after `terraform-skill`.
 
 ### Frontend (16 skills)
 - **a2ui-angular**: A2UI (Agent-to-User Interface) renderer development for Angular 21.x — protocol implementation, component catalog, recursive renderer, action handling, streaming A2UI payloads, and security validation. Reference files: `a2ui-protocol.md`, `a2ui-protocol-advanced.md`, `a2ui-security.md`, `a2ui-component-catalog.md`, `a2ui-component-containers.md`, `a2ui-renderer-patterns.md`, `a2ui-renderer-template.md`, `a2ui-chat-template.md`, `a2ui-renderer-services.md`.
@@ -85,7 +87,8 @@
 - **weaviate**: Search, query, and manage Weaviate vector database collections — semantic search, hybrid search, keyword search, natural language queries, data import, collection inspection, and filtered fetching. Includes Python scripts in `scripts/`. Required env: `WEAVIATE_URL`, `WEAVIATE_API_KEY`.
 - **weaviate-cookbooks**: Build complete AI applications with Weaviate — Query Agent Chatbot, PDF Multimodal RAG, Basic/Advanced/Agentic RAG, Basic Agents with DSPy. High-level blueprints and end-to-end project patterns. Read `references/project_setup.md` and `references/environment_requirements.md` first.
 
-### API & Architecture (12 skills)
+### API & Architecture (13 skills)
+- **architect-review**: Deep architectural review specialist — assesses system design changes, identifies anti-patterns (Anemic Domain, Fat Controller, Missing Outbox, Distributed Monolith), evaluates distributed systems compliance (Saga, CQRS, service mesh, circuit breaker), and produces prioritized HIGH/MEDIUM/LOW findings with ADR triggers. Use when reviewing architecture before implementation. Distinct from `plan-mode-review` Phase 1 (shallow pass) — this is a full dedicated review. Reference: `reference/architect-review-patterns.md` (anti-pattern catalog, distributed systems checklist).
 - **architecture-decision-records**: Used when documenting significant technical decisions, reviewing past architectural choices, or establishing decision processes; provides ADR templates and best practices.
 - **architecture-design**: Used when designing system architecture, API contracts, deployment topologies, or making technology decisions for full-stack applications. Reference files include `cloud-service-mapping.md` — GCP-primary cross-cloud service equivalents table (AWS/Azure/GCP compute, storage, database, messaging, security, networking, observability).
 - **database-schema-designer**: Used when designing database schemas for SQL or NoSQL databases, providing normalization guidelines, indexing strategies, migration patterns, and performance optimization. (domain: infrastructure)
@@ -99,7 +102,7 @@
 - **mcp-builder**: Used when building MCP servers to integrate external APIs — also listed under Backend as it produces implementation code.
 - **nosql-expert**: Expert guidance for distributed NoSQL databases (Cassandra, DynamoDB, ScyllaDB) — query-first modeling, partition key design, hot partition prevention, single-table design (adjacency lists), denormalization patterns, and BASE vs ACID tradeoffs. Load when designing schemas for Cassandra/DynamoDB or troubleshooting hot partitions and high-latency scans.
 
-### Quality & Testing (10 skills)
+### Quality & Testing (11 skills)
 - **browser-testing**: Browser automation and testing using Chrome DevTools MCP and Browser-Use MCP for debugging, performance analysis, E2E flows, and UI interaction.
 - **ui-visual-validator**: CI/CD visual regression setup and pre-commit 13-item verification checklist. Scoped complement to `reality-checker` agent — adds Chromatic, Percy, Applitools, BackstopJS, and Playwright Visual tooling setup for GitHub Actions. Use alongside `reality-checker`: this skill provides the methodology and CI tooling; `reality-checker` provides the live browser verdict.
 - **accessibility-audit**: WCAG 2.1 AA accessibility audit for Angular 21.x and Flutter 3.38. Use when auditing UI for accessibility compliance, adding automated axe-core or flutter_test semantic testing, identifying barriers, or integrating accessibility gates into CI/CD. Reference files: `reference/angular-a11y-automated.md`, `reference/flutter-a11y-automated.md`, `reference/manual-testing-checklist.md`, `reference/cicd-integration.md`. Command: `/fixing-accessibility <file>` for targeted single-file audits.
@@ -110,6 +113,7 @@
 - **systematic-debugging**: Used when encountering any bug, test failure, or unexpected behavior, before proposing fixes; always finds root cause before attempting a fix.
 - **test-driven-development**: Used when implementing new features or logic that requires tests before writing implementation code, covering Red-Green-Refactor cycle and stack-specific test patterns.
 - **python-testing-patterns**: Comprehensive pytest patterns for Python 3.14 / FastAPI — fixtures, parametrize, async testing, database fixtures, test markers, coverage config, monkeypatch, and GitHub Actions CI integration. Load when setting up test infrastructure beyond the basic TDD cycle in `test-driven-development`.
+- **vibe-code-auditor**: Pre-commit gate for AI-generated and rapidly-prototyped code. Audits across 7 dimensions — architecture, consistency, robustness, production risks, security, dead/hallucinated code (imports that don't exist, API mismatches), and technical debt. Produces a Production Readiness Score (0–100) with severity-bucketed findings. Use before `code-reviewer` when code was AI-assisted or evolved without deliberate architecture.
 
 ### Security (4 skills)
 - **claude-actions-auditor**: Audits GitHub Actions workflows for Claude Code Action security vulnerabilities — detects 9 attack vectors (env var intermediary, direct injection, PR target misuse, dangerous sandbox configs, wildcard allowlists). Run before adding `anthropics/claude-code-action` to any workflow or during a CI/CD security review.

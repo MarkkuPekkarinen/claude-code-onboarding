@@ -65,6 +65,7 @@ Multi-phase workflow guides for every development process in this workspace. Eac
 | [pre-commit-validation.md](pre-commit-validation.md) | `/pr-risk`, `/validate-changes` before committing |
 | [design-system-compliance.md](design-system-compliance.md) | Design token enforcement, WCAG 2.1 audit |
 | [accessibility-audit.md](accessibility-audit.md) | WCAG 2.1 AA audit, axe-core + flutter_test automation, manual keyboard/screen reader testing, CI/CD gate |
+| [vibe-code-auditor.md](vibe-code-auditor.md) | Pre-commit audit for AI-generated / prototyped code — hallucination detection, 7-dimension analysis, Production Readiness Score (0-100) |
 
 ---
 

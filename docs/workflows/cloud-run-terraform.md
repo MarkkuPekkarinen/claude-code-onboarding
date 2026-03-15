@@ -313,8 +313,16 @@ jobs:
 - **All secrets in `.tfvars`** — tfvars can end up in git; put only non-secret config there; secrets via Secret Manager
 - **Skipping tfsec** — catches misconfigurations (public S3, IAM over-permissions) before apply
 
+## Skills Used in This Workflow
+
+| Skill | Load When |
+|-------|-----------|
+| `terraform-skill` | Load BEFORE writing any HCL — naming, testing strategy, `for_each` vs `count`, version constraints |
+| `terraform-module-library` | Load when authoring or consuming GCP modules — full HCL patterns in `references/gcp-modules.md` |
+
 ## Related Workflows
 
+- [`terraform-module-development.md`](terraform-module-development.md) — authoring and testing reusable Terraform modules for GCP
 - [`deployment-ci-cd.md`](deployment-ci-cd.md) — application CI/CD that deploys to Cloud Run infrastructure
 - [`database-schema-design.md`](database-schema-design.md) — schema migrations after Cloud SQL is provisioned
 - [`security-audit.md`](security-audit.md) — security posture of infrastructure after provisioning
