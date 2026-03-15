@@ -28,10 +28,12 @@ Multi-phase workflow guides for every development process in this workspace. Eac
 | [feature-google-adk.md](feature-google-adk.md) | Google ADK / Gemini agents |
 | [feature-angular-spa.md](feature-angular-spa.md) | Angular 21.x / TailwindCSS / daisyUI |
 | [web-performance-optimization.md](web-performance-optimization.md) | Angular 21.x Core Web Vitals, bundle size, lazy loading, runtime perf |
+| [fixing-motion-performance.md](fixing-motion-performance.md) | Angular 21.x CSS animation performance — compositor vs paint, layout thrashing, FLIP, scroll-linked motion |
 | [tailwind-v4-patterns.md](tailwind-v4-patterns.md) | Configure Tailwind v4 in Angular — `@theme`, container queries, OKLCH daisyUI themes, Bento layouts, v3→v4 migration |
 | [ui-ux-design.md](ui-ux-design.md) | Design system selection — style, palette, typography via ui-ux-pro-max database before writing Angular/Flutter UI |
 | [feature-a2ui-renderer.md](feature-a2ui-renderer.md) | Agent-to-UI renderer for Angular |
 | [feature-flutter-mobile.md](feature-flutter-mobile.md) | Flutter 3.38 / Riverpod / iOS + Android |
+| [flutter-animations.md](flutter-animations.md) | Flutter animations — Rive (interactive state machines) + Lottie (illustrations, loaders) |
 | [mobile-developer.md](mobile-developer.md) | React Native / Native Swift-Kotlin / Mobile CI-CD (Fastlane, Codemagic, EAS) |
 
 ---
