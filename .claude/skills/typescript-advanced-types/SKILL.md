@@ -12,7 +12,7 @@ metadata:
   risk: safe
   source: "antigravity-awesome-skills (community)"
   date_added: "2026-03-14"
-  last-reviewed: "2026-03-14"
+last-reviewed: "2026-03-14"
 ---
 
 # TypeScript Advanced Types

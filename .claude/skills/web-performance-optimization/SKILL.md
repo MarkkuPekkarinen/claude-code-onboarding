@@ -1,6 +1,6 @@
 ---
 name: web-performance-optimization
-description: "Optimize Angular 21.x web application performance including Core Web Vitals, bundle size, lazy loading with @defer, NgOptimizedImage, OnPush+Signals, SSR TransferState, and Angular CLI build optimization"
+description: "Optimize Angular 21.x web application performance including Core Web Vitals, bundle size, lazy loading with @defer, NgOptimizedImage, OnPush+Signals, SSR TransferState, and Angular CLI build optimization. Use when diagnosing slow Angular apps, preparing for Lighthouse audits, or reducing bundle size — always measure with profiling tools before making changes."
 risk: low
 source: community (adapted for Angular 21.x)
 date_added: "2026-02-27"
@@ -8,6 +8,12 @@ updated: "2026-03-15"
 last-reviewed: "2026-03-15"
 allowed-tools: "Read, Grep, Glob, Bash, Edit, Write, mcp__chrome-devtools__*"
 ---
+
+## Iron Law
+
+**NO PERFORMANCE OPTIMIZATION WITHOUT MEASURING FIRST — run Lighthouse and `ng build --stats-json` before writing a single optimization**
+
+Profile before optimizing. Every change must have a before/after metric. Do not optimize based on guesswork.
 
 # Web Performance Optimization — Angular 21.x
 

@@ -11,8 +11,8 @@ metadata:
   role: specialist
   scope: review
   output-format: report
-  last-reviewed: "2026-03-14"
   source: "adapted from community (antigravity-awesome-skills)"
+last-reviewed: "2026-03-14"
 ---
 
 # Accessibility Audit

@@ -9,6 +9,12 @@ last-reviewed: "2026-03-15"
 allowed-tools: "Read, Grep, Glob, Edit, Write"
 ---
 
+## Iron Law
+
+**NO TAILWIND STYLING WITHOUT CHECKING THE PROJECT'S @theme CONFIGURATION FIRST — read the global CSS theme file before applying utility classes**
+
+Load the project's CSS `@theme` configuration and verify daisyUI semantic tokens before writing any template classes.
+
 # Tailwind CSS Patterns (v4 - 2025)
 
 > Modern utility-first CSS with CSS-native configuration.

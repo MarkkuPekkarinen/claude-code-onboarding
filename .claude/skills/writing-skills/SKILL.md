@@ -9,6 +9,7 @@ metadata:
   role: specialist
   scope: design
   output-format: document
+last-reviewed: "2026-03-15"
 ---
 
 # Writing Skills

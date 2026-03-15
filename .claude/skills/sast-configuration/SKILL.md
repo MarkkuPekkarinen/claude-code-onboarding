@@ -9,6 +9,7 @@ metadata:
   role: specialist
   scope: infrastructure
   output-format: document
+last-reviewed: "2026-03-15"
 ---
 
 ## Iron Law: NO SAST CONFIGURATION WITHOUT READING THE CUSTOM RULES FILE FIRST

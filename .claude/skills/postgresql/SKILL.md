@@ -14,6 +14,12 @@ metadata:
 last-reviewed: "2026-03-15"
 ---
 
+## Iron Law
+
+**NO SCHEMA CHANGES WITHOUT READING THE CURRENT MIGRATION HISTORY FIRST — verify actual table definitions (file:line) before proposing any DDL**
+
+Check existing migrations, the current schema, and access patterns before designing or modifying any PostgreSQL schema.
+
 # PostgreSQL Table Design
 
 ## Use this skill when

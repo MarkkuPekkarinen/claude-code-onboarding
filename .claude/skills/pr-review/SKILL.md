@@ -9,6 +9,7 @@ metadata:
   role: specialist
   scope: review
   output-format: report
+last-reviewed: "2026-03-15"
 ---
 
 # PR Review (Two-Stage)

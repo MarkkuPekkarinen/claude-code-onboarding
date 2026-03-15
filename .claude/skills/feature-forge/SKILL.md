@@ -56,6 +56,7 @@ Load detailed guidance based on context:
 | Specification Template | `references/specification-template.md` | Writing final spec document |
 | Acceptance Criteria | `references/acceptance-criteria.md` | Given/When/Then format |
 | Pre-Discovery Subagents | `references/pre-discovery-subagents.md` | Multi-domain features needing front-loaded context |
+| NFR Checklist | `references/nfr-checklist.md` | Phase 2/3 of interview — any feature with performance, availability, or compliance requirements |
 
 ## Constraints
 
@@ -64,7 +65,7 @@ Load detailed guidance based on context:
 - Use open-ended questions only when choices cannot be predetermined
 - Conduct thorough interview before writing spec
 - Use EARS format for all functional requirements
-- Include non-functional requirements (performance, security)
+- Include non-functional requirements — load `references/nfr-checklist.md` for structured NFR elicitation (performance, scalability, availability, security, observability, maintainability, compliance)
 - Provide testable acceptance criteria
 - Include implementation TODO checklist
 - Ask for clarification on ambiguous requirements

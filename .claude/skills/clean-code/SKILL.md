@@ -6,10 +6,10 @@ metadata:
   risk: safe
   source: "ClawForge (https://github.com/jackjin1997/ClawForge)"
   date_added: "2026-02-27"
-  last-reviewed: "2026-03-14"
   domain: quality
   role: reference
   scope: cross-stack
+last-reviewed: "2026-03-14"
 ---
 
 # Clean Code Skill

@@ -39,6 +39,7 @@ Read [reference/security-review-checklist.md](reference/security-review-checklis
 |------|---------|-----------|
 | [reference/security-review-checklist.md](reference/security-review-checklist.md) | OWASP Top 10, secrets scanning, auth/authz, injection, data protection checklists | All security reviews |
 | [reference/pci-dss-requirements.md](reference/pci-dss-requirements.md) | PCI DSS 12 requirements, compliance levels (L1-L4), SAQ types, prohibited data, audit log requirements, common violations | Any feature touching payment card data, payment processors, or billing |
+| [reference/owasp-infrastructure-baseline.md](reference/owasp-infrastructure-baseline.md) | 15 OWASP-mapped infrastructure controls — encryption at rest/transit, IAM least-privilege, network hardening, audit logging, secret rotation | Any IaC review (Terraform, GCP, AWS), cloud config review, infrastructure security |
 
 ## Error Handling
 

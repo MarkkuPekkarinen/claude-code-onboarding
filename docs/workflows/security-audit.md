@@ -41,7 +41,7 @@ Before running any scanner, define:
 | Auth, payments, PII | Full pipeline: all 4 commands + 2 agents |
 | New API endpoints | `/audit-security` + `security-reviewer` + `/security-dependencies` |
 | UI-only changes | `/xss-scan` + `security-reviewer` |
-| Config / infrastructure | `/security-dependencies` + manual secrets check |
+| Config / infrastructure | `/security-dependencies` + manual secrets check + `owasp-infrastructure-baseline.md` (SECURITY-01 through SECURITY-15) |
 | Routine feature | `/audit-security` + `/security-dependencies` |
 
 ---

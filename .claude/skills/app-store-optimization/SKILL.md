@@ -9,7 +9,7 @@ metadata:
   role: specialist
   scope: optimization
   output-format: document
-  last-reviewed: "2026-03-15"
+last-reviewed: "2026-03-15"
 ---
 
 # App Store Optimization (ASO)
