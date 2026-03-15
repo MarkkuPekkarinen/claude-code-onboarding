@@ -55,6 +55,7 @@ Multi-phase workflow guides for every development process in this workspace. Eac
 | [receiving-code-review.md](receiving-code-review.md) | Processing and responding to review feedback |
 | [pre-commit-validation.md](pre-commit-validation.md) | `/pr-risk`, `/validate-changes` before committing |
 | [design-system-compliance.md](design-system-compliance.md) | Design token enforcement, WCAG 2.1 audit |
+| [accessibility-audit.md](accessibility-audit.md) | WCAG 2.1 AA audit, axe-core + flutter_test automation, manual keyboard/screen reader testing, CI/CD gate |
 
 ---
 

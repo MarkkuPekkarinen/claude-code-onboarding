@@ -2,7 +2,7 @@
 
 > Complete skill catalog for Claude Code Onboarding Kit. Use this to find the right skill for any task.
 >
-> 60 skills across 9 domains. Each skill is loaded with `/skill-name` or via `Skill` tool.
+> 63 skills across 9 domains. Each skill is loaded with `/skill-name` or via `Skill` tool.
 >
 > **Lazy-load pattern:** Each SKILL.md is a routing document only. Detailed patterns live in `reference/` files within each skill directory. Load the reference file explicitly when the detail is needed — do not expect it to be loaded automatically.
 
@@ -10,7 +10,7 @@
 
 ## Quick Reference by Domain
 
-### Backend (15 skills)
+### Backend (18 skills)
 - **adk-deploy-guide**: Used before deploying any ADK agent to Google Cloud — covers Cloud Run, Agent Engine, event-driven (Pub/Sub, Eventarc, BigQuery Remote Function), Terraform, and CI/CD.
 - **adk-eval-guide**: Used when evaluating ADK agents, running `adk eval`, writing evalsets, configuring eval metrics (all 8 criteria), LLM-as-judge configuration, user simulation, multimodal evaluation, and debugging eval failures.
 - **adk-observability-guide**: Used when configuring tracing (Cloud Trace), prompt-response logging, or BigQuery Agent Analytics for ADK agents — covers 3 observability tiers.
@@ -26,6 +26,9 @@
 - **mcp-builder**: Used when building MCP (Model Context Protocol) servers to integrate external APIs or services, providing guides for Python (FastMCP) and Node/TypeScript (MCP SDK) implementations.
 - **nestjs-api**: Provides patterns and templates for NestJS 11.x with Fastify, Prisma ORM, and TypeScript 5.x development, activated when creating modules, controllers, services, DTOs, guards, interceptors, or tests.
 - **nestjs-coding-standard**: Activated when reviewing NestJS/TypeScript code or enforcing coding standards in NestJS 11.x services, covering naming conventions, TypeScript strictness, DTO patterns, and module organization.
+- **typescript-advanced-types**: Master TypeScript's advanced type system for Angular 21.x, NestJS 11.x, and MCP Builder — covers generics, conditional types, mapped types, template literal types, and custom utility types (DeepPartial, DeepReadonly, Branded). Load alongside nestjs-api (DTO design), angular-spa (service factories), or mcp-builder (Zod schemas). 717-line implementation playbook in `resources/`.
+- **typescript-expert**: TypeScript infrastructure specialist for monorepo project references (`composite: true`), tsc performance diagnostics (`--extendedDiagnostics`), ESM/CJS interop, strict mode migration, and `.d.ts` authoring. Use for project-level TypeScript decisions; defer to framework-specific skills for implementation patterns. Ships with `tsconfig-strict.json`, `utility-types.ts`, `typescript-cheatsheet.md`, and `ts_diagnostic.py`.
+- **typescript-pro**: TypeScript architecture design for strict type safety, decorator and metadata programming, type-safe configuration hierarchies, and module-level type contracts — use when architecting enterprise-grade shared types for NestJS, Angular, or MCP servers.
 - **python-dev**: Provides patterns and templates for Python 3.14 development with FastAPI and modern tooling, activated when creating Python APIs, scripts, data processing pipelines, or pytest tests.
 - **docker**: Use when writing or reviewing Dockerfiles, docker-compose files, or .dockerignore for any backend service. Covers multi-stage builds, container security hardening, and Docker Compose orchestration for NestJS/Node 24, Spring Boot WebFlux 3.5.x/Java 21, Python FastAPI 3.14, and TypeScript/Fastify/Node 24. Reference files: `reference/dockerfiles.md` (copy-ready Dockerfiles for all 5 stack variants), `reference/compose-patterns.md` (dev/prod compose, Docker secrets), `reference/advanced-patterns.md` (build cache, multi-arch, distroless, diagnostics), `assets/docker-review-checklist.md`.
 - **gcp-cloud-run**: Use for Cloud Run Functions (event-driven Pub/Sub, Storage, HTTP webhooks), cold start optimization, and anti-pattern prevention for all 4 backend stacks. For Cloud Run service deployment use deployment-engineer agent.
@@ -73,8 +76,10 @@
 - **api-design-principles**: Use before designing any REST API endpoint — covers URL structure, HTTP method semantics, pagination, caching, idempotency, and bulk operations across Python FastAPI, NestJS 11.x, and Spring Boot WebFlux 3.5.x. Reference files: `reference/rest-design-principles.md` (patterns with examples for all 3 stacks), `assets/api-design-checklist.md` (60-item pre-implementation checklist).
 - **mcp-builder**: Used when building MCP servers to integrate external APIs — also listed under Backend as it produces implementation code.
 
-### Quality & Testing (6 skills)
+### Quality & Testing (8 skills)
 - **browser-testing**: Browser automation and testing using Chrome DevTools MCP and Browser-Use MCP for debugging, performance analysis, E2E flows, and UI interaction.
+- **accessibility-audit**: WCAG 2.1 AA accessibility audit for Angular 21.x and Flutter 3.38. Use when auditing UI for accessibility compliance, adding automated axe-core or flutter_test semantic testing, identifying barriers, or integrating accessibility gates into CI/CD. Reference files: `reference/angular-a11y-automated.md`, `reference/flutter-a11y-automated.md`, `reference/manual-testing-checklist.md`, `reference/cicd-integration.md`.
+- **clean-code**: Language-agnostic code quality skill based on Robert C. Martin's *Clean Code*. Use when writing, reviewing, or refactoring code across any stack — covers naming, functions, comments, formatting, Law of Demeter, error handling, F.I.R.S.T. test principles, classes, and code smells.
 - **code-reviewer**: General-purpose code review skill providing checklists for security, code quality, performance, and best practices when reviewing code changes, PRs, or performing quality audits.
 - **dedup-code-agent**: Code duplication detection and technical debt analysis skill providing methodology for finding duplicate code, dead code, and dependency bloat.
 - **pr-review**: Used when reviewing someone else's PR or preparing review comments for GitHub, implementing a two-stage approval process with internal analysis before any public posting.
@@ -124,6 +129,12 @@
 4. **openapi-spec-generation** — Generate API spec
 5. **database-schema-designer** — Design Prisma schema
 6. **code-reviewer** — Final review
+
+### TypeScript Type System (NestJS, Angular, or MCP Builder)
+1. **typescript-advanced-types** — Load for type-level patterns: generics, conditional types, mapped types, utility types
+2. **typescript-pro** — Design type-safe architectures, decorator patterns, module-level contracts
+3. **typescript-expert** — Diagnose build perf, set up monorepo project refs, resolve ESM/CJS interop
+4. **nestjs-coding-standard** or **angular-spa** — Enforce framework-specific TypeScript standards
 
 ### Flutter Mobile Feature
 1. **flutter-mobile** — Build screens, Riverpod providers, Freezed models
@@ -252,6 +263,9 @@
 - **Switch embedding model (re-embedding migration)** -> vector-database → `/migrate-embedding-model`
 - **Search/query an existing Weaviate cluster** -> weaviate → `/weaviate:search` or `/weaviate:ask`
 - **Build a Weaviate-based application (chatbot, RAG app)** -> weaviate-cookbooks
+- **TypeScript type-level programming (generics, conditional, mapped types)** -> typescript-advanced-types
+- **TypeScript project infrastructure (monorepo, build perf, ESM/CJS, migration)** -> typescript-expert
+- **TypeScript architecture design (shared types, decorators, strict config)** -> typescript-pro
 
 ### What review do I need?
 - **General code quality** -> code-reviewer
@@ -311,6 +325,9 @@ docker (+ java-spring-api OR nestjs-api OR python-dev — depending on stack)
 
 ### Full NestJS API Feature
 nestjs-api + nestjs-coding-standard + openapi-spec-generation + database-schema-designer + code-reviewer
+
+### TypeScript Type Hardening (NestJS or Angular)
+typescript-advanced-types + typescript-pro + nestjs-coding-standard (or angular-spa)
 
 ### Flutter Mobile App
 flutter-mobile + riverpod-patterns + ui-standards-tokens + code-reviewer
@@ -406,6 +423,11 @@ a2ui-angular + angular-spa + google-adk + security-reviewer
 - "Build a Query Agent chatbot on Weaviate" -> weaviate-cookbooks + agentic-ai-dev
 - "Review my pgvector migration for correctness" -> pgvector-schema-reviewer agent
 - "Set up Weaviate Cloud and load example data" -> weaviate → `/weaviate:quickstart`
+- "Design type-safe generic DTOs for NestJS with DeepPartial" -> typescript-advanced-types + nestjs-api
+- "Set up monorepo TypeScript with shared types between Angular and NestJS" -> typescript-expert + angular-spa + nestjs-api
+- "Design type-safe NestJS decorators and strict config hierarchy" -> typescript-pro + nestjs-coding-standard
+- "Debug slow TypeScript compilation in NestJS service" -> typescript-expert
+- "Migrate JavaScript NestJS codebase to strict TypeScript" -> typescript-expert + nestjs-coding-standard
 
 ---
 
@@ -483,3 +505,6 @@ a2ui-angular + angular-spa + google-adk + security-reviewer
 | vector-database | vector-db | specialist | implementation | code |
 | weaviate | vector-db | specialist | implementation | code |
 | weaviate-cookbooks | vector-db | specialist | implementation | code |
+| typescript-advanced-types | backend | specialist | implementation | code |
+| typescript-expert | backend | specialist | analysis | report |
+| typescript-pro | backend | specialist | design | code |
