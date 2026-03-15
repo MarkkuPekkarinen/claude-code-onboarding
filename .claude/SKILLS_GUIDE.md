@@ -102,7 +102,7 @@
 ### Quality & Testing (10 skills)
 - **browser-testing**: Browser automation and testing using Chrome DevTools MCP and Browser-Use MCP for debugging, performance analysis, E2E flows, and UI interaction.
 - **ui-visual-validator**: CI/CD visual regression setup and pre-commit 13-item verification checklist. Scoped complement to `reality-checker` agent — adds Chromatic, Percy, Applitools, BackstopJS, and Playwright Visual tooling setup for GitHub Actions. Use alongside `reality-checker`: this skill provides the methodology and CI tooling; `reality-checker` provides the live browser verdict.
-- **accessibility-audit**: WCAG 2.1 AA accessibility audit for Angular 21.x and Flutter 3.38. Use when auditing UI for accessibility compliance, adding automated axe-core or flutter_test semantic testing, identifying barriers, or integrating accessibility gates into CI/CD. Reference files: `reference/angular-a11y-automated.md`, `reference/flutter-a11y-automated.md`, `reference/manual-testing-checklist.md`, `reference/cicd-integration.md`.
+- **accessibility-audit**: WCAG 2.1 AA accessibility audit for Angular 21.x and Flutter 3.38. Use when auditing UI for accessibility compliance, adding automated axe-core or flutter_test semantic testing, identifying barriers, or integrating accessibility gates into CI/CD. Reference files: `reference/angular-a11y-automated.md`, `reference/flutter-a11y-automated.md`, `reference/manual-testing-checklist.md`, `reference/cicd-integration.md`. Command: `/fixing-accessibility <file>` for targeted single-file audits.
 - **clean-code**: Language-agnostic code quality skill based on Robert C. Martin's *Clean Code*. Use when writing, reviewing, or refactoring code across any stack — covers naming, functions, comments, formatting, Law of Demeter, error handling, F.I.R.S.T. test principles, classes, and code smells.
 - **code-reviewer**: General-purpose code review skill providing checklists for security, code quality, performance, and best practices when reviewing code changes, PRs, or performing quality audits.
 - **dedup-code-agent**: Code duplication detection and technical debt analysis skill providing methodology for finding duplicate code, dead code, and dependency bloat.
@@ -478,6 +478,8 @@ a2ui-angular + angular-spa + google-adk + security-reviewer
 - "Create a Flutter screen with Riverpod state" -> flutter-mobile + riverpod-patterns + ui-standards-tokens
 - "Add animations to a Flutter app" -> flutter-animations + flutter-mobile + riverpod-patterns
 - "Angular animation is janky or stuttering" -> fixing-motion-performance + angular-spa + web-performance-optimization
+- "Audit a file for accessibility violations" -> /fixing-accessibility <file> (dispatches accessibility-auditor agent)
+- "Check WCAG compliance on my Angular/Flutter UI" -> /fixing-accessibility + accessibility-audit skill
 - "Apply touch psychology before building a Flutter screen" -> mobile-design (load first, then flutter-mobile)
 - "Score MFRI before implementing a complex Flutter feature" -> mobile-design
 - "Build a React Native screen with offline sync" -> mobile-developer + mobile-design
