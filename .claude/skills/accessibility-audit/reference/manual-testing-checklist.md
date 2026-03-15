@@ -33,6 +33,10 @@ Manual checks that automated tools cannot catch. Run after automated scan confir
 
 **Tools:** VoiceOver (macOS/iOS), NVDA or JAWS (Windows), TalkBack (Android)
 
+**Testing priority:**
+- Minimum: NVDA + Firefox → VoiceOver + Safari (macOS) → VoiceOver + Safari (iOS)
+- Comprehensive: + JAWS + Chrome → TalkBack + Chrome (Android)
+
 | Check | Angular | Flutter |
 |-------|---------|---------|
 | Page title is descriptive | `<title>` tag | App bar title or route |
@@ -49,6 +53,111 @@ Manual checks that automated tools cannot catch. Run after automated scan confir
 3. Navigate to each form — are labels read before field?
 4. Submit form with error — is error message announced immediately?
 5. Trigger a status update — is the live region read?
+
+### VoiceOver Commands (macOS) — VO = Ctrl+Option
+
+```
+Navigation:
+VO + Right/Left Arrow   Next/previous element
+VO + Shift + Down/Up    Enter/exit group
+VO + U                  Open Rotor (navigate by Headings/Links/Forms/Landmarks)
+  Left/Right Arrow        Change rotor category
+  Up/Down Arrow           Navigate within category
+
+Reading:
+VO + A                  Read all from cursor
+Ctrl                    Stop speaking
+VO + Cmd + H            Next heading
+VO + Cmd + J            Next form control
+VO + Cmd + L            Next link
+
+Interaction:
+VO + Space              Activate element
+Tab / Shift+Tab         Next/previous focusable element
+```
+
+### NVDA Commands (Windows) — Insert = NVDA modifier
+
+```
+Navigation (Browse mode — default):
+H / Shift+H             Next/previous heading
+1–6                     Heading level 1–6
+D / Shift+D             Next/previous landmark
+F                       Next form field
+B                       Next button
+K / U / V               Next link / unvisited / visited
+
+Reading:
+NVDA + Down Arrow       Say all
+Ctrl                    Stop speech
+NVDA + Space            Toggle Browse ↔ Focus mode
+
+Elements List:
+NVDA + F7               All links, headings, form fields, landmarks
+
+Note: NVDA auto-switches to Focus mode when entering form fields.
+Manual override: NVDA + Space
+```
+
+### JAWS Commands (Windows)
+
+```
+Navigation:
+H                       Next heading
+F                       Next form field
+B                       Next button
+G                       Next graphic
+;                       Next landmark
+T                       Next table
+Ctrl+Alt+Arrows         Table cell navigation
+
+Lists:
+Insert + F7             Link list
+Insert + F6             Heading list
+Insert + F5             Form field list
+
+Forms Mode:
+Enter                   Enter forms mode
+Numpad +                Exit forms mode
+```
+
+### TalkBack Gestures (Android)
+
+```
+Explore by touch:       Drag finger across screen
+Next element:           Swipe right
+Previous element:       Swipe left
+Activate:               Double tap
+Scroll:                 Two-finger swipe
+Reading controls:       Swipe up then right → choose Headings/Links/Controls
+```
+
+### NVDA Step-by-Step Test Script
+
+```
+1. Navigate to page → Insert+Down to read all → note title and main content
+2. Press D repeatedly → verify all main areas reachable and labeled
+3. Insert+F7 → Headings → verify logical structure
+4. Press F → find first form field → verify label is read
+5. Enter invalid data → submit → verify error announced, focus moves to error
+6. Tab through all interactive elements → verify role and state announced
+7. Trigger content update → verify change announced
+8. Open modal → verify focus trapped → close → verify focus returns to trigger
+```
+
+### Common ARIA Fixes
+
+```html
+<!-- Icon-only button missing label -->
+<button aria-label="Close dialog"><svg aria-hidden="true">...</svg></button>
+
+<!-- Dynamic content not announced -->
+<div role="status" aria-live="polite">Search returned 12 results</div>
+
+<!-- Form error not read -->
+<input type="email" aria-invalid="true" aria-describedby="email-error" />
+<span id="email-error" role="alert">Invalid email address</span>
+```
 
 ---
 
@@ -104,6 +213,98 @@ Checks automated tools cannot catch. Applies to both Angular and Flutter.
 | 200% font scale | Settings → Display → Font Size → Largest |
 | High contrast mode | Settings → Accessibility → High Contrast → On |
 | Sufficient touch target spacing | Visually check — targets should not be adjacent without padding |
+
+---
+
+## ARIA Patterns Reference
+
+### Modal Dialog — Focus Trap
+
+```html
+<div role="dialog" aria-modal="true" aria-labelledby="dialog-title" aria-describedby="dialog-desc">
+  <h2 id="dialog-title">Confirm Delete</h2>
+  <p id="dialog-desc">This action cannot be undone.</p>
+  <button>Cancel</button>
+  <button>Delete</button>
+</div>
+```
+
+```javascript
+function openModal(modal) {
+  lastFocus = document.activeElement;       // store trigger
+  modal.querySelector('h2').focus();        // move focus in
+  modal.addEventListener('keydown', trapFocus);
+}
+
+function closeModal(modal) {
+  modal.removeEventListener('keydown', trapFocus);
+  lastFocus.focus();                        // return focus to trigger
+}
+
+function trapFocus(e) {
+  const focusable = modal.querySelectorAll(
+    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+  );
+  const first = focusable[0];
+  const last  = focusable[focusable.length - 1];
+
+  if (e.key === 'Tab') {
+    if (e.shiftKey && document.activeElement === first) {
+      last.focus(); e.preventDefault();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      first.focus(); e.preventDefault();
+    }
+  }
+  if (e.key === 'Escape') closeModal(modal);
+}
+```
+
+### Live Regions
+
+```html
+<!-- Status (polite — waits for current speech to finish) -->
+<div role="status" aria-live="polite" aria-atomic="true">
+  <!-- inject: "3 results found", "Saved", etc. -->
+</div>
+
+<!-- Alert (assertive — interrupts current speech) -->
+<div role="alert" aria-live="assertive">
+  <!-- inject: validation errors, critical warnings -->
+</div>
+
+<!-- Progress bar -->
+<div role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" aria-label="Upload progress"></div>
+
+<!-- Log (appended messages only, order matters) -->
+<div role="log" aria-live="polite" aria-relevant="additions">
+  <!-- new chat messages, activity feed entries -->
+</div>
+```
+
+### Tab Interface (Angular / Web)
+
+```html
+<div role="tablist" aria-label="Product information">
+  <button role="tab" id="tab-1" aria-selected="true"  aria-controls="panel-1">Description</button>
+  <button role="tab" id="tab-2" aria-selected="false" aria-controls="panel-2" tabindex="-1">Reviews</button>
+</div>
+<div role="tabpanel" id="panel-1" aria-labelledby="tab-1">...</div>
+<div role="tabpanel" id="panel-2" aria-labelledby="tab-2" hidden>...</div>
+```
+
+```javascript
+// Arrow-key navigation within tablist (WCAG APG pattern)
+tablist.addEventListener('keydown', (e) => {
+  const tabs = [...tablist.querySelectorAll('[role="tab"]')];
+  const index = tabs.indexOf(document.activeElement);
+  const map = { ArrowRight: 1, ArrowLeft: -1, Home: -index, End: tabs.length - 1 - index };
+  if (!(e.key in map)) return;
+  const newIndex = (index + map[e.key] + tabs.length) % tabs.length;
+  tabs[newIndex].focus();
+  activateTab(tabs[newIndex]);
+  e.preventDefault();
+});
+```
 
 ---
 

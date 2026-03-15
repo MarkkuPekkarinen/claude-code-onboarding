@@ -30,6 +30,13 @@ For the complete security review checklist and methodology:
 
 Read [reference/security-review-checklist.md](reference/security-review-checklist.md)
 
+## Reference Files
+
+| File | Content | Load When |
+|------|---------|-----------|
+| [reference/security-review-checklist.md](reference/security-review-checklist.md) | OWASP Top 10, secrets scanning, auth/authz, injection, data protection checklists | All security reviews |
+| [reference/pci-dss-requirements.md](reference/pci-dss-requirements.md) | PCI DSS 12 requirements, compliance levels (L1-L4), SAQ types, prohibited data, audit log requirements, common violations | Any feature touching payment card data, payment processors, or billing |
+
 ## Error Handling
 
 If target files/directories don't exist, report "Target not found" with the paths searched.
