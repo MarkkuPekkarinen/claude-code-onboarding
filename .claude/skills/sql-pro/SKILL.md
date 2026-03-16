@@ -1,6 +1,6 @@
 ---
 name: sql-pro
-description: Master modern SQL with cloud-native databases, OLTP/OLAP optimization, and advanced query techniques across PostgreSQL, BigQuery, Snowflake, and hybrid analytical systems.
+description: "Masters modern SQL across PostgreSQL, BigQuery, Snowflake, and hybrid OLTP/OLAP systems — covering advanced query techniques, dimensional modeling, time-series SQL, and data warehouse patterns. Use when writing complex analytics SQL, designing cloud database schemas, or optimizing cross-platform SQL workloads."
 argument-hint: "[query goal, schema, or workload type]"
 allowed-tools: Read
 context: fork

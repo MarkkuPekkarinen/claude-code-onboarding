@@ -1,6 +1,6 @@
 ---
 name: sql-optimization-patterns
-description: Transform slow PostgreSQL queries into fast operations through systematic EXPLAIN analysis, indexing strategies, N+1 elimination, and cursor pagination.
+description: "Transforms slow PostgreSQL queries into fast operations through systematic EXPLAIN ANALYZE, indexing strategies, N+1 elimination, cursor pagination, and materialized views. Use when diagnosing slow queries, optimizing database performance, or designing index strategies — always profile before optimizing."
 argument-hint: "[slow query, table name, or optimization goal]"
 allowed-tools: Read
 context: fork

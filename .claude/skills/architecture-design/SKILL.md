@@ -1,6 +1,6 @@
 ---
 name: architecture-design
-description: This skill should be used when designing system architecture, API contracts, deployment topologies, or making technology decisions for full-stack applications.
+description: "Full-stack system architecture skill for designing C4 diagrams, API contracts, sequence diagrams, deployment topologies, and ADRs. Use when designing new systems, choosing tech stacks, defining service boundaries, or producing architecture documentation before implementation starts."
 argument-hint: "[system or feature to design]"
 allowed-tools: Bash, Read, Write, Edit
 agent: architect

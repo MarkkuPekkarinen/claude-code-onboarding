@@ -1,9 +1,6 @@
 ---
 name: documentation-generation
-description: Documentation generation skill for README creation, docstring patterns,
-  and CI/CD doc pipelines. Use when generating project documentation, writing docstrings,
-  setting up doc automation, or creating README files. Triggers: doc-generate, README,
-  docstring, documentation, doc pipeline, generate docs.
+description: "Generates project documentation including READMEs, docstrings (JSDoc, JavaDoc, Python docstrings), OpenAPI prose, and CI/CD doc pipelines. Use when asked to generate docs, write docstrings, automate documentation, or create README files."
 allowed-tools: Read, Grep, Glob, Bash, Write, Edit
 metadata:
   triggers: README, docstring, documentation, API docs, JSDoc, JavaDoc, doc generation, documentation pipeline

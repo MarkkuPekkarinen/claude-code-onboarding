@@ -1,10 +1,6 @@
 ---
 name: adk-deploy-guide
-description: >
-  MUST READ before deploying any ADK agent to Google Cloud.
-  Use when: deploy ADK agent, Cloud Run, Agent Engine, Vertex AI deployment,
-  ADK production, ADK CI/CD, GCP deployment, event-driven agent, Pub/Sub agent.
-  Do NOT use for agent code patterns (use google-adk) or project scaffolding.
+description: "MUST READ before deploying any ADK agent to Google Cloud — covers Cloud Run, Agent Engine, Vertex AI, event-driven agents, and ADK CI/CD pipelines. Use when deploying ADK agents to production, not for agent code patterns (use google-adk) or project scaffolding."
 allowed-tools: Bash, Read, Write, Edit
 metadata:
   triggers: deploy ADK agent, Cloud Run, Agent Engine, Vertex AI deployment, ADK production, ADK CI/CD

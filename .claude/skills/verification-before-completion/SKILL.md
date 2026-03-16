@@ -1,6 +1,6 @@
 ---
 name: verification-before-completion
-description: Use when about to claim work is complete, fixed, or passing, before committing or creating PRs - requires running verification commands and confirming output before making any success claims; evidence before assertions always
+description: "Pre-completion verification checklist that mandates running tests, linting, and build commands before claiming work is done, fixed, or passing. Use before any commit, PR creation, or completion claim — evidence must precede assertions; triggers: done, complete, finished, working, before committing, before PR."
 allowed-tools: Read, Bash
 metadata:
   triggers: verification, done, complete, finished, working, before committing, before PR, verify before claiming

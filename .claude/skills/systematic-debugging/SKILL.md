@@ -1,6 +1,6 @@
 ---
 name: systematic-debugging
-description: Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes
+description: "Root-cause-first debugging methodology for any bug, test failure, exception, or unexpected behavior — mandates investigation before proposing fixes. Use when something is broken, not working, crashing, or throwing errors; triggers: debug, error, bug, exception, stack trace, not working, crash."
 allowed-tools: Read, Grep, Glob, Bash
 metadata:
   triggers: debug, error, bug, exception, stack trace, troubleshoot, root cause, not working, crash, investigate issue

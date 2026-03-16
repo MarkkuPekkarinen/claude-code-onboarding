@@ -2,13 +2,7 @@
 name: ddd-architect
 allowed-tools: Read, Write, Edit
 argument-hint: "[domain or bounded context]"
-description: >
-  Comprehensive Domain-Driven Design analysis and architecture generation.
-  Use when asked to perform DDD analysis, design bounded contexts, create domain models,
-  define aggregates, design context maps, decompose into microservices or modular monolith,
-  or generate DDD documentation. Triggers: "DDD", "domain-driven design", "bounded context",
-  "aggregate design", "context map", "subdomain", "ubiquitous language", "strategic design",
-  "tactical design", "domain model", "modular monolith decomposition".
+description: "Comprehensive Domain-Driven Design analysis and architecture generation — use when designing bounded contexts, defining aggregates, creating context maps, or decomposing systems into microservices or modular monolith. Triggers: DDD, domain-driven design, bounded context, aggregate design, context map, subdomain, ubiquitous language, strategic/tactical design, domain model."
 metadata:
   triggers: DDD, domain-driven design, bounded context, aggregate design, context map, subdomain, ubiquitous language, strategic design, tactical design, domain model, modular monolith decomposition
   related-skills: architecture-design, architecture-decision-records, database-schema-designer
