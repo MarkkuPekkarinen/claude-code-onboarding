@@ -12,7 +12,7 @@ metadata:
   risk: safe
   source: "antigravity-awesome-skills (community)"
   date_added: "2026-03-14"
-last-reviewed: "2026-06-13"
+last-reviewed: "2026-03-16"
 ---
 
 > **Iron Law:** Before designing any TypeScript architecture, READ the actual source files and existing type definitions first. Do not propose type contracts from memory — verify the actual code (file:line) before making any claim.
