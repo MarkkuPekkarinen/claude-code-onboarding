@@ -149,6 +149,44 @@
 
 ---
 
+## Product Ideation & Design (9 agents, 9 commands)
+
+> Complete pipeline from idea to published wireframes and presentations. Uses Titan methodology (Elon Musk's first-principles + Steve Jobs' design taste) for evaluation.
+
+### Agents
+
+- **idea-to-backlog**: Transforms one-line product ideas into validated feature backlogs with pain points, competitive analysis, TAM/SAM/SOM, and MVP candidates. Uses Titan Product Strategist persona (Elon + Jobs). Trigger: "create backlog for [idea]", "generate feature backlog". Reference: `.claude/agents/references/idea-to-backlog/output-template.md`
+- **mvp-shortlist**: Evaluates feature backlogs using Titan methodology — Elon criteria (Problem Magnitude, 10x Potential, Feasibility, Revenue, Scalability) + Steve criteria (User Delight, Simplicity, Coherence, Wow Factor, Taste). Applies Subtraction Game, maps features to screens. Trigger: "shortlist MVP from backlog", "select MVP features". Reference: `.claude/agents/references/mvp-shortlist/output-template.md`
+- **reddit-research**: Mines Reddit threads for real customer pain points, unmet needs, and product gaps. Classifies query intent (PAIN_POINTS/RECOMMENDATIONS/TRENDS/GENERAL), fetches via `scripts/reddit_fetcher.py`, outputs ranked top-10 report with behavioral evidence. Trigger: "find pain points for [topic]", "reddit research [topic]". Reference: `.claude/agents/references/reddit-research/prompts.md`
+- **premium-wireframe-2026**: Generates Aurora 2026 dual-theme mobile wireframes — glassmorphism, ambient orbs, iPhone 15 Pro frames, dark/light toggle, Google Fonts (Outfit), zero dependencies. Pure HTML/CSS/JS. Trigger: "generate wireframe for [MVP]", "create premium wireframe". Reference: `.claude/agents/references/premium-wireframe/aurora-design-system.md`
+- **wireframe-reviewer**: Dual-persona review using Elon (efficiency, flow, feature coverage) + Steve (simplicity, visual excellence, emotional design) scoring /100. APPROVED ≥80, ITERATE 60-79, REDESIGN <60. Generates Lock Document on approval. Trigger: "review wireframe [path]". Framework: `rules/titan-methodology.md`
+- **wireframe-iterator**: Applies review feedback in 3 passes — P0 Critical (blocking), P1 Recommended, P2 Polish — with regression validation after each pass. Decision log tracks Applied/Rejected/Deferred. Trigger: "iterate wireframe [path]".
+- **publish-wireframes**: Discovers all wireframe HTML files, classifies by style (Premium/Sketch), regenerates `index.html` landing page with versioning (2 most recent per project), deploys to Firebase Hosting. Trigger: "publish wireframes", "deploy to Firebase".
+- **presentation**: Generates animation-rich HTML slide presentations — from scratch, PPT conversion, or from studio artifacts. Mood-based style selection (12 presets), viewport-perfect, zero dependencies. Trigger: "create slides for [topic]", "convert deck.pptx", "create presentation". Reference: `.claude/agents/references/presentation/`
+
+### Commands
+
+| Command | Purpose | Agent |
+|---------|---------|-------|
+| `/research` | Mine Reddit for customer pain points | `reddit-research` |
+| `/backlog` | Generate feature backlog from product idea | `idea-to-backlog` |
+| `/shortlist` | Select MVP features from backlog using Titan scoring | `mvp-shortlist` |
+| `/wireframe` | Generate premium dual-theme wireframe (Aurora 2026) | `premium-wireframe-2026` |
+| `/sketch-wireframe` | Generate hand-drawn lo-fi sketch wireframe | Sketch wireframe agent |
+| `/review-wireframe` | Score wireframe with Elon+Steve dual-persona /100 | `wireframe-reviewer` |
+| `/iterate-wireframe` | Apply review feedback in 3 prioritized passes | `wireframe-iterator` |
+| `/publish-wireframes` | Deploy all wireframes to Firebase Hosting | `publish-wireframes` |
+| `/slides` | Create HTML slide presentation | `presentation` |
+
+### Titan Methodology
+
+Loaded from `rules/titan-methodology.md`. Dual-lens scoring for product decisions:
+- **Elon's Lens (50%)**: Problem Magnitude, 10x Potential, Technical Feasibility, Execution Speed, Scalability
+- **Steve's Lens (50%)**: User Delight, Simplicity, Design Quality, Emotional Connection, Market Positioning
+- **Threshold**: 8.0+ = BUILD IT, 7.0-7.9 = REFINE, <6.0 = RETHINK
+
+---
+
 ## Skill Workflows
 
 > Ordered sequences for common development tasks.
