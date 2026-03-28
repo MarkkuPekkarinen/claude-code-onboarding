@@ -340,6 +340,86 @@ AnimatedSwitcher(
 )
 ```
 
+### Staged / Progressive Loading
+
+For screens that load multiple independent data sources, load them in priority order so the user sees content immediately rather than waiting for everything.
+
+```dart
+// 1. Define loading stages as an enum
+enum LoadStage { skeleton, primary, secondary, complete }
+
+// 2. Track stage in the notifier
+@riverpod
+class HomeScreenNotifier extends _$HomeScreenNotifier {
+  @override
+  Future<HomeScreenState> build() async {
+    return _loadProgressively();
+  }
+
+  Future<HomeScreenState> _loadProgressively() async {
+    // Stage 0 — skeleton shown immediately via AsyncValue.loading()
+
+    // Stage 1 — highest-priority data first (above-the-fold content)
+    final categories = await ref.read(categoryRepositoryProvider).fetchAll();
+    state = AsyncValue.data(
+      HomeScreenState(stage: LoadStage.primary, categories: categories),
+    );
+
+    // Stage 2 — secondary data (below-the-fold or less critical)
+    final items = await ref.read(scrapItemRepositoryProvider).fetchAll();
+    state = AsyncValue.data(
+      HomeScreenState(
+        stage: LoadStage.secondary,
+        categories: categories,
+        items: items,
+      ),
+    );
+
+    // Stage 3 — everything loaded
+    return HomeScreenState(
+      stage: LoadStage.complete,
+      categories: categories,
+      items: items,
+    );
+  }
+}
+
+// 3. Widget reacts to stage — progressive reveal, never a single long wait
+class HomeScreen extends ConsumerWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final homeAsync = ref.watch(homeScreenNotifierProvider);
+
+    return homeAsync.when(
+      loading: () => const HomeScreenSkeleton(),          // Stage 0
+      error: (err, _) => ErrorRetryWidget(
+        onRetry: () => ref.invalidate(homeScreenNotifierProvider),
+      ),
+      data: (state) => switch (state.stage) {
+        LoadStage.skeleton  => const HomeScreenSkeleton(),
+        LoadStage.primary   => HomePrimaryContent(categories: state.categories!),
+        LoadStage.secondary => HomeFullContent(
+            categories: state.categories!,
+            items: state.items!,
+          ),
+        LoadStage.complete  => HomeFullContent(
+            categories: state.categories!,
+            items: state.items!,
+          ),
+      },
+    );
+  }
+}
+```
+
+**Rules:**
+- Stage 0 (skeleton) must render in under one frame — no async work before showing it
+- Each stage emits a valid `AsyncValue.data` — never hold state in a local variable between stages
+- Stages are additive: later stages include all data from earlier stages
+- Use `ref.invalidate(provider)` on retry — don't re-implement the loading sequence in the widget
+
 ### Real-time Form Validation
 
 ```dart
@@ -405,3 +485,100 @@ class _WorkoutFormState extends ConsumerState<WorkoutForm> {
   }
 }
 ```
+
+---
+
+## Responsive Layout — `context.responsive()` Extension
+
+A `BuildContext` extension that selects a value based on current screen width. Zero widget nesting — call it directly inside `build()` for any value (padding, column count, font size, widget).
+
+**Breakpoints** (Material 3 / adaptive layout grid):
+
+| Name | Min width | Typical device |
+|------|-----------|---------------|
+| mobile | 0 | phones |
+| tablet | 600 | small tablets |
+| desktop | 1200 | large tablets, desktop |
+| largeDesktop | 1600 | wide monitors |
+
+```dart
+// lib/core/extensions/responsive_extension.dart
+
+extension ResponsiveExtension on BuildContext {
+  /// Returns the value matching the current screen-width breakpoint.
+  /// Falls back to the next smaller breakpoint if a larger one is not provided.
+  ///
+  /// Example:
+  ///   final padding = context.responsive(mobile: 16.0, tablet: 24.0, desktop: 32.0);
+  T responsive<T>({
+    required T mobile,
+    T? tablet,
+    T? desktop,
+    T? largeDesktop,
+  }) {
+    final width = MediaQuery.sizeOf(this).width;
+    if (width >= 1600 && largeDesktop != null) return largeDesktop;
+    if (width >= 1200 && desktop != null) return desktop;
+    if (width >= 600 && tablet != null) return tablet;
+    return mobile;
+  }
+
+  /// Convenience booleans — use these for platform-branch logic.
+  bool get isMobile   => MediaQuery.sizeOf(this).width < 600;
+  bool get isTablet   => MediaQuery.sizeOf(this).width >= 600 && MediaQuery.sizeOf(this).width < 1200;
+  bool get isDesktop  => MediaQuery.sizeOf(this).width >= 1200;
+
+  /// Responsive column count for grid layouts.
+  int get responsiveColumns {
+    final w = MediaQuery.sizeOf(this).width;
+    if (w >= 1600) return 4;
+    if (w >= 1200) return 3;
+    if (w >= 840)  return 2;
+    return 1;
+  }
+
+  /// Responsive horizontal content padding.
+  EdgeInsets get responsiveContentPadding => EdgeInsets.symmetric(
+    horizontal: responsive(mobile: 16.0, tablet: 24.0, desktop: 40.0),
+  );
+}
+```
+
+**Usage in a widget:**
+
+```dart
+// ✅ Clean — no nested LayoutBuilder or MediaQuery.of() scattered everywhere
+class ProductGrid extends StatelessWidget {
+  final List<Product> products;
+  const ProductGrid({required this.products, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final columns  = context.responsiveColumns;
+    final padding  = context.responsiveContentPadding;
+    final spacing  = context.responsive(mobile: 8.0, tablet: 12.0, desktop: 16.0);
+
+    return Padding(
+      padding: padding,
+      child: GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: columns,
+          crossAxisSpacing: spacing,
+          mainAxisSpacing: spacing,
+          childAspectRatio: 0.75,
+        ),
+        itemCount: products.length,
+        itemBuilder: (_, i) => ProductCard(product: products[i]),
+      ),
+    );
+  }
+}
+```
+
+**Rules:**
+
+- Always use `MediaQuery.sizeOf(this)` (not `MediaQuery.of(this).size`) — rebuilds only when size changes, not on every MediaQuery field change
+- `mobile` is required — it is the safe fallback for all unspecified breakpoints
+- Use `context.responsive()` for values; use `context.isMobile` / `context.isDesktop` only for widget-branch decisions (e.g. showing a drawer vs a rail)
+- Never hardcode breakpoint numbers outside this extension — all screen-size decisions go through `responsive()` or the bool getters
+- Works with `const` widgets only if the value passed is itself `const` — pass it to a non-const constructor or use `final`

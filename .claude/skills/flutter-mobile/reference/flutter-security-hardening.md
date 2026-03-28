@@ -100,6 +100,73 @@ Add to the checklist in this file:
 - [ ] Privacy policy URL accessible from app
 - [ ] Dependencies scanned for known vulnerabilities
 
+## Crashlytics Structured Error Reporting
+
+Every catch block in a repository or service MUST record to Crashlytics — not just log locally. Structured reporting makes incidents searchable and debuggable in the Firebase console.
+
+### Pattern
+
+Use this alongside the `Result<T>` repository pattern from `flutter-architecture-patterns.md`. The two are complementary: `Result<T>` ensures callers handle failures; Crashlytics ensures failures are observable in production.
+
+```dart
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+
+// ✅ REQUIRED — repository method returning Result<T> with structured Crashlytics reporting
+Future<Result<Order>> fetchById(String id) async {
+  try {
+    final doc = await _firestore.collection('orders').doc(id).get();
+    return Success(Order.fromFirestore(doc));
+  } on FirebaseException catch (e, stack) {
+    // 1. Human-readable breadcrumb (searchable in Crashlytics console)
+    FirebaseCrashlytics.instance.log(
+      '[OrderRepository.fetchById] FirebaseException for order $id: ${e.code}',
+    );
+    // 2. Full error + stack trace — always await, dropping it loses the report
+    await FirebaseCrashlytics.instance.recordError(
+      e,
+      stack,
+      reason: 'OrderRepository.fetchById — id: $id',
+      printDetails: false, // prevents stack trace leaking to logcat in release builds
+    );
+    return Failure(e);
+  } catch (e, stack) {
+    FirebaseCrashlytics.instance.log(
+      '[OrderRepository.fetchById] Unexpected error for order $id: $e',
+    );
+    await FirebaseCrashlytics.instance.recordError(
+      e,
+      stack,
+      reason: 'OrderRepository.fetchById unexpected — id: $id',
+      printDetails: false,
+    );
+    return Failure(UnexpectedException(e.toString()));
+  }
+}
+```
+
+For high-cardinality context that doesn't fit in the `reason` string:
+
+```dart
+FirebaseCrashlytics.instance.setCustomKey('user_type', userType);
+FirebaseCrashlytics.instance.setCustomKey('order_status', order.status.name);
+```
+
+### Rules
+
+- **`log()` before `recordError()`** — the log line becomes a breadcrumb shown above the crash in the Firebase console
+- **Include `[ClassName.methodName]` in every log** — makes Crashlytics logs `grep`-able by call site
+- **Include the entity ID when safe** — `order $id` is fine; never include PII (email, phone, name)
+- **Always `await recordError()`** — it is async; dropping the await silently loses crash reports
+- **`printDetails: false`** — prevents internal stack traces appearing in logcat/console in release builds
+- **Return `Failure(e)`, do not rethrow** — use `Result<T>` so callers are forced to handle the failure case (see `flutter-architecture-patterns.md`)
+- **`setCustomKey()` for structured context** — prefer this over embedding state in the `reason` string
+
+### Pre-Release Checklist Addition
+
+- [ ] Every repository catch block calls `FirebaseCrashlytics.instance.log()` + `await recordError()` and returns `Failure(e)`
+- [ ] No PII in Crashlytics log strings or custom keys
+- [ ] `printDetails: false` on all `recordError()` calls
+
 ## Incident Response (Mobile-Specific)
 
 1. **Contain** — force app update or feature flag to disable compromised flow

@@ -141,7 +141,10 @@ Does docs/plans/YYYY-MM-DD-<feature-name>.md exist?
 1. Freezed model → `lib/features/<name>/data/models/<name>_model.dart`
 2. Repository interface → `lib/features/<name>/domain/repositories/<name>_repository.dart`
 3. Repository implementation → `lib/features/<name>/data/repositories/`
+   - Wrap all Firestore/HTTP calls in `ResilientNetworkService.execute()` (see `reference/flutter-network-resilience.md`)
+   - Every catch block: `FirebaseCrashlytics.instance.log()` + `await recordError()` + `return Failure(e)` (see `reference/flutter-security-hardening.md` §Crashlytics)
 4. Riverpod provider → `lib/features/<name>/presentation/providers/<name>_provider.dart`
+   - For screens loading multiple data sources: use staged loading pattern (see `reference/flutter-performance-ux.md` §Staged Loading)
 5. Screen → `lib/features/<name>/presentation/screens/<name>_screen.dart`
 6. Widgets → `lib/features/<name>/presentation/widgets/`
 7. Add route to GoRouter
@@ -264,6 +267,10 @@ appId: com.example.app
 - **Not running `build_runner`** — Freezed models won't generate; `flutter test` will fail with missing files
 - **Missing `AsyncValue.error` state** — user sees blank screen on failure; always handle all 3 states
 - **SharedPreferences for credentials** — insecure; use `flutter_secure_storage` for anything sensitive
+- **No network resilience** — bare Firestore/HTTP calls with no timeout or retry will fail silently under poor connectivity; wrap every outbound call in `ResilientNetworkService.execute()` (`reference/flutter-network-resilience.md`)
+- **Silent catch blocks in repositories** — `catch (e) { return []; }` hides failures; every catch block must call `FirebaseCrashlytics.instance.log()` + `await recordError()` and return `Failure(e)` (`reference/flutter-security-hardening.md` §Crashlytics)
+- **Single-shot loading for multi-source screens** — waiting for all data before showing anything causes blank screens; use staged loading to show high-priority data first (`reference/flutter-performance-ux.md` §Staged Loading)
+- **No offline support on data-writing features** — if the feature creates, edits, or deletes data, it must save locally first and queue for background sync; never block the user on network availability (`reference/flutter-offline-sync.md`)
 
 ## Related Workflows
 

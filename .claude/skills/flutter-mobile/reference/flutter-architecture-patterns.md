@@ -370,3 +370,148 @@ class ItemScreen extends ConsumerWidget {
   }
 }
 ```
+
+---
+
+## Mixin-Based Data Source Error Handler
+
+Eliminates duplicate try-catch blocks across repository implementations by centralising error handling in a single reusable mixin.
+
+**When to use:** Any class that makes outbound network or database calls (repositories, remote data sources). Apply once — every `executeRemoteCall` automatically logs, maps, and returns a structured `Result<T>`.
+
+```dart
+// lib/core/data/mixins/remote_data_source_error_handler.dart
+
+/// Mixin providing consistent error handling for remote data sources.
+/// Pair with Result<T> from flutter-architecture-patterns.md §Result type.
+mixin RemoteDataSourceErrorHandler {
+  /// Implementing class must declare its own name — appears in every log line.
+  String get dataSourceName;
+
+  /// Execute a remote operation with consistent error handling.
+  ///
+  /// Handles typed exceptions in order of specificity:
+  ///   FirebaseException → structured Crashlytics log + Failure(e)
+  ///   SocketException   → network error + Failure(e)
+  ///   Exception         → unexpected error + Failure(e)
+  ///
+  /// [operationName] — included in every log line; make it "[method]" e.g. 'fetchById'
+  Future<Result<T>> executeRemoteCall<T>(
+    Future<T> Function() operation, {
+    required String operationName,
+  }) async {
+    try {
+      return Success(await operation());
+    } on FirebaseException catch (e, stack) {
+      FirebaseCrashlytics.instance.log(
+        '[$dataSourceName.$operationName] FirebaseException: ${e.code}',
+      );
+      await FirebaseCrashlytics.instance.recordError(
+        e, stack,
+        reason: '$dataSourceName.$operationName',
+        printDetails: false,
+      );
+      return Failure(e);
+    } on SocketException catch (e, stack) {
+      FirebaseCrashlytics.instance.log(
+        '[$dataSourceName.$operationName] SocketException: $e',
+      );
+      await FirebaseCrashlytics.instance.recordError(
+        e, stack,
+        reason: '$dataSourceName.$operationName — network',
+        printDetails: false,
+      );
+      return Failure(NetworkException(e.message));
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.log(
+        '[$dataSourceName.$operationName] Unexpected: $e',
+      );
+      await FirebaseCrashlytics.instance.recordError(
+        e, stack,
+        reason: '$dataSourceName.$operationName — unexpected',
+        printDetails: false,
+      );
+      return Failure(UnexpectedException(e.toString()));
+    }
+  }
+
+  /// Variant for queries that legitimately return null (e.g. .maybeSingle()).
+  /// Returns Success(null) on not-found; Failure on real errors.
+  Future<Result<T?>> executeRemoteCallNullable<T>(
+    Future<T?> Function() operation, {
+    required String operationName,
+  }) async {
+    try {
+      return Success(await operation());
+    } on FirebaseException catch (e, stack) {
+      FirebaseCrashlytics.instance.log(
+        '[$dataSourceName.$operationName] FirebaseException: ${e.code}',
+      );
+      await FirebaseCrashlytics.instance.recordError(
+        e, stack,
+        reason: '$dataSourceName.$operationName',
+        printDetails: false,
+      );
+      return Failure(e);
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.log(
+        '[$dataSourceName.$operationName] Unexpected: $e',
+      );
+      await FirebaseCrashlytics.instance.recordError(
+        e, stack,
+        reason: '$dataSourceName.$operationName — unexpected',
+        printDetails: false,
+      );
+      return Failure(UnexpectedException(e.toString()));
+    }
+  }
+}
+```
+
+**Usage — apply the mixin:**
+
+```dart
+// lib/features/orders/data/repositories/order_repository_impl.dart
+class OrderRepositoryImpl with RemoteDataSourceErrorHandler
+    implements OrderRepository {
+
+  @override
+  String get dataSourceName => 'OrderRepository';
+
+  final FirebaseFirestore _firestore;
+  OrderRepositoryImpl(this._firestore);
+
+  @override
+  Future<Result<Order>> fetchById(String id) =>
+      executeRemoteCall(
+        () async {
+          final doc = await _firestore.collection('orders').doc(id).get();
+          return Order.fromFirestore(doc);
+        },
+        operationName: 'fetchById',
+      );
+
+  @override
+  Future<Result<Order?>> findByCode(String code) =>
+      executeRemoteCallNullable(
+        () async {
+          final snap = await _firestore
+              .collection('orders')
+              .where('code', isEqualTo: code)
+              .limit(1)
+              .get();
+          if (snap.docs.isEmpty) return null;
+          return Order.fromFirestore(snap.docs.first);
+        },
+        operationName: 'findByCode',
+      );
+}
+```
+
+**Rules:**
+
+- `dataSourceName` must follow `[FeatureName]Repository` or `[FeatureName]DataSource` — makes Crashlytics logs `grep`-able
+- Always pass `operationName` as the method name — never a generic string like `'operation'`
+- Never add additional try-catch inside the lambda passed to `executeRemoteCall` — let the mixin handle it
+- `executeRemoteCallNullable` is only for queries where null is a valid success state; don't use it to silently swallow missing records that should exist
+- Complement with `ResilientNetworkService` from `flutter-network-resilience.md` for timeout + retry before the call reaches this handler
