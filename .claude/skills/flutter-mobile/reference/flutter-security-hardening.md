@@ -28,6 +28,51 @@ For general code security (OWASP Top 10, injection, auth, secrets) use the `secu
 - Don't expose sensitive routes via deep links
 - Use App Links (Android) / Universal Links (iOS) over custom schemes
 
+## Firebase App Check
+
+App Check verifies that requests to your Firebase backend come from a legitimate build of your app — not an emulator, a forged client, or a script. It protects **all** Firebase services (Auth, Storage, Cloud Functions, Realtime Database) regardless of which database you use.
+
+### Setup in `main.dart`
+
+```dart
+import 'package:firebase_app_check/firebase_app_check.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Activate App Check before any other Firebase service
+  await FirebaseAppCheck.instance.activate(
+    // iOS: DeviceCheck (production) — requires Apple DeviceCheck entitlement
+    // Android: Play Integrity (production) — requires app signed and on Play Store
+    // Use debug providers ONLY in debug builds
+    androidProvider: kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
+    appleProvider: kDebugMode ? AppleProvider.debug : AppleProvider.deviceCheck,
+  );
+
+  runApp(const ProviderScope(child: App()));
+}
+```
+
+### `pubspec.yaml`
+```yaml
+dependencies:
+  firebase_app_check: ^0.3.2
+```
+
+### Rules
+
+- Activate App Check **before** calling any other Firebase service — wrong order causes silent failures
+- `kDebugMode` guard is mandatory — debug provider bypasses attestation for local development; shipping it to production defeats the purpose
+- Add `FirebaseAppCheck` to the pre-release security checklist
+- No code changes needed in repositories or services — App Check operates at the Firebase SDK network layer
+
+### Pre-Release Checklist Addition
+
+Add to the checklist in this file:
+- [ ] Firebase App Check activated with platform-specific production providers (DeviceCheck / Play Integrity)
+- [ ] Debug provider guard (`kDebugMode`) confirmed — debug provider NOT active in release builds
+
 ## Privacy Compliance
 
 ### GDPR Requirements

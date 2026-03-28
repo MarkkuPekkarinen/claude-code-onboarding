@@ -2,46 +2,51 @@
 
 Core architecture patterns for modern Flutter (2025/2026) — sealed classes, Result types, and Riverpod AsyncNotifier.
 
-## Sealed Classes for State Modeling
+## Freezed Sealed State Classes (Riverpod 3.x standard)
+
+Use `@freezed sealed class` for all state objects. This generates `when()`, `map()`,
+`maybeWhen()`, and `copyWith()` automatically — do NOT use plain `sealed class` for state.
 
 ```dart
-sealed class AuthState {
-  const AuthState();
-}
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:your_app/features/auth/domain/entities/user.dart';
 
-class AuthInitial extends AuthState {
-  const AuthInitial();
-}
+part 'auth_state.freezed.dart';
 
-class AuthLoading extends AuthState {
-  const AuthLoading();
-}
-
-class AuthAuthenticated extends AuthState {
-  final User user;
-  const AuthAuthenticated(this.user);
-}
-
-class AuthUnauthenticated extends AuthState {
-  const AuthUnauthenticated();
-}
-
-class AuthError extends AuthState {
-  final String message;
-  const AuthError(this.message);
-}
-
-// Usage with pattern matching
-Widget buildFromState(AuthState state) {
-  return switch (state) {
-    AuthInitial() => const SplashScreen(),
-    AuthLoading() => const LoadingOverlay(),
-    AuthAuthenticated(:final user) => HomeScreen(user: user),
-    AuthUnauthenticated() => const LoginScreen(),
-    AuthError(:final message) => ErrorScreen(message: message),
-  };
+@freezed
+sealed class AuthState with _$AuthState {
+  const factory AuthState.initial()                    = _Initial;
+  const factory AuthState.loading()                    = _Loading;
+  const factory AuthState.authenticated(User user)     = _Authenticated;
+  const factory AuthState.unauthenticated()            = _Unauthenticated;
+  const factory AuthState.error(String message)        = _Error;
 }
 ```
+
+Always place in its own file: `presentation/providers/auth_state.dart`
+Always add `part 'auth_state.freezed.dart';` — run `dart run build_runner build --delete-conflicting-outputs` after changes.
+
+Usage in notifier:
+```dart
+// In auth_provider.dart
+state = const AuthState.loading();
+state = AuthState.authenticated(user);
+state = AuthState.error(failure.message);
+```
+
+Usage in widget (exhaustive pattern matching — compile-time safe):
+```dart
+ref.watch(authProvider).when(
+  initial:         ()      => const SplashScreen(),
+  loading:         ()      => const CircularProgressIndicator(),
+  authenticated:   (user)  => HomeScreen(user: user),
+  unauthenticated: ()      => const LoginScreen(),
+  error:           (msg)   => ErrorWidget(msg),
+);
+```
+
+**Rule:** Every feature state file MUST be a separate `*_state.dart` file.
+Never define state inline in the provider file.
 
 ## Functional Error Handling with Result Type
 
@@ -119,7 +124,49 @@ class WorkoutList extends _$WorkoutList {
 }
 ```
 
-## Patterns 
+## Repository Error Handling with Crashlytics
+
+Every repository catch block MUST do two things: log locally AND record to Crashlytics.
+This pattern applies regardless of which database or backend you use.
+
+```dart
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+
+// ✅ REQUIRED pattern — applies to ALL repositories (REST, Firebase, local DB, etc.)
+Future<Result<List<Order>>> getOrders(String userId) async {
+  try {
+    final response = await _apiClient.get('/orders/$userId');
+    return Success(response.map(Order.fromJson).toList());
+  } on NetworkException catch (e, stackTrace) {
+    _logger.error('getOrders failed', userId: userId, error: e);
+    await FirebaseCrashlytics.instance.recordError(e, stackTrace,
+        reason: 'getOrders failed for user $userId');
+    return Failure(e);
+  } catch (e, stackTrace) {
+    _logger.error('getOrders unexpected error', error: e);
+    await FirebaseCrashlytics.instance.recordError(e, stackTrace,
+        reason: 'getOrders unexpected error');
+    return Failure(UnexpectedException(e.toString()));
+  }
+}
+
+// ❌ FORBIDDEN — silent failure, user sees blank screen with no explanation
+Future<List<Order>> getOrders(String userId) async {
+  try {
+    return await _apiClient.getOrders(userId);
+  } catch (e) {
+    return []; // Never do this
+  }
+}
+```
+
+**Rules:**
+- `recordError()` takes `(error, stackTrace)` — always pass both
+- Pass a `reason:` string with enough context to identify the call site in Crashlytics dashboard
+- Always use `await` — `recordError` is async and dropping it silently loses crash reports
+- Use `Result<T>` return type so callers are forced to handle the failure case
+
+## Patterns
 
 ### Riverpod: Unnecessary flutter_riverpod Import
 

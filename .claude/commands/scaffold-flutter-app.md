@@ -13,20 +13,49 @@ Create a new Flutter mobile application with the following:
 
 ## Steps
 1. Run `flutter create --org com.company --platforms ios,android <name>`
-2. Update `pubspec.yaml` with Riverpod, Freezed, GoRouter, Firebase dependencies
-3. Create clean architecture folder structure:
-   - `lib/core/` — constants, theme, utils, shared widgets
-   - `lib/features/<feature>/data/` — datasources, models, repositories impl
-   - `lib/features/<feature>/domain/` — entities, repository contracts, usecases
-   - `lib/features/<feature>/presentation/` — providers, screens, widgets
-   - `lib/routing/` — GoRouter config
-4. Create a sample Freezed model with Firestore factory
-5. Create a sample Riverpod provider (annotated)
-6. Create a sample screen using `ConsumerWidget` + `AsyncValue.when()`
-7. Configure GoRouter with sample routes + auth redirect
-8. Set up `main.dart` with `ProviderScope` and Firebase init stub
-9. Add a sample widget test
-10. Run `dart run build_runner build --delete-conflicting-outputs`
-11. Print a summary of created files, next steps, and how to run
+2. Update `pubspec.yaml` with Riverpod 3.x, Freezed 3.x, GoRouter 15, Firebase, riverpod_lint (see flutter-templates.md for exact versions)
+3. Create `build.yaml` with riverpod_generator, json_serializable (snake_case), and freezed options; create `l10n.yaml` with arb-dir, template-arb-file, and output-class settings
+4. Create `analysis_options.yaml` with `custom_lint` plugin and `riverpod_lint` rules
+5. Create clean architecture folder structure:
+   - `assets/fonts/`, `assets/images/`, `assets/icons/`, `assets/lottie/` — static assets
+   - `lib/main.dart` — one line only: `void main() => bootstrap(() => const App())`
+   - `lib/bootstrap.dart` — async init, `FlutterError.onError` → Crashlytics, `Firebase.initializeApp`, `FirebaseAppCheck.activate`, `ProviderScope`
+   - `lib/app.dart` — `ConsumerWidget` + `MaterialApp.router` + theme wiring
+   - `lib/core/di/providers.dart` — global `@Riverpod(keepAlive: true)` singletons (Dio, repositories)
+   - `lib/core/error/app_exception.dart` — sealed exception hierarchy
+   - `lib/core/error/error_handler.dart` — Crashlytics integration point
+   - `lib/core/network/dio_provider.dart` + `lib/core/network/interceptors/` — Dio setup
+   - `lib/core/storage/secure_storage_provider.dart` — `flutter_secure_storage` provider (sensitive data: tokens, keys)
+   - `lib/core/storage/hive_provider.dart` — `hive_flutter` provider (non-sensitive: preferences, cache)
+   - `lib/core/router/app_router.dart` + `route_names.dart` + `guards/` — GoRouter config
+   - `lib/core/constants/` — app-wide constants (NO secrets — env vars only)
+   - `lib/core/utils/` — logger, formatters, validators
+   - `lib/core/extensions/` — Dart extension methods
+   - `lib/core/l10n/` — Localisation .arb files and generated l10n delegates
+   - `lib/design_system/tokens/` — one file per token type (see flutter-templates.md)
+   - `lib/design_system/typography/` — `font_families.dart`, `app_text_styles.dart`, `app_text_theme.dart`
+   - `lib/design_system/theme/` — `app_theme.dart`, `app_color_scheme.dart`, `app_theme_extension.dart`, `theme_provider.dart`
+   - `lib/design_system/components/` — buttons/, inputs/, cards/, dialogs/, loaders/
+   - `lib/features/<feature>/data/datasources/` — remote + local datasources
+   - `lib/features/<feature>/data/models/` — DTOs with `.g.dart` codegen
+   - `lib/features/<feature>/data/repositories/` — repository impl
+   - `lib/features/<feature>/domain/entities/` — pure Dart, Freezed
+   - `lib/features/<feature>/domain/repositories/` — abstract interface
+   - `lib/features/<feature>/domain/usecases/` — single-responsibility use cases
+   - `lib/features/<feature>/domain/value_objects/` — validated primitives (Email, Password)
+   - `lib/features/<feature>/presentation/providers/` — `@riverpod` notifier + Freezed state
+   - `lib/features/<feature>/presentation/screens/` — screen widgets
+   - `lib/features/<feature>/presentation/widgets/` — feature-scoped sub-widgets
+   - `lib/features/common/` — shared widgets + providers reused across features
+   - `test/unit/`, `test/widget/`, `test/integration/`, `test/helpers/` — test structure
+6. Create sample Freezed entity (domain) + DTO (data) with `fromJson`
+7. Create sample `@riverpod` notifier with Freezed sealed state
+8. Create sample `ConsumerWidget` screen + `AsyncValue.when()`
+9. Configure GoRouter as `@Riverpod(keepAlive: true)` with auth redirect guard
+10. Add a sample widget test using `ProviderScope` overrides
+11. Run `dart run build_runner build --delete-conflicting-outputs`
+12. Print summary of created files, next steps, and how to run
+
+Use the flutter-mobile skill for patterns and templates.
 
 Use the flutter-mobile skill for patterns and templates.
