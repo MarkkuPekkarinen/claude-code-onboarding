@@ -1,346 +1,328 @@
-# Playwright MCP (playwright-cli) — Tool Reference
+# playwright-cli — Tool Reference
 
-Playwright MCP (`@playwright/mcp`) is the deterministic browser automation tool for Claude Code. It exposes Playwright's full API as MCP tools — typed, reliable, and inspectable. All tools are prefixed `mcp__playwright__` in Claude Code.
+`playwright-cli` is the stateful Bash CLI for browser automation in Claude Code. The npm package is `@playwright/mcp`; the installed binary is `playwright-cli`. All commands are invoked via `Bash`.
+
+## Install
+
+```bash
+npm install -g @playwright/mcp@latest
+playwright-cli install       # download browsers
+playwright-cli --version     # verify
+```
+
+## Session Model
+
+playwright-cli is **stateful** — a named session keeps the browser open between commands. Use `-s=<name>` to target a session:
+
+```bash
+playwright-cli -s=my-session <command>
+```
+
+Without `-s`, commands use a shared default session.
+
+---
 
 ## Navigation
 
-### browser_navigate
-Navigate to a URL or perform navigation actions.
-
-```
-mcp__playwright__browser_navigate({
-  url: "https://localhost:4200/login"
-})
+### goto
+Navigate to a URL.
+```bash
+playwright-cli -s=test goto http://localhost:4200/login
+playwright-cli goto https://example.com
 ```
 
-**Params:** `url` (string, required) — absolute URL including scheme.
+### open
+Open the browser (optionally at a URL). Use for the initial launch.
+```bash
+playwright-cli open
+playwright-cli open http://localhost:4200
+```
+
+### reload
+Reload the current page.
+```bash
+playwright-cli -s=test reload
+```
+
+### go-back / go-forward
+```bash
+playwright-cli -s=test go-back
+playwright-cli -s=test go-forward
+```
 
 ---
 
-### browser_snapshot
-Get the accessibility tree of the current page. Use this to find element references for clicking, filling, and hovering. Cheaper than a screenshot — use this first.
+## Snapshot (Accessibility Tree)
 
-```
-mcp__playwright__browser_snapshot()
-```
+Get the accessibility tree to discover element refs. **Always run before click/fill** — refs change between renders.
 
-Returns: structured accessibility tree with `ref` identifiers for each interactive element.
-
-**Rule:** Use `browser_snapshot` to discover element refs before `browser_click` or `browser_fill`. Never hard-code refs — they change between renders.
-
----
-
-### browser_screenshot
-Capture a screenshot of the current page. Safe — does not overflow context.
-
-```
-mcp__playwright__browser_screenshot({
-  filename: "login-page.png",   // optional — omit to get base64 inline
-  fullPage: false               // true = full scrollable page
-})
+```bash
+playwright-cli -s=test snapshot
 ```
 
-**Rule:** Use this for visual evidence in test reports. NOT `browser_get_state({ include_screenshot: true })` from Browser-Use.
+Returns a structured tree. Each interactive element has a `[ref]` identifier like `[button-submit-3]` or `[input-email-1]`. Use these refs in subsequent commands.
 
 ---
 
 ## Interaction
 
-### browser_click
-Click an element using its accessibility ref from `browser_snapshot`.
-
-```
-mcp__playwright__browser_click({
-  ref: "button-submit-3"     // ref from browser_snapshot output
-})
+### fill
+Fill a text input by ref (sets value directly — no keystroke simulation).
+```bash
+playwright-cli -s=test fill [input-email-1] "user@example.com"
+playwright-cli -s=test fill [input-password-2] "secret123"
 ```
 
----
-
-### browser_fill
-Fill an input field by ref.
-
-```
-mcp__playwright__browser_fill({
-  ref: "input-email-1",
-  value: "user@example.com"
-})
+### type
+Type text character-by-character into the focused element (simulates keystrokes — use for autocomplete triggers).
+```bash
+playwright-cli -s=test type "Hello World"
 ```
 
----
-
-### browser_type
-Type text into the currently focused element character by character (simulates keystrokes).
-
-```
-mcp__playwright__browser_type({
-  text: "Hello World"
-})
+### click
+Click an element by ref.
+```bash
+playwright-cli -s=test click [button-submit-3]
 ```
 
-Use `browser_fill` for most inputs. Use `browser_type` only when keystroke-by-keystroke simulation matters (e.g. autocomplete triggers).
-
----
-
-### browser_select_option
-Select an option from a `<select>` dropdown.
-
-```
-mcp__playwright__browser_select_option({
-  ref: "select-country-2",
-  values: ["AU"]      // option value, not label
-})
+### dblclick
+Double-click an element.
+```bash
+playwright-cli -s=test dblclick [element-ref]
 ```
 
----
-
-### browser_hover
-Move the mouse over an element (triggers hover states, tooltips).
-
-```
-mcp__playwright__browser_hover({
-  ref: "button-menu-4"
-})
+### hover
+Move mouse over an element (triggers hover states, tooltips).
+```bash
+playwright-cli -s=test hover [button-menu-4]
 ```
 
----
-
-### browser_press_key
-Press a keyboard key or shortcut.
-
+### select
+Select an option in a dropdown.
+```bash
+playwright-cli -s=test select [select-country-2] "AU"
 ```
-mcp__playwright__browser_press_key({
-  key: "Enter"          // also: "Tab", "Escape", "ArrowDown", "Control+a"
-})
+
+### check / uncheck
+Check or uncheck a checkbox or radio button.
+```bash
+playwright-cli -s=test check [checkbox-terms-5]
+playwright-cli -s=test uncheck [checkbox-newsletter-6]
+```
+
+### drag
+Drag from one element to another.
+```bash
+playwright-cli -s=test drag [source-ref] [target-ref]
+```
+
+### upload
+Upload a file via a file input.
+```bash
+playwright-cli -s=test upload /tmp/test-document.pdf
 ```
 
 ---
 
-### browser_handle_dialog
-Accept or dismiss a browser dialog (alert, confirm, prompt).
+## Keyboard
 
-```
-mcp__playwright__browser_handle_dialog({
-  accept: true,
-  promptText: "optional text for prompt dialogs"
-})
+### press
+Press a key or shortcut.
+```bash
+playwright-cli -s=test press Enter
+playwright-cli -s=test press Tab
+playwright-cli -s=test press Escape
+playwright-cli -s=test press "Control+a"
+playwright-cli -s=test press "ArrowDown"
 ```
 
-Set this BEFORE the action that triggers the dialog.
+### keydown / keyup
+Hold a key down or release it (for modifier key sequences).
+```bash
+playwright-cli -s=test keydown Shift
+playwright-cli -s=test keyup Shift
+```
 
 ---
 
-### browser_upload_file
-Upload a file via a file input element.
+## Mouse
 
-```
-mcp__playwright__browser_upload_file({
-  ref: "input-file-upload-1",
-  paths: ["/tmp/test-document.pdf"]
-})
+```bash
+playwright-cli -s=test mousemove 400 300     # move to coordinates
+playwright-cli -s=test mousedown             # press left button
+playwright-cli -s=test mouseup               # release
+playwright-cli -s=test mousewheel 0 -300     # scroll up
 ```
 
 ---
 
 ## Inspection
 
-### browser_network_requests
-Return all network requests made since the page loaded (or since last navigation).
-
+### network
+List all network requests since the page loaded.
+```bash
+playwright-cli -s=test network
 ```
-mcp__playwright__browser_network_requests()
+Returns: method, URL, status, timing for each request. **Run after form submissions and navigations.**
+
+### console
+List console messages.
+```bash
+playwright-cli -s=test console          # all messages
+playwright-cli -s=test console error    # errors only
+playwright-cli -s=test console warn     # warnings only
 ```
+**Rule:** Any `error` message = automatic NEEDS WORK in validation reviews.
 
-Returns: array of `{ url, method, status, timing }` objects.
-
-**When to use:** After every form submission, button click, or navigation to verify API calls succeeded.
+### eval
+Execute JavaScript in the page context.
+```bash
+playwright-cli -s=test eval "localStorage.getItem('authToken')"
+playwright-cli -s=test eval "document.title"
+playwright-cli -s=test eval "JSON.parse(localStorage.getItem('user') || '{}')"
+```
 
 ---
 
-### browser_console_messages
-Return all console messages (log, warn, error) from the current page session.
+## Visual
 
-```
-mcp__playwright__browser_console_messages()
-```
-
-Returns: array of `{ type, text, location }` objects.
-
-**Rule:** Any `error` type message = automatic NEEDS WORK in validation reviews. Check after every critical action.
-
----
-
-### browser_evaluate
-Execute arbitrary JavaScript in the page context and return the result.
-
-```
-mcp__playwright__browser_evaluate({
-  expression: "localStorage.getItem('authToken')"
-})
-
-// Multi-line
-mcp__playwright__browser_evaluate({
-  expression: "JSON.parse(localStorage.getItem('user') || '{}')"
-})
+### screenshot
+Capture a screenshot of the current page or a specific element.
+```bash
+playwright-cli -s=test screenshot                          # inline base64
+playwright-cli -s=test screenshot --output baseline.png   # save to file
+playwright-cli -s=test screenshot [element-ref]            # element only
 ```
 
-**Common uses:** Check localStorage/sessionStorage, read DOM state, verify Angular component state.
+### pdf
+Save the current page as a PDF.
+```bash
+playwright-cli -s=test pdf --output page.pdf
+```
 
 ---
 
 ## Page Control
 
-### browser_wait_for
-Wait for a CSS selector to be visible, or for the network to be idle.
-
-```
-// Wait for element
-mcp__playwright__browser_wait_for({
-  selector: ".dashboard-container",
-  state: "visible",       // visible | hidden | attached | detached
-  timeout: 5000
-})
-
-// Wait for network idle (all requests complete)
-mcp__playwright__browser_wait_for({
-  waitForNetwork: true,
-  timeout: 10000
-})
-```
-
----
-
-### browser_resize
+### resize
 Set the browser viewport dimensions.
-
-```
-mcp__playwright__browser_resize({
-  width: 375,
-  height: 812    // iPhone 14 viewport
-})
+```bash
+playwright-cli -s=test resize 375 812    # iPhone 14
+playwright-cli -s=test resize 768 1024   # iPad
+playwright-cli -s=test resize 1280 720   # Desktop
 ```
 
-Common viewports:
-- Mobile: `375 × 812` (iPhone 14)
-- Tablet: `768 × 1024` (iPad)
-- Desktop: `1280 × 720`
-
----
-
-### browser_close
-Close the current browser context.
-
-```
-mcp__playwright__browser_close()
+### dialog-accept / dialog-dismiss
+Handle browser dialogs (alert, confirm, prompt). Set BEFORE the action that triggers the dialog.
+```bash
+playwright-cli -s=test dialog-accept
+playwright-cli -s=test dialog-accept "my prompt text"
+playwright-cli -s=test dialog-dismiss
 ```
 
 ---
 
 ## Tabs
 
-### browser_tab_new
-Open a new tab and navigate to a URL.
-
-```
-mcp__playwright__browser_tab_new({
-  url: "https://localhost:4200/dashboard"
-})
+```bash
+playwright-cli -s=test tab-list                             # list open tabs
+playwright-cli -s=test tab-new http://localhost:4200/admin  # open new tab
+playwright-cli -s=test tab-select 1                         # switch to tab by index
+playwright-cli -s=test tab-close 1                          # close tab by index
 ```
 
 ---
 
-### browser_tab_list
-List all open tabs.
+## Storage
 
+### localStorage
+```bash
+playwright-cli -s=test localstorage-list
+playwright-cli -s=test localstorage-get authToken
+playwright-cli -s=test localstorage-set theme dark
+playwright-cli -s=test localstorage-delete authToken
+playwright-cli -s=test localstorage-clear
 ```
-mcp__playwright__browser_tab_list()
+
+### sessionStorage
+```bash
+playwright-cli -s=test sessionstorage-list
+playwright-cli -s=test sessionstorage-get sessionId
 ```
 
----
-
-### browser_tab_close
-Close a specific tab by index.
-
+### Cookies
+```bash
+playwright-cli -s=test cookie-list
+playwright-cli -s=test cookie-get sessionToken
+playwright-cli -s=test cookie-set myKey myValue
+playwright-cli -s=test cookie-delete myKey
+playwright-cli -s=test cookie-clear
 ```
-mcp__playwright__browser_tab_close({
-  index: 1
-})
+
+### Auth state (save/load logged-in session)
+```bash
+playwright-cli -s=test state-save ./auth-state.json    # save after login
+playwright-cli -s=test state-load ./auth-state.json    # restore in next session
 ```
 
 ---
 
 ## Performance Tracing
 
-### browser_start_tracing
-Begin recording a Playwright performance trace. Captures network timing, CPU, screenshots timeline.
+```bash
+playwright-cli -s=test tracing-start
+# ... perform the user flow ...
+playwright-cli -s=test tracing-stop                        # output to stdout
+playwright-cli -s=test tracing-stop --output trace.zip    # save to file
 
-```
-mcp__playwright__browser_start_tracing({
-  screenshots: true,
-  snapshots: true
-})
-```
-
----
-
-### browser_stop_tracing
-Stop recording and save the trace file.
-
-```
-mcp__playwright__browser_stop_tracing({
-  path: "./trace.zip"
-})
+# View trace
+npx playwright show-trace trace.zip
 ```
 
-View with: `npx playwright show-trace trace.zip`
-
----
-
-## PDF
-
-### browser_pdf_save
-Save the current page as a PDF.
-
-```
-mcp__playwright__browser_pdf_save({
-  path: "./page-output.pdf"
-})
-```
-
----
-
-## Install & MCP Config
+## Video Recording
 
 ```bash
-# Install
-npm install -g @playwright/mcp@latest
-
-# Install browsers (first time)
-npx playwright install chromium
-```
-
-`.mcp.json` entry:
-```json
-"playwright": {
-  "type": "stdio",
-  "command": "npx",
-  "args": ["-y", "@playwright/mcp@latest"],
-  "timeout": 60000
-}
+playwright-cli -s=test video-start
+# ... perform the flow ...
+playwright-cli -s=test video-stop
 ```
 
 ---
 
-## playwright-cli vs browser-use vs chrome-devtools
+## Network Mocking
+
+```bash
+playwright-cli -s=test route "*/api/users" --body '{"users":[]}' --status 200
+playwright-cli -s=test route-list          # list active mocks
+playwright-cli -s=test unroute "*/api/users"
+playwright-cli -s=test unroute             # remove all mocks
+```
+
+---
+
+## Session Management
+
+```bash
+playwright-cli list          # list all active sessions
+playwright-cli close-all     # close all sessions gracefully
+playwright-cli kill-all      # force-kill stale/zombie sessions
+playwright-cli -s=test close # close specific session
+playwright-cli -s=test delete-data  # delete session data (cookies, storage)
+```
+
+---
+
+## playwright-cli vs browser-use
 
 | Task | playwright-cli | browser-use |
 |------|---------------|-------------|
-| Scripted test steps | ✅ Preferred | Works |
-| Network request list | ✅ `browser_network_requests` | ❌ Not available |
-| Console messages | ✅ `browser_console_messages` | ❌ Not available |
-| Execute JS | ✅ `browser_evaluate` | ❌ Not available |
-| Performance trace | ✅ `browser_start_tracing` | ❌ Not available |
-| Autonomous goal completion | ❌ Needs scripting | ✅ Preferred |
-| Real Chrome with existing login | Limited | ✅ `--browser real` |
+| Scripted test steps | Preferred | Works |
+| Network inspection | `network` | Not available |
+| Console messages | `console` | Not available |
+| Execute JS | `eval` | Not available |
+| Performance tracing | `tracing-start/stop` | Not available |
+| Storage inspection | `localstorage-*`, `cookie-*` | Not available |
+| Autonomous goal completion | Needs scripting | Preferred |
+| Real Chrome with existing login | `state-load` | `--browser real` |
 
-**Rule:** Default to playwright-cli. Switch to browser-use only for autonomous/exploratory tasks where you describe a goal, not steps.
+**Rule:** Default to playwright-cli for all scripted and inspection tasks. Use browser-use only for autonomous/exploratory tasks where describing a goal is better than writing steps.
