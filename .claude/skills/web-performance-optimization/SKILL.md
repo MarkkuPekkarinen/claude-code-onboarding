@@ -6,7 +6,7 @@ source: community (adapted for Angular 21.x)
 date_added: "2026-02-27"
 updated: "2026-03-15"
 last-reviewed: "2026-03-15"
-allowed-tools: "Read, Grep, Glob, Bash, Edit, Write, mcp__chrome-devtools__*"
+allowed-tools: "Read, Grep, Glob, Bash, Edit, Write"
 ---
 
 ## Iron Law

@@ -5,7 +5,7 @@ risk: low
 source: community (adapted for workspace)
 date_added: "2026-02-27"
 updated: "2026-03-15"
-allowed-tools: Read, Bash, mcp__chrome-devtools__take_screenshot, mcp__chrome-devtools__snapshot_ui
+allowed-tools: Read, Bash
 metadata:
   triggers: visual regression, screenshot testing, visual diff, Chromatic, Percy, Applitools, BackstopJS, Playwright visual, visual testing CI, pixel diff, visual QA, UI looks wrong, before and after screenshot
   related-skills: browser-testing, accessibility-audit, web-design-guidelines, design-system
