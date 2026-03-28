@@ -1620,8 +1620,8 @@ Already configured in this repo:
   "type": "stdio",
   "disabled": false,
   "description": "Maestro MCP server for cross-platform mobile E2E testing on iOS and Android.",
-  "command": "uvx",
-  "args": ["maestro-mcp"],
+  "command": "maestro",
+  "args": ["mcp"],
   "timeout": 60000
 }
 ```
@@ -1958,8 +1958,7 @@ claude-code-onboarding/
 | `github` | HTTP | GitHub API — issues, PRs, code search |
 | `langchain-docs` | HTTP | LangChain documentation search |
 | `angular-cli` | stdio | Angular CLI operations |
-| `chrome-devtools` | stdio | Browser inspection & debugging |
-| `browser-use` | stdio | Human-like browser interaction & E2E testing |
+| `browser-use` | stdio | Human-like browser interaction & autonomous E2E flows |
 | `context7` | stdio | Live documentation for any library |
 | `dart-mcp-server` | stdio | Dart/Flutter tooling daemon |
 | `firebase` | stdio | Firebase CLI operations |
@@ -1971,12 +1970,36 @@ claude-code-onboarding/
 
 ### Browser Automation
 
-We use two MCP servers together for complete browser testing:
+We use a three-tool stack for complete browser testing:
 
-- **Chrome DevTools MCP** — debugging, network inspection, console errors, performance tracing
-- **Browser-Use MCP** — human-like interaction, form filling, E2E user flows
+| Tool | Type | Role |
+|------|------|------|
+| **playwright-cli** | Bash CLI (stateful) | Scripted tests — navigation, snapshots, screenshots, network/console inspection, performance tracing |
+| **Browser-Use MCP** | MCP server | Autonomous agent flows — describe a goal, Claude figures out the steps |
+| **Maestro MCP** | MCP server | Cross-platform mobile E2E — same YAML flow runs on iOS simulator and Android emulator |
 
-Chrome DevTools is your X-ray machine watching everything under the hood. Browser-Use is your test user clicking through the app like a human.
+#### Install playwright-cli
+
+```bash
+# Package name is @playwright/mcp; binary installed is playwright-cli
+npm install -g @playwright/mcp@latest
+playwright-cli install    # download browsers
+playwright-cli --version  # verify
+```
+
+#### Quick sanity check
+
+```bash
+playwright-cli open https://example.com
+playwright-cli snapshot     # accessibility tree — should show page structure
+playwright-cli network      # should show GET https://example.com → 200
+playwright-cli close-all
+```
+
+#### playwright-cli vs Browser-Use decision rule
+
+- **Know the exact steps?** → `playwright-cli` (scripted, inspectable, network/console visible)
+- **Describe a goal and let Claude figure out the steps?** → Browser-Use MCP
 
 #### Sample Prompts
 
@@ -1985,17 +2008,32 @@ Chrome DevTools is your X-ray machine watching everything under the hood. Browse
 Open localhost:4200, check for any console errors or failed network requests
 ```
 
-**Test a user flow:**
+**Scripted login test:**
 ```
-Test the login at https://the-internet.herokuapp.com/login with username "tomsmith" and password "SuperSecretPassword!" — give me both user and technical perspective
-```
-
-**Performance audit:**
-```
-Run a performance trace on localhost:4200 and analyze the LCP breakdown
+Use playwright-cli to test the login flow at localhost:4200/login — fill the form,
+submit, check network for POST /api/auth/login → 200, take a screenshot of the result
 ```
 
-Claude automatically picks the right tool (or both) based on the task — no need to specify which MCP server to use. See `.claude/skills/browser-testing/SKILL.md` and `.claude/agents/browser-testing.md` for the full workflow guide.
+**Autonomous flow:**
+```
+Use Browser-Use to sign up at localhost:4200/signup with a test email and confirm
+the welcome email screen appears
+```
+
+**Performance trace:**
+```
+Run a playwright-cli tracing-start/stop on localhost:4200, then open the trace
+to identify render-blocking resources
+```
+
+Claude automatically picks the right tool based on the task. See `.claude/skills/browser-testing/SKILL.md` and `.claude/agents/browser-testing.md` for the full workflow guide.
+
+#### Verify Maestro MCP
+
+```bash
+maestro mcp          # should start without error (Ctrl+C to exit)
+maestro list-devices # confirm simulator/emulator visibility
+```
 
 ## 16. iOS App Store Release Pipeline
 
