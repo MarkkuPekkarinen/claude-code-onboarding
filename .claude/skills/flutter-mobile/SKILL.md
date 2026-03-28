@@ -14,7 +14,7 @@ last-reviewed: "2026-03-14"
 
 ## Iron Law
 
-**NO FLUTTER UI WITHOUT RUNNING THE MFRI RISK SCORE FIRST — load `references/mfri-scoring.md` before writing any screen**
+**NO FLUTTER UI WITHOUT RUNNING THE MFRI RISK SCORE FIRST — load `reference/mfri-scoring.md` before writing any screen**
 
 # Flutter Mobile Development Skill
 
