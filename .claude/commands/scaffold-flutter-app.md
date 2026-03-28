@@ -17,7 +17,7 @@ Create a new Flutter mobile application with the following:
 3. Create `build.yaml` with riverpod_generator, json_serializable (snake_case), and freezed options; create `l10n.yaml` with arb-dir, template-arb-file, and output-class settings
 4. Create `analysis_options.yaml` with `custom_lint` plugin and `riverpod_lint` rules
 5. Create clean architecture folder structure:
-   - `assets/fonts/`, `assets/images/`, `assets/icons/`, `assets/lottie/` — static assets
+   - `assets/fonts/`, `assets/images/`, `assets/icons/`, `assets/lottie/`, `assets/raw/` — static assets (`raw/` for design references, optional at runtime)
    - `lib/main.dart` — one line only: `void main() => bootstrap(() => const App())`
    - `lib/bootstrap.dart` — async init, `FlutterError.onError` → Crashlytics, `Firebase.initializeApp`, `FirebaseAppCheck.activate`, `ProviderScope`
    - `lib/app.dart` — `ConsumerWidget` + `MaterialApp.router` + theme wiring
@@ -55,7 +55,5 @@ Create a new Flutter mobile application with the following:
 10. Add a sample widget test using `ProviderScope` overrides
 11. Run `dart run build_runner build --delete-conflicting-outputs`
 12. Print summary of created files, next steps, and how to run
-
-Use the flutter-mobile skill for patterns and templates.
 
 Use the flutter-mobile skill for patterns and templates.

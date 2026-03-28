@@ -553,3 +553,316 @@ class UserRepositoryImpl implements UserRepository {
   }
 }
 ```
+
+## Design System — Token Implementations
+
+### color_tokens.dart
+
+```dart
+// design_system/tokens/color_tokens.dart
+/// Raw hex palette constants. NEVER reference these directly in widget code.
+/// Use AppColorScheme.* for M3 semantic roles or AppThemeExtension for custom fields.
+abstract final class ColorTokens {
+  // Brand
+  static const brandPrimary50  = Color(0xFFEEF2FF);
+  static const brandPrimary100 = Color(0xFFE0E7FF);
+  static const brandPrimary300 = Color(0xFFA5B4FC);
+  static const brandPrimary500 = Color(0xFF6366F1);
+  static const brandPrimary700 = Color(0xFF4338CA);
+  static const brandPrimary900 = Color(0xFF312E81);
+
+  // Neutral
+  static const neutral0   = Color(0xFFFFFFFF);
+  static const neutral50  = Color(0xFFF9FAFB);
+  static const neutral100 = Color(0xFFF3F4F6);
+  static const neutral500 = Color(0xFF6B7280);
+  static const neutral800 = Color(0xFF1F2937);
+  static const neutral900 = Color(0xFF111827);
+
+  // Semantic
+  static const success400 = Color(0xFF4ADE80);
+  static const success500 = Color(0xFF22C55E);
+  static const error400   = Color(0xFFF87171);
+  static const error500   = Color(0xFFEF4444);
+  static const warning400 = Color(0xFFFBBF24);
+  static const warning500 = Color(0xFFF59E0B);
+}
+```
+
+### spacing_tokens.dart
+
+```dart
+// design_system/tokens/spacing_tokens.dart
+/// 4-point grid. Use these — never raw double literals — in padding, gap, and margin.
+/// Widget: EdgeInsets.all(SpacingTokens.lg)  SizedBox(height: SpacingTokens.xl)
+abstract final class SpacingTokens {
+  static const double xs   =  4.0;
+  static const double sm   =  8.0;
+  static const double md   = 12.0;
+  static const double lg   = 16.0;
+  static const double xl   = 24.0;
+  static const double xxl  = 32.0;
+  static const double xxxl = 48.0;
+}
+```
+
+### radius_tokens.dart
+
+```dart
+// design_system/tokens/radius_tokens.dart
+abstract final class RadiusTokens {
+  static const double none = 0.0;
+  static const double sm   = 4.0;
+  static const double md   = 8.0;
+  static const double lg   = 12.0;
+  static const double xl   = 16.0;
+  static const double xxl  = 24.0;
+  static const double full = 999.0;
+}
+```
+
+### elevation_tokens.dart
+
+```dart
+// design_system/tokens/elevation_tokens.dart
+abstract final class ElevationTokens {
+  static const double none    = 0.0;
+  static const double low     = 1.0;
+  static const double medium  = 3.0;
+  static const double high    = 6.0;
+  static const double highest = 12.0;
+}
+```
+
+### motion_tokens.dart
+
+```dart
+// design_system/tokens/motion_tokens.dart
+abstract final class MotionTokens {
+  // Durations — aligned with Material 3 motion spec
+  static const durationFast   = Duration(milliseconds: 150);
+  static const durationNormal = Duration(milliseconds: 250);
+  static const durationSlow   = Duration(milliseconds: 400);
+
+  // Curves
+  static const curveStandard = Curves.easeInOut;  // UI transitions
+  static const curveEnter    = Curves.easeOut;    // elements entering the screen
+  static const curveExit     = Curves.easeIn;     // elements leaving the screen
+}
+```
+
+---
+
+## Design System — Typography Implementations
+
+### font_families.dart
+
+```dart
+// design_system/typography/font_families.dart
+abstract final class FontFamilies {
+  static const primary   = 'Inter';
+  static const monospace = 'JetBrainsMono';
+}
+```
+
+### app_text_styles.dart
+
+```dart
+// design_system/typography/app_text_styles.dart
+/// Full Material 3 type scale. Never create inline TextStyle in widget code.
+/// Use Theme.of(context).textTheme.* or these constants directly.
+abstract final class AppTextStyles {
+  static const displayLarge = TextStyle(
+    fontFamily: FontFamilies.primary,
+    fontSize: 57, fontWeight: FontWeight.w400, letterSpacing: -0.25,
+  );
+  static const displayMedium = TextStyle(
+    fontFamily: FontFamilies.primary,
+    fontSize: 45, fontWeight: FontWeight.w400,
+  );
+  static const displaySmall = TextStyle(
+    fontFamily: FontFamilies.primary,
+    fontSize: 36, fontWeight: FontWeight.w400,
+  );
+  static const headlineLarge = TextStyle(
+    fontFamily: FontFamilies.primary,
+    fontSize: 32, fontWeight: FontWeight.w400,
+  );
+  static const headlineMedium = TextStyle(
+    fontFamily: FontFamilies.primary,
+    fontSize: 28, fontWeight: FontWeight.w500,
+  );
+  static const headlineSmall = TextStyle(
+    fontFamily: FontFamilies.primary,
+    fontSize: 24, fontWeight: FontWeight.w500,
+  );
+  static const titleLarge = TextStyle(
+    fontFamily: FontFamilies.primary,
+    fontSize: 22, fontWeight: FontWeight.w500,
+  );
+  static const titleMedium = TextStyle(
+    fontFamily: FontFamilies.primary,
+    fontSize: 16, fontWeight: FontWeight.w500, letterSpacing: 0.15,
+  );
+  static const titleSmall = TextStyle(
+    fontFamily: FontFamilies.primary,
+    fontSize: 14, fontWeight: FontWeight.w500, letterSpacing: 0.1,
+  );
+  static const bodyLarge = TextStyle(
+    fontFamily: FontFamilies.primary,
+    fontSize: 16, fontWeight: FontWeight.w400, height: 1.5,
+  );
+  static const bodyMedium = TextStyle(
+    fontFamily: FontFamilies.primary,
+    fontSize: 14, fontWeight: FontWeight.w400, height: 1.5,
+  );
+  static const bodySmall = TextStyle(
+    fontFamily: FontFamilies.primary,
+    fontSize: 12, fontWeight: FontWeight.w400, height: 1.5,
+  );
+  static const labelLarge = TextStyle(
+    fontFamily: FontFamilies.primary,
+    fontSize: 14, fontWeight: FontWeight.w500, letterSpacing: 0.1,
+  );
+  static const labelMedium = TextStyle(
+    fontFamily: FontFamilies.primary,
+    fontSize: 12, fontWeight: FontWeight.w500, letterSpacing: 0.5,
+  );
+  static const labelSmall = TextStyle(
+    fontFamily: FontFamilies.primary,
+    fontSize: 11, fontWeight: FontWeight.w500, letterSpacing: 0.5,
+  );
+}
+```
+
+### app_text_theme.dart
+
+```dart
+// design_system/typography/app_text_theme.dart
+/// Assembles the full M3 TextTheme from AppTextStyles constants.
+/// Consumed by AppTheme.light() and AppTheme.dark() — not used directly in widgets.
+final appTextTheme = const TextTheme(
+  displayLarge:   AppTextStyles.displayLarge,
+  displayMedium:  AppTextStyles.displayMedium,
+  displaySmall:   AppTextStyles.displaySmall,
+  headlineLarge:  AppTextStyles.headlineLarge,
+  headlineMedium: AppTextStyles.headlineMedium,
+  headlineSmall:  AppTextStyles.headlineSmall,
+  titleLarge:     AppTextStyles.titleLarge,
+  titleMedium:    AppTextStyles.titleMedium,
+  titleSmall:     AppTextStyles.titleSmall,
+  bodyLarge:      AppTextStyles.bodyLarge,
+  bodyMedium:     AppTextStyles.bodyMedium,
+  bodySmall:      AppTextStyles.bodySmall,
+  labelLarge:     AppTextStyles.labelLarge,
+  labelMedium:    AppTextStyles.labelMedium,
+  labelSmall:     AppTextStyles.labelSmall,
+);
+```
+
+---
+
+## Design System — Theme Implementations
+
+### app_color_scheme.dart
+
+```dart
+// design_system/theme/app_color_scheme.dart
+/// Maps ColorTokens → Material 3 semantic ColorScheme roles.
+/// Widgets use: Theme.of(context).colorScheme.primary (NOT ColorTokens directly).
+abstract final class AppColorScheme {
+  static const light = ColorScheme(
+    brightness:           Brightness.light,
+    primary:              ColorTokens.brandPrimary500,
+    onPrimary:            ColorTokens.neutral0,
+    primaryContainer:     ColorTokens.brandPrimary50,
+    onPrimaryContainer:   ColorTokens.brandPrimary900,
+    secondary:            ColorTokens.brandPrimary300,
+    onSecondary:          ColorTokens.neutral0,
+    surface:              ColorTokens.neutral0,
+    onSurface:            ColorTokens.neutral900,
+    surfaceContainerLow:  ColorTokens.neutral50,
+    surfaceContainer:     ColorTokens.neutral100,
+    error:                ColorTokens.error500,
+    onError:              ColorTokens.neutral0,
+  );
+
+  static const dark = ColorScheme(
+    brightness:           Brightness.dark,
+    primary:              ColorTokens.brandPrimary300,
+    onPrimary:            ColorTokens.brandPrimary900,
+    primaryContainer:     ColorTokens.brandPrimary700,
+    onPrimaryContainer:   ColorTokens.brandPrimary50,
+    secondary:            ColorTokens.brandPrimary500,
+    onSecondary:          ColorTokens.neutral0,
+    surface:              ColorTokens.neutral900,
+    onSurface:            ColorTokens.neutral50,
+    surfaceContainerLow:  ColorTokens.neutral800,
+    surfaceContainer:     ColorTokens.neutral800,
+    error:                ColorTokens.error400,
+    onError:              ColorTokens.neutral900,
+  );
+}
+```
+
+### app_theme.dart (abstract final class — corrected)
+
+```dart
+// design_system/theme/app_theme.dart
+/// Single source of truth for ThemeData. Never call ThemeData() directly outside this class.
+abstract final class AppTheme {
+  static ThemeData light() => ThemeData(
+    useMaterial3: true,
+    colorScheme:  AppColorScheme.light,
+    textTheme:    appTextTheme,
+    extensions:   const [AppThemeExtension.light],
+  );
+
+  static ThemeData dark() => ThemeData(
+    useMaterial3: true,
+    colorScheme:  AppColorScheme.dark,
+    textTheme:    appTextTheme,
+    extensions:   const [AppThemeExtension.dark],
+  );
+}
+```
+
+### theme_provider.dart
+
+```dart
+// design_system/theme/theme_provider.dart
+part 'theme_provider.g.dart';
+
+@riverpod
+class ThemeModeNotifier extends _$ThemeModeNotifier {
+  @override
+  ThemeMode build() => ThemeMode.system;
+
+  void setLight()  => state = ThemeMode.light;
+  void setDark()   => state = ThemeMode.dark;
+  void setSystem() => state = ThemeMode.system;
+  void toggle()    => state = state == ThemeMode.dark
+      ? ThemeMode.light
+      : ThemeMode.dark;
+}
+
+// In app.dart:
+//   themeMode: ref.watch(themeModeNotifierProvider)
+```
+
+---
+
+## Design System — Components Barrel
+
+```dart
+// design_system/components/components.dart
+/// Barrel export for all shared design system components.
+/// Import this single file from feature screens — never import component files directly.
+export 'buttons/app_button.dart';
+export 'inputs/app_text_field.dart';
+export 'cards/app_card.dart';
+export 'dialogs/app_dialog.dart';
+export 'loaders/app_shimmer.dart';
+```
+
+**Component file placement rule:** All shared UI primitives (buttons, inputs, cards, dialogs, loaders) live in `design_system/components/<category>/`. Feature-specific widgets that are not reused across features live in `features/<name>/presentation/widgets/`. Never put shared components inside a feature folder.

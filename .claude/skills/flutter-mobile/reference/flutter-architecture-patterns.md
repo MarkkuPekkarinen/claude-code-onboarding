@@ -515,3 +515,153 @@ class OrderRepositoryImpl with RemoteDataSourceErrorHandler
 - Never add additional try-catch inside the lambda passed to `executeRemoteCall` — let the mixin handle it
 - `executeRemoteCallNullable` is only for queries where null is a valid success state; don't use it to silently swallow missing records that should exist
 - Complement with `ResilientNetworkService` from `flutter-network-resilience.md` for timeout + retry before the call reaches this handler
+
+---
+
+## Sync Notifier<T> — Non-Async State
+
+Use `Notifier<T>` (not `AsyncNotifier`) when state is always available synchronously — no loading or error states. Common examples: form state, UI toggle, filter selection, theme mode.
+
+```dart
+// features/products/presentation/providers/filter_provider.dart
+part 'filter_provider.g.dart';
+
+// 1. Define the state with freezed (sealed not required for sync value types)
+@freezed
+class ProductFilter with _$ProductFilter {
+  const factory ProductFilter({
+    @Default('') String query,
+    @Default(SortOrder.newest) SortOrder sortOrder,
+    @Default([]) List<String> selectedCategories,
+  }) = _ProductFilter;
+}
+
+enum SortOrder { newest, oldest, priceAsc, priceDesc }
+
+// 2. Sync notifier — extends _$FilterNotifier, returns T (not Future<T>)
+@riverpod
+class FilterNotifier extends _$FilterNotifier {
+  @override
+  ProductFilter build() => const ProductFilter(); // always returns synchronously
+
+  void setQuery(String query) =>
+      state = state.copyWith(query: query);
+
+  void setSortOrder(SortOrder order) =>
+      state = state.copyWith(sortOrder: order);
+
+  void toggleCategory(String category) {
+    final current = state.selectedCategories;
+    state = state.copyWith(
+      selectedCategories: current.contains(category)
+          ? current.where((c) => c != category).toList()
+          : [...current, category],
+    );
+  }
+
+  void reset() => state = const ProductFilter();
+}
+```
+
+**Usage in widget:**
+
+```dart
+// Read current filter state reactively
+final filter = ref.watch(filterNotifierProvider);
+
+// Call mutations in callbacks (ref.read — not ref.watch)
+ElevatedButton(
+  onPressed: () => ref.read(filterNotifierProvider.notifier).setQuery('shoes'),
+  child: const Text('Filter: Shoes'),
+);
+
+// Drive a derived provider from sync state
+@riverpod
+Future<List<Product>> filteredProducts(FilteredProductsRef ref) async {
+  final filter = ref.watch(filterNotifierProvider);
+  return ref.watch(productRepositoryProvider).search(filter);
+}
+```
+
+**Sync vs Async decision rule:**
+
+| Condition | Provider type |
+|-----------|--------------|
+| State is always available (no network, no db) | `Notifier<T>` |
+| State requires async init or remote fetch | `AsyncNotifier<T>` |
+| State is a stream (Firestore, WebSocket) | `StreamNotifier<T>` |
+| State is read-only derived value | `@riverpod T fn(Ref ref)` |
+
+**Rules:**
+- `build()` returns `T` directly — never `Future<T>` or `Stream<T>` in a sync Notifier
+- State mutations return `void` — set `state =` directly, never async inside sync methods
+- Use `state.copyWith()` from freezed — never mutate state in place
+- Sync notifiers are auto-disposed by default; add `@Riverpod(keepAlive: true)` only for global UI state (e.g., theme mode, locale)
+
+---
+
+## features/common/ — Shared Cross-Feature Logic
+
+`lib/features/common/` holds widgets and providers that are reused across **two or more features**
+but do not belong in `core/` (which is infrastructure) or `design_system/` (which is pure UI).
+
+### What belongs here
+
+| Type | Example | Rule |
+|------|---------|------|
+| Shared domain widgets | `UserAvatarWidget`, `PriceBadge` | Used in ≥ 2 feature screens |
+| Cross-feature providers | `currentUserProvider`, `featureFlagsProvider` | Consumed by ≥ 2 feature providers |
+| Shared use-case helpers | `FormatCurrencyUseCase` | Pure Dart, no UI |
+
+### What does NOT belong here
+
+| Type | Correct location |
+|------|-----------------|
+| Infrastructure (Dio, storage, auth) | `core/di/providers.dart` |
+| Pure UI primitives (buttons, inputs) | `design_system/components/` |
+| Feature-specific widgets | `features/<feature>/presentation/widgets/` |
+
+### Structure
+
+```
+lib/features/common/
+├── providers/
+│   └── current_user_provider.dart   # @Riverpod(keepAlive: true) — auth state shared across features
+├── widgets/
+│   ├── user_avatar.dart             # Reused in profile, chat, comments
+│   └── empty_state_widget.dart      # Reused in home, search, history
+└── usecases/
+    └── format_currency_usecase.dart # Pure Dart, used in cart and order history
+```
+
+### Usage pattern
+
+```dart
+// lib/features/common/providers/current_user_provider.dart
+part 'current_user_provider.g.dart';
+
+@Riverpod(keepAlive: true)
+Stream<User?> currentUser(CurrentUserRef ref) {
+  return ref
+      .watch(authRepositoryProvider)
+      .watchCurrentUser();
+}
+```
+
+```dart
+// lib/features/profile/presentation/screens/profile_screen.dart
+final user = ref.watch(currentUserProvider);
+
+// lib/features/chat/presentation/screens/chat_screen.dart
+final user = ref.watch(currentUserProvider); // same provider, shared state
+```
+
+### Decision rule — Rule of Three applies
+
+| Occurrences | Action |
+|-------------|--------|
+| Used in 1 feature | Keep inside that feature's `presentation/widgets/` |
+| Used in 2 features | Accept duplication OR move to `common/` if extraction is obvious |
+| Used in 3+ features | Move to `common/` immediately |
+
+**Never move to `common/` speculatively.** Wait until the second or third consumer exists.
