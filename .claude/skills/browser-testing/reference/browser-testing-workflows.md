@@ -2,11 +2,11 @@
 
 ## The Power of Combining Both Tools
 
-The most effective testing approach uses **both Chrome DevTools and Browser-Use together**:
+The most effective testing approach uses **both Playwright MCP and Browser-Use together**:
 
-1. **Chrome DevTools** monitors the internals (network, console, performance)
+1. **Playwright MCP** monitors the internals (network, console, performance)
 2. **Browser-Use** performs user actions (click, fill, navigate)
-3. **Chrome DevTools** checks for errors after each action
+3. **Playwright MCP** checks for errors after each action
 
 This gives you both the **user perspective** (what they see/do) and the **technical perspective** (what's happening under the hood).
 
@@ -16,12 +16,12 @@ This gives you both the **user perspective** (what they see/do) and the **techni
 
 **Goal:** Test login functionality while monitoring network requests and console errors.
 
-### Step 1: Open with Chrome DevTools
+### Step 1: Open with Playwright MCP
 
 ```typescript
 // Start monitoring
-mcp__chrome-devtools__new_page({ url: "http://localhost:4200" })
-mcp__chrome-devtools__navigate_page({ type: "url", url: "http://localhost:4200/login" })
+mcp__playwright__new_page({ url: "http://localhost:4200" })
+mcp__playwright__browser_navigate({ type: "url", url: "http://localhost:4200/login" })
 ```
 
 ### Step 2: Use Browser-Use for User Interaction
@@ -41,17 +41,17 @@ mcp__browser-use__browser_input({ index: 5, text: "password123" })
 mcp__browser-use__browser_click({ index: 6 })
 ```
 
-### Step 3: Check Chrome DevTools for Issues
+### Step 3: Check Playwright MCP for Issues
 
 ```typescript
 // Did any console errors occur?
-mcp__chrome-devtools__list_console_messages({ types: ["error", "warn"] })
+mcp__playwright__browser_console_messages({ types: ["error", "warn"] })
 
 // Did the API call succeed?
-mcp__chrome-devtools__list_network_requests({ resourceTypes: ["xhr", "fetch"] })
+mcp__playwright__browser_network_requests({ resourceTypes: ["xhr", "fetch"] })
 
 // Is auth token stored?
-mcp__chrome-devtools__evaluate_script({ script: "localStorage.getItem('authToken')" })
+mcp__playwright__browser_evaluate({ script: "localStorage.getItem('authToken')" })
 ```
 
 ### Step 4: Verify State
@@ -70,7 +70,7 @@ mcp__browser-use__browser_get_state({ include_screenshot: false })
 - ✅ Redirected to /dashboard
 - ✅ "Logout" link now visible
 
-**Technical Perspective (Chrome DevTools):**
+**Technical Perspective (Playwright MCP):**
 - ✅ POST /api/auth/login → 200 OK
 - ✅ Response contains auth token
 - ✅ No console errors
@@ -87,26 +87,26 @@ mcp__browser-use__browser_get_state({ include_screenshot: false })
 
 ```typescript
 // Navigate and start tracing
-mcp__chrome-devtools__navigate_page({ type: "url", url: "https://example.com" })
-mcp__chrome-devtools__performance_start_trace()
+mcp__playwright__browser_navigate({ type: "url", url: "https://example.com" })
+mcp__playwright__browser_start_tracing()
 
 // Wait for page load (manual or automated)
 // ...
 
-mcp__chrome-devtools__performance_stop_trace({ filePath: "./baseline-trace.json" })
+mcp__playwright__browser_stop_tracing({ filePath: "./baseline-trace.json" })
 ```
 
 ### Step 2: Analyze Metrics
 
 ```typescript
 // Extract key metrics
-mcp__chrome-devtools__performance_analyze_insight({ insight: "LCPBreakdown" })
+mcp__playwright__browser_stop_tracing({ insight: "LCPBreakdown" })
 // Returns: Largest Contentful Paint = 1.2s
 
-mcp__chrome-devtools__performance_analyze_insight({ insight: "TotalBlockingTime" })
+mcp__playwright__browser_stop_tracing({ insight: "TotalBlockingTime" })
 // Returns: TBT = 150ms
 
-mcp__chrome-devtools__performance_analyze_insight({ insight: "RenderBlocking" })
+mcp__playwright__browser_stop_tracing({ insight: "RenderBlocking" })
 // Returns: 3 render-blocking resources (app.css, vendor.js, main.js)
 ```
 
@@ -114,25 +114,25 @@ mcp__chrome-devtools__performance_analyze_insight({ insight: "RenderBlocking" })
 
 ```typescript
 // Simulate slow network
-mcp__chrome-devtools__emulate_network({ profile: "Slow 3G" })
+mcp__playwright__browser_emulate_network({ profile: "Slow 3G" })
 
 // Simulate slow CPU (4x slowdown)
-mcp__chrome-devtools__emulate_cpu({ rate: 4 })
+mcp__playwright__browser_emulate_cpu({ rate: 4 })
 
 // Repeat performance trace
-mcp__chrome-devtools__navigate_page({ type: "reload", ignoreCache: true })
-mcp__chrome-devtools__performance_start_trace()
+mcp__playwright__browser_navigate({ type: "reload", ignoreCache: true })
+mcp__playwright__browser_start_tracing()
 // ... wait for load ...
-mcp__chrome-devtools__performance_stop_trace({ filePath: "./slow-trace.json" })
+mcp__playwright__browser_stop_tracing({ filePath: "./slow-trace.json" })
 ```
 
 ### Step 4: Compare Results
 
 ```typescript
-mcp__chrome-devtools__performance_analyze_insight({ insight: "LCPBreakdown" })
+mcp__playwright__browser_stop_tracing({ insight: "LCPBreakdown" })
 // Returns: LCP = 5.8s (degraded from 1.2s)
 
-mcp__chrome-devtools__performance_analyze_insight({ insight: "TotalBlockingTime" })
+mcp__playwright__browser_stop_tracing({ insight: "TotalBlockingTime" })
 // Returns: TBT = 2400ms (degraded from 150ms)
 ```
 
@@ -163,18 +163,18 @@ mcp__browser-use__browser_select({ index: 7, value: "individual" })
 mcp__browser-use__browser_click({ index: 8 })  // Submit
 ```
 
-### Step 2: Validate API Calls (Chrome DevTools)
+### Step 2: Validate API Calls (Playwright MCP)
 
 ```typescript
 // Check network requests
-mcp__chrome-devtools__list_network_requests({ resourceTypes: ["xhr", "fetch"] })
+mcp__playwright__browser_network_requests({ resourceTypes: ["xhr", "fetch"] })
 
 // Expected:
 // POST /api/auth/signup → 201 Created
 // Response: { "message": "Check email for verification link" }
 
 // Check console
-mcp__chrome-devtools__list_console_messages({ types: ["error"] })
+mcp__playwright__browser_console_messages({ types: ["error"] })
 // Expected: No errors
 ```
 
@@ -191,7 +191,7 @@ mcp__browser-use__browser_get_state({ include_screenshot: false })
 For demo purposes, extract verification token from network response:
 
 ```typescript
-mcp__chrome-devtools__get_network_request({ reqid: 5 })
+mcp__playwright__browser_network_requests({ reqid: 5 })
 // Extract token from response body
 ```
 
@@ -212,12 +212,12 @@ mcp__browser-use__browser_get_state({ include_screenshot: false })
 // Expected: Welcome message visible
 
 // Check auth state
-mcp__chrome-devtools__evaluate_script({
+mcp__playwright__browser_evaluate({
   script: "localStorage.getItem('authToken')"
 })
 // Expected: Token present
 
-mcp__chrome-devtools__evaluate_script({
+mcp__playwright__browser_evaluate({
   script: "document.cookie"
 })
 // Expected: Session cookie set
@@ -258,7 +258,7 @@ mcp__browser-use__browser_get_state({ include_screenshot: false })
 // Expected: Error messages visible below each field
 
 // Check console for validation logic
-mcp__chrome-devtools__list_console_messages()
+mcp__playwright__browser_console_messages()
 // Expected: No JavaScript errors (validation should work)
 ```
 
@@ -282,7 +282,7 @@ mcp__browser-use__browser_input({ index: 5, text: "Hello, I need help with billi
 mcp__browser-use__browser_click({ index: 9 })
 
 // Check network request
-mcp__chrome-devtools__list_network_requests({ resourceTypes: ["xhr", "fetch"] })
+mcp__playwright__browser_network_requests({ resourceTypes: ["xhr", "fetch"] })
 // Expected: POST /api/contact → 200 OK
 
 // Check final state
@@ -299,8 +299,8 @@ mcp__browser-use__browser_get_state({ include_screenshot: false })
 ### Step 1: Get Accessibility Tree
 
 ```typescript
-mcp__chrome-devtools__navigate_page({ type: "url", url: "https://app.com/login" })
-mcp__chrome-devtools__take_snapshot({ verbose: true })
+mcp__playwright__browser_navigate({ type: "url", url: "https://app.com/login" })
+mcp__playwright__browser_snapshot({ verbose: true })
 
 // Examine output for:
 // - Proper heading hierarchy (h1, h2, h3)
@@ -329,7 +329,7 @@ mcp__browser-use__browser_keys({ keys: "Enter" })
 ### Step 3: Verify ARIA Attributes
 
 ```typescript
-mcp__chrome-devtools__evaluate_script({
+mcp__playwright__browser_evaluate({
   script: `
     const input = document.querySelector('input[type="email"]');
     JSON.stringify({
@@ -353,29 +353,29 @@ mcp__chrome-devtools__evaluate_script({
 ### Step 1: Mobile Viewport
 
 ```typescript
-mcp__chrome-devtools__resize_page({ width: 375, height: 667 })
-mcp__chrome-devtools__navigate_page({ type: "url", url: "https://app.com" })
-mcp__chrome-devtools__take_screenshot({ fullPage: true, filePath: "./mobile.png" })
+mcp__playwright__browser_resize({ width: 375, height: 667 })
+mcp__playwright__browser_navigate({ type: "url", url: "https://app.com" })
+mcp__playwright__browser_screenshot({ fullPage: true, filePath: "./mobile.png" })
 
 // Check mobile menu
-mcp__chrome-devtools__take_snapshot()
+mcp__playwright__browser_snapshot()
 // Verify hamburger menu present, desktop nav hidden
 ```
 
 ### Step 2: Tablet Viewport
 
 ```typescript
-mcp__chrome-devtools__resize_page({ width: 768, height: 1024 })
-mcp__chrome-devtools__navigate_page({ type: "reload" })
-mcp__chrome-devtools__take_screenshot({ fullPage: true, filePath: "./tablet.png" })
+mcp__playwright__browser_resize({ width: 768, height: 1024 })
+mcp__playwright__browser_navigate({ type: "reload" })
+mcp__playwright__browser_screenshot({ fullPage: true, filePath: "./tablet.png" })
 ```
 
 ### Step 3: Desktop Viewport
 
 ```typescript
-mcp__chrome-devtools__resize_page({ width: 1920, height: 1080 })
-mcp__chrome-devtools__navigate_page({ type: "reload" })
-mcp__chrome-devtools__take_screenshot({ fullPage: true, filePath: "./desktop.png" })
+mcp__playwright__browser_resize({ width: 1920, height: 1080 })
+mcp__playwright__browser_navigate({ type: "reload" })
+mcp__playwright__browser_screenshot({ fullPage: true, filePath: "./desktop.png" })
 ```
 
 ### Step 4: Compare Layouts
@@ -395,11 +395,11 @@ Review screenshots to verify:
 
 ```typescript
 // Clear console and network
-mcp__chrome-devtools__navigate_page({ type: "reload", ignoreCache: true })
+mcp__playwright__browser_navigate({ type: "reload", ignoreCache: true })
 
 // Start fresh recording
-const initialConsole = mcp__chrome-devtools__list_console_messages()
-const initialNetwork = mcp__chrome-devtools__list_network_requests()
+const initialConsole = mcp__playwright__browser_console_messages()
+const initialNetwork = mcp__playwright__browser_network_requests()
 ```
 
 ### Execute User Flow
@@ -419,20 +419,20 @@ mcp__browser-use__browser_click({ index: 10 })  // Submit payment
 
 ```typescript
 // After form fill
-const consoleAfterFill = mcp__chrome-devtools__list_console_messages({ types: ["error", "warn"] })
+const consoleAfterFill = mcp__playwright__browser_console_messages({ types: ["error", "warn"] })
 // Expected: No new errors
 
 // After submit
-const consoleAfterSubmit = mcp__chrome-devtools__list_console_messages({ types: ["error"] })
+const consoleAfterSubmit = mcp__playwright__browser_console_messages({ types: ["error"] })
 // Expected: No errors
 
 // Check network requests
-const networkRequests = mcp__chrome-devtools__list_network_requests({
+const networkRequests = mcp__playwright__browser_network_requests({
   resourceTypes: ["xhr", "fetch"]
 })
 
 // Find the payment API call
-const paymentRequest = mcp__chrome-devtools__get_network_request({ reqid: 15 })
+const paymentRequest = mcp__playwright__browser_network_requests({ reqid: 15 })
 // Expected: POST /api/payments → 200 OK
 // Check response body for success confirmation
 ```
@@ -443,21 +443,21 @@ If errors found:
 
 ```typescript
 // Get detailed error
-const errorDetails = mcp__chrome-devtools__get_console_message({ msgid: 5 })
+const errorDetails = mcp__playwright__browser_console_messages({ msgid: 5 })
 
 // Example error:
 // "Uncaught TypeError: Cannot read property 'amount' of undefined at processPayment (checkout.js:45)"
 
 // Take screenshot of error state
-mcp__chrome-devtools__take_screenshot({ filePath: "./payment-error.png" })
+mcp__playwright__browser_screenshot({ filePath: "./payment-error.png" })
 ```
 
 ---
 
 ## Best Practices Summary
 
-### 1. Start with Chrome DevTools Monitoring
-Open the page with chrome-devtools first to capture all network/console activity from the start.
+### 1. Start with Playwright MCP Monitoring
+Open the page with playwright first to capture all network/console activity from the start.
 
 ### 2. Use Browser-Use for Interactions
 Let browser-use handle all user actions (clicking, typing) — it's more reliable for complex flows.
@@ -469,7 +469,7 @@ After form submission, navigation, or API calls, immediately check:
 - `evaluate_script` for state verification
 
 ### 4. Never Use Screenshots in browser_get_state
-Use `include_screenshot: false` to avoid 126K+ token overflow. Use `chrome-devtools.take_screenshot` if you need visuals.
+Use `include_screenshot: false` to avoid 126K+ token overflow. Use `playwright.browser_screenshot` if you need visuals.
 
 ### 5. Close Sessions When Done
 Always run `browser_close_all()` to free resources.
@@ -490,16 +490,16 @@ When testing features requiring authentication, use `browser-use --browser real`
 Need to test a feature?
   │
   ├─ Need to inspect network/console?
-  │  → Start with chrome-devtools
+  │  → Start with playwright
   │
   ├─ Need to interact like a user?
   │  → Use browser-use
   │
   └─ Need both technical + user perspective?
      → Use BOTH:
-        1. Open with chrome-devtools
+        1. Open with playwright
         2. Interact with browser-use
-        3. Validate with chrome-devtools
+        3. Validate with playwright
 ```
 
 ## Flutter Web Testing Patterns
@@ -529,6 +529,6 @@ Flutter web renders to WebGL canvas — no HTML form elements. All clicks must u
 
 ### MCP Fallback to Playwright
 
-If chrome-devtools and browser-use MCPs are not available as direct `mcp__*` calls:
+If playwright and browser-use MCPs are not available as direct `mcp__*` calls:
 - Install `playwright` Python library and use Playwright directly
 - `pip3 install playwright && playwright install chromium`

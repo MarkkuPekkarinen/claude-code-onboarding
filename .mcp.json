@@ -23,7 +23,8 @@
     },
     "chrome-devtools": {
       "type": "stdio",
-      "disabled": false,
+      "disabled": true,
+      "description": "DISABLED — replaced by playwright-cli (stateful CLI, persistent sessions, native Claude Code skills integration). Only re-enable for V8 heap profiling or raw CDP work not covered by playwright-cli.",
       "command": "npx",
       "args": [
         "-y",
@@ -118,9 +119,9 @@
       "type": "stdio",
       "disabled": false,
       "description": "Maestro MCP server for cross-platform mobile E2E testing on iOS and Android.",
-      "command": "uvx",
+      "command": "maestro",
       "args": [
-        "maestro-mcp"
+        "mcp"
       ],
       "timeout": 60000
     },
