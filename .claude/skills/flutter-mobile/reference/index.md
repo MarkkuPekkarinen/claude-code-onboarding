@@ -13,3 +13,4 @@
 | [accessibility-audit-checklist.md](accessibility-audit-checklist.md) | Adding interactive elements or running accessibility review (used by `accessibility-auditor`) | WCAG 2.1 AA checklist, Semantics widgets, touch targets |
 | [flutter-network-resilience.md](flutter-network-resilience.md) | Any service/repository making HTTP or Firebase calls | Circuit breaker, retry with exponential backoff, timeout budgets, Riverpod integration |
 | [flutter-offline-sync.md](flutter-offline-sync.md) | App must work without internet (create/edit/delete data offline) | SyncQueue model, exponential backoff retry, SyncManager, Riverpod integration, backend-agnostic |
+| [flutter-testing-patterns.md](flutter-testing-patterns.md) | Writing tests for any feature (unit, widget, golden, integration) | mocktail fakes, ProviderContainer, ProviderScope overrides, golden tests |

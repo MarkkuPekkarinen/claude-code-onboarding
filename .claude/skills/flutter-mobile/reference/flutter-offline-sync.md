@@ -358,3 +358,174 @@ Everything else — the backoff math, the priority sort, the retry loop, the `Re
 - **Delete operations must be highest priority** — process before creates/updates to prevent orphaned remote records
 - **One `SyncManager` instance** — `keepAlive: true` Riverpod provider; never recreate per feature
 - **Do not enqueue the same `localId` + `operation` twice** — check for existing pending item before enqueuing to prevent duplicate uploads
+
+---
+
+## 7. Conflict Resolution
+
+When the same record is modified both locally (offline) and on the server (by another device or user), the sync manager needs a strategy to resolve the conflict.
+
+### Strategy selection
+
+| Strategy | When to use | Tradeoff |
+|----------|-------------|----------|
+| **Server wins** | Server is authoritative (financial records, inventory) | Simple; local edit is silently lost |
+| **Last write wins** | User-owned data (notes, preferences) | Simple; requires `updatedAt` timestamps on both sides |
+| **Client wins** | Rare — only if local is always more current | Risk of overwriting legitimate server changes |
+| **User prompt** | High-value data where silent loss is unacceptable (documents, schedules) | Best UX; requires UI to surface the conflict |
+
+---
+
+### Strategy 1 — Last Write Wins (timestamp comparison)
+
+Attach a client-side `updatedAt` timestamp to every sync operation payload. The server rejects stale writes.
+
+```dart
+// Add to SyncQueueItem payload when enqueuing
+Future<Result<T>> createEntry(JournalEntry entry) async {
+  final saved = await _localRepo.create(entry);
+
+  await ref.read(syncManagerProvider).enqueue(
+    SyncOperation.update,
+    saved.localId,
+    {
+      ...saved.toJson(),
+      // ISO-8601 — server compares against its own updatedAt
+      'client_updated_at': DateTime.now().toUtc().toIso8601String(),
+    },
+  );
+  return Success(saved);
+}
+```
+
+Server logic (pseudo-code — backend responsibility):
+```
+if request.client_updated_at > server_record.updated_at:
+    apply update
+    return 200
+else:
+    return 409 Conflict { "server_version": server_record }
+```
+
+Handle the 409 in `SyncManager._executeOperation()`:
+```dart
+// In the catch block of _executeOperation inside SyncManager
+on ConflictException catch (e) {
+  // Last-write-wins: server data is fresher — overwrite local
+  await _localRepo.update(e.serverVersion);
+  // Remove from queue — conflict resolved by accepting server state
+  await _box.delete(item.localId);
+}
+```
+
+---
+
+### Strategy 2 — User Prompt (for high-value data)
+
+Surface the conflict to the user when silent loss is unacceptable.
+
+```dart
+// lib/core/sync/conflict_resolver.dart
+
+@freezed
+class SyncConflict<T> with _$SyncConflict<T> {
+  const factory SyncConflict({
+    required String entityId,
+    required T localVersion,
+    required T serverVersion,
+    required DateTime localUpdatedAt,
+    required DateTime serverUpdatedAt,
+  }) = _SyncConflict;
+}
+
+enum ConflictResolution { keepLocal, keepServer, keepBoth }
+```
+
+```dart
+// Riverpod provider — emits conflicts for the UI to present
+@riverpod
+class ConflictQueue extends _$ConflictQueue {
+  @override
+  List<SyncConflict<Map<String, dynamic>>> build() => const [];
+
+  void add(SyncConflict<Map<String, dynamic>> conflict) =>
+      state = [...state, conflict];
+
+  Future<void> resolve(
+    String entityId,
+    ConflictResolution resolution,
+  ) async {
+    final conflict = state.firstWhere((c) => c.entityId == entityId);
+    switch (resolution) {
+      case ConflictResolution.keepLocal:
+        // Force-push local version with a newer timestamp
+        await ref.read(syncManagerProvider).enqueue(
+          SyncOperation.update,
+          entityId,
+          {...conflict.localVersion, 'force': true},
+        );
+      case ConflictResolution.keepServer:
+        await ref.read(localRepoProvider).update(conflict.serverVersion);
+      case ConflictResolution.keepBoth:
+        // App-specific — e.g. duplicate the record with a suffix
+        await ref.read(localRepoProvider).create(
+          {...conflict.localVersion, 'localId': '${entityId}_local_copy'},
+        );
+        await ref.read(localRepoProvider).update(conflict.serverVersion);
+    }
+    state = state.where((c) => c.entityId != entityId).toList();
+  }
+}
+```
+
+```dart
+// Widget — show conflict banner when queue is non-empty
+@riverpod
+Widget conflictBanner(WidgetRef ref) {
+  final conflicts = ref.watch(conflictQueueProvider);
+  if (conflicts.isEmpty) return const SizedBox.shrink();
+
+  return MaterialBanner(
+    content: Text('${conflicts.length} edit conflict(s) need your attention'),
+    actions: [
+      TextButton(
+        onPressed: () => context.push('/conflicts'),
+        child: const Text('Resolve'),
+      ),
+    ],
+  );
+}
+```
+
+---
+
+### Integration with SyncManager
+
+Add conflict detection in `_executeOperation()` inside `SyncManager`:
+
+```dart
+// In _executeOperation — catch the 409 from the remote source
+try {
+  switch (item.operation) {
+    case SyncOperation.create: await _remote.create(item.payload); break;
+    case SyncOperation.update: await _remote.update(item.localId, item.payload); break;
+    case SyncOperation.delete: await _remote.delete(item.localId); break;
+  }
+  await _box.delete(item.localId);   // success — remove from queue
+} on ConflictException catch (e) {
+  // Route to the appropriate strategy:
+  // Strategy 1 (last-write-wins):  accept server version, clear queue item
+  // Strategy 2 (user prompt):      push to ConflictQueue provider
+  _handleConflict(item, e.serverVersion);
+}
+```
+
+---
+
+### Rules
+
+- **Choose one strategy per entity type** — mixing strategies in the same feature creates unpredictable behaviour
+- **Always include `updatedAt` in sync payloads** — without it, last-write-wins is impossible to implement correctly
+- **Never silently drop user edits for high-value data** (documents, schedules, financial entries) — use user prompt strategy
+- **`keepBoth` is a last resort** — it creates data duplication; prefer last-write-wins or user prompt
+- **Conflicts must be surfaced, not suppressed** — if using user prompt strategy, show a badge/banner count in the UI so users know action is needed

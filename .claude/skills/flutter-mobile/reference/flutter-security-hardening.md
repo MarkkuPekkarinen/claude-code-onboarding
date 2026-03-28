@@ -28,6 +28,205 @@ For general code security (OWASP Top 10, injection, auth, secrets) use the `secu
 - Don't expose sensitive routes via deep links
 - Use App Links (Android) / Universal Links (iOS) over custom schemes
 
+## Biometric Authentication
+
+Use `local_auth` to gate sensitive screens (payment confirmation, viewing secrets) behind biometric verification. This is a **second factor** — it does NOT replace your Firebase Auth session.
+
+### pubspec.yaml
+
+```yaml
+dependencies:
+  local_auth: ^2.3.0
+```
+
+### Pattern — gate a sensitive action
+
+```dart
+// lib/core/security/biometric_service.dart
+import 'package:local_auth/local_auth.dart';
+
+class BiometricService {
+  final LocalAuthentication _auth = LocalAuthentication();
+
+  /// Returns true if device supports and has enrolled biometrics.
+  Future<bool> isAvailable() async {
+    final canCheck = await _auth.canCheckBiometrics;
+    final isDeviceSupported = await _auth.isDeviceSupported();
+    return canCheck && isDeviceSupported;
+  }
+
+  /// Prompts the user. Returns true on success, false on failure/cancel.
+  /// Never throws — all exceptions are caught and logged.
+  Future<bool> authenticate({required String reason}) async {
+    try {
+      return await _auth.authenticate(
+        localizedReason: reason,
+        options: const AuthenticationOptions(
+          biometricOnly: false,   // allow PIN fallback if biometrics fail
+          stickyAuth: true,       // keep prompt open if user switches apps
+        ),
+      );
+    } catch (e, stack) {
+      FirebaseCrashlytics.instance.log('[BiometricService] auth failed: $e');
+      await FirebaseCrashlytics.instance.recordError(e, stack,
+          reason: 'BiometricService.authenticate', printDetails: false);
+      return false;
+    }
+  }
+}
+```
+
+```dart
+// Riverpod provider
+@Riverpod(keepAlive: true)
+BiometricService biometricService(Ref ref) => BiometricService();
+```
+
+```dart
+// Usage — gate a payment confirmation action
+Future<void> confirmPayment() async {
+  final bio = ref.read(biometricServiceProvider);
+  final available = await bio.isAvailable();
+
+  if (available) {
+    final passed = await bio.authenticate(
+      reason: 'Confirm your identity to complete the payment',
+    );
+    if (!passed) return;   // user cancelled or failed — do nothing silently
+  }
+
+  // Proceed only if biometrics passed (or not available on this device)
+  await ref.read(paymentProvider.notifier).submit();
+}
+```
+
+### iOS — `Info.plist`
+
+```xml
+<key>NSFaceIDUsageDescription</key>
+<string>Confirm your identity to authorize sensitive actions</string>
+```
+
+### Android — `AndroidManifest.xml`
+
+```xml
+<uses-permission android:name="android.permission.USE_BIOMETRIC" />
+```
+
+### Rules
+
+- **Always check `isAvailable()` first** — degrade gracefully on devices without biometrics
+- **Never block the entire app** behind biometrics — only gate specific sensitive actions
+- **`biometricOnly: false`** — allow PIN/pattern fallback so users with damaged fingerprint sensors are not locked out
+- **Do not store biometric templates yourself** — `local_auth` delegates to the OS secure enclave; your app never sees raw biometric data
+
+---
+
+## Token Refresh & Expiry Handling
+
+Access tokens expire. Refresh them transparently using a Dio interceptor so the user is never interrupted mid-session.
+
+### Pattern — Dio interceptor with queued retry
+
+```dart
+// lib/core/network/interceptors/auth_interceptor.dart
+import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+class AuthInterceptor extends QueuedInterceptor {
+  AuthInterceptor({required this.secureStorage, required this.dio});
+
+  final FlutterSecureStorage secureStorage;
+  final Dio dio;   // the SAME Dio instance — used to replay failed requests
+
+  static const _accessTokenKey  = 'access_token';
+  static const _refreshTokenKey = 'refresh_token';
+
+  @override
+  void onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
+    final token = await secureStorage.read(key: _accessTokenKey);
+    if (token != null) {
+      options.headers['Authorization'] = 'Bearer $token';
+    }
+    handler.next(options);
+  }
+
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) async {
+    if (err.response?.statusCode != 401) {
+      handler.next(err);
+      return;
+    }
+
+    // 401 — attempt token refresh
+    try {
+      final newToken = await _refresh();
+      // Replay original request with new token
+      final retryOptions = err.requestOptions
+        ..headers['Authorization'] = 'Bearer $newToken';
+      final response = await dio.fetch(retryOptions);
+      handler.resolve(response);
+    } on DioException {
+      // Refresh failed — force sign out
+      await secureStorage.deleteAll();
+      handler.reject(err);
+    }
+  }
+
+  Future<String> _refresh() async {
+    final refreshToken = await secureStorage.read(key: _refreshTokenKey);
+    if (refreshToken == null) throw DioException(requestOptions: RequestOptions());
+
+    final response = await Dio().post(
+      '${Env.apiBaseUrl}/auth/refresh',
+      data: {'refresh_token': refreshToken},
+    );
+
+    final newAccessToken  = response.data['access_token']  as String;
+    final newRefreshToken = response.data['refresh_token'] as String;
+
+    await secureStorage.write(key: _accessTokenKey,  value: newAccessToken);
+    await secureStorage.write(key: _refreshTokenKey, value: newRefreshToken);
+    return newAccessToken;
+  }
+}
+```
+
+Register on the Dio instance in `core/di/providers.dart`:
+```dart
+@Riverpod(keepAlive: true)
+Dio dio(Ref ref) {
+  final dio = Dio(BaseOptions(baseUrl: Env.apiBaseUrl));
+  final storage = ref.watch(secureStorageProvider);
+  dio.interceptors.add(AuthInterceptor(secureStorage: storage, dio: dio));
+  return dio;
+}
+```
+
+### Token storage keys
+
+```dart
+// lib/core/constants/storage_keys.dart
+abstract final class StorageKeys {
+  static const accessToken  = 'access_token';
+  static const refreshToken = 'refresh_token';
+  static const userId       = 'user_id';
+}
+```
+
+### Rules
+
+- **`QueuedInterceptor`** — queues concurrent 401 requests; prevents multiple simultaneous refresh calls
+- **Store tokens in `flutter_secure_storage` only** — never in `SharedPreferences` or in-memory globals
+- **On refresh failure: `deleteAll()` + redirect to login** — do not leave stale tokens in storage
+- **Refresh endpoint uses a fresh `Dio()` instance** — avoids circular interception of the refresh call itself
+- **Never log token values** — log `'token refreshed'` not the token content
+
+---
+
 ## Firebase App Check
 
 App Check verifies that requests to your Firebase backend come from a legitimate build of your app — not an emulator, a forged client, or a script. It protects **all** Firebase services (Auth, Storage, Cloud Functions, Realtime Database) regardless of which database you use.
@@ -99,6 +298,9 @@ Add to the checklist in this file:
 - [ ] Data export/deletion endpoints functional
 - [ ] Privacy policy URL accessible from app
 - [ ] Dependencies scanned for known vulnerabilities
+- [ ] Biometric auth gates all sensitive actions (payment, secrets view)
+- [ ] Token refresh interceptor handles 401 transparently with QueuedInterceptor
+- [ ] Refresh failure clears storage and redirects to login
 
 ## Crashlytics Structured Error Reporting
 
