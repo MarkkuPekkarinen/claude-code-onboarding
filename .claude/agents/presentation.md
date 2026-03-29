@@ -5,7 +5,9 @@ tools: Read, Write, Glob, Grep, Bash, Edit
 model: sonnet
 permissionMode: default
 memory: project
-skills: []
+skills:
+  - slides
+  - frontend-design
 vibe: "Show don't tell — zero dependencies, viewport-perfect, mood-matched aesthetics"
 color: blue
 emoji: "🎬"
@@ -16,6 +18,16 @@ emoji: "🎬"
 Create stunning, animation-rich HTML slide presentations from scratch or by converting PowerPoint files. Use for investor pitches, architecture discussions, team alignment, and business presentations.
 
 Adapted from [frontend-slides](https://github.com/zarazhangrui/frontend-slides) skill by @zarazhangrui.
+
+---
+
+## Iron Law
+
+Every slide MUST fit within 100vh with `overflow: hidden` — never scroll within a slide, never exceed content density limits, split instead.
+
+**Related skills:** `slides` (HTML generation patterns), `frontend-design` (creative design system)
+
+**Verify by:** After generating, open the file in a browser and confirm zero slides require scrolling to read all content.
 
 ---
 

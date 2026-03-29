@@ -76,6 +76,18 @@ gpd publish status --package com.example.app --track production
 gpd publish tracks --package com.example.app
 ```
 
+## Anti-Patterns
+
+- **Don't commit an edit without running `gpd publish edit validate` first.** A committed edit with validation errors cannot be reverted — the release will be rejected or published in a broken state.
+- **Don't skip staged rollout for production releases.** Releasing directly at 100% leaves no window to catch regressions; always start at 5–10% and monitor before escalating.
+- **Don't use `--status completed` on production without running the `gpd-submission-health` preflight.** Skipping the preflight check risks publishing a build that fails Google Play policy review post-release.
+
+## Verify
+
+After each release step:
+- Run `gpd publish status --package com.example.app --track <track>` to confirm the release state matches the intended status (`completed`, `inProgress`, `draft`, or `halted`).
+- After staged rollout percentage changes, re-run `gpd publish status` and confirm the `userFraction` field reflects the new percentage before moving to the next increment.
+
 ## Notes
 - Use `--status draft` first for risky releases.
 - Use `--confirm` only after reviewing `gpd publish status` output.

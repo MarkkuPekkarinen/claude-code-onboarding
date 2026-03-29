@@ -151,6 +151,20 @@ gpd-* skills (Android: upload → beta → health check → staged rollout)
 This skill checks **content** quality (keyword strategy, conversion copy, ASO score).
 They are different layers — both are required before a production submission.
 
+## Anti-Patterns
+
+- **Don't skip the ASO health check before submission.** Running `aso_scorer.py` after submission wastes review queue time — the gate is pre-submission.
+- **Don't use the same keywords in both the title and the Apple keyword field.** Duplicate keywords waste the 100-character limit; keywords in the title already get indexed.
+- **Don't directly translate metadata between locales.** Keyword intent differs by market — use `localization_helper.py` for locale-specific keyword research, not machine translation.
+- **Don't run A/B tests without confirming statistical significance first.** Use `ab_test_planner.py` to calculate required impressions before declaring a winner.
+
+## Verify
+
+After running `aso_scorer.py`, confirm:
+- Score output shows ≥ 70/100 before proceeding to submission.
+- All character limits validated: `metadata_optimizer.py` must exit without limit warnings.
+- Apple keyword field: run `grep "," <keyword_field>` to confirm no spaces after commas and no duplicates with the title.
+
 ## Limitations
 
 - Keyword volume estimates are heuristic — no live Apple/Google API access

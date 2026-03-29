@@ -146,10 +146,47 @@ State the correction factually. Move on.
 | Partial implementation | Clarify ALL items first |
 | Can't verify, proceed anyway | State the limitation, ask for direction |
 
+## Concrete Example — Responding to a Review Comment
+
+**Reviewer comment:** "This `getUserById` method should return `Optional<User>` instead of nullable."
+
+```
+Step 2 — UNDERSTAND:
+  Reviewer wants null-safety: return Optional<User> so callers are forced to handle absence.
+
+Step 3 — VERIFY:
+  src/main/java/com/example/UserRepository.java:42
+    public User getUserById(Long id) { ... }  // returns null if not found ✅ confirmed
+
+Step 4 — EVALUATE:
+  Correct for Spring Boot Java stack. Optional<User> is idiomatic here. No conflict with
+  existing callers — grep shows only 2 call sites, both in tests.
+
+Step 5 — RESPOND (inline thread reply):
+  "Fixed. Changed return type to Optional<User> at UserRepository.java:42.
+   Updated 2 call sites in UserServiceTest.java:18 and UserControllerTest.java:55."
+
+Step 6 — IMPLEMENT:
+  - Change signature to Optional<User>
+  - Wrap return value: return Optional.ofNullable(userRepo.findById(id))
+  - Update 2 test call sites
+  - Run tests: all pass
+```
+
 ## Integration
 
 - Use after: `/review-code`, SDD pipeline (after quality reviewer responds), any PR review
 - Pairs with: `requesting-code-review` skill (send path → receive path)
-- References: `core-behaviors.md` §4 Simplicity, §5 Scope Discipline; `code-standards.md` DRY/YAGNI
 - GitHub replies: use inline thread replies, not top-level PR comments
   (`gh api repos/{owner}/{repo}/pulls/{pr}/comments/{id}/replies`)
+
+## References
+
+| Reference | Why |
+|-----------|-----|
+| `core-behaviors.md` §4 | Simplicity check — reject complexity added by reviewer if YAGNI |
+| `core-behaviors.md` §5 | Scope discipline — don't over-fix adjacent code while addressing feedback |
+| `code-standards.md` DRY/YAGNI | Authority for pushing back on speculative abstractions |
+| `first-principles.md` Layer 1 | Hard stops that apply even when reviewer asks for them (e.g., `as any`) |
+| `iterate-pr` skill | Use when iterating a PR loop based on review feedback + CI results |
+| `pr-review` skill | The send side of this workflow (reviewing others' code) |

@@ -39,6 +39,18 @@ gpd publish promote --package com.example.app --from-track internal --to-track b
 gpd publish promote --package com.example.app --from-track beta --to-track production
 ```
 
+## Anti-Patterns
+
+- **Don't promote directly from internal to production.** Always go `internal → beta → production` to gate quality at each stage; skipping beta bypasses external tester validation.
+- **Don't use `--track production` when distributing an unvalidated build.** Use `--track internal` or `--track beta` first; a bad production release requires a halt and rollback.
+- **Don't add testers without confirming the track name first.** Run `gpd publish tracks --package com.example.app` to verify available tracks — using an incorrect track name silently fails on some versions.
+
+## Verify
+
+After distributing a build or modifying testers:
+- Run `gpd publish testers list --package com.example.app --track <track>` to confirm the tester group is present.
+- Run `gpd publish status --package com.example.app --track <track>` to confirm the build is visible on the target track.
+
 ## Notes
 - Use `--track internal` for fast internal distribution.
 - Prefer IDs for deterministic operations; use the ID resolver skill when needed.

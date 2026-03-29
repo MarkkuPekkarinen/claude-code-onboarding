@@ -1,7 +1,12 @@
 ---
 name: clean-code
 description: "Applies principles from Robert C. Martin's 'Clean Code'. Use when writing, reviewing, or refactoring code to ensure high quality, readability, and maintainability. Covers naming, functions, comments, formatting, error handling, unit tests, classes, and code smells. Language-agnostic — applies to Java, TypeScript, Python, Dart, and all workspace stacks."
-allowed-tools: "Read, Grep, Glob, Edit, Write"
+allowed-tools:
+  - Read
+  - Grep
+  - Glob
+  - Edit
+  - Write
 metadata:
   risk: safe
   source: "ClawForge (https://github.com/jackjin1997/ClawForge)"
@@ -99,6 +104,41 @@ This skill embodies the principles of "Clean Code" by Robert C. Martin (Uncle Bo
 - **Immobility**: Hard to reuse in another context.
 - **Viscosity**: Hard to do the right thing; wrong things are easier.
 - **Needless Complexity/Repetition**: More code than needed.
+
+## Anti-Patterns to Avoid
+
+> **Don't do these** — they are the most common clean code violations in this codebase.
+
+- **Don't** use single-letter variable names outside of loop counters (`i`, `j`) — name by intent
+- **Don't** write functions longer than ~20 lines — extract until each function does one thing
+- **Don't** return `null` or an empty list on error — throw or return an explicit error state
+- **Don't** write a comment that restates what the code does — rewrite the code to be self-explanatory
+- **Don't** pass more than 2–3 arguments to a function — introduce a parameter object instead
+- **Don't** mix abstraction levels in one function (e.g., high-level business logic + raw SQL in the same method)
+
+## Verify Step
+
+After applying any clean code refactor, run the following to confirm nothing regressed:
+
+```bash
+# Run all tests — refactors must not change behavior
+# Java
+mvn test
+
+# NestJS / Angular
+npm test
+
+# Python
+uv run pytest
+
+# Flutter / Dart
+flutter test
+```
+
+Also check:
+- `git diff` — confirm no behavior-changing lines snuck into a "rename only" refactor
+- `grep -n "as any\|: any\b" <changed files>` — zero new `any` types in TypeScript
+- `flutter analyze` — zero new warnings in Dart
 
 ## Implementation Checklist
 - [ ] Is this function smaller than 20 lines?

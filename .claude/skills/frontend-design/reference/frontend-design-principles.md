@@ -5,7 +5,13 @@
 Before writing any code, think through these dimensions:
 
 1. **Purpose** -- what problem does this interface solve? Who uses it?
-2. **Tone** -- commit to a BOLD aesthetic direction: brutally minimal, maximalist, retro-futuristic, organic, luxury, playful, editorial, brutalist, art deco, soft/pastel, industrial -- pick one and execute it with conviction
+2. **Tone** -- commit to a BOLD aesthetic direction. Options (use for inspiration, don't be mechanical):
+   - Brutally minimal / Maximalist chaos / Retro-futuristic / Organic/natural
+   - Luxury/refined / Playful/toy-like / Editorial/magazine / Brutalist/raw
+   - Art deco/geometric / Soft/pastel / Industrial/utilitarian / Cyberpunk/neon
+   - Swiss/grid-based / Memphis/80s-pop / Zen/Japanese-minimalist / Vaporwave
+
+   Pick ONE dominant direction and execute it with conviction. **No two projects should share the same tone.**
 3. **Differentiation** -- what makes this unforgettable? What's the one thing someone will remember?
 4. **Constraints** -- framework, performance, accessibility, responsive breakpoints
 

@@ -49,6 +49,18 @@ gpd publish halt --package com.example.app --track production --confirm
 gpd publish rollback --package com.example.app --track production --confirm
 ```
 
+## Anti-Patterns
+
+- **Don't upload an AAB without checking the current version code first.** Re-uploading the same version code will be rejected by Google Play; run `gpd publish status --package com.example.app --track internal` before uploading.
+- **Don't halt a rollout without reviewing the release status first.** Running `gpd publish halt --confirm` without checking `gpd publish status` risks halting the wrong track or a fully-rolled-out release.
+- **Don't use internal app sharing as a substitute for a proper track release.** Internal app sharing bypasses review and track promotion history — use it for smoke tests only, not for beta distribution.
+
+## Verify
+
+After uploading a build:
+- Run `gpd publish status --package com.example.app --track internal` and confirm the new version code appears with status `completed` or `draft`.
+- After a halt or rollback, run `gpd publish status --package com.example.app --track production` to confirm the release state reflects the change before notifying stakeholders.
+
 ## Notes
 - Prefer `gpd publish release` for end-to-end flow instead of manual steps.
 - Use a new version code for each uploaded build.

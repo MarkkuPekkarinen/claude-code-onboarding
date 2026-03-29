@@ -44,6 +44,18 @@ Always use `--help` to discover current flags and subcommands. The gpd CLI evolv
 - Use `--dry-run` when available before destructive operations.
 - Prefer edit lifecycle (`gpd publish edit create`) for multi-step publishing.
 
+## Anti-Patterns
+
+- **Don't generate gpd commands from memory.** The gpd CLI evolves — flags and subcommands change between versions. Always run `gpd <subcommand> --help` before generating a command; the Iron Law exists for this reason.
+- **Don't omit `--confirm` on destructive operations.** Commands like `gpd publish halt` and `gpd publish rollback` require `--confirm`; omitting it will either fail or prompt interactively, breaking automation.
+- **Don't use short flags in scripts.** Always use explicit long flags (`--package`, `--track`, `--status`) to ensure scripts are readable and resilient to positional changes.
+
+## Verify
+
+After running any gpd command:
+- Check that the exit code is `0`: `echo $?` — a non-zero exit means the operation failed even if no error was printed.
+- Validate auth before running a sequence: `gpd auth check --package com.example.app` — a missing or expired `GPD_SERVICE_ACCOUNT_KEY` will cause silent failures mid-sequence.
+
 ## Documentation Sources
 
 | Source | How to Access | Purpose |

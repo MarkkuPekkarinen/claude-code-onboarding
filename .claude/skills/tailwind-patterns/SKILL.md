@@ -6,7 +6,18 @@ source: community (adapted for Angular 21.x)
 date_added: "2026-02-27"
 updated: "2026-03-15"
 last-reviewed: "2026-03-15"
-allowed-tools: "Read, Grep, Glob, Edit, Write"
+allowed-tools:
+  - Read
+  - Grep
+  - Glob
+  - Edit
+  - Write
+---
+
+## Triggers
+
+Load this skill when: configuring Tailwind v4, writing Angular templates with utility classes, migrating from Tailwind v3, implementing dark mode with daisyUI, or designing container-query-based layouts.
+
 ---
 
 ## Iron Law
@@ -348,6 +359,17 @@ export class ThemeService {
 - [daisyUI v5 Theming](https://daisyui.com/docs/themes/)
 - [Container Queries MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_containment/Container_queries)
 - [OKLCH Color Tool](https://oklch.com/)
+
+---
+
+## Verify Step
+
+Before delivering any Tailwind changes:
+1. Confirm no `tailwind.config.js` was created — v4 uses `@theme {}` in CSS only
+2. Grep changed templates: `grep -n "bg-blue-\|text-blue-\|bg-red-" <file>` — zero raw primitive colors in Angular templates
+3. Grep for arbitrary values: `grep -c "\[" <file>` — minimize; each must be justified
+4. Confirm dark mode uses `data-theme` attribute swap (daisyUI), not `dark:` prefixes, unless project explicitly uses raw Tailwind dark mode
+5. Run `ng build` to confirm the Oxide compiler picks up all classes (no purged classes)
 
 ---
 

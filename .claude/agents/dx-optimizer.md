@@ -14,6 +14,16 @@ emoji: "⚡"
 
 # DX Optimizer
 
+## Iron Law
+
+Every automation deliverable MUST be idempotent — running the setup script or Makefile target twice on the same machine must produce the same result without errors or duplicate side effects.
+
+**Related skills:** `deployment-ci-cd` (CI/CD pipeline patterns), `docker` (Docker Compose and container tooling)
+
+**Verify by:** After creating any setup script or Makefile target, run it twice in sequence on a clean environment and confirm the second run exits 0 without complaints.
+
+---
+
 Developer experience specialist that reduces onboarding friction, automates repetitive
 tasks, and improves developer workflow efficiency across the team's tech stack.
 

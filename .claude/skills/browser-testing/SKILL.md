@@ -11,7 +11,7 @@ metadata:
   role: specialist
   scope: testing
   output-format: report
-last-reviewed: "2026-03-28"
+last-reviewed: "2026-03-29"
 ---
 
 **Iron Law:** Never claim a UI flow works without running it in a real browser. Use `playwright-cli` (Bash) for inspection and scripted steps; use Browser-Use MCP for autonomous goal-driven flows.
@@ -91,11 +91,42 @@ playwright-cli -s=login screenshot --output login-success.png
 
 > For combined playwright-cli + Browser-Use workflow patterns, Read [reference/browser-testing-workflows.md](reference/browser-testing-workflows.md)
 
+## Server Lifecycle — `scripts/with_server.py`
+
+Use when the dev server is **not already running** (CI environments, clean machines, automated flows).
+Run `--help` first. Treat it as a black box — do NOT read source unless you must customise it.
+
+```bash
+python scripts/with_server.py --help
+```
+
+### Stack Presets
+
+| Stack | Command |
+|-------|---------|
+| **Angular** | `python scripts/with_server.py --server "ng serve" --port 4200 -- playwright-cli goto http://localhost:4200` |
+| **NestJS** | `python scripts/with_server.py --server "npm run start:dev" --port 3000 -- playwright-cli goto http://localhost:3000` |
+| **FastAPI** | `python scripts/with_server.py --server "uvicorn main:app --port 8000" --port 8000 -- playwright-cli goto http://localhost:8000` |
+| **Spring Boot** | `python scripts/with_server.py --server "mvn spring-boot:run" --port 8080 -- playwright-cli goto http://localhost:8080` |
+| **Flutter Web** | `python scripts/with_server.py --server "flutter run -d web-server --web-port 8080" --port 8080 -- playwright-cli goto http://localhost:8080` |
+
+### Multi-server (backend + frontend together)
+
+```bash
+python scripts/with_server.py \
+  --server "npm run start:dev" --port 3000 \
+  --server "ng serve --port 4200" --port 4200 \
+  -- playwright-cli -s=e2e goto http://localhost:4200
+```
+
+**When server is already running** (default dev workflow) → skip `with_server.py`, use `playwright-cli` directly.
+
 ## Decision Quick Reference
 
 | Need to... | Command |
 |-----------|---------|
 | Navigate to URL | `playwright-cli goto <url>` |
+| Test a **local HTML file** (no server) | `playwright-cli goto "file:///$(pwd)/path/to/file.html"` |
 | Get element refs | `playwright-cli snapshot` |
 | Fill an input | `playwright-cli fill <ref> <text>` |
 | Click a button | `playwright-cli click <ref>` |
@@ -107,7 +138,21 @@ playwright-cli -s=login screenshot --output login-success.png
 | Start perf trace | `playwright-cli tracing-start` |
 | Stop perf trace | `playwright-cli tracing-stop` |
 | Close session | `playwright-cli close-all` |
+| Start server then test | `python scripts/with_server.py --server "<cmd>" --port <N> -- <test-cmd>` |
 | Autonomous flow | Browser-Use MCP: `browser_navigate` → `browser_get_state` → `browser_input` |
+
+### Static HTML / Wireframe Testing
+
+For local HTML files (wireframes, generated output, prototypes) — no server needed:
+
+```bash
+# Absolute path required for file:// URLs
+playwright-cli goto "file:///$(pwd)/wireframes/dashboard.html"
+playwright-cli snapshot
+playwright-cli screenshot --output wireframe-check.png
+```
+
+Use this for: sketch-wireframe outputs, premium-wireframe-2026 outputs, any `.html` in the project.
 
 ## Critical Rules
 
@@ -116,6 +161,7 @@ playwright-cli -s=login screenshot --output login-success.png
 3. **Check network + console after every critical action** — form submissions, navigation, button clicks.
 4. **Screenshots as proof** — required for APPROVED verdicts in reality-checker.
 5. **Console errors = NEEDS WORK** — any unhandled console error is an automatic failure.
+6. **Load reference files only when the Quick Reference table above doesn't answer your question** — each reference file is 150–400 lines. Load selectively, not by default.
 
 ## Reference Files
 

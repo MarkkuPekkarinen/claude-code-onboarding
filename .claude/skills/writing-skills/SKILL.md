@@ -87,6 +87,30 @@ description: Use when building Flutter screens, Riverpod providers, Freezed mode
 
 Rule: Include every word a developer would type when they need this skill.
 
+## Minimal Correct Skill Example
+
+```yaml
+---
+name: my-linter
+description: Use when running or configuring the project linter. Covers ESLint,
+  Prettier, and auto-fix workflows. Triggers: "lint", "fix lint", "eslint config".
+allowed-tools: Bash, Read, Edit
+last-reviewed: "2026-01-01"
+---
+
+**Iron Law:** Always run the linter before reporting a file clean.
+
+# My Linter Skill
+
+## Verify
+
+```bash
+npx eslint . --max-warnings 0   # must exit 0
+```
+```
+
+The `description` gets the skill selected; the Iron Law prevents silent skips; the verify command gives a binary pass/fail gate.
+
 ## 6-Step Creation Checklist
 
 ```
@@ -96,6 +120,20 @@ Rule: Include every word a developer would type when they need this skill.
 [] 4. BODY        -- Iron Law first; decision trees > prose; <=500 lines
 [] 5. REFERENCES  -- deep patterns offloaded; each reference file < 300 lines
 [] 6. TEST        -- load the skill, ask it a question, verify it triggers correctly
+```
+
+## Verify Command (required in every skill)
+
+Every skill MUST include a "Run X to verify" gate — a command or checklist that produces a binary pass/fail result. Place it in its own `## Verify` section near the bottom of SKILL.md.
+
+```markdown
+## Verify
+
+Run:  <command>   # exit 0 = green
+-or-
+Checklist:
+- [ ] <criterion 1>
+- [ ] <criterion 2>
 ```
 
 ## Cross-Stack Skill Pattern

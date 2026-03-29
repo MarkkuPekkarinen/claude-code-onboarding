@@ -114,6 +114,17 @@ If you cannot complete this sentence, the design is not distinctive enough.
 - [ ] Code matches design ambition (maximalist = complex code; minimalist = precise spacing)
 - [ ] Accessible and performant (contrast ≥ 4.5:1, focus states, keyboard nav)
 - [ ] Required Output Structure: all 4 sections present
+- [ ] No design should look like a previous one — vary light/dark, font choices, layout personality
+
+---
+
+## Creative Ambition Mandate
+
+**Claude is capable of extraordinary creative work. Don't hold back — show what can truly be created when thinking outside the box and committing fully to a distinctive vision.**
+
+Interpret requirements creatively. Make unexpected choices that feel genuinely designed for the context. No two designs should share the same aesthetic DNA.
+
+**NEVER converge on common choices across generations.** The fact that Space Grotesk, purple gradients, or symmetrical hero layouts "worked before" is the exact reason not to use them again. Variety is mandatory, not optional.
 
 ---
 
@@ -134,6 +145,7 @@ If you cannot complete this sentence, the design is not distinctive enough.
 | **Angular** | daisyUI semantic tokens only — `bg-primary`, `text-base-content`, `border-base-300` | `angular-spa/reference/daisyui-v5-components.md` |
 | **Flutter** | `Theme.of(context).colorScheme.*` + `AppSpacing.*` — never `Color(0xFF...)` or `EdgeInsets.all(16)` | `ui-standards-tokens/reference/ui-design-tokens.md` |
 | **HTML/CSS** | CSS variables exclusively — `var(--color-primary)` | Define in `:root` block |
+| **React Native** | Out of scope for this skill → use `mobile-developer` skill | `.claude/skills/mobile-developer/SKILL.md` |
 
 **Related skills:**
 - `web-design-guidelines` — run after implementing to audit against Vercel Web Interface Guidelines

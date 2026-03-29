@@ -74,6 +74,19 @@ When presenting results, organize by severity and frequency:
 
 For performance diagnostics, highlight the highest-weight signatures first.
 
+## Anti-Patterns
+
+- **Don't triage crashes without scoping to a build.** Running `asc crashes --app "APP_ID"` without `--build` returns data across all builds — noise overwhelms signal. Always filter with `--build` once the build ID is known.
+- **Don't assume crash data is real-time.** App Store Connect has a 24–48 hour delay; a zero-crash result right after release does not mean the release is clean.
+- **Don't report "no crashes found" without using `--paginate`.** Default pagination may truncate results — use `--paginate` for a full analysis.
+
+## Verify
+
+After fetching crash or diagnostic data:
+- Confirm result set is not truncated: check if response includes a `nextCursor` or pagination field — if so, re-run with `--paginate`.
+- For performance diagnostics, verify the correct `--diagnostic-type` was passed (`HANGS`, `DISK_WRITES`, or `LAUNCHES`) — an empty result may mean the wrong type was specified, not that there are no issues.
+- Run `asc crashes --app "APP_ID" --build "BUILD_ID" --output table` to visually confirm you are scoped to the correct build before summarizing.
+
 ## Notes
 
 - Default output is JSON; use `--output table` or `--output markdown` for quick human review.

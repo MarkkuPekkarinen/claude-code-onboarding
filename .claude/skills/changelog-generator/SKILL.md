@@ -57,7 +57,31 @@ Suggest to the user: add a `pre-release` hook or CI step that runs this skill au
 
 For tool configuration (`cliff.toml`, `release.config.js`, GitHub Actions release workflow) -> Read [reference/changelog-automation-tools.md](reference/changelog-automation-tools.md)
 
+## Anti-Patterns
+
+> ❌ **Don't invent entries.** Never add changelog items that have no backing commit. Every line must map to a real commit hash.
+
+> ❌ **Don't expose internals.** "Refactored UserService to use factory pattern" is not user-facing. Rewrite as the benefit, or skip it.
+
+> ❌ **Don't copy commit messages verbatim.** Raw messages like `fix: typo in auth handler` become noise. Rewrite to user-facing language or drop it.
+
+> ❌ **Don't include chore/ci/test/build commits** in user-facing changelogs. They belong in internal/technical format only.
+
 ## Error Handling
+
+**Empty git log (no commits in range)**:
+```bash
+git log "$LAST_TAG"..HEAD --oneline
+# returns nothing
+```
+Stop. Do not generate an empty changelog. Report: "No commits found between `$LAST_TAG` and HEAD. Confirm the tag name or provide a date range."
+
+**`git log` command fails (no tags exist)**:
+```bash
+git describe --tags --abbrev=0
+# fatal: No names found, cannot describe anything.
+```
+Fall back to full history: `git log --pretty=format:"%h|%ai|%an|%s" --no-merges`. Warn the user that the range is unbounded (all commits since repo init).
 
 **No conventional commits found**: Verify commit messages follow `type:` prefix format. Fall back to manual changelog if history is inconsistent.
 

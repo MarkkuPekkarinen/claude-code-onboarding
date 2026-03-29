@@ -56,6 +56,18 @@ Always pass `--package` explicitly. Use `--all` on list commands to avoid missin
 - App grants:
   - `gpd permissions grants create --package com.example.app --email user@example.com --app-permissions CAN_REPLY_TO_REVIEWS`
 
+## Anti-Patterns
+
+- **Don't pass a human-readable app name where a package name is required.** Google Play commands require the exact package identifier (e.g. `com.example.app`), not the display name — using a display name silently fails or matches the wrong app.
+- **Don't rely on default pagination when listing monetization products or subscriptions.** Use `--all` to avoid missing items; a truncated list means resolving the wrong or incomplete ID set.
+- **Don't hard-code version codes across sessions.** Version codes change with each upload; always resolve the current version code via `gpd publish status` before operating on a specific release.
+
+## Verify
+
+After resolving any ID:
+- Echo the resolved value and confirm it matches the expected pattern before passing it to a subsequent command (e.g. package names must match `^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)+$`).
+- For monetization IDs, run `gpd monetization products get <sku> --package com.example.app` to confirm the ID is active and not archived before using it in pricing or offer operations.
+
 ## Output tips
 - JSON is default; use `--pretty` for debugging.
 - Use `--all` on list commands to avoid missing items.
