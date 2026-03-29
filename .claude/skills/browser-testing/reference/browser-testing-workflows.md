@@ -67,6 +67,21 @@ playwright-cli -s=login screenshot --output login-success.png
 
 **Goal:** Measure page load performance and identify bottlenecks.
 
+### Core Web Vitals — Pass/Fail Thresholds
+
+Use `mcp__chrome-devtools__performance_analyze_insight` to measure each metric, then compare:
+
+| Metric | Tool insight name | Pass | Warn | Fail |
+|--------|------------------|------|------|------|
+| LCP (Largest Contentful Paint) | `LCPBreakdown` | < 2.5s | 2.5–4s | > 4s |
+| CLS (Cumulative Layout Shift) | `CumulativeLayoutShift` | < 0.1 | 0.1–0.25 | > 0.25 |
+| INP (Interaction to Next Paint) | `InteractionToNextPaint` | < 200ms | 200–500ms | > 500ms |
+| FCP (First Contentful Paint) | `LCPBreakdown` | < 1.8s | 1.8–3s | > 3s |
+| TBT (Total Blocking Time) | `TotalBlockingTime` | < 200ms | 200–600ms | > 600ms |
+| TTFB (Time to First Byte) | `playwright-cli network` | < 800ms | 800ms–1.8s | > 1.8s |
+
+**How to check TTFB:** After `playwright-cli network`, look at the first HTML document request — the `timing.responseStart - timing.requestStart` value.
+
 ### Step 1: Start trace and navigate
 
 ```bash
@@ -360,4 +375,124 @@ Need to test a feature?
   │
   └─ Need both inspection + interaction?
      → playwright-cli monitors, Browser-Use acts
+```
+
+---
+
+## Pattern 8: Pre-Ship Browser QA
+
+**When:** Before merging any PR that touches Angular frontend code. Run against staging URL.
+
+**Tools:** playwright-cli + mcp__chrome-devtools__* + (optionally) mcp__chrome-devtools__lighthouse_audit
+
+### Phase 1 — Smoke Test
+
+```bash
+playwright-cli -s=qa goto $STAGING_URL
+playwright-cli -s=qa console error          # Must be 0 critical errors
+playwright-cli -s=qa network                # All requests must be 200/304, no 4xx/5xx
+playwright-cli -s=qa screenshot --output smoke-desktop.png
+playwright-cli -s=qa resize 375 812
+playwright-cli -s=qa screenshot --output smoke-mobile.png
+```
+
+### Phase 2 — Interaction Test
+
+```bash
+# Nav links — click each and verify no dead links
+playwright-cli -s=qa snapshot               # Get all nav link refs
+playwright-cli -s=qa click [nav-link-ref]
+playwright-cli -s=qa console error          # Check for errors after each nav
+
+# Form: valid submission
+playwright-cli -s=qa fill [email-ref] "test@example.com"
+playwright-cli -s=qa click [submit-ref]
+playwright-cli -s=qa network               # Verify POST → 200/201
+
+# Form: invalid submission
+playwright-cli -s=qa fill [email-ref] "notanemail"
+playwright-cli -s=qa click [submit-ref]
+playwright-cli -s=qa snapshot              # Verify error state is visible
+```
+
+### Phase 3 — Core Web Vitals
+
+```bash
+# Using Chrome DevTools MCP
+mcp__chrome-devtools__navigate_page url=$STAGING_URL
+mcp__chrome-devtools__performance_start_trace
+# (wait 3 seconds for page activity)
+mcp__chrome-devtools__performance_stop_trace outputPath=qa-trace.json
+mcp__chrome-devtools__performance_analyze_insight insight=LCPBreakdown
+mcp__chrome-devtools__performance_analyze_insight insight=CumulativeLayoutShift
+mcp__chrome-devtools__performance_analyze_insight insight=InteractionToNextPaint
+mcp__chrome-devtools__performance_analyze_insight insight=TotalBlockingTime
+```
+
+Compare results against the thresholds in the CWV table above.
+
+### Phase 4 — Accessibility Snapshot
+
+```bash
+playwright-cli -s=qa snapshot              # Check heading hierarchy (h1→h2→h3)
+playwright-cli -s=qa eval "document.querySelectorAll('img:not([alt])').length"
+# Must be 0 — all images need alt text
+playwright-cli -s=qa eval "document.querySelectorAll('button:not([aria-label]):not(:has(span[class*=label]))').length"
+playwright-cli -s=qa press Tab             # Tab through interactive elements — all must be reachable
+```
+
+### Phase 5 — Multi-Breakpoint Screenshots
+
+```bash
+playwright-cli -s=qa resize 375 812        # Mobile
+playwright-cli -s=qa screenshot --output qa-375.png
+playwright-cli -s=qa resize 768 1024       # Tablet
+playwright-cli -s=qa screenshot --output qa-768.png
+playwright-cli -s=qa resize 1440 900       # Desktop
+playwright-cli -s=qa screenshot --output qa-1440.png
+```
+
+### QA Report Output Template
+
+After completing all phases, output this report:
+
+```markdown
+## Browser QA Report — [URL] — [timestamp]
+
+### Phase 1: Smoke Test
+- Console errors: [N] critical, [N] warnings
+- Network: [all 200/304] OR [list failures]
+- Screenshots: smoke-desktop.png, smoke-mobile.png
+
+### Phase 2: Interactions
+- [ ] Nav links: [N/N] working
+- [ ] Form valid submit: [200/201 ✓ or ✗ describe issue]
+- [ ] Form invalid submit: [error state visible ✓ or ✗]
+- [ ] Auth flow: [working ✓ or ✗]
+
+### Phase 3: Core Web Vitals
+- LCP: [value] [✓ PASS / ⚠ WARN / ✗ FAIL] (target < 2.5s)
+- CLS: [value] [✓ / ⚠ / ✗] (target < 0.1)
+- INP: [value] [✓ / ⚠ / ✗] (target < 200ms)
+- TBT: [value] [✓ / ⚠ / ✗] (target < 200ms)
+
+### Phase 4: Accessibility
+- Images without alt: [N] (must be 0)
+- Keyboard navigation: [all elements reachable ✓ or list issues]
+- Heading hierarchy: [valid ✓ or describe issue]
+
+### Phase 5: Visual
+- Mobile (375px): qa-375.png — [no overflow ✓ or describe issue]
+- Tablet (768px): qa-768.png — [no overflow ✓ or describe issue]
+- Desktop (1440px): qa-1440.png — [no overflow ✓ or describe issue]
+
+### Verdict: [SHIP ✅ | SHIP WITH FIXES ⚠️ | DO NOT SHIP ❌]
+- Blockers (DO NOT SHIP): [list or "none"]
+- Issues to fix: [list or "none"]
+```
+
+### Cleanup
+
+```bash
+playwright-cli close-all
 ```

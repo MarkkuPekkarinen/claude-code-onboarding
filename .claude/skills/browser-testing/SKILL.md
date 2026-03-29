@@ -137,6 +137,7 @@ python scripts/with_server.py \
 | Resize viewport | `playwright-cli resize <w> <h>` |
 | Start perf trace | `playwright-cli tracing-start` |
 | Stop perf trace | `playwright-cli tracing-stop` |
+| Run Lighthouse audit | `mcp__chrome-devtools__lighthouse_audit` (via Chrome DevTools MCP) |
 | Close session | `playwright-cli close-all` |
 | Start server then test | `python scripts/with_server.py --server "<cmd>" --port <N> -- <test-cmd>` |
 | Autonomous flow | Browser-Use MCP: `browser_navigate` → `browser_get_state` → `browser_input` |
@@ -170,6 +171,7 @@ Use this for: sketch-wireframe outputs, premium-wireframe-2026 outputs, any `.ht
 | [playwright-cli Tools](reference/playwright-cli-tools.md) | Full command reference, all flags, session management |
 | [Browser-Use Tools](reference/browser-use-tools.md) | Browser-Use MCP command reference and best practices |
 | [Combined Workflows](reference/browser-testing-workflows.md) | Login flows, performance, E2E journeys, validation, accessibility |
+| [Chrome DevTools Tools](reference/chrome-devtools-tools.md) | Core Web Vitals analysis, performance traces, CPU/network throttling, Lighthouse audit |
 
 ## Process
 
