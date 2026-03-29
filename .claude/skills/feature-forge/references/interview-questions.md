@@ -10,6 +10,7 @@ Focus on user value and business goals.
 | **Users** | Who are the target users? What are their goals? Technical level? |
 | **Value** | How will users benefit? What's the business value? ROI? |
 | **Scope** | What's in scope? What's explicitly out of scope? MVP vs full version? |
+| **Anti-Goal** | What are we explicitly NOT building in this iteration? Which platform is excluded (web-only? mobile-only?)? Which user type is out of scope? |
 | **Success** | How will we measure success? Key metrics? |
 | **Priority** | Is this a must-have, should-have, or nice-to-have? |
 
@@ -23,6 +24,7 @@ For a "User Export" feature:
 - Is this for compliance (GDPR) or convenience?
 - How often will this be used?
 - What's the deadline?
+- What are we explicitly NOT supporting in this version? (e.g., bulk export? mobile? non-admin users?)
 ```
 
 ## Dev Hat Questions
@@ -98,6 +100,7 @@ Then use `AskUserQuestions` to narrow down:
 - Target users (single select from identified personas)
 - Usage frequency (Daily, Weekly, Monthly, Rarely)
 - Priority (Must-have, Should-have, Nice-to-have)
+- Anti-Goal confirmation: "What is explicitly out of scope for this iteration?" (open-ended — do not provide options, force explicit statement)
 
 ### Phase 2: Details
 Use `AskUserQuestions` for scope and constraint decisions:
