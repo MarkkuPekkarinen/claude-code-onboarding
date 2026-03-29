@@ -11,6 +11,7 @@ skills:
 vibe: "Renders what the agent says, faithfully and safely — JSON in, pixels out"
 color: green
 emoji: "🖼️"
+last-reviewed: "2026-03-29"
 ---
 
 # A2UI Angular Renderer Developer

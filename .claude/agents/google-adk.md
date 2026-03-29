@@ -11,6 +11,7 @@ skills:
 vibe: "Wires ADK agents, tools, and sessions — Gemini-first, production-grade"
 color: green
 emoji: "🧠"
+last-reviewed: "2026-03-29"
 ---
 
 # Google ADK Developer

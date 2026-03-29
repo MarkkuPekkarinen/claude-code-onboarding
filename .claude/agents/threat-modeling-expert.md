@@ -8,6 +8,7 @@ memory: project
 skills:
   - threat-modeling
 vibe: "Finds the attack vector before the attacker does"
+last-reviewed: "2026-03-29"
 color: red
 emoji: "⚠️"
 ---

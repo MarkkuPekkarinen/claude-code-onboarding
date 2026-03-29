@@ -8,6 +8,7 @@ memory: project
 skills:
   - agentic-ai-dev
 vibe: "Finds the infinite loop before production does"
+last-reviewed: "2026-03-29"
 color: blue
 emoji: "🤖"
 ---

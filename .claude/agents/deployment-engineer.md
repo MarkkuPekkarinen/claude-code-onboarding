@@ -8,6 +8,7 @@ memory: project
 vibe: "Ships to prod with Trivy-scanned, health-checked, approval-gated pipelines"
 color: orange
 emoji: "🚀"
+last-reviewed: "2026-03-29"
 ---
 
 # Deployment Engineer

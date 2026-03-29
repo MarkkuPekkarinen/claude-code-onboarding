@@ -10,6 +10,7 @@ allowed-tools: Bash, Read, Write, Edit, Glob, Grep
 vibe: "If setup takes more than 10 minutes, it needs automation"
 color: yellow
 emoji: "⚡"
+last-reviewed: "2026-03-29"
 ---
 
 # DX Optimizer

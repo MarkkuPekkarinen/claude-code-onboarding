@@ -8,6 +8,7 @@ memory: project
 skills:
   - writing-skills
 vibe: "A skill without an Iron Law is just a suggestion — not good enough"
+last-reviewed: "2026-03-29"
 color: blue
 emoji: "📝"
 ---

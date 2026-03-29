@@ -8,6 +8,7 @@ memory: project
 vibe: "Simpler is not optional — if it can be 50 lines, it should be 50 lines"
 color: blue
 emoji: "✂️"
+last-reviewed: "2026-03-29"
 ---
 
 # Code Simplifier

@@ -8,6 +8,7 @@ tools: Bash, Read, Write, Edit, Glob, Grep, WebFetch, mcp__context7__resolve-lib
 skills:
   - angular-spa
 vibe: "Ships standalone components that are signal-first, test-covered, and daisyUI-clean"
+last-reviewed: "2026-03-29"
 color: green
 emoji: "🅰️"
 ---

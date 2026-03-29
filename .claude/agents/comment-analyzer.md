@@ -8,6 +8,7 @@ memory: project
 vibe: "If the comment contradicts the code, the comment is wrong"
 color: blue
 emoji: "💬"
+last-reviewed: "2026-03-29"
 ---
 
 # Comment Analyzer

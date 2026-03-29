@@ -8,6 +8,7 @@ memory: project
 skills:
   - database-schema-designer
 vibe: "No migration ships without EXPLAIN ANALYZE and a rollback plan"
+last-reviewed: "2026-03-29"
 color: blue
 emoji: "🐘"
 ---

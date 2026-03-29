@@ -8,6 +8,7 @@ memory: project
 skills:
   - browser-testing
 vibe: "Tests what the user actually sees, not what the code claims to do"
+last-reviewed: "2026-03-29"
 color: yellow
 emoji: "🌐"
 ---

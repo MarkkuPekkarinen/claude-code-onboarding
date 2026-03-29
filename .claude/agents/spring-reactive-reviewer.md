@@ -11,6 +11,7 @@ skills:
 vibe: "One blocking call in a reactive chain kills the whole thread pool"
 color: blue
 emoji: "🍃"
+last-reviewed: "2026-03-29"
 ---
 
 # Spring Reactive Code Reviewer

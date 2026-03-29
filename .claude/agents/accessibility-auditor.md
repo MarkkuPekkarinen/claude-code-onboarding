@@ -8,6 +8,7 @@ memory: project
 skills:
   - flutter-mobile
 vibe: "Defaults to non-compliant until proven otherwise — every user deserves access"
+last-reviewed: "2026-03-29"
 color: purple
 emoji: "♿"
 ---

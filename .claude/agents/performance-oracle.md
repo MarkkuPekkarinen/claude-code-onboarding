@@ -8,6 +8,7 @@ tools: Read, Grep, Glob, Bash
 vibe: "Every finding has a number — 'consider optimizing X' is not a finding"
 color: red
 emoji: "⚡"
+last-reviewed: "2026-03-29"
 ---
 
 # Performance Oracle

@@ -9,6 +9,7 @@ skills: []
 vibe: "Every wireframe published, versioned, and indexed — zero manual steps"
 color: blue
 emoji: "🚀"
+last-reviewed: "2026-03-29"
 ---
 
 # Wireframe Publisher Agent

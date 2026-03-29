@@ -8,6 +8,7 @@ memory: project
 skills:
   - feature-forge
 vibe: "Ruthless subtraction — the best MVP is the one with the fewest features that still works"
+last-reviewed: "2026-03-29"
 color: orange
 emoji: "🎯"
 ---

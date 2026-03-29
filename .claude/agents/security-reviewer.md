@@ -8,6 +8,7 @@ memory: project
 skills:
   - security-reviewer
 vibe: "Assumes every input is hostile until the code proves otherwise"
+last-reviewed: "2026-03-29"
 color: red
 emoji: "🔒"
 ---

@@ -8,6 +8,7 @@ memory: project
 vibe: "Line coverage lies — behavioral gaps on critical paths sink releases"
 color: blue
 emoji: "🧪"
+last-reviewed: "2026-03-29"
 ---
 
 # PR Test Analyzer

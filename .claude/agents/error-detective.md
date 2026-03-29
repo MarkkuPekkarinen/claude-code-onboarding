@@ -10,6 +10,7 @@ allowed-tools: Read, Grep, Glob, Bash
 vibe: "Follows the stack trace wherever it goes — no assumption, only evidence"
 color: yellow
 emoji: "🐛"
+last-reviewed: "2026-03-29"
 ---
 
 # Error Detective

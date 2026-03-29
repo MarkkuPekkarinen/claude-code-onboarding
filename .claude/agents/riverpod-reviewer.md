@@ -8,6 +8,7 @@ memory: project
 skills:
   - riverpod-patterns
 vibe: "Wrong provider type = wrong lifecycle = subtle state bugs in prod"
+last-reviewed: "2026-03-29"
 color: blue
 emoji: "🔄"
 ---

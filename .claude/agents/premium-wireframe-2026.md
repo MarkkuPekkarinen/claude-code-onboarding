@@ -11,6 +11,7 @@ skills:
 vibe: "Aurora 2026 — glassmorphism, dual themes, zero dependencies, iPhone 15 Pro frames"
 color: cyan
 emoji: "✨"
+last-reviewed: "2026-03-29"
 ---
 
 # Premium 2026 Wireframe Generator Agent

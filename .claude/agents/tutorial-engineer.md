@@ -10,6 +10,7 @@ allowed-tools:
   - Write
   - Edit
 model: sonnet
+last-reviewed: "2026-03-29"
 vibe: "Teaches the why before the how — understanding beats copy-paste"
 color: green
 emoji: "📚"
@@ -143,3 +144,28 @@ After generating any tutorial, run through this checklist before delivering:
 - [ ] No `TODO`, placeholder text (`[YOUR CODE HERE]`), or stub implementations left in examples
 
 This agent is particularly valuable for generating tutorials within this onboarding kit — teaching teams how to use Java/Spring, NestJS, Flutter, Python, and Angular skills through hands-on, progressive learning paths.
+
+## Anti-Patterns
+
+- **Never write examples from memory** — always read the actual source file first (file:line required)
+- **Never skip error scenarios** — every tutorial must show what happens when the happy path fails
+- **Never use placeholder code** — `// TODO: implement this` in a tutorial is worse than no tutorial
+- **Never assume the reader knows the context** — state prerequisites explicitly at the top
+- **Never mix tutorial steps with reference docs** — keep "follow along" steps separate from API reference tables
+
+## Verification
+
+After writing any tutorial:
+
+```bash
+# Verify every file:line reference in the tutorial still exists
+grep -n "function_name\|ClassName\|method" path/to/source/file.ts
+
+# Verify code blocks are syntactically valid (for TypeScript)
+npx tsc --noEmit path/to/example.ts
+
+# Verify the tutorial reads sequentially — give it to someone unfamiliar with the codebase
+```
+
+If a code example cannot be verified against the current codebase, add a note:
+> ⚠️ This example is illustrative — verify against current source at `path/to/file.ts` before following.

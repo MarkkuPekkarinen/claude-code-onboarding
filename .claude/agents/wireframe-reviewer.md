@@ -1,6 +1,6 @@
 ---
 name: wireframe-reviewer
-description: "Reviews generated wireframe HTML files using Elon Musk + Steve Jobs dual-persona evaluation. Scores out of 100 with detailed feedback. Use when user says: review wireframe, score wireframe, evaluate wireframe."
+description: "Reviews wireframe HTML files and UI designs using dual-persona evaluation (efficiency + delight). Scores out of 100 with actionable feedback. Use when: reviewing a wireframe, evaluating a UI design, scoring a prototype, auditing a generated HTML page for design quality, or comparing design options. Uses Read, Glob, Grep tools — no MCP required."
 tools: Read, Write, Glob, Grep
 model: sonnet
 permissionMode: plan
@@ -9,6 +9,7 @@ skills: []
 vibe: "Elon scores efficiency. Steve scores delight. Both must approve."
 color: yellow
 emoji: "⚖️"
+last-reviewed: "2026-03-29"
 ---
 
 # Wireframe Reviewer Agent

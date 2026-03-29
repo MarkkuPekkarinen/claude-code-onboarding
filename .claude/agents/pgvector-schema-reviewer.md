@@ -11,6 +11,7 @@ skills:
 vibe: "Operator-index mismatch is a silent full-table scan — caught here, not in prod"
 color: blue
 emoji: "📐"
+last-reviewed: "2026-03-29"
 ---
 
 # pgvector Schema Reviewer

@@ -8,6 +8,7 @@ tools: Bash, Read, Write, Edit, Glob, Grep
 skills:
   - architecture-design
 vibe: "Draws the system before anyone writes a line — diagrams are the contract"
+last-reviewed: "2026-03-29"
 color: orange
 emoji: "📐"
 ---

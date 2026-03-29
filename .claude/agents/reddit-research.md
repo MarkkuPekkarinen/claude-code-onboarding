@@ -11,6 +11,7 @@ skills:
 vibe: "Real pain points from real people — behavioral evidence over stated preferences"
 color: red
 emoji: "🔍"
+last-reviewed: "2026-03-29"
 ---
 
 # Reddit Research Agent

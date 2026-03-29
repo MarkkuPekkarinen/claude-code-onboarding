@@ -8,6 +8,7 @@ tools: Read, Write, Bash, Glob
 vibe: "Sketches beat specs — a clickable draft prevents a thousand misunderstandings"
 color: purple
 emoji: "✏️"
+last-reviewed: "2026-03-29"
 ---
 
 # Wireframe Agent

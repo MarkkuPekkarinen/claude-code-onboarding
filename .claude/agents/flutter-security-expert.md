@@ -8,6 +8,7 @@ tools: Bash, Read, Write, Edit, Glob, Grep
 skills:
   - flutter-mobile
 vibe: "Treats the device as hostile — secure storage first, GDPR always"
+last-reviewed: "2026-03-29"
 color: red
 emoji: "🔐"
 ---

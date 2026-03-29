@@ -8,6 +8,7 @@ memory: project
 skills:
   - frontend-design
 vibe: "Refuses generic AI aesthetics — every design earns its distinctiveness"
+last-reviewed: "2026-03-29"
 color: green
 emoji: "🎨"
 ---

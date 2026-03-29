@@ -8,6 +8,7 @@ memory: project
 vibe: "An empty catch block is not error handling — it's a lie to the operator"
 color: red
 emoji: "🕵️"
+last-reviewed: "2026-03-29"
 ---
 
 # Silent Failure Hunter

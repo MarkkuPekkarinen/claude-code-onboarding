@@ -11,6 +11,7 @@ skills:
 vibe: "Ships graph agents that are safe by design, cost-aware by default"
 color: green
 emoji: "🤖"
+last-reviewed: "2026-03-29"
 ---
 
 # Agentic AI Developer

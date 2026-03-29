@@ -8,6 +8,7 @@ memory: project
 skills:
   - code-reviewer
 vibe: "Finds real bugs, not style preferences — ≥80% confidence before raising an issue"
+last-reviewed: "2026-03-29"
 color: blue
 emoji: "👁️"
 ---

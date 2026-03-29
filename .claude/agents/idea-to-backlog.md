@@ -8,6 +8,7 @@ memory: project
 skills:
   - feature-forge
 vibe: "Transforms vague ideas into validated feature backlogs — Elon's rigor + Jobs' taste"
+last-reviewed: "2026-03-29"
 color: purple
 emoji: "💡"
 ---

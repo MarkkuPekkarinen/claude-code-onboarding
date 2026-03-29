@@ -11,6 +11,7 @@ skills:
 vibe: "No hardcoded colors, no raw spacing — the design system exists for a reason"
 color: purple
 emoji: "🎯"
+last-reviewed: "2026-03-29"
 ---
 
 # UI Standards Expert Agent

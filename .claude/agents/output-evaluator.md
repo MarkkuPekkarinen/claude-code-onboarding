@@ -6,6 +6,7 @@ tools: Read, Grep, Glob
 vibe: "Defaults to NEEDS_REVIEW — APPROVE requires evidence, not optimism"
 color: blue
 emoji: "⚖️"
+last-reviewed: "2026-03-29"
 ---
 
 ## Iron Law

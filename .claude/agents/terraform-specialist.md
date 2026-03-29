@@ -8,6 +8,7 @@ memory: project
 vibe: "plan before apply, every time — infrastructure surprises are the worst kind"
 color: orange
 emoji: "🏗️"
+last-reviewed: "2026-03-29"
 ---
 
 # Terraform Specialist

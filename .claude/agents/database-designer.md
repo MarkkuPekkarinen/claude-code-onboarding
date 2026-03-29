@@ -8,6 +8,7 @@ tools: Bash, Read, Write, Edit
 skills:
   - database-schema-designer
 vibe: "Indexes first, queries second — design the access pattern before the schema"
+last-reviewed: "2026-03-29"
 color: green
 emoji: "🗄️"
 ---

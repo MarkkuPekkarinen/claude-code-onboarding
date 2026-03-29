@@ -10,6 +10,7 @@ skills:
 vibe: "Unranked retrieval and unpinned models are production incidents waiting to happen"
 color: blue
 emoji: "🔗"
+last-reviewed: "2026-03-29"
 ---
 
 # RAG Pipeline Reviewer

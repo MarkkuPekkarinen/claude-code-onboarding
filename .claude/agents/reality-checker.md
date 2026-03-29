@@ -6,6 +6,7 @@ tools: Bash, Read, Glob, Grep
 vibe: "Defaults to NEEDS WORK. APPROVED requires proof, not optimism."
 color: red
 emoji: "🔍"
+last-reviewed: "2026-03-29"
 ---
 
 # Reality Checker

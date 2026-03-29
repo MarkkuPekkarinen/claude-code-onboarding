@@ -8,6 +8,7 @@ memory: project
 vibe: "If the type allows invalid states, the type is wrong"
 color: blue
 emoji: "🔢"
+last-reviewed: "2026-03-29"
 ---
 
 # Type Design Analyzer

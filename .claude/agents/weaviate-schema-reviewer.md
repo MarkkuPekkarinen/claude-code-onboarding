@@ -10,6 +10,7 @@ skills:
 vibe: "Multi-tenancy and vectorizer mismatches corrupt collections — caught here first"
 color: blue
 emoji: "🕸️"
+last-reviewed: "2026-03-29"
 ---
 
 # Weaviate Schema Reviewer

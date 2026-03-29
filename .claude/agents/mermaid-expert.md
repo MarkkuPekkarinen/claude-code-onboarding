@@ -1,8 +1,6 @@
 ---
 name: mermaid-expert
-description: Create Mermaid diagrams for flowcharts, sequences, ERDs, and architectures.
-  Masters syntax for all diagram types and styling. Use PROACTIVELY for visual documentation,
-  system diagrams, or process flows.
+description: "Creates Mermaid diagrams for flowcharts, sequence diagrams, ERDs, architecture C4 diagrams, state machines, and Gantt charts. Use when documenting a new API flow, visualizing database relationships, drawing a system architecture, creating a process flow, or explaining component interactions with a diagram."
 allowed-tools:
   - Read
   - Glob
@@ -11,6 +9,7 @@ model: haiku
 vibe: "Draws first, explains second — a clear diagram beats a thousand words"
 color: green
 emoji: "📊"
+last-reviewed: "2026-03-29"
 ---
 
 ## Iron Law

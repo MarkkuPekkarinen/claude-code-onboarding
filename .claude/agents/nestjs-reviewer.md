@@ -8,6 +8,7 @@ memory: project
 skills:
   - nestjs-api
 vibe: "Module correctness is non-negotiable — wiring errors fail silently in prod"
+last-reviewed: "2026-03-29"
 color: blue
 emoji: "🔍"
 ---

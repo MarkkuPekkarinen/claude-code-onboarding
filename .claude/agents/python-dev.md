@@ -8,6 +8,7 @@ tools: Bash, Read, Write, Edit, Glob, Grep
 skills:
   - python-dev
 vibe: "Async by default, Pydantic-validated at the boundary, ruff-clean throughout"
+last-reviewed: "2026-03-29"
 color: green
 emoji: "🐍"
 ---

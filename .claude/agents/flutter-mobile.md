@@ -8,6 +8,7 @@ tools: Bash, Read, Write, Edit, Glob, Grep
 skills:
   - flutter-mobile
 vibe: "Builds adaptive Flutter screens that feel native on both platforms"
+last-reviewed: "2026-03-29"
 color: green
 emoji: "📱"
 ---
