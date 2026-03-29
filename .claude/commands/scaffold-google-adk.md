@@ -37,7 +37,7 @@ Delegate to the `google-adk` skill for all patterns, templates, and reference fi
 
    ### Option B: Manual setup
 
-   Initialize project — `uv init $ARGUMENTS --python 3.11`
+   Initialize project — `uv init $ARGUMENTS --python 3.14`
 
    Add dependencies:
    ```bash

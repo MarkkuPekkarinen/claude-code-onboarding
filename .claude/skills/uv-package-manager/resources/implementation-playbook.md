@@ -402,7 +402,7 @@ jobs:
 
 ```dockerfile
 # Dockerfile
-FROM python:3.12-slim
+FROM python:3.14-slim
 
 # Install uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
@@ -427,7 +427,7 @@ CMD ["uv", "run", "python", "app.py"]
 
 ```dockerfile
 # Multi-stage Dockerfile
-FROM python:3.12-slim AS builder
+FROM python:3.14-slim AS builder
 
 # Install uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
@@ -439,7 +439,7 @@ COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev --no-editable
 
 # Runtime stage
-FROM python:3.12-slim
+FROM python:3.14-slim
 
 WORKDIR /app
 

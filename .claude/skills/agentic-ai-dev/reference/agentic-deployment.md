@@ -10,7 +10,7 @@ Docker, docker-compose, production configuration, health checks, and operational
 # ============================================
 # Stage 1: Builder — install dependencies
 # ============================================
-FROM python:3.13-slim AS builder
+FROM python:3.14-slim AS builder
 
 WORKDIR /app
 
@@ -29,7 +29,7 @@ COPY src/ src/
 # ============================================
 # Stage 2: Runtime — minimal production image
 # ============================================
-FROM python:3.13-slim AS runtime
+FROM python:3.14-slim AS runtime
 
 # Security: run as non-root user
 RUN groupadd -r agent && useradd -r -g agent agent

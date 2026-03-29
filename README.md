@@ -4,18 +4,18 @@
 [![Built with Claude Code](https://img.shields.io/badge/Built%20with-Claude%20Code-blueviolet?style=flat&logo=anthropic&logoColor=white)](https://docs.anthropic.com/en/docs/claude-code)
 ![Java](https://img.shields.io/badge/Java-21-ED8B00?style=flat&logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.x-6DB33F?style=flat&logo=springboot&logoColor=white)
-![Node.js](https://img.shields.io/badge/Node.js-24.13-339933?style=flat&logo=nodedotjs&logoColor=white)
-![NestJS](https://img.shields.io/badge/NestJS-11.x-E0234E?style=flat&logo=nestjs&logoColor=white)
-![Python](https://img.shields.io/badge/Python-3.13-3776AB?style=flat&logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.128.x-009688?style=flat&logo=fastapi&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-24.14-339933?style=flat&logo=nodedotjs&logoColor=white)
+![NestJS](https://img.shields.io/badge/NestJS-11.17.x-E0234E?style=flat&logo=nestjs&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.14-3776AB?style=flat&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.135.2-009688?style=flat&logo=fastapi&logoColor=white)
 ![LangChain](https://img.shields.io/badge/LangChain-1.2.8-1C3C3C?style=flat&logo=langchain&logoColor=white)
 ![LangGraph](https://img.shields.io/badge/LangGraph-1.0.7-1C3C3C?style=flat)
-![Google ADK](https://img.shields.io/badge/Google%20ADK-1.0.0-4285F4?style=flat&logo=google&logoColor=white)
-![Angular](https://img.shields.io/badge/Angular-21.x-DD0031?style=flat&logo=angular&logoColor=white)
+![Google ADK](https://img.shields.io/badge/Google%20ADK-1.28.0-4285F4?style=flat&logo=google&logoColor=white)
+![Angular](https://img.shields.io/badge/Angular-21.2.x-DD0031?style=flat&logo=angular&logoColor=white)
 ![A2UI](https://img.shields.io/badge/A2UI-v0.8-0F9D58?style=flat&logo=google&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat&logo=typescript&logoColor=white)
-![Flutter](https://img.shields.io/badge/Flutter-3.38-02569B?style=flat&logo=flutter&logoColor=white)
-![Dart](https://img.shields.io/badge/Dart-3.11-0175C2?style=flat&logo=dart&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9.x-3178C6?style=flat&logo=typescript&logoColor=white)
+![Flutter](https://img.shields.io/badge/Flutter-3.41.x-02569B?style=flat&logo=flutter&logoColor=white)
+![Dart](https://img.shields.io/badge/Dart-3.10.9-0175C2?style=flat&logo=dart&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat&logo=postgresql&logoColor=white)
 ![pgvector](https://img.shields.io/badge/pgvector-vector%20search-4169E1?style=flat&logo=postgresql&logoColor=white)
 ![Weaviate](https://img.shields.io/badge/Weaviate-serverless-4AC37E?style=flat&logo=weaviate&logoColor=white)
@@ -37,10 +37,10 @@ This repository is a pre-configured starter kit packed with agents, skills, slas
 
 | Layer | Technologies |
 |---|---|
-| **Backend** | Java 21, Spring Boot WebFlux v3.5.x, Node.js v24.13, NestJS v11.x, Python v3.13 |
-| **Agentic AI** | Python 3.14, LangChain v1.2.8, LangGraph v1.0.7, Google ADK, FastAPI 0.128.x |
-| **Frontend** | Angular 21.x, TypeScript 5.x, A2UI v0.8 (Agent-to-User Interface renderer) |
-| **Mobile** | Flutter 3.38, Dart 3.11 |
+| **Backend** | Java 21, Spring Boot WebFlux v3.5.x, Node.js v24.14, NestJS v11.17.x, Python v3.14 |
+| **Agentic AI** | Python 3.14, LangChain v1.2.8, LangGraph v1.0.7, Google ADK, FastAPI 0.135.2 |
+| **Frontend** | Angular 21.2.x, TypeScript 5.9.x, A2UI v0.8 (Agent-to-User Interface renderer) |
+| **Mobile** | Flutter 3.41.x, Dart 3.10.9 |
 | **Data & Infra** | PostgreSQL, pgvector (vector search), Weaviate Serverless, Firebase |
 | **AI Tooling** | Claude Code, MCP servers |
 
@@ -213,7 +213,7 @@ Before you begin, make sure you have:
 **Optional for Quick Start (required for MCP servers):**
 
 - [Node.js v24+](https://nodejs.org/en/download)
-- [Python v3.13+](https://www.python.org/downloads/)
+- [Python v3.14+](https://www.python.org/downloads/)
 
 ## 2. Clone This Repo
 
@@ -2004,7 +2004,7 @@ claude-code-onboarding/
         ├── a2ui-angular/                 # A2UI (Agent-to-User Interface): recursive renderer,
         │                                 # component catalog allowlist, agent service (REST/SSE),
         │                                 # security validation, streaming support (5 reference files)
-        ├── flutter-mobile/               # Flutter 3.38: clean architecture layers, Riverpod 3.x,
+        ├── flutter-mobile/               # Flutter 3.41.x: clean architecture layers, Riverpod 3.x,
         │                                 # Freezed models, GoRouter, Firebase integration (2 reference files)
         ├── riverpod-patterns/            # Riverpod: AsyncNotifier, AsyncValue.when, ref.watch vs ref.read,
         │                                 # family providers, lifecycle management (1 reference file)
@@ -3002,7 +3002,7 @@ The `deployment-engineer` agent generates production-ready GitHub Actions pipeli
 
 | Service | Pipeline it generates |
 |---|---|
-| NestJS (Node.js 24.13) | npm cache → lint/test → Docker build → Trivy scan → Prisma migrate → Cloud Run staging/prod |
+| NestJS (Node.js 24.14) | npm cache → lint/test → Docker build → Trivy scan → Prisma migrate → Cloud Run staging/prod |
 | Python FastAPI | uv cache → test → Docker build → Trivy scan → Alembic migrate → Cloud Run |
 | LangChain / LangGraph | Same as Python + Cloud Run `--memory=4Gi --timeout=300 --concurrency=1` |
 | Spring Boot | Maven cache → test → Buildpacks image → Cloud Run with `--cpu-boost` |

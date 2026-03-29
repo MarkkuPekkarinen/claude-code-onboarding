@@ -157,9 +157,9 @@ async def test_create_user_invalid_email(client: AsyncClient):
 [project]
 name = "my-service"
 version = "0.1.0"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 dependencies = [
-    "fastapi>=0.115.0",
+    "fastapi>=0.135.2",
     "uvicorn[standard]>=0.32.0",
     "pydantic>=2.10.0",
     "pydantic-settings>=2.6.0",
@@ -178,12 +178,12 @@ dev = [
 ]
 
 [tool.ruff]
-target-version = "py313"
+target-version = "py314"
 line-length = 100
 select = ["E", "F", "I", "N", "UP", "B", "SIM", "RUF"]
 
 [tool.mypy]
-python_version = "3.13"
+python_version = "3.14"
 strict = true
 
 [tool.pytest.ini_options]
@@ -193,7 +193,7 @@ testpaths = ["tests"]
 
 ## Docker Template
 ```dockerfile
-FROM python:3.13-slim
+FROM python:3.14-slim
 
 WORKDIR /app
 RUN pip install uv

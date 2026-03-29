@@ -1,6 +1,6 @@
 ---
 name: flutter-mobile
-description: This skill provides patterns and templates for Flutter 3.41 / Dart 3.4+ cross-platform mobile development. It should be activated when building Flutter screens, Riverpod providers, Freezed models, or widget tests.
+description: This skill provides patterns and templates for Flutter 3.41.x / Dart 3.10.9 cross-platform mobile development. It should be activated when building Flutter screens, Riverpod providers, Freezed models, or widget tests.
 allowed-tools: Bash, Read, Write, Edit
 metadata:
   triggers: Flutter, Dart, Riverpod, Flutter widget, Flutter app, mobile development, iOS, Android, cross-platform mobile, Flutter screen

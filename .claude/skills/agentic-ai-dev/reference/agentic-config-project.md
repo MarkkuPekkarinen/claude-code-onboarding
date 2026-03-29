@@ -9,7 +9,7 @@
 name = "my-agent-service"
 version = "0.1.0"
 description = "Production AI agent service"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 dependencies = [
     # LangChain / LangGraph
     "langchain-core>=1.2.8",
@@ -52,7 +52,7 @@ dev = [
 ]
 
 [tool.ruff]
-target-version = "py313"
+target-version = "py314"
 line-length = 120
 src = ["src"]
 
@@ -76,7 +76,7 @@ known-first-party = ["my_agent_service"]
 section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
 
 [tool.mypy]
-python_version = "3.13"
+python_version = "3.14"
 strict = true
 warn_return_any = true
 warn_unused_configs = true
@@ -325,7 +325,7 @@ class ConfigurationError(AgentServiceError):
 
 ```dockerfile
 # --- Build stage ---
-FROM python:3.13-slim AS builder
+FROM python:3.14-slim AS builder
 
 WORKDIR /app
 
@@ -338,7 +338,7 @@ RUN uv sync --no-dev --frozen
 COPY src/ src/
 
 # --- Runtime stage ---
-FROM python:3.13-slim AS runtime
+FROM python:3.14-slim AS runtime
 
 WORKDIR /app
 

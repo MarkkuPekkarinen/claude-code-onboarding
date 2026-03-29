@@ -6,7 +6,7 @@
 [project]
 name = "my-adk-service"
 version = "0.1.0"
-requires-python = ">=3.11"
+requires-python = ">=3.14"
 dependencies = [
     "google-adk>=1.28.0",
     "google-genai>=1.0.0",
@@ -32,7 +32,7 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 
 [tool.mypy]
 strict = true
-python_version = "3.11"
+python_version = "3.14"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
@@ -152,16 +152,16 @@ my-adk-service/
 ## 5. Dockerfile
 
 Multi-stage build using `uv` for dependency resolution. Final image uses
-`python:3.11-slim` with no build tools.
+`python:3.14-slim` with no build tools.
 
 ```dockerfile
-FROM python:3.11-slim AS builder
+FROM python:3.14-slim AS builder
 WORKDIR /app
 RUN pip install uv
 COPY pyproject.toml .
 RUN uv sync --no-dev
 
-FROM python:3.11-slim
+FROM python:3.14-slim
 WORKDIR /app
 COPY --from=builder /app/.venv .venv
 COPY src/ src/

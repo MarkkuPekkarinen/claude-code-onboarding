@@ -40,7 +40,7 @@ uv add --dev pytest pytest-asyncio httpx ruff mypy
 ## Process
 
 0. **Write DESIGN_SPEC.md** — Before any code, write a spec covering: purpose, example use cases, required tools, safety constraints, success criteria, edge cases. Save as `DESIGN_SPEC.md` in the project root. This is your contract — all implementation must align with it.
-1. **Scaffold** — `uv init` + install `google-adk` + `google-genai`; confirm `uv add google-adk` resolves without error
+1. **Scaffold** — `uv init` + install `google-adk` + `google-genai`; confirm `uv add "google-adk>=1.28.0"` resolves without error
 2. **Configure** — `.env` with `GOOGLE_API_KEY` / `GOOGLE_CLOUD_PROJECT`; load via `pydantic-settings` `BaseSettings`; never hardcode keys
 3. **Define Agent** — `Agent(name, model, instruction, tools)` using `model="gemini-3.1-flash"`; write docstrings on every tool function
 4. **Compose Agents** — use `SequentialAgent`, `ParallelAgent`, or `LoopAgent` for multi-step workflows; set `output_key` on each sub-agent that passes state downstream

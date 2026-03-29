@@ -14,7 +14,7 @@ Delegate to the `agentic-ai-dev` skill for all patterns, templates, and referenc
 ## Steps
 
 1. Read the `agentic-ai-dev` skill and its reference files for exact code templates
-2. Initialize project — `uv init $ARGUMENTS --python 3.13`
+2. Initialize project — `uv init $ARGUMENTS --python 3.14`
 3. Add production + dev dependencies per skill reference `agentic-config-project.md`
 4. Create directory structure under `src/<service_name>/` per skill conventions
 5. Create core modules (config, logging, exceptions), agent layer (state, tools, nodes, graph), LLM providers, API layer (FastAPI + routes), and tests using skill reference templates

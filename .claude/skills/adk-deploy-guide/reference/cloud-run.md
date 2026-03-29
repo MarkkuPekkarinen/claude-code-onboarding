@@ -17,7 +17,7 @@ Cloud SQL session infrastructure (instance, database, Cloud SQL Unix socket volu
 Scaffolded projects use a single-stage build with `uv` for dependency management. Typical structure:
 
 ```dockerfile
-FROM python:3.12-slim
+FROM python:3.14-slim
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 WORKDIR /app

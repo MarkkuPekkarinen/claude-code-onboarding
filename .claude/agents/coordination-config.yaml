@@ -32,7 +32,7 @@ agent_registry:
       can_write: true
 
     - name: nestjs-api
-      domain: NestJS 11.x, Fastify, Prisma ORM, TypeScript 5.x backend
+      domain: NestJS 11.17.x, Fastify, Prisma ORM, TypeScript 5.9.x backend
       model: sonnet
       can_write: true
 
@@ -52,7 +52,7 @@ agent_registry:
       can_write: true
 
     - name: flutter-mobile
-      domain: Flutter 3.38, Dart 3.11, Riverpod, Firebase, cross-platform iOS/Android
+      domain: Flutter 3.41.x, Dart 3.10.9, Riverpod, Firebase, cross-platform iOS/Android
       model: sonnet
       can_write: true
 
