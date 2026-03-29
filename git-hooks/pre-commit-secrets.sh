@@ -146,3 +146,9 @@ detect_secrets() {
 }
 
 detect_secrets
+
+# ── Claude pre-commit evaluator (opt-in: CLAUDE_PRECOMMIT_EVAL=1) ────────────
+EVALUATOR="$(git rev-parse --show-toplevel 2>/dev/null)/git-hooks/pre-commit-evaluator.sh"
+if [ -f "$EVALUATOR" ]; then
+  bash "$EVALUATOR"
+fi
