@@ -1,6 +1,6 @@
 # Flutter Automated Accessibility Testing
 
-Automated accessibility testing patterns for Flutter 3.38 using `flutter_test` SemanticsController. These patterns complement the existing checklist at `.claude/skills/flutter-mobile/reference/accessibility-audit-checklist.md`.
+Automated accessibility testing patterns for Flutter 3.41.x using `flutter_test` SemanticsController. These patterns complement the existing checklist at `.claude/skills/flutter-mobile/reference/accessibility-audit-checklist.md`.
 
 ## 1. SemanticsController — Widget-Level Audit
 

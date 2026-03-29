@@ -1,6 +1,6 @@
 ---
 name: accessibility-audit
-description: WCAG 2.1 AA accessibility audit skill for Angular 21.x and Flutter 3.38. Use when auditing UI for accessibility compliance, identifying barriers, establishing automated testing, or preparing compliance evidence. Covers axe-core automated scanning, keyboard navigation, screen reader compatibility, color contrast, cognitive accessibility, and CI/CD integration.
+description: WCAG 2.1 AA accessibility audit skill for Angular 21.x and Flutter 3.41.x. Use when auditing UI for accessibility compliance, identifying barriers, establishing automated testing, or preparing compliance evidence. Covers axe-core automated scanning, keyboard navigation, screen reader compatibility, color contrast, cognitive accessibility, and CI/CD integration.
 allowed-tools: Read, Grep, Glob, Bash
 agent: accessibility-auditor
 context: fork
@@ -20,7 +20,7 @@ last-reviewed: "2026-03-14"
 > **Iron Law:** Before auditing any component, READ the actual file first.
 > Do not flag violations based on memory — verify at file:line and show evidence.
 
-WCAG 2.1 AA compliance audit for Angular 21.x and Flutter 3.38. Use to audit UI components, establish automated testing, identify accessibility barriers, and prepare compliance evidence.
+WCAG 2.1 AA compliance audit for Angular 21.x and Flutter 3.41.x. Use to audit UI components, establish automated testing, identify accessibility barriers, and prepare compliance evidence.
 
 ## When to Use
 

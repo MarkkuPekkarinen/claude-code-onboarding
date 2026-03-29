@@ -19,7 +19,7 @@ dependencies = [
     "langgraph-checkpoint-postgres>=3.0.0",
 
     # API
-    "fastapi>=0.128.0",
+    "fastapi>=0.135.2",
     "uvicorn[standard]>=0.32.0",
     "gunicorn>=23.0.0",
 

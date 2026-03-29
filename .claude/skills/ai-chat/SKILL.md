@@ -1,6 +1,6 @@
 ---
 name: ai-chat
-description: AI chat interface patterns for Angular 21.x and Flutter 3.38. Use when building streaming chat UI, conversational AI assistants, copilots, token context indicators, feedback loops, multi-modal inputs, tool visualization, or AI-specific error handling. Covers streaming markdown, auto-scroll heuristics, memoized rendering, token limit UI, regeneration controls, thumbs up/down feedback, and AI error states.
+description: AI chat interface patterns for Angular 21.x and Flutter 3.41.x. Use when building streaming chat UI, conversational AI assistants, copilots, token context indicators, feedback loops, multi-modal inputs, tool visualization, or AI-specific error handling. Covers streaming markdown, auto-scroll heuristics, memoized rendering, token limit UI, regeneration controls, thumbs up/down feedback, and AI error states.
 allowed-tools: Read, Edit, Write, Glob, Grep, Bash, WebFetch, mcp__context7__resolve-library-id, mcp__context7__query-docs
 metadata:
   triggers: AI chat, streaming chat, conversational UI, chat interface, streaming response, token limit, AI assistant, copilot, chatbot, LLM UI, streaming markdown
@@ -16,7 +16,7 @@ last-reviewed: "2026-03-15"
 
 # AI Chat Interface Skill
 
-> **Tech Stack**: Angular 21.x (signals, daisyUI, TailwindCSS) | Flutter 3.38 (Riverpod, Dart 3.11)
+> **Tech Stack**: Angular 21.x (signals, daisyUI, TailwindCSS) | Flutter 3.41.x (Riverpod, Dart 3.10.9)
 
 ## When to Activate
 

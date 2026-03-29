@@ -59,10 +59,10 @@ ls .github/workflows/ Dockerfile docker-compose*.yml .env.example 2>/dev/null
 |----------|-------|-----------|
 | `pom.xml` + `spring-boot` | Java 21 / Spring Boot 3.5.x WebFlux | `java-spring-api` |
 | `package.json` + `@nestjs/core` | NestJS 11.x / Fastify / Prisma | `nestjs-api` |
-| `pyproject.toml` + `fastapi` | Python 3.14 / FastAPI 0.128.x | `python-dev` |
+| `pyproject.toml` + `fastapi` | Python 3.14 / FastAPI 0.135.2 | `python-dev` |
 | `pyproject.toml` + `langchain`/`langgraph` | Agentic AI / LangGraph | `agentic-ai-dev` |
 | `angular.json` | Angular 21.x / daisyUI | `angular-spa` |
-| `pubspec.yaml` + `flutter:` | Flutter 3.38 / Dart 3.11 | `flutter-mobile` |
+| `pubspec.yaml` + `flutter:` | Flutter 3.41.x / Dart 3.10.9 | `flutter-mobile` |
 
 ### Phase 2: Architecture Mapping
 

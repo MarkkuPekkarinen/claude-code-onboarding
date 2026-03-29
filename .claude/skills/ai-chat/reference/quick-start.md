@@ -1,6 +1,6 @@
 # AI Chat Quick Start
 
-Minimal wiring for Angular 21 and Flutter 3.38. Load this when starting a new chat feature from scratch.
+Minimal wiring for Angular 21 and Flutter 3.41.x. Load this when starting a new chat feature from scratch.
 
 ---
 
@@ -33,7 +33,7 @@ Full implementation with `AbortController`, `AutoScrollService`, and `ErrorHandl
 
 ---
 
-## Flutter 3.38
+## Flutter 3.41.x
 
 ```dart
 // features/chat/presentation/screens/chat_screen.dart — entry point

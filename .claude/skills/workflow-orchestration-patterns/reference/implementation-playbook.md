@@ -43,7 +43,7 @@ pyproject.toml:
 [project]
 dependencies = [
     "temporalio==1.7.0",
-    "fastapi>=0.128.0",
+    "fastapi>=0.135.2",
     "uvicorn[standard]",
     "pydantic>=2.0",
 ]

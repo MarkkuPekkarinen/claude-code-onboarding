@@ -41,7 +41,7 @@ Delegate to the `google-adk` skill for all patterns, templates, and reference fi
 
    Add dependencies:
    ```bash
-   uv add google-adk "google-genai>=1.0.0" "fastapi>=0.128.0" "uvicorn[standard]" pydantic pydantic-settings structlog
+   uv add google-adk "google-genai>=1.0.0" "fastapi>=0.135.2" "uvicorn[standard]" pydantic pydantic-settings structlog
    uv add --dev pytest pytest-asyncio httpx ruff mypy
    ```
 

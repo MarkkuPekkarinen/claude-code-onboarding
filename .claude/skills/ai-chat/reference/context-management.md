@@ -140,7 +140,7 @@ export class ChatService {
 
 ---
 
-## Flutter 3.38 (Riverpod)
+## Flutter 3.41.x (Riverpod)
 
 ### TokenIndicatorWidget
 

@@ -1,6 +1,6 @@
 # Dart Language Pitfalls
 
-Common Dart mistakes and the correct patterns — specific to Dart 3.11+ / Flutter 3.38+.
+Common Dart mistakes and the correct patterns — specific to Dart 3.10.9+ / Flutter 3.41.x+.
 These are language-level issues distinct from Flutter widget, architecture, or test patterns.
 
 ---
@@ -116,7 +116,7 @@ final coords = getCoordinates();
 final lat = coords['lat'] as double;
 ```
 
-### Rule — use Dart 3 records (Dart 3.11+ / Flutter 3.38+)
+### Rule — use Dart 3 records (Dart 3.10.9+ / Flutter 3.41.x+)
 
 ```dart
 // GOOD: positional record

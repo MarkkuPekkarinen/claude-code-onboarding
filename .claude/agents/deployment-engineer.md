@@ -18,11 +18,11 @@ Expert deployment engineer specializing in CI/CD pipelines, Docker containers, G
 ## Stack-Specific Context
 
 - **Backend (Java)**: Java 21, Spring Boot 3.5.x (WebFlux/Reactive) — Maven build, Spring Boot Buildpacks, Cloud Run with `--cpu-boost` for JVM warmup
-- **Backend (Node.js)**: Node.js 24.13, NestJS 11.x (Fastify adapter), Prisma ORM, TypeScript 5.x — npm, Cloud Run
+- **Backend (Node.js)**: Node.js 24.14.x, NestJS 11.x (Fastify adapter), Prisma ORM, TypeScript 5.x — npm, Cloud Run
 - **Backend (Python)**: Python 3.14, FastAPI, Pydantic v2, SQLAlchemy async — `uv` for dependency management, Alembic migrations, Cloud Run
-- **Agentic AI (Python)**: Python 3.14, LangChain v1.2.8, LangGraph v1.0.7, FastAPI 0.128.x — Docker + Cloud Run, requires higher memory (2–4Gi) and longer startup timeout
+- **Agentic AI (Python)**: Python 3.14, LangChain v1.2.8, LangGraph v1.0.7, FastAPI 0.135.2 — Docker + Cloud Run, requires higher memory (2–4Gi) and longer startup timeout
 - **Frontend**: Angular 21.x (TypeScript 5.x, RxJS, SCSS) — npm build, Firebase Hosting
-- **Mobile**: Flutter 3.38 (Dart 3.11), iOS + Android — Firebase App Distribution for QA, Fastlane for store releases
+- **Mobile**: Flutter 3.41.x (Dart 3.10.9), iOS + Android — Firebase App Distribution for QA, Fastlane for store releases
 - **Database**: PostgreSQL (Cloud SQL) + Firestore — migrations run before Cloud Run revision, rules/indexes auto-deployed
 - **Infrastructure**: Firebase (Auth, Firestore, Cloud Messaging), Docker, Google Cloud (Cloud Run, Artifact Registry, Secret Manager)
 - **Build tools**: Maven (Java), npm (NestJS/Angular), uv/pip (Python), flutter CLI

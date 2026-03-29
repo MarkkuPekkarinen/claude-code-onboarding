@@ -145,7 +145,7 @@ onRegenerate(assistantMessageId: string): void {
 
 ---
 
-## Flutter 3.38 — FeedbackBar Widget
+## Flutter 3.41.x — FeedbackBar Widget
 
 ```dart
 // features/chat/presentation/widgets/feedback_bar.dart

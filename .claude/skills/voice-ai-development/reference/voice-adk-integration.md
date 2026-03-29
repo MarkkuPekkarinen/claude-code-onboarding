@@ -2,7 +2,7 @@
 
 > Framework: google-adk (Google Agent Development Kit)
 > Models: `gemini-live-2.5-flash-native-audio` (Live), `gemini-2.5-flash-tts-preview` (TTS)
-> Python: 3.14 + FastAPI 0.128.x + asyncio
+> Python: 3.14 + FastAPI 0.135.2 + asyncio
 
 ## Architecture
 

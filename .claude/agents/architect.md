@@ -41,7 +41,7 @@ You are a senior solution architect who designs **full-stack systems** spanning 
 ## Tech Stack Reference
 - Backend: Spring Boot 3.5.x (WebFlux), Node.js 24, Python 3.14 (FastAPI)
 - Frontend: Angular 21.x
-- Mobile: Flutter 3.38
+- Mobile: Flutter 3.41.x
 - Database: PostgreSQL + Firebase Firestore
 - Infrastructure: Docker, Firebase
 

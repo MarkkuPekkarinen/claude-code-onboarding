@@ -291,7 +291,7 @@ flutter:
 
 ## Related Skills
 
-- `flutter-mobile` — Flutter 3.38 screen patterns, Riverpod, Freezed. Load alongside for full feature context.
+- `flutter-mobile` — Flutter 3.41.x screen patterns, Riverpod, Freezed. Load alongside for full feature context.
 - `mobile-design` — Load BEFORE this skill for touch psychology and MFRI scoring
 - `riverpod-patterns` — Wire animation state to Riverpod providers
 - `ui-standards-tokens` — ThemeData tokens for static fallback widgets

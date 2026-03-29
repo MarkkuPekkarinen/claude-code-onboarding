@@ -159,7 +159,7 @@ pkg:{ecosystem}/{package}@{version}
 
 Examples:
 - `pkg:npm/express@4.18.2`
-- `pkg:pypi/fastapi@0.128.0`
+- `pkg:pypi/fastapi@0.135.2`
 - `pkg:maven/org.springframework.boot/spring-boot-starter@3.5.0`
 - `pkg:pub/flutter@3.38.0`
 

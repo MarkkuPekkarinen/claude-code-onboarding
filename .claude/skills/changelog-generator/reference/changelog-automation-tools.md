@@ -189,7 +189,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '24'   # Matches workspace Node.js 24.13
+          node-version: '24'   # Matches workspace Node.js 24.14.x
           cache: 'npm'
 
       - run: npm ci

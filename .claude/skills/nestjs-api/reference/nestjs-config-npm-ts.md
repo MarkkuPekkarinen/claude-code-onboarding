@@ -43,14 +43,14 @@ NestJS 11 backend service with enterprise-grade dependencies.
     "prepare": "prisma generate"
   },
   "dependencies": {
-    "@nestjs/common": "~11.0.0",
+    "@nestjs/common": "~11.17.0",
     "@nestjs/config": "~3.3.0",
-    "@nestjs/core": "~11.0.0",
+    "@nestjs/core": "~11.17.0",
     "@nestjs/event-emitter": "~2.1.0",
-    "@nestjs/platform-fastify": "~11.0.0",
+    "@nestjs/platform-fastify": "~11.17.0",
     "@nestjs/schedule": "~4.1.0",
     "@nestjs/swagger": "~8.0.0",
-    "@nestjs/terminus": "~11.0.0",
+    "@nestjs/terminus": "~11.17.0",
     "@nestjs/throttler": "~6.3.0",
     "@nestjs/bullmq": "~10.2.0",
     "@bull-board/api": "~5.21.0",
@@ -90,7 +90,7 @@ NestJS 11 backend service with enterprise-grade dependencies.
   },
   "devDependencies": {
     "@eslint/js": "~9.15.0",
-    "@nestjs/testing": "~11.0.0",
+    "@nestjs/testing": "~11.17.0",
     "@swc/cli": "~0.4.0",
     "@swc/core": "~1.7.0",
     "@types/compression": "~1.7.5",
@@ -109,7 +109,7 @@ NestJS 11 backend service with enterprise-grade dependencies.
     "@types/pg": "~8.11.0",
     "prisma": "~7.3.0",
     "tsx": "~4.19.0",
-    "typescript": "~5.7.0",
+    "typescript": "~5.9.x",
     "vitest": "~2.1.0"
   },
   "engines": {

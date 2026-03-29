@@ -79,7 +79,7 @@ If any of the following are not explicitly stated, you MUST ask before proceedin
 | Devices | Phone only or tablet too? | Layout and density rules |
 | Audience | Consumer, enterprise, accessibility needs? | Touch and readability |
 
-**Flutter note:** This workspace uses Flutter 3.38 exclusively. Framework is not a question — it is Flutter. If the request is for React Native, redirect to the mobile-developer skill.
+**Flutter note:** This workspace uses Flutter 3.41.x exclusively. Framework is not a question — it is Flutter. If the request is for React Native, redirect to the mobile-developer skill.
 
 Never default to your favorite stack or pattern.
 
@@ -179,7 +179,7 @@ Complete this before writing any widget code. If you cannot fill it in, go back 
 ```
 MOBILE CHECKPOINT
 Platform:     [ ] iOS  [ ] Android  [ ] Both
-Framework:    Flutter 3.38
+Framework:    Flutter 3.41.x
 Files Read:   [ ] touch-psychology  [ ] mobile-performance  [ ] platform-specific
 MFRI Score:   ___  (must be >= 3)
 

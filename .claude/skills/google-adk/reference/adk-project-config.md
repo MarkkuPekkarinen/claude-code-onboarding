@@ -8,9 +8,9 @@ name = "my-adk-service"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
-    "google-adk>=1.0.0",
+    "google-adk>=1.28.0",
     "google-genai>=1.0.0",
-    "fastapi>=0.128.0",
+    "fastapi>=0.135.2",
     "uvicorn[standard]>=0.30.0",
     "pydantic>=2.0.0",
     "pydantic-settings>=2.0.0",

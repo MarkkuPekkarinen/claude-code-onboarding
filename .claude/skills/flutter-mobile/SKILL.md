@@ -248,7 +248,7 @@ Widget build(BuildContext context) {
 
 Rule: Use sealed classes + `switch` expressions for any state with 3+ mutually exclusive cases. Applies to: UI state, network state, auth state, form state.
 
-Applies to: Flutter 3.38 / Dart 3.11+ (sealed classes require Dart 3.0+)
+Applies to: Flutter 3.41.x / Dart 3.10.9+ (sealed classes require Dart 3.0+)
 
 ## State Management Quick Reference
 

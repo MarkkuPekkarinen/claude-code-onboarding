@@ -39,7 +39,7 @@ npm run test:cov -- --silent 2>&1 | \
   awk '/^\|/{gsub(/\|/,""); if($2+0 < 80) print $2"% "$1}' | sort -n
 ```
 
-### Flutter (Dart 3.11)
+### Flutter (Dart 3.10.9)
 Detected by: `pubspec.yaml` containing `flutter:`
 
 ```bash

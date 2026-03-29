@@ -235,7 +235,7 @@ export class ChatInputComponent {
 
 ---
 
-## Flutter 3.38 — ChatInputWidget
+## Flutter 3.41.x — ChatInputWidget
 
 ```dart
 // features/chat/presentation/widgets/chat_input_widget.dart

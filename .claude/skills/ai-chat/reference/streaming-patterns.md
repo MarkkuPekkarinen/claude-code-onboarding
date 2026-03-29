@@ -231,7 +231,7 @@ export class ChatComponent implements OnDestroy {
 
 ---
 
-## Flutter 3.38 (Riverpod)
+## Flutter 3.41.x (Riverpod)
 
 ### ChatNotifier — AsyncNotifier with stream
 

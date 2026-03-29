@@ -20,8 +20,8 @@ Generates codemaps for detected services:
 | `docs/CODEMAPS/spring-api.md` | `pom.xml` with `spring-boot` | Java 21 / Spring Boot 3.5.x / WebFlux / R2DBC |
 | `docs/CODEMAPS/nestjs-api.md` | `package.json` with `@nestjs/core` | NestJS 11.x / Fastify / Prisma / TypeScript 5.x |
 | `docs/CODEMAPS/angular-spa.md` | `angular.json` | Angular 21.x / daisyUI / TailwindCSS |
-| `docs/CODEMAPS/flutter-mobile.md` | `pubspec.yaml` with `flutter:` | Flutter 3.38 / Dart 3.11 / Riverpod |
-| `docs/CODEMAPS/python-api.md` | `pyproject.toml` with `fastapi` | Python 3.14 / FastAPI 0.128.x / Pydantic v2 |
+| `docs/CODEMAPS/flutter-mobile.md` | `pubspec.yaml` with `flutter:` | Flutter 3.41.x / Dart 3.10.9 / Riverpod |
+| `docs/CODEMAPS/python-api.md` | `pyproject.toml` with `fastapi` | Python 3.14 / FastAPI 0.135.2 / Pydantic v2 |
 | `docs/CODEMAPS/architecture.md` | Always | Cross-service integration map |
 
 ## Codemap Format

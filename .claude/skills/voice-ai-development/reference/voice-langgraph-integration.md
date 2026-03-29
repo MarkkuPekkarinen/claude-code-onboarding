@@ -1,6 +1,6 @@
 # LangGraph + Gemini Voice Agent
 
-> Framework: LangGraph v1.0.7 + LangChain v1.2.8 + FastAPI 0.128.x
+> Framework: LangGraph v1.0.7 + LangChain v1.2.8 + FastAPI 0.135.2
 > Models: `gemini-live-2.5-flash-native-audio` (Live), `gemini-2.5-flash-tts-preview` (TTS)
 > Python: 3.14 + asyncio
 

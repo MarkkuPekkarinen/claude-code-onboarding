@@ -1,6 +1,6 @@
 ---
 name: agentic-ai-dev
-description: "This skill provides patterns and templates for building production AI agents with Python 3.14, LangChain v1.2.8, LangGraph v1.0.7, and FastAPI 0.128.x. Use when creating AI agents, RAG systems, graph workflows, tools, memory systems, or agent tests."
+description: "This skill provides patterns and templates for building production AI agents with Python 3.14, LangChain v1.2.8, LangGraph v1.0.7, and FastAPI 0.135.2. Use when creating AI agents, RAG systems, graph workflows, tools, memory systems, or agent tests."
 allowed-tools: Bash, Read, Write, Edit
 metadata:
   triggers: AI agent, LangChain, LangGraph, RAG system, graph workflow, FastAPI, Python 3.14, LangGraph agent, memory system, agent test
@@ -23,7 +23,7 @@ last-reviewed: "2026-03-14"
 ```bash
 uv init my-agent-service && cd my-agent-service
 uv add "langchain-core>=1.2.8" "langchain-anthropic>=1.3.0" "langchain-openai>=1.1.0" "langgraph>=1.0.7" \
-  "fastapi>=0.128.0" "uvicorn[standard]" pydantic pydantic-settings \
+  "fastapi>=0.135.2" "uvicorn[standard]" pydantic pydantic-settings \
   langsmith prometheus-client structlog httpx asyncpg \
   "langgraph-checkpoint-postgres>=3.0.0"
 uv add --dev pytest pytest-asyncio httpx ruff mypy

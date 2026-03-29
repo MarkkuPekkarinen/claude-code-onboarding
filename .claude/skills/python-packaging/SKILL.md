@@ -69,7 +69,7 @@ name = "my-service"
 version = "0.1.0"
 requires-python = ">=3.14"
 dependencies = [
-    "fastapi>=0.128.0",
+    "fastapi>=0.135.2",
     "pydantic>=2.0.0",
 ]
 

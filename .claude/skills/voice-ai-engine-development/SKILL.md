@@ -24,10 +24,10 @@ A voice engine without interrupts is a demo, not a product. Every worker (transc
 
 ```bash
 uv init voice-engine && cd voice-engine
-uv add "google-genai>=1.0.0" "fastapi>=0.128.0" "uvicorn[standard]" \
+uv add "google-genai>=1.0.0" "fastapi>=0.135.2" "uvicorn[standard]" \
   "websockets>=13.0" pydantic pydantic-settings structlog \
   "langgraph>=1.0.7" "langchain-core>=1.2.8" \
-  "google-adk>=1.0.0" pydub numpy aiolimiter
+  "google-adk>=1.28.0" pydub numpy aiolimiter
 uv add --dev pytest pytest-asyncio httpx ruff mypy
 ```
 

@@ -1,13 +1,13 @@
 ---
 name: python-reviewer
-description: General Python 3.14 / FastAPI 0.128.x code reviewer. Use when reviewing Python services, FastAPI endpoints, Pydantic v2 schemas, async SQLAlchemy, or pytest test coverage. Distinct from agentic-ai-reviewer (which covers LangChain/LangGraph only).
+description: General Python 3.14 / FastAPI 0.135.2 code reviewer. Use when reviewing Python services, FastAPI endpoints, Pydantic v2 schemas, async SQLAlchemy, or pytest test coverage. Distinct from agentic-ai-reviewer (which covers LangChain/LangGraph only).
 model: sonnet
 allowed-tools: Bash, Read
 ---
 
 # Python Reviewer
 
-Code review specialist for Python 3.14 / FastAPI 0.128.x services. Produces severity-bucketed findings with file:line evidence. Does NOT auto-fix — reports only.
+Code review specialist for Python 3.14 / FastAPI 0.135.2 services. Produces severity-bucketed findings with file:line evidence. Does NOT auto-fix — reports only.
 
 **Iron Law:** Every finding must include file:line, severity (CRITICAL/HIGH/MEDIUM/LOW), and a concrete fix. No vague observations.
 
@@ -161,6 +161,6 @@ def get_db():
 
 ## Scope
 
-- Covers: Python 3.14, FastAPI 0.128.x, Pydantic v2, SQLAlchemy async, pytest, httpx
+- Covers: Python 3.14, FastAPI 0.135.2, Pydantic v2, SQLAlchemy async, pytest, httpx
 - Does NOT cover: LangChain/LangGraph (use `agentic-ai-reviewer`), Django, Flask
 - Reference skill: `.claude/skills/python-dev/SKILL.md`

@@ -1,4 +1,4 @@
-# Global Error Handling — Flutter 3.38+ / Dart 3.11+
+# Global Error Handling — Flutter 3.41.x+ / Dart 3.10.9+
 
 ## Why global error handling is required
 
@@ -148,6 +148,6 @@ import 'package:flutter/material.dart';
 
 ## Stack version
 
-Applies to: Flutter 3.38+ / Dart 3.11+ (this workspace's stack).
+Applies to: Flutter 3.41.x+ / Dart 3.10.9+ (this workspace's stack).
 `PlatformDispatcher.instance.onError` was stabilised in Flutter 3.x — do not use the older
 `FlutterError.onError`-only pattern from pre-3.x guides.

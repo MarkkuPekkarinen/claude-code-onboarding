@@ -1,6 +1,6 @@
-# Package Evaluation — Flutter 3.38 / Dart 3.11
+# Package Evaluation — Flutter 3.41.x / Dart 3.10.9
 
-Use before adding any pub.dev dependency. Applies to: Flutter 3.38 / Dart 3.11 / pub.dev (as of 2026).
+Use before adding any pub.dev dependency. Applies to: Flutter 3.41.x / Dart 3.10.9 / pub.dev (as of 2026).
 
 ---
 
@@ -99,7 +99,7 @@ dependencies:
   go_router: 14.6.3
 
   # Acceptable — minor version range (API stable within minor)
-  riverpod: ^2.6.1
+  riverpod: ^3.2.1
 
   # Forbidden in production
   some_package: any

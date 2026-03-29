@@ -117,7 +117,7 @@ spring.datasource.password=${DB_PASSWORD}
 ```markdown
 # ${SERVICE_NAME} — NestJS Service
 
-Node.js 24.13, NestJS 11.x, Fastify, Prisma ORM, TypeScript 5.x
+Node.js 24.14.x, NestJS 11.17.x, Fastify, Prisma ORM, TypeScript 5.9.x
 
 ## Prerequisites
 
@@ -158,7 +158,7 @@ npm run test:cov             # coverage report
 ```markdown
 # ${SERVICE_NAME} — FastAPI Service
 
-Python 3.14, FastAPI 0.128.x, Pydantic v2, SQLAlchemy async
+Python 3.14, FastAPI 0.135.2, Pydantic v2, SQLAlchemy async
 
 ## Prerequisites
 
@@ -200,12 +200,12 @@ pytest -m integration        # integration only
 ```markdown
 # ${APP_NAME} — Flutter App
 
-Flutter 3.38, Dart 3.11, cross-platform (iOS + Android)
+Flutter 3.41.x, Dart 3.10.9, cross-platform (iOS + Android)
 
 ## Prerequisites
 
-- Flutter 3.38+
-- Dart 3.11+
+- Flutter 3.41.x+
+- Dart 3.10.9+
 - Xcode 16+ (iOS)
 - Android Studio (Android)
 
@@ -243,5 +243,5 @@ flutter test integration_test/  # integration tests
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Java](https://img.shields.io/badge/java-21-orange)
 ![Spring Boot](https://img.shields.io/badge/spring--boot-3.5.x-green)
-![Flutter](https://img.shields.io/badge/flutter-3.38-blue)
+![Flutter](https://img.shields.io/badge/flutter-3.41.x-blue)
 ```

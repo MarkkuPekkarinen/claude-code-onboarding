@@ -229,7 +229,7 @@ export class AiErrorComponent {
 
 ---
 
-## Flutter 3.38 — AiErrorWidget
+## Flutter 3.41.x — AiErrorWidget
 
 ```dart
 // features/chat/presentation/widgets/ai_error_widget.dart
