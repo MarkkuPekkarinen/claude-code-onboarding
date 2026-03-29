@@ -11,7 +11,7 @@ metadata:
   role: specialist
   scope: implementation
   output-format: implementation
-last-reviewed: "2026-03-16"
+last-reviewed: "2026-03-29"
 ---
 
 **Iron Law:** Never design a deployment pipeline without knowing the rollback strategy — every deploy step must be reversible or have an explicit break-glass procedure.
@@ -55,3 +55,48 @@ CI/CD pipeline design and deployment automation specialist covering GitHub Actio
 4. Design pipeline stages: build → test → security scan → push → deploy → verify
 5. Define rollback strategy for each stage
 6. Output GitHub Actions workflow YAML + deployment configuration
+
+## Production Readiness Checklist
+
+Before any production deploy, verify ALL of the following. If any item is NO → do not deploy.
+
+### Application
+- [ ] `/health` endpoint responds 200 with DB connectivity check (see `reference/health-endpoints.md`)
+- [ ] All required env vars validated at startup — app fails fast if missing (see `reference/env-config-validation.md`)
+- [ ] No secrets hardcoded in source code or committed config files
+- [ ] `.env.example` committed with all keys, placeholder values only
+- [ ] Error handling: all catch blocks log + rethrow or return error state (no silent failures)
+
+### Container / Docker
+- [ ] Multi-stage Dockerfile — dev deps not in production image
+- [ ] Non-root user in Dockerfile (`USER appuser`)
+- [ ] Specific image tags pinned — no `:latest`
+- [ ] HEALTHCHECK instruction in Dockerfile
+- [ ] `.dockerignore` excludes: `node_modules`, `.git`, `.env`, `dist`, `coverage`
+- [ ] `docker scout` or `trivy image` scan — zero CRITICAL CVEs
+
+### CI/CD Pipeline
+- [ ] Tests pass (all: unit + integration)
+- [ ] Linting + type-check pass (zero errors)
+- [ ] Container image pushed to Artifact Registry with commit SHA tag
+- [ ] Health check gate passes before any traffic shift
+- [ ] Rollback strategy defined and tested for this deploy
+
+### Cloud Run (GCP Stack)
+- [ ] Workload Identity Federation configured — no service account key files
+- [ ] Deploy uses `--no-traffic` first → canary 10% → verify → 100%
+- [ ] Memory limits set (`--memory` flag matches actual service requirements)
+- [ ] Concurrency configured (`--concurrency` — default 80, tune per service)
+- [ ] Min instances = 0 for cost (or 1+ for latency-sensitive services)
+
+### Security
+- [ ] `security-reviewer` agent verdict: no CRITICAL or HIGH findings
+- [ ] All API endpoints require authentication (no accidental public exposure)
+- [ ] CORS policy explicitly configured (not wildcard `*` in production)
+- [ ] Secrets stored in Secret Manager, not Cloud Run env vars directly
+
+### Post-Deploy Verification
+- [ ] Health endpoint returns 200 on new revision URL
+- [ ] Smoke test: critical user flow works end-to-end
+- [ ] Error rate < 0.1% for 5 minutes post-deploy
+- [ ] Rollback procedure verified working (test once per quarter)

@@ -269,3 +269,55 @@ volumes:
 ```
 
 The anonymous volumes for `node_modules` and `dist` prevent the host directory from shadowing the image's installed packages.
+
+---
+
+## Container Inspection Commands
+
+```bash
+# Process inspection
+docker compose top                    # Show processes running inside each container
+docker stats                          # Live CPU/memory/network/disk usage per container
+docker stats --no-stream              # One-time snapshot (useful in scripts)
+
+# Container internals
+docker compose exec app sh            # Shell into running app container
+docker compose exec db psql -U postgres  # Direct psql into postgres container
+docker compose exec app env           # Dump all env vars in container
+
+# Image and layer inspection
+docker image inspect <image>          # Full image metadata
+docker history <image>                # Layer-by-layer build history + sizes
+```
+
+## Network Debugging
+
+```bash
+# DNS resolution inside container
+docker compose exec app nslookup db         # Verify "db" resolves to postgres container
+docker compose exec app nslookup redis      # Verify service name DNS works
+
+# Connectivity checks
+docker compose exec app wget -qO- http://api:3000/health  # Test inter-service HTTP
+
+# Network inspection
+docker network ls                           # List all Docker networks
+docker network inspect <project>_default    # Full network config, connected containers, IPs
+```
+
+## Cleanup Commands
+
+```bash
+# Progressive cleanup (safe to running containers)
+docker compose down                   # Stop and remove containers (keep volumes)
+docker compose down -v                # ⚠️ Also removes named volumes (DATA LOSS)
+docker compose down --rmi local       # Also removes locally-built images
+
+# System-wide cleanup (reclaim disk space)
+docker system prune                   # Remove stopped containers, unused networks, dangling images
+docker system prune -a                # ⚠️ Also removes unused images (not just dangling)
+docker volume prune                   # ⚠️ Remove all unused volumes
+
+# Check disk usage
+docker system df                      # Show Docker disk usage breakdown
+```

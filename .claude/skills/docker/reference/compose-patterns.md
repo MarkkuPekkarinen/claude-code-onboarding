@@ -47,6 +47,18 @@ services:
       retries: 5
     restart: unless-stopped
 
+  # ── Email testing ──────────────────────────────────────────────────────────
+  # Mailpit catches all outbound email — no real SMTP needed for local dev
+  # Configure your app: SMTP_HOST=localhost, SMTP_PORT=1025, SMTP_FROM=test@local
+  # View captured emails: http://localhost:8025
+  mailpit:                            # Local email testing (web UI: http://localhost:8025)
+    image: axllent/mailpit:latest
+    container_name: ${PROJECT_NAME:-myservice}-mailpit
+    ports:
+      - "8025:8025"                   # Web UI — view sent emails at http://localhost:8025
+      - "1025:1025"                   # SMTP — configure app SMTP_HOST=localhost SMTP_PORT=1025
+    restart: unless-stopped
+
 volumes:
   postgres-data:
     driver: local
@@ -106,11 +118,14 @@ services:
       timeout: 10s
       retries: 3
       start_period: 15s
+    # Resource limits — prevents a single container consuming entire host resources
+    # Tune per stack: NestJS/Python=512M, Spring Boot=1G (JVM overhead)
+    # cpus: "1.0" = 1 full CPU core equivalent
     deploy:
       resources:
         limits:
-          cpus: "1.0"
-          memory: 512M
+          cpus: "1.0"             # Cap at 1 CPU — prevents runaway processes
+          memory: 512M            # Adjust per stack: NestJS=512M, Spring=1G, Python=512M
         reservations:
           cpus: "0.25"
           memory: 256M
