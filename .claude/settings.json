@@ -200,6 +200,16 @@
         ]
       },
       {
+        "matcher": "Bash|Read|WebFetch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/output-secrets-scanner.sh",
+            "timeout": 10
+          }
+        ]
+      },
+      {
         "matcher": "Write|Edit",
         "hooks": [
           {
