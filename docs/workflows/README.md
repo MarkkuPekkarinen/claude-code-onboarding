@@ -61,6 +61,7 @@ Multi-phase workflow guides for every development process in this workspace. Eac
 | Workflow | When to Use |
 |----------|------------|
 | [test-driven-development.md](test-driven-development.md) | Red-Green-Refactor TDD cycle, all stacks |
+| [test-coverage-audit.md](test-coverage-audit.md) | Multi-stack coverage report, 80% gate, `/tdd` and `/test-coverage` commands |
 | [api-testing.md](api-testing.md) | Integration and contract testing for REST APIs |
 | [browser-e2e-testing.md](browser-e2e-testing.md) | E2E testing with Chrome DevTools + Browser-Use MCPs |
 | [visual-regression-testing.md](visual-regression-testing.md) | Automated visual regression CI/CD for Angular (Playwright/Chromatic/BackstopJS) and Flutter (golden_toolkit) |
@@ -117,3 +118,5 @@ Multi-phase workflow guides for every development process in this workspace. Eac
 | [mcp-server-setup.md](mcp-server-setup.md) | Configuring or building a custom MCP server |
 | [subagent-driven-development.md](subagent-driven-development.md) | 3-role SDD pipeline for plan-driven multi-agent work |
 | [ralph-loop-autonomous.md](ralph-loop-autonomous.md) | Autonomous iteration loop until completion |
+| [build-error-resolution.md](build-error-resolution.md) | Maven/Spring Boot 3.5.x build failures — `java-build-resolver` agent |
+| [session-checkpoints.md](session-checkpoints.md) | Named session checkpoints with `/checkpoint` — before/after comparison |
