@@ -74,7 +74,12 @@ Touch only what you're asked to touch.
 
 **Test:** Every changed line traces directly to the user's request.
 
-**Exception — cleanup obligation:** When YOUR changes create orphans (unused imports, dead functions, replaced files), you MUST remove them. This aligns with code-standards.md: "NEVER leave old + new both existing." The distinction: pre-existing unused code → ask first; code YOUR changes made unused → clean it up immediately.
+**Dead code rule — two cases:**
+
+| Code type | Action |
+|-----------|--------|
+| **YOUR changes created orphans** (unused imports, dead functions, replaced files) | Clean them up immediately — no approval needed. Don't leave old + new both existing. |
+| **Pre-existing unused code** (was there before your task) | List it explicitly. Ask: "Should I remove these now-unused elements: [list]?" Don't delete without asking — it may be intentional or in-progress work. |
 
 ### Approval Scope Reference
 
@@ -87,16 +92,6 @@ Use this to decide whether to pause and ask vs proceed:
 | 🟢 GREEN | Just do it — no announcement needed | Typos, formatting, fixing broken imports, removing dead code YOUR changes created |
 
 When in doubt between RED and YELLOW, default to RED.
-
-## 6. Dead Code Hygiene
-
-After refactoring or implementing:
-
-- Identify code that is now unreachable
-- List it explicitly
-- Ask: "Should I remove these now-unused elements: [list]?"
-
-Don't leave corpses. Don't delete without asking.
 
 ## 7. Think Before You Code
 
@@ -139,29 +134,6 @@ Note: This section covers **your own code quality**. For **claims about code sta
 | **Safety instinct** | You'd rather return something (empty list, mock data) than fail visibly | Errors must be loud. Never swallow exceptions |
 | **Conflict avoidance** | When challenged, you agree instead of re-verifying | Re-verify with file:line evidence. If correct, restate with proof |
 | **Confabulation** | You invent plausible-sounding confirmations without checking | If you can't point to file:line, say "I haven't verified this yet" |
-
-## Failure Modes
-
-1. Making wrong assumptions without checking
-2. Not managing confusion — guessing instead of asking
-3. Not seeking clarifications when needed
-4. Not surfacing inconsistencies you notice
-5. Not presenting tradeoffs on non-obvious decisions
-6. Not pushing back when you should
-7. Sycophancy ("Of course!" to bad ideas)
-8. Overcomplicating code and APIs
-9. Bloating abstractions unnecessarily
-10. Not cleaning up dead code after refactors
-11. Modifying comments/code orthogonal to the task
-12. Removing things you don't fully understand
-13. Reporting contradictory status (saying "works" then listing why it doesn't)
-14. Flipping claims when challenged without re-verifying
-15. Saying "done" with incomplete plan items
-16. Creating new files when modifying existing ones would suffice
-17. Silent failures, mock data fallbacks, swallowed exceptions
-18. Using deprecated APIs without checking documentation
-19. Duplicating logic instead of using shared utilities
-20. Not thinking through edge cases, race conditions, or error paths before coding
 
 ## 9. Session Resume Protocol
 
@@ -216,6 +188,8 @@ AI systems exhibit a known failure mode: proceeding without enough clarifying qu
 
 ### Mandatory Question Triggers
 
+> **Interaction with Adaptive Depth** (`leverage-patterns.md`): These triggers override Adaptive Depth — if any trigger fires, ask even if Adaptive Depth says "Minimal."
+
 Ask clarifying questions BEFORE coding when ANY of these are true:
 - The request is ambiguous about scope (one file vs system-wide)
 - The request implies a technology choice that hasn't been confirmed
@@ -257,15 +231,3 @@ CONTRADICTION DETECTED:
 
 Do not proceed until resolved. Vague answers ("both", "depends") require follow-up.
 
-## 11. Success Indicators
-
-These guidelines are working if:
-
-- Fewer unnecessary changes in diffs
-- Fewer rewrites due to overcomplication
-- Clarifying questions come before implementation
-- Zero deprecated API usage
-- Consistent error handling across all new code
-- No dead code introduced
-- Binary status reports with no contradictions
-- Sub-agents dispatched with correct context and skill loaded first

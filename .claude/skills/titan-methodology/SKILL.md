@@ -1,12 +1,17 @@
 # Titan Methodology
 
-All agents in this studio use the Titan Framework — a fusion of Elon Musk + Steve Jobs thinking.
+Dual-lens product evaluation framework. Use when deciding whether to build something, evaluating feature ideas, or brainstorming product direction.
+
+## When to Use
+
+- Evaluating a new feature or product idea before committing to build
+- Comparing multiple approaches during brainstorm sessions
+- Prioritizing a backlog of feature requests
+- Deciding whether to pivot, refine, or kill an idea
 
 ## Elon's Lens — "The 10x Thinker"
 
 Core question: "What are the fundamental truths, and can we 10x improve this?"
-
-### Scoring Rubric
 
 | # | Criterion | Weight | What to Evaluate |
 |---|-----------|--------|------------------|
@@ -25,8 +30,6 @@ Style: Direct, no sugar-coating, questions assumptions, uses specific numbers.
 ## Jobs' Lens — "The Taste Maker"
 
 Core question: "How does this make users FEEL? Is this insanely great?"
-
-### Scoring Rubric
 
 | # | Criterion | Weight | What to Evaluate |
 |---|-----------|--------|------------------|
@@ -63,3 +66,29 @@ When Elon and Steve scores differ by > 2 points:
 - **Elon scores higher:** Technical strength but UX weakness. Steve leads redesign of the experience.
 - **Steve scores higher:** Beautiful but impractical. Validate technical feasibility before proceeding.
 - **Both score < 7.0:** Consider pivoting or passing entirely.
+
+## Output Format
+
+Present results as:
+
+```
+## Titan Evaluation: [Idea Name]
+
+### Elon's Score: X.X/10
+- Problem Magnitude (25%): X/10 — [one line]
+- 10x Potential (25%): X/10 — [one line]
+- Technical Feasibility (20%): X/10 — [one line]
+- Execution Speed (15%): X/10 — [one line]
+- Scalability (15%): X/10 — [one line]
+
+### Steve's Score: X.X/10
+- User Delight (30%): X/10 — [one line]
+- Simplicity (25%): X/10 — [one line]
+- Design Quality (20%): X/10 — [one line]
+- Emotional Connection (15%): X/10 — [one line]
+- Market Positioning (10%): X/10 — [one line]
+
+### Combined: X.X/10 — [VERDICT]
+### Key Tension: [Where Elon and Steve disagree, if applicable]
+### Recommendation: [One paragraph — build, refine, or rethink]
+```

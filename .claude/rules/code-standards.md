@@ -115,8 +115,7 @@ Use this to decide WHEN to create a shared utility or abstraction:
 - Log all error conditions with full context
 - Log sync operations (start, success, failure)
 - NEVER log sensitive data (passwords, tokens, PII)
-- NEVER use `print()` — use centralized logger
-- NEVER use `console.log()` / `console.warn()` / `console.error()` directly — use centralized logger (e.g., NestJS `Logger`, Angular `ErrorHandler`). Raw console statements leak internal logic to anyone with devtools open. Sweep before every deploy.
+- No `print()` or `console.log` in production code — enforced as a hard STOP in `first-principles.md` Layer 1
 
 ## Output Quality
 
@@ -141,27 +140,9 @@ POTENTIAL CONCERNS:
 - [any risks or things to verify]
 ```
 
-## Content Validation Before Writing
+## Content Validation
 
-Before creating or writing ANY file containing diagrams or structured content:
-
-### Mermaid Diagrams
-- Validate syntax mentally before writing — broken Mermaid renders as raw text
-- Escape special characters: parentheses `()`, brackets `[]`, quotes in node labels
-- Test: Can every node label be parsed without ambiguity?
-- Always provide a text description as fallback below the diagram block
-
-### ASCII Diagrams
-- Use ONLY these characters: `+` `-` `|` `^` `v` `<` `>` and spaces
-- NEVER use Unicode box-drawing characters: `┌ ─ │ └ ┐ ┘ ├ ┤ ┬ ┴ ┼ ▼ ▲ ► ◄`
-  (they render inconsistently across terminals and fonts)
-- Every line inside a box MUST have the same character count
-- Verify alignment in monospace before writing
-
-### General
-- No raw HTML in markdown files unless the render target is confirmed to support it
-- No emoji in code comments or rule files unless the project explicitly uses them
-- Special characters in file paths must be escaped per the target shell
+Validate diagram syntax before writing. Test renders in target environment.
 
 ## Performance
 
@@ -198,10 +179,4 @@ These rules apply to ALL code changes — not just when a reviewer agent is disp
 
 ## Pre-Submit Checklist
 
-- [ ] MCP server was consulted for relevant technology
-- [ ] No deprecated features or syntax
-- [ ] No unused imports, variables, or functions
-- [ ] No duplicate logic
-- [ ] Old code paths removed if replaced
-- [ ] Error handling follows centralized pattern
-- [ ] Code matches official documentation examples
+→ **Use the Quality Gates in `verification-and-reporting.md`.** They are the single canonical checklist for all workflow types (Feature/PR, Architecture, Database, UI, Release).

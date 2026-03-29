@@ -127,56 +127,10 @@ Named, detectable failure modes specific to LLMs. Flag these in self-review befo
 **Detection:** Does this code conflict with any ASSUMPTION I stated earlier this session?
 **Fix:** Acknowledge the conflict explicitly. Ask which takes precedence.
 
-### Confidence Without Evidence
-**What:** Claiming something "works" or is "implemented" without running it or reading the code.
-**Detection:** Is this claim backed by a test run output or a file:line reference?
-**Fix:** Run the test. Read the file. Then claim.
-
-### Sycophancy Drift
-**What:** Changing a position after user pushback without re-verifying — just agreeing to avoid conflict.
-**Detection:** Did I change my answer? If yes — did I re-read the file first?
-**Fix:** Re-verify with file:line evidence. If still correct, restate with proof. If wrong, say so explicitly.
-
-### Premature Abstraction
-**What:** Creating an interface, base class, factory, or plugin architecture for a single use case.
-**Detection:** Does this abstract thing have fewer than 3 concrete implementations TODAY?
-**Fix:** Inline it. Abstraction is justified at 3+ uses (Rule of Three, code-standards.md).
-
-### Scope Creep Masquerading as Helpfulness
-**What:** "While I was in there, I also cleaned up..." — touching code outside the task.
-**Detection:** Does every changed line trace directly to the user's stated request?
-**Fix:** Revert the extra changes. Open a separate task for cleanup.
-
-### Over-Apology Pattern
-**What:** Starting corrections with "I apologize, I'm sorry, I made a mistake..." before every fix.
-**Detection:** Does the response lead with an apology rather than the correction?
-**Fix:** Skip the apology. State what was wrong. Give the fix. Move on.
+> **Removed anti-patterns** (covered elsewhere): Confidence Without Evidence → `verification-and-reporting.md`; Sycophancy Drift → `core-behaviors.md §3`; Premature Abstraction → `code-standards.md Rule of Three`; Scope Creep → `core-behaviors.md §5`; Over-Apology → default Claude behavior.
 
 ---
 
 ## Self-Check Before Reporting Done
 
-Run this before saying any task is complete:
-
-```
-Layer 1 — Hard Constraints:
-  □ No data safety violations
-  □ No code safety violations (no new `as any`, no console.log, no direct push)
-  □ No scope safety violations
-
-Layer 2 — Quality Thresholds:
-  □ Tests: correct tier for what changed (feature/bugfix/refactor/trivial)
-  □ Type safety: zero new `as any` or `dynamic` in changed files
-  □ Error handling: zero bare catch blocks in changed files
-  □ Commit size: ≤ 15 files, no unrelated files, no TODOs
-
-Layer 3 — Workflow Invariants:
-  □ Correct workflow step completed for this action type
-
-Layer 4 — Anti-Patterns:
-  □ No hallucinated APIs (MCP verified)
-  □ No confidence without evidence
-  □ No scope creep
-```
-
-**If ANY box is unchecked → do not say "done". Fix it first or state it explicitly as a known gap.**
+→ **Use the Quality Gates in `verification-and-reporting.md`.** They are the single canonical completion checklist. The gates enforce Layers 1–4 of this file plus workflow-specific requirements. If ANY gate item is NO → do not say "done".

@@ -168,7 +168,7 @@ When a request contains these trigger words, adopt the corresponding behavior au
 
 | Trigger words in request | Mode | Behavior |
 |--------------------------|------|----------|
-| "what if", "options", "alternatives", "explore", "compare", "should we use", "which approach" | **BRAINSTORM** | Use `/brainstorm` — ≥3 options with trade-offs, Mermaid diagram, no code yet |
+| "what if", "options", "alternatives", "explore", "compare", "should we use", "which approach", "evaluate this idea", "should we build" | **BRAINSTORM** | Use `/brainstorm` — ≥3 options with trade-offs, Mermaid diagram, no code yet. Load `titan-methodology` skill for scoring when evaluating product/feature ideas. |
 | "build", "create", "add", "implement", "write", "scaffold" | **IMPLEMENT** | Code only, max 2-sentence summary, no tutorial comments, no over-engineering (`core-behaviors.md §4`) |
 | "not working", "error", "bug", "failing", "broken", "crash", "exception", "why does" | **DEBUG** | Use `/debug` — load `systematic-debugging`, root cause first, no fixes before investigation |
 | "review", "check", "audit", "is this right", "look at" | **REVIEW** | Load tech-specific reviewer agent, severity-bucketed findings |
@@ -224,6 +224,8 @@ Not every task needs the same depth of planning, testing, or documentation. Cali
 - Existing tests already cover the area
 
 **Default:** Start at Minimal. Escalate only when a factor above applies. Do not gold-plate simple requests.
+
+> **Interaction with Overconfidence Prevention** (`core-behaviors.md §10`): If any §10 Mandatory Question Trigger fires, ask first — even at Minimal depth. Depth controls *ceremony* (planning, testing, docs); §10 controls *clarification*. They are independent axes.
 
 ## Cost and Context Awareness
 
