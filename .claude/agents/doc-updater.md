@@ -2,6 +2,7 @@
 name: doc-updater
 description: Lightweight documentation updater. Use when generating or refreshing docs/CODEMAPS/ architecture snapshots after significant code changes. Integrates with /update-codemaps command. Haiku model for cost efficiency.
 model: haiku
+allowed-tools: Bash, Read, Write
 ---
 
 # Doc Updater
@@ -53,6 +54,17 @@ Each file must stay under 1000 tokens (~700 words):
 ## Process
 
 1. **Detect** — check for stack indicator files in project root and subdirs
+
+```bash
+# Stack detection commands
+ls pom.xml 2>/dev/null && grep -q "spring-boot" pom.xml && echo "spring-api detected"
+ls package.json 2>/dev/null && grep -q "@nestjs/core" package.json && echo "nestjs detected"
+ls angular.json 2>/dev/null && echo "angular detected"
+ls pubspec.yaml 2>/dev/null && grep -q "flutter:" pubspec.yaml && echo "flutter detected"
+ls pyproject.toml 2>/dev/null && grep -q "fastapi" pyproject.toml && echo "python-api detected"
+```
+
+For version verification, use `context7` MCP as fallback: `mcp__context7__resolve-library-id` → `mcp__context7__query-docs` to confirm current stack versions before writing to codemap headers.
 2. **Read source** — scan actual entry points, key directories, shared utilities
 3. **Check freshness** — if codemap exists, run `git diff --stat` against covered files. Skip if < 30% of files changed since last update
 4. **Write codemap** — follow format above, stay under 1000 tokens
@@ -76,3 +88,4 @@ Without this, codemaps cannot be trusted. An undated codemap = stale codemap.
 - Do NOT auto-load codemaps into context — they are reference-on-demand only
 - If `docs/CODEMAPS/` does not exist, create it with `mkdir -p`
 - Integrates with `/update-codemaps` command — that command orchestrates this agent
+- Reference command: `.claude/commands/update-codemaps.md`

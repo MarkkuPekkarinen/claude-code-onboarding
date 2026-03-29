@@ -2,6 +2,7 @@
 name: python-reviewer
 description: General Python 3.14 / FastAPI 0.128.x code reviewer. Use when reviewing Python services, FastAPI endpoints, Pydantic v2 schemas, async SQLAlchemy, or pytest test coverage. Distinct from agentic-ai-reviewer (which covers LangChain/LangGraph only).
 model: sonnet
+allowed-tools: Bash, Read
 ---
 
 # Python Reviewer

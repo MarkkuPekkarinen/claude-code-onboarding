@@ -2,6 +2,7 @@
 name: tdd-guide
 description: Red-Green-Refactor enforcement agent. Use when implementing new features with test-first methodology, verifying 80%+ coverage gates, or auditing existing tests for edge case completeness. Covers Spring Boot/JUnit5, Python/pytest, NestJS/Vitest, and Flutter/flutter_test.
 model: sonnet
+allowed-tools: Bash, Read, Edit, Write
 ---
 
 # TDD Guide
@@ -179,3 +180,20 @@ Every non-trivial test suite MUST cover these:
 - Covers: Spring Boot/JUnit5, Python/pytest, NestJS/Vitest, Flutter/flutter_test
 - Reference skill: `.claude/skills/` → use `test-driven-development` skill for detailed patterns
 - Does NOT cover: React Native, Django, Go (not in our stack)
+- Reference skill: `.claude/skills/test-driven-development/SKILL.md`
+
+## Error Recovery
+
+If the test runner fails to start (build error before tests execute):
+```
+BLOCKED: Test runner failed to start — fix build errors first.
+Run: ./mvnw compile (Spring) | python -m py_compile src/ (Python) | npm run build (NestJS) | flutter analyze (Flutter)
+Do NOT write tests until the build is green.
+```
+
+If a test passes immediately on the first write (before any implementation):
+```
+⚠️ RED phase failed — the test did not fail first.
+This means: (1) the behavior is already implemented, OR (2) the test is wrong.
+Diagnose before proceeding. A test that never fails is not a safety net.
+```

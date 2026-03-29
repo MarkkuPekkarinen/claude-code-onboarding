@@ -101,3 +101,4 @@ architecture.md  UPDATED
 - Do NOT auto-load codemaps into context — they are reference files for agents
 - If `docs/CODEMAPS/` does not exist, create it
 - If `.reports/` does not exist, create it
+- Dispatches: `.claude/agents/doc-updater.md`

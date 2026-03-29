@@ -34,6 +34,15 @@ When `/tdd` is invoked, the `tdd-guide` agent:
 - **Critical code** (auth, crypto, payments, data migrations): 100%
 - Files below threshold are listed and must be addressed before marking feature done
 
+## Error Cases
+
+| Situation | Response |
+|-----------|----------|
+| Test runner binary not found (`mvnw`, `flutter`, `pytest`, `npm`) | Report "BUILD TOOL NOT FOUND — install [tool] or run from project root" |
+| Test passes immediately without implementation (RED phase fails) | "⚠️ Test did not fail first — diagnose before proceeding. The behavior may already exist or the test assertion is wrong." |
+| Refactor-only task (no new behavior) | Skip RED phase — run existing tests before and after. No new tests required. |
+| Config/rename change | Run existing tests only — no new tests required per first-principles.md |
+
 ## Stack Detection
 
 `/tdd` auto-detects the stack from the current working directory:
@@ -53,3 +62,9 @@ When `/tdd` is invoked, the `tdd-guide` agent:
 /tdd coverage           # Run coverage report only (no new tests)
 /tdd audit              # Audit existing tests for edge case completeness
 ```
+
+## Related
+
+- Agent: `.claude/agents/tdd-guide.md`
+- Command: `/test-coverage` — run after TDD cycle to verify overall coverage
+- Skill: `.claude/skills/test-driven-development/SKILL.md`

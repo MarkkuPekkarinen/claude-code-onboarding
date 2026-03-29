@@ -100,3 +100,8 @@ Generate missing tests for worst-coverage files:
 - Do NOT auto-generate tests — report only, human decides
 - If a stack build fails before coverage runs, report: "STACK BUILD FAILED — fix build errors first"
 - If no test infrastructure detected for a stack, report: "No test runner detected — run `/scaffold-{stack}` to set up testing"
+
+## Related
+
+- `/tdd` — test-first implementation when coverage is below threshold
+- Agent: `.claude/agents/tdd-guide.md` — Red-Green-Refactor enforcement

@@ -100,3 +100,17 @@ Spec compliance: {list of checks — all green}
 - Do NOT reference external scripts that don't exist in this workspace
 - Do NOT add `agent:` frontmatter field unless an agent file also exists at `.claude/agents/{name}.md`
 - Stack scope: Java 21/Spring Boot, NestJS 11.x, Python 3.14/FastAPI, Angular 21.x, Flutter 3.38
+- Reference spec: `.claude/skills/writing-skills/SKILL.md`
+
+## Edge Cases
+
+### Shallow git history (< 50 commits)
+```
+Git history too shallow to detect patterns reliably.
+Options:
+A) Describe the pattern manually and I'll generate the skill from your description
+B) Skip pattern detection and use a template (provide: name, trigger scenario, key rules)
+```
+
+### Pattern spans multiple unrelated domains
+If git log shows the same files changing across unrelated features (e.g., `AppModule` changes in every commit because it's the root import file), exclude registry/index files from pattern analysis and look for the domain-specific co-changes underneath.
