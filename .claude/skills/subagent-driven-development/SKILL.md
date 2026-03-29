@@ -68,6 +68,41 @@ The spec reviewer in Step 2 receives this file path inline — include it in the
 
 **Context Isolation:** After the Research agent completes and `docs/research/<feature>.md` is committed, issue `/clear` before dispatching the Spec/Implementer. Pass the research doc path as the only context carry-forward — do NOT carry the Research agent's conversation into Step 0.
 
+### Step 0-PRE — Plan Validation Gate
+
+Before parsing tasks, validate the plan structure. This runs ONCE before any dispatch.
+
+**PR-Sizing Check:** Every task in the plan must be bounded to ≤1 PR. Flag any task that:
+- Touches more than 3 services simultaneously (e.g. NestJS + Flutter + Spring Boot in one task)
+- Modifies more than 15 files
+- Spans more than one tech-stack layer without a clear seam (split at the layer boundary)
+
+If any task fails the PR-sizing check:
+```
+PLAN VALIDATION FAILED:
+Task N: "[task title]" is too large for a single PR.
+Touches: [list services/files]
+Required split: [suggested sub-tasks A, B]
+→ Update the plan file before continuing.
+```
+
+**Context Brief Check:** Every task must have a `## Context Brief` section (see `docs/plans/TEMPLATE.md`). If missing:
+```
+PLAN VALIDATION FAILED:
+Task N: "[task title]" is missing ## Context Brief section.
+Required fields: affected_files, preconditions, verification_command
+→ Add the context brief to the plan file before continuing.
+```
+
+**Rollback Check:** Every task must have a `rollback_strategy` field. If missing:
+```
+PLAN VALIDATION FAILED:
+Task N: "[task title]" is missing rollback_strategy.
+→ Add rollback strategy before continuing.
+```
+
+Skip validation only for plans with a single task (≤1 task = trivial, no gate needed).
+
 ### Step 0 — Parse the Plan Once
 
 Read the full plan file once. Extract every task as a structured object:
@@ -287,6 +322,7 @@ Each phase receives exactly what it needs — no more:
 | Before marking any task complete | `verification-before-completion` skill |
 | Creating the PR | CLAUDE.md git workflow (conventional commits, feature branch, squash merge) |
 | Plan file must exist | `docs/plans/` convention — `/plan-review` creates it |
+| Writing a new plan | `docs/plans/TEMPLATE.md` — required format for context briefs, rollback, and mutations |
 | Security findings during review | `security-reviewer` agent |
 | Passing context between pipeline stages | [reference/handoff-tags.md](reference/handoff-tags.md) — structured tag format |
 

@@ -25,6 +25,16 @@ or constraints were stated: append ONE entry to `blackbox/session-log.md`.
 - NEVER load `blackbox/session-log.md` into context unless user explicitly asks
 - On month boundary: rename `session-log.md` → `archive-YYYY-MM.md`, create fresh `session-log.md`
 
+## Plan Mutation Events
+
+When any step in a `docs/plans/` file is split, inserted, skipped, reordered, or abandoned:
+
+1. Update the `## Mutations Log` table in the plan file (`docs/plans/TEMPLATE.md` format)
+2. Append to `blackbox/session-log.md` under `### Decisions`:
+   `- Plan mutation: [type] on Task N of docs/plans/YYYY-MM-DD-<feature>.md — [reason]`
+
+This ensures plan history is auditable across sessions without loading the full plan into context.
+
 ## Diagram Update Trigger
 
 Naming convention: `src/auth/` maps to `docs/diagrams/auth-flow.md` (folder name = diagram prefix).
