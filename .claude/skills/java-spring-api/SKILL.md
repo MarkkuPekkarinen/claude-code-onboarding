@@ -74,6 +74,7 @@ curl https://start.spring.io/starter.zip \
 | `reference/spring-boot-reactive-debugging.md` | Reactor Hooks (onOperatorError, onNextDropped, onErrorDropped), checkpoint patterns, debug mode control | Debugging reactive pipelines, tracing Flux/Mono errors |
 | `reference/spring-boot-security-hardening.md` | OWASP dependency scanning, static analysis patterns, HSTS, JWT role extraction, secure logging | Security hardening, JWT auth, dependency scanning |
 | `reference/spring-boot-reactive-patterns.md` | Resilience4j operators, Redis reactive, SSE, Spring Cloud Stream, custom operators, threading anti-patterns | Writing reactive endpoints, Flux/Mono, Redis caching, SSE |
+| `reference/spring-boot-design-patterns.md` | Builder, Factory (Spring DI), Strategy, Observer (Spring Events), Decorator, Adapter — all with Spring Boot 3.5.x examples | Implementing any of these 6 patterns in Spring Boot code |
 | `reference/spring-reactive-review-checklist.md` | Spring reactive review checklist (used by `spring-reactive-reviewer` agent) | Code review, pre-PR checklist |
 | `reference/java21-advanced-features.md` | GraalVM Native Image, structured concurrency (`StructuredTaskScope`), virtual threads migration guide, JVM tuning (ZGC/G1 for Cloud Run), JMH benchmarking, Spring Modulith, sequenced collections, string templates, record patterns | GraalVM native builds, parallel calls with structured concurrency, JVM performance tuning, modular monolith design |
 

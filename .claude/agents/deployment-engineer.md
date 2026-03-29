@@ -68,6 +68,9 @@ QA signs off → merge develop to main
 - Spring Boot Buildpacks (`spring-boot:build-image`) — no Dockerfile needed
 - Image tagging with git SHA for immutable, traceable deployments
 - Google Artifact Registry push with keyless Workload Identity Federation auth
+- HEALTHCHECK instruction: every production Dockerfile must include `HEALTHCHECK --interval=30s --timeout=3s --retries=3 CMD curl -f http://localhost:${PORT}/actuator/health || exit 1`
+- Docker Scout: run `docker scout cves <image>` to scan for CVEs before pushing to registry
+- BuildKit cache mounts: use `--mount=type=cache,target=/root/.m2` for Maven to speed up CI builds
 
 ### Google Cloud Run Deployments
 - Zero-downtime deploys via Cloud Run revision model
@@ -136,6 +139,8 @@ QA signs off → merge develop to main
 - DORA metrics: deployment frequency (GitHub API), lead time (commit → deploy timestamp), change failure rate, MTTR
 - Alerting: Cloud Monitoring alerts on error rate spike post-deploy → triggers rollback workflow
 - Structured deploy logs: SHA, service, environment, timestamp written to BigQuery for trend analysis
+- Observability stack: Prometheus (metrics scraping via `/actuator/prometheus`), Grafana (dashboards), Jaeger (distributed tracing via OpenTelemetry)
+- Spring Boot Actuator: ensure `management.endpoints.web.exposure.include=health,info,prometheus` is configured
 
 ### Cost Optimization
 - Cloud Run `min-instances=0` for non-critical staging services (scale to zero)

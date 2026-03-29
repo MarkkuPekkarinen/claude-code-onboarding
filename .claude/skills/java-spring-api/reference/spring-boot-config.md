@@ -258,3 +258,93 @@ Place in `src/main/resources/log4j2-spring.xml`. Uses structured JSON for produc
     </Loggers>
 </Configuration>
 ```
+
+## Structured Logging — Spring Boot 3.4+
+
+Spring Boot 3.4 introduced native structured logging with zero additional dependencies.
+
+### Option A: Native Structured Logging (Spring Boot 3.4+, recommended)
+
+In `application.yml`:
+```yaml
+logging:
+  structured:
+    format:
+      console: ecs          # Elastic Common Schema JSON — works with Logstash, Grafana Loki
+      # alternatives: logstash | gelf
+  level:
+    root: INFO
+    com.yourcompany: DEBUG
+```
+
+This outputs every log line as JSON automatically. No additional dependencies needed.
+
+### Option B: logstash-logback-encoder (Spring Boot < 3.4 fallback)
+
+In `pom.xml`:
+```xml
+<dependency>
+    <groupId>net.logstash.logback</groupId>
+    <artifactId>logstash-logback-encoder</artifactId>
+    <version>8.0</version>
+</dependency>
+```
+
+In `src/main/resources/logback-spring.xml`:
+```xml
+<configuration>
+    <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeCallerData>false</includeCallerData>
+        </encoder>
+    </appender>
+    <root level="INFO">
+        <appender-ref ref="JSON"/>
+    </root>
+</configuration>
+```
+
+### MDC Correlation IDs (Distributed Tracing)
+
+Add trace context to every log line using `MDC` (Mapped Diagnostic Context):
+
+```java
+import org.slf4j.MDC;
+import org.springframework.stereotype.Component;
+import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.WebFilter;
+import org.springframework.web.server.WebFilterChain;
+import reactor.core.publisher.Mono;
+import java.util.UUID;
+
+@Component
+public class CorrelationIdFilter implements WebFilter {
+
+    private static final String TRACE_ID = "traceId";
+    private static final String HEADER = "X-Trace-Id";
+
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+        String traceId = exchange.getRequest().getHeaders()
+            .getFirst(HEADER);
+        if (traceId == null) traceId = UUID.randomUUID().toString();
+
+        exchange.getResponse().getHeaders().set(HEADER, traceId);
+
+        final String finalTraceId = traceId;
+        return chain.filter(exchange)
+            .contextWrite(ctx -> ctx.put(TRACE_ID, finalTraceId))
+            .doOnSubscribe(s -> MDC.put(TRACE_ID, finalTraceId))
+            .doFinally(s -> MDC.remove(TRACE_ID));
+    }
+}
+```
+
+Every log line will now include `"traceId":"abc-123"` in the JSON output — enabling cross-service request tracing in Grafana Loki or ELK stack.
+
+### Verification
+Run your service and confirm log output is JSON:
+```bash
+mvn spring-boot:run 2>&1 | head -5
+# Expected: {"@timestamp":"...","log.level":"INFO","traceId":"...","message":"..."}
+```

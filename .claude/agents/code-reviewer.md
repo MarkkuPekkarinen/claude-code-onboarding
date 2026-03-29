@@ -51,3 +51,8 @@ VERDICT: [APPROVE|NEEDS_REVIEW|BLOCK] — CRITICAL: N | HIGH: N | MEDIUM: N | LO
 
 If no changes are found, report "No changes detected" and list the files/paths searched.
 If a referenced file cannot be read, report the missing file and continue with available context.
+
+## Additional Review Criteria
+
+- Cyclomatic complexity: flag any method exceeding complexity of 10 (count branches: if/else/case/catch/&&/||/?:/for/while = +1 each)
+- Test coverage thresholds: flag when coverage on changed files drops below 80% (check via JaCoCo report if available)

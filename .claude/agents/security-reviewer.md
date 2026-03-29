@@ -42,3 +42,9 @@ VERDICT: [PASS|CONDITIONAL PASS|BLOCK]
 
 If no target files are specified, scan the entire project directory.
 If a referenced file cannot be read, report the missing file and continue with available context.
+
+## Additional Security Controls
+
+- Secrets management: HashiCorp Vault or Google Secret Manager — never environment variables for production secrets in multi-tenant environments
+- Zero-trust networking: service-to-service calls must use mTLS or service mesh (Istio/Cloud Run IAM) — no implicit trust within cluster
+- SIEM integration: security events (auth failures, rate limit hits, privilege escalation) must be forwarded to SIEM (Splunk/Datadog/GCP Security Command Center)

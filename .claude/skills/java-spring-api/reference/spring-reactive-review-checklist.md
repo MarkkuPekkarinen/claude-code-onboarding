@@ -130,3 +130,72 @@ For code patterns and correct implementations, read the `java-spring-api` skill 
 - `spring-boot-reactive-debugging.md` — Reactor Hooks, checkpoint patterns, debug mode
 - `spring-boot-security-hardening.md` — OWASP scanning, static analysis, secure logging
 - `spring-boot-reactive-patterns.md` — Resilience4j operators, Redis, SSE, Cloud Stream
+
+## Cyclomatic Complexity Gate
+
+Every method must have cyclomatic complexity ≤ 10. Methods exceeding this threshold are hard to test and maintain.
+
+**How to measure:**
+- Count: 1 (base) + 1 per `if`/`else if`/`case`/`catch`/`&&`/`||`/`?:`/`for`/`while`
+- Or run: `mvn pmd:check` (configure PMD rule `CyclomaticComplexity maxMethodComplexity="10"`)
+
+**Checklist:**
+- [ ] No method has cyclomatic complexity > 10
+- [ ] Methods > 10: refactor by extracting private methods or Strategy pattern
+- [ ] Reactive chains (`.flatMap()`, `.map()`, `.filter()`) each count as +1
+
+## @Transactional Anti-Patterns (Reactive Stack)
+
+Our stack uses R2DBC with `@Transactional` from `org.springframework.transaction.annotation`. These patterns cause silent data corruption or failures:
+
+**❌ Never: @Transactional on reactive methods that call non-transactional services**
+```java
+// WRONG — transaction not propagated through reactive chain
+@Transactional
+public Mono<User> createUser(UserRequest req) {
+    return userRepo.save(user)
+        .flatMap(saved -> notificationService.notify(saved)); // runs outside transaction
+}
+```
+
+**❌ Never: overly large transactions spanning multiple aggregates**
+```java
+// WRONG — locks multiple tables, increases deadlock risk
+@Transactional
+public Mono<Void> processOrder(OrderRequest req) {
+    return inventoryRepo.deduct(req)
+        .then(paymentRepo.charge(req))
+        .then(shippingRepo.schedule(req)); // all three in one transaction
+}
+```
+
+**❌ Never: mixing blocking calls inside @Transactional reactive method**
+```java
+// WRONG — block() inside @Transactional = deadlock
+@Transactional
+public Mono<User> updateUser(Long id, UserRequest req) {
+    User existing = userRepo.findById(id).block(); // DEADLOCK
+    return userRepo.save(existing.update(req));
+}
+```
+
+**✅ Correct: Use `@Transactional` only on the repository layer or use `TransactionalOperator` explicitly**
+```java
+// CORRECT — transactional boundary at repository, not service
+@Transactional
+public Mono<User> save(User user) { ... } // in R2DBC repository
+
+// CORRECT — explicit transactional operator for multi-step reactive flows
+private final TransactionalOperator tx;
+public Mono<Void> processOrder(OrderRequest req) {
+    return tx.transactional(
+        inventoryRepo.deduct(req).then(paymentRepo.charge(req))
+    );
+}
+```
+
+**Checklist:**
+- [ ] No `block()` inside `@Transactional` methods
+- [ ] Transactions span single aggregate root only
+- [ ] Multi-aggregate flows use `TransactionalOperator` explicitly
+- [ ] `@Transactional(readOnly = true)` on all read-only reactive queries
