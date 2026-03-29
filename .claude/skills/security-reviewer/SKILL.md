@@ -41,6 +41,7 @@ Read [reference/security-review-checklist.md](reference/security-review-checklis
 | [reference/pci-dss-requirements.md](reference/pci-dss-requirements.md) | PCI DSS 12 requirements, compliance levels (L1-L4), SAQ types, prohibited data, audit log requirements, common violations | Any feature touching payment card data, payment processors, or billing |
 | [reference/owasp-infrastructure-baseline.md](reference/owasp-infrastructure-baseline.md) | 15 OWASP-mapped infrastructure controls — encryption at rest/transit, IAM least-privilege, network hardening, audit logging, secret rotation | Any IaC review (Terraform, GCP, AWS), cloud config review, infrastructure security |
 | [reference/agent-guardrails-checklist.md](reference/agent-guardrails-checklist.md) | 12-layer AI agent guardrail pipeline, prompt injection defense, output validation, async audit logging, Constitutional AI — agent-specific security controls | Any LangGraph agent, agentic AI service, or AI feature with tool use |
+| [reference/claude-config-security.md](reference/claude-config-security.md) | Manual security audit checklist for `.claude/` config (settings.json, hooks, agents, MCP servers, CLAUDE.md) — workspace-specific allow/deny/ask list review, hook injection surface, MCP supply chain risks | Before committing any `.claude/` directory changes |
 
 ## Error Handling
 

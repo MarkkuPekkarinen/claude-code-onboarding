@@ -340,17 +340,117 @@ Note: `X-XSS-Protection` is deprecated — use `Content-Security-Policy` instead
 
 ---
 
+### SECURITY-16 — Cloud SQL Backup and Deletion Protection
+**OWASP Mapping:** A05:2021 Security Misconfiguration / A09:2021 Security Logging and Monitoring Failures
+**Risk:** Unprotected databases can be permanently deleted (accidental or malicious), or backup gaps create unrecoverable data loss windows.
+
+**Required controls:**
+
+```hcl
+# Terraform — Cloud SQL instance hardening
+resource "google_sql_database_instance" "main" {
+  deletion_protection = true   # Prevents accidental Terraform destroy
+
+  settings {
+    backup_configuration {
+      enabled                        = true
+      point_in_time_recovery_enabled = true   # PITR — recover to any second in retention window
+      transaction_log_retention_days = 7
+      backup_retention_settings {
+        retained_backups = 30          # 30 days of daily backups
+        retention_unit   = "COUNT"
+      }
+    }
+  }
+}
+```
+
+**Checklist:**
+- [ ] `deletion_protection = true` on all Cloud SQL instances (staging + prod)
+- [ ] Automated daily backups enabled with ≥ 30 backup retention count
+- [ ] Point-in-time recovery (PITR) enabled — required for RPO < 24 hours
+- [ ] Backup location set to a different region than primary instance
+- [ ] Quarterly restore test: provision a restore, verify data integrity, document RTO/RPO achieved
+- [ ] Backup success/failure alerts configured in Cloud Monitoring
+
+**Common misconfiguration:**
+```hcl
+# BAD — database can be deleted with terraform destroy
+resource "google_sql_database_instance" "main" {
+  deletion_protection = false   # default is false — must be set explicitly
+}
+```
+
+**Verify:**
+```bash
+# Check deletion protection on all instances
+gcloud sql instances list --format="table(name,settings.deletionProtectionEnabled)"
+
+# Check backup config
+gcloud sql instances describe <INSTANCE_NAME> --format="yaml(settings.backupConfiguration)"
+```
+
+**When to apply:** Any IaC defining `google_sql_database_instance`. Complements `terraform-module-library` deletion_protection variable pattern.
+
+---
+
+### SECURITY-17 — GCP Secret Manager Rotation Policy
+**OWASP Mapping:** A02:2021 Cryptographic Failures / A05:2021 Security Misconfiguration
+**Risk:** Long-lived secrets that are never rotated increase blast radius of any credential compromise indefinitely.
+
+**Required controls:**
+- All secrets in GCP Secret Manager MUST have a rotation period configured
+- Maximum rotation period: 90 days for service account keys and database passwords, 365 days for API keys with low blast radius
+- Recommended: 30 days for database passwords, JWT signing keys
+
+```hcl
+# Terraform — Secret Manager with rotation notification
+resource "google_secret_manager_secret" "db_password" {
+  secret_id = "db-password"
+
+  replication {
+    auto {}
+  }
+
+  rotation {
+    next_rotation_time = "2026-06-01T00:00:00Z"   # Set to 90 days from creation
+    rotation_period    = "7776000s"                 # 90 days in seconds
+  }
+
+  topics {
+    name = google_pubsub_topic.secret_rotation.id  # Pub/Sub notification for rotation events
+  }
+}
+```
+
+**Checklist:**
+- [ ] All production secrets have `rotation.rotation_period` set (≤ 90 days for credentials)
+- [ ] Pub/Sub topic configured to receive rotation notifications
+- [ ] Cloud Function or workflow handles automatic secret version creation on rotation event
+- [ ] Application reads latest secret version (not a pinned version ID)
+- [ ] Old secret versions disabled after rotation confirmed working (keep 1 previous version for rollback)
+
+**Verify:**
+```bash
+# List secrets without rotation configured
+gcloud secrets list --format="table(name,rotation.nextRotationTime)" | grep -v "nextRotation"
+```
+
+**When to apply:** All GCP projects using Secret Manager. Extends SECURITY-12 (credential management) with rotation enforcement at the infrastructure layer.
+
+---
+
 ## OWASP 2021 Coverage Summary
 
 | OWASP Category | Covered By |
 |----------------|------------|
 | A01:2021 – Broken Access Control | SECURITY-06, SECURITY-08 |
-| A02:2021 – Cryptographic Failures | SECURITY-01 |
+| A02:2021 – Cryptographic Failures | SECURITY-01, SECURITY-17 |
 | A03:2021 – Injection | SECURITY-05 |
 | A04:2021 – Insecure Design | SECURITY-11 |
-| A05:2021 – Security Misconfiguration | SECURITY-04, SECURITY-07, SECURITY-09, SECURITY-15 |
+| A05:2021 – Security Misconfiguration | SECURITY-04, SECURITY-07, SECURITY-09, SECURITY-15, SECURITY-16, SECURITY-17 |
 | A06:2021 – Vulnerable and Outdated Components | SECURITY-10 |
 | A07:2021 – Identification and Authentication Failures | SECURITY-12 |
 | A08:2021 – Software and Data Integrity Failures | SECURITY-13 |
-| A09:2021 – Security Logging and Monitoring Failures | SECURITY-02, SECURITY-03, SECURITY-14 |
+| A09:2021 – Security Logging and Monitoring Failures | SECURITY-02, SECURITY-03, SECURITY-14, SECURITY-16 |
 | A10:2021 – Server-Side Request Forgery | — (covered by `security-review-checklist.md §4`) |

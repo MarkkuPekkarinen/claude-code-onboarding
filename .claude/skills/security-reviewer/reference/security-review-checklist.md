@@ -43,6 +43,51 @@
 - `npm audit` / `pip audit` / dependency-check clean of critical/high CVEs
 - No deprecated or unmaintained packages in critical paths
 - Lock files committed; dependencies pinned
+- **Dependabot enabled:** `.github/dependabot.yml` committed with weekly updates for all package ecosystems used in this project (npm, maven, pip, pub)
+- **Dependabot auto-merge:** Security patch updates (patch-level, no breaking changes) auto-merged via GitHub Actions workflow; minor/major require review
+
+**Dependabot config for this workspace** (`.github/dependabot.yml`):
+```yaml
+version: 2
+updates:
+  # NestJS / Angular (npm)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    groups:
+      security-patches:
+        applies-to: security-updates
+        update-types: ["patch"]
+
+  # Spring Boot (Maven)
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+
+  # Python (pip)
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+
+  # Flutter (pub)
+  - package-ecosystem: "pub"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+```
 
 ### 7. Financial/Transaction Security (CRITICAL, when applicable)
 - Financial operations use atomic transactions with row locks
