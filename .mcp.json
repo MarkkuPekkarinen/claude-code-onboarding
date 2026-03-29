@@ -23,8 +23,8 @@
     },
     "chrome-devtools": {
       "type": "stdio",
-      "disabled": true,
-      "description": "DISABLED — replaced by playwright-cli (stateful CLI, persistent sessions, native Claude Code skills integration). Only re-enable for V8 heap profiling or raw CDP work not covered by playwright-cli.",
+      "disabled": false,
+      "description": "Chrome DevTools MCP — Lighthouse audits (mcp__chrome-devtools__lighthouse_audit), Core Web Vitals analysis, performance traces, CPU/network throttling. Use alongside playwright-cli: playwright-cli handles navigation/inspection, chrome-devtools handles perf analysis and Lighthouse scoring.",
       "command": "npx",
       "args": [
         "-y",
