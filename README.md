@@ -1087,6 +1087,90 @@ When all tasks complete and tests pass, output <promise>TEAM DONE</promise>" \
 
 **Always set `--max-iterations`.** Without it, the loop runs until the completion promise is satisfied or you run `/cancel-ralph`. Uncontrolled loops = uncontrolled API costs.
 
+### Autoresearch — Metric-Gated Improvement Loop
+
+**Autoresearch** is an autonomous loop that improves code quality by measuring, changing, and deciding — mathematically. Unlike `/ralph-loop` (which runs blind), autoresearch **only keeps changes that move the metric in the right direction**. Every regression is automatically rolled back with `git reset --hard`.
+
+> Inspired by Andrej Karpathy's `autoresearch` pattern — a self-improving loop that applies ML-style evaluation (keep if better, discard if worse) to codebase quality.
+
+#### Start
+
+```bash
+/autoresearch                                    # measure all stacks, fix top issues
+/autoresearch --metric nestjs                    # focus on NestJS only
+/autoresearch --metric flutter --max-iterations 5
+/autoresearch --metric all --target 10           # aim to cut 10 issues per iteration
+```
+
+| Flag | Default | Meaning |
+|------|---------|---------|
+| `--metric STACK` | `all` | Stack to measure: `flutter`, `nestjs`, `angular`, `python`, `all` |
+| `--target N` | `5` | Issues to eliminate per iteration (sets improvement bar) |
+| `--max-iterations N` | `10` | Hard stop after N iterations |
+
+#### What it measures
+
+| Stack | Metrics tracked |
+|-------|----------------|
+| Flutter | `flutter analyze` warnings, TODOs in `lib/` |
+| NestJS | `: any` / `as any` type assertions, `console.log` in production code, TODOs |
+| Angular | `: any` / `as any`, `console.log` in production code |
+| Python | `TODO`/`type: ignore` comments, bare `except:` clauses |
+
+#### How a single iteration works
+
+```
+Measure baseline score (e.g. 47 issues)
+        ↓
+Pick highest-impact category (e.g. console.log → Logger)
+        ↓
+Implementer agent fixes 3–5 easiest instances
+        ↓
+Re-measure score (e.g. 41 issues)
+        ↓
+41 < 47? ✅ git commit — keep changes, continue
+41 ≥ 47? ❌ git reset --hard — discard, try different category next iteration
+```
+
+#### Example — NestJS type safety pass
+
+```bash
+# Before: 34 `: any` types in src/
+/autoresearch --metric nestjs --target 5 --max-iterations 8
+
+# Iteration 1: finds easy fetch responses with `as any` → adds proper types → 34 → 29 ✅ committed
+# Iteration 2: tries a complex service, breaks a test → git reset → rollback
+# Iteration 3: finds console.log calls → replaces with Logger → 29 → 24 ✅ committed
+# ...continues until max-iterations or score hits 0
+```
+
+#### Stop
+
+```bash
+/cancel-ralph   # autoresearch shares the same cancel mechanism as ralph-loop
+```
+
+#### How it differs from `/ralph-loop`
+
+| | `/ralph-loop` | `/autoresearch` |
+|--|--|--|
+| **Stops when** | Completion promise satisfied or max-iterations | max-iterations or score hits 0 |
+| **Keeps bad changes?** | ✅ Yes — runs blind, no rollback | ❌ No — `git reset --hard` on any regression |
+| **Knows if it helped?** | No — subjective completion promise | Yes — objective metric score |
+| **Best for** | Open-ended tasks, implementing features, fixing errors | Quality metric reduction: types, linting, dead code |
+| **Risk** | May accumulate wrong changes over many iterations | Self-correcting — regressions never land |
+
+**Rule of thumb:** Use `/ralph-loop` when success is defined by a behaviour ("all tests pass", "feature works"). Use `/autoresearch` when success is defined by a number ("zero `console.log`", "zero `as any`").
+
+#### When to use / avoid
+
+| Use | Avoid |
+|-----|-------|
+| Eliminating `as any` / `console.log` / TODOs at scale | Tasks requiring business logic decisions |
+| Gradual type safety hardening over multiple sessions | New feature implementation |
+| Pre-release code hygiene cleanup | Refactors that require architecture judgment |
+| Onboarding cleanup of inherited legacy code | Single-file fixes (just do it directly) |
+
 ### Lessons Log — Self-Improvement Loop
 
 The **lessons log** is the team's shared record of corrections — mistakes Claude made that you corrected, expressed as rules to prevent recurrence.
