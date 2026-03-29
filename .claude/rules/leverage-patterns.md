@@ -1,5 +1,56 @@
 # Leverage Patterns
 
+## Orchestrator Pre-Flight — Project Creation
+
+When any task involves creating a **new project** (trigger words: "create", "build", "scaffold",
+"new project", "start" + any tech name), the orchestrator MUST follow this sequence.
+
+### Why this matters
+Slash commands (`/scaffold-flutter-app`, `/scaffold-angular-app`, etc.) are processed by the
+interactive Claude Code shell. Sub-agents run headlessly — they **cannot** invoke slash commands.
+If a sub-agent tries `flutter create`, `ng new`, or `nest new`, the
+`block-raw-scaffold.sh` hook fires and hard-blocks the tool call with exit 2.
+
+### Required sequence
+
+```
+STEP 1 — Run scaffold in THIS session (mandatory, before spawning any agents)
+──────────────────────────────────────────────────────────────────────────────
+Tech requested          → Skill tool call (in main session only)
+─────────────────────── ─────────────────────────────────────────
+Flutter / Dart          → skill: "scaffold-flutter-app",  args: "<name>"
+Angular                 → skill: "scaffold-angular-app",  args: "<name>"
+NestJS                  → skill: "scaffold-nestjs-api",   args: "<name>"
+Python / FastAPI        → skill: "scaffold-python-api",   args: "<name>"
+Java / Spring Boot      → skill: "scaffold-spring-api",   args: "<name>"
+Agentic AI              → skill: "scaffold-agentic-ai",   args: "<name>"
+
+STEP 2 — Verify scaffold output before writing agent task files
+──────────────────────────────────────────────────────────────────────────────
+Check that tech-specific key directories exist, e.g.:
+  Flutter  → lib/design_system/, lib/core/di/, lib/features/
+  Angular  → src/app/core/, src/app/features/, src/app/design-system/
+  NestJS   → src/common/, src/config/, src/modules/
+If missing → scaffold did not complete — do NOT spawn agents yet.
+
+STEP 3 — Spawn agents with "PROJECT ALREADY SCAFFOLDED" header
+──────────────────────────────────────────────────────────────────────────────
+Every agent task file MUST begin with:
+
+  ## ⚠️ PROJECT ALREADY SCAFFOLDED
+  The project at `<absolute-path>` was created by the orchestrator.
+  DO NOT run flutter create / ng new / nest new / any project-init command.
+  Add files to the existing structure — never recreate it.
+```
+
+### What NOT to do
+- ❌ Tell a sub-agent to run `/scaffold-flutter-app` as a bash command — it will fail silently
+- ❌ Tell a sub-agent to use the Skill tool for scaffold — sub-agents don't have slash command context
+- ❌ Skip the scaffold and let agents use `flutter create` — the hook will block it
+- ✅ Run the Skill tool yourself in the main session, then hand the scaffolded path to agents
+
+---
+
 ## Task Response Protocol
 
 For every task:

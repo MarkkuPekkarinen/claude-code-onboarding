@@ -40,3 +40,8 @@ as concise rules to prevent recurrence. It is auto-loaded every session.
 ---
 
 <!-- Entries below. Empty = no corrections recorded yet. -->
+
+## [2026-03-28] Architecture [x1]
+**Mistake:** Told sub-agent to run `/scaffold-flutter-app` as bash; agent fell back to `flutter create`, skipping the full industry-standard structure (design_system/, core/di/, clean arch layers).
+**Rule:** Scaffold slash commands MUST be run by the orchestrator in the main session via Skill tool BEFORE spawning any agents — sub-agents cannot invoke slash commands.
+**Applies:** All multi-agent project creation tasks (Flutter, Angular, NestJS, Python, Spring)
