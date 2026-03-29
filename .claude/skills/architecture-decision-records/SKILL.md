@@ -28,6 +28,23 @@ Capture the context and rationale behind significant technical decisions using s
 | Security architecture      | Routine maintenance    |
 | Integration patterns       | Configuration changes  |
 
+## Implicit Trigger Detection
+
+Recognize these conversation patterns as ADR signals — ask "Should we document this as an ADR?" before proceeding:
+
+| Signal Pattern | Example | ADR Category |
+|----------------|---------|-------------|
+| "I need X for Y" | "I need a message queue for async jobs" | Technology choice |
+| "Should we use X or Y?" | "Should we use Kafka or BullMQ?" | Technology choice |
+| "We're switching from X to Y" | "Moving from REST to GraphQL for..." | Architecture pattern |
+| "How should we structure X?" | "How should we structure our auth layer?" | Architecture pattern |
+| "We decided to use X" | "We're going with Prisma for the ORM" | Technology choice |
+| "X isn't scaling, we need to Y" | "Our monolith isn't scaling, thinking microservices" | Architecture pattern |
+| Adding a new external service | Integrating Stripe, adding Firebase Auth | Infrastructure |
+| Changing data model significantly | "Users now need multi-tenant support" | Data modeling |
+
+**Rule:** If the decision affects more than one service, involves a new dependency, or cannot easily be reversed — it needs an ADR.
+
 ## Quick Start
 
 1. Copy the template: `cp docs/adr/template.md docs/adr/NNNN-your-title.md`
@@ -74,7 +91,7 @@ Read `reference/adr-templates.md` for all template formats ready to copy-paste.
 ### 2. Write the ADR
 
 - Start with context -- explain the problem before the solution
-- List 2-3 real alternatives with honest pros/cons
+- List 2-3 real alternatives with honest pros/cons and explicit "why not" reasoning (see Alternatives Considered below)
 - State the decision clearly
 - Document both positive and negative consequences with specifics
 
@@ -91,6 +108,18 @@ Read `reference/adr-templates.md` for all template formats ready to copy-paste.
 - Never edit accepted ADRs -- write new ones to supersede
 
 Read `reference/adr-examples.md` for complete worked examples (PostgreSQL selection, TypeScript adoption, MongoDB deprecation, event sourcing RFC).
+
+## Alternatives Considered
+
+For each alternative: document pros, cons, AND why it was ultimately rejected.
+The "why not" is as valuable as the decision itself — it prevents relitigating the same choices.
+
+| Alternative | Pros | Cons | Why Not Chosen |
+|-------------|------|------|----------------|
+| Option A | ... | ... | [Specific reason it was rejected for THIS context] |
+| Option B | ... | ... | [Specific reason] |
+
+**Rule:** A vague "not chosen" entry (e.g. "too complex") is not acceptable. State the specific constraint, risk, or tradeoff that ruled it out in this context.
 
 ## Minimal Template (Copy-Paste Starter)
 

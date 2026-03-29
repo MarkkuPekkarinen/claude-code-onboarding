@@ -133,3 +133,15 @@ export class UserService implements CrudService<User, CreateUserDto, UpdateUserD
 - **typescript-advanced-types** — combine when the problem requires deep utility type manipulation (template literal types, infer, recursive mapped types) beyond standard enterprise patterns
 - **angular-spa** — combine when designing Angular-specific type contracts (component inputs/outputs, reactive form types, RxJS operator typing)
 - **mcp-builder** — combine when designing TypeScript type contracts for MCP server tools and resource handlers
+
+## TypeScript Code Quality Rules
+
+These rules apply across all TypeScript stacks (NestJS, Angular, MCP servers). Full patterns with examples are in `nestjs-coding-standard` — this is the authoritative cross-stack reference.
+
+**Immutability** — Never mutate objects or arrays in place. Use spread (`{ ...obj, key: val }`, `[...arr, item]`). Shared references (Prisma entities, DTOs) are especially dangerous to mutate.
+
+**No magic numbers** — Extract all numeric/string literals to named constants (`MAX_RETRY_ATTEMPTS`, `DEFAULT_PAGE_SIZE`). Unnamed literals are a bug waiting for context.
+
+**Early returns** — Use guard clauses instead of nesting. Max 2 levels of nesting. Throw/return early, process late.
+
+**Parallel async** — Use `Promise.all([...])` when multiple independent async calls are made in the same function. Sequential `await` for independent calls is a latency bug.

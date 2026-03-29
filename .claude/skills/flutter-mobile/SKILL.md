@@ -204,6 +204,68 @@ flutter analyze                      # Static analysis
 - No raw `EdgeInsets` with numeric values — use `AppSpacing.*` tokens
 - No inline `TextStyle(fontSize: ...)` — use `Theme.of(context).textTheme.*`
 
+## Sealed Types vs Boolean Flag Soup
+
+Anti-pattern — boolean flags that create invalid states:
+```dart
+// ❌ 4 booleans = 16 possible states, most invalid
+class LoadState {
+  bool isLoading = false;
+  bool isError = false;
+  bool isEmpty = false;
+  bool isSuccess = false;
+  // isLoading=true AND isSuccess=true is invalid but representable
+}
+```
+
+Correct — sealed class makes invalid states unrepresentable:
+```dart
+// ✅ Dart 3 sealed class — exactly 4 valid states
+sealed class LoadState<T> {}
+
+final class LoadingState<T> extends LoadState<T> {}
+final class ErrorState<T> extends LoadState<T> {
+  final Object error;
+  final StackTrace? stack;
+  ErrorState(this.error, [this.stack]);
+}
+final class EmptyState<T> extends LoadState<T> {}
+final class SuccessState<T> extends LoadState<T> {
+  final T data;
+  SuccessState(this.data);
+}
+
+// Usage — exhaustive pattern matching (compiler enforces all cases):
+Widget build(BuildContext context) {
+  return switch (state) {
+    LoadingState() => const CircularProgressIndicator(),
+    ErrorState(:final error) => ErrorWidget(error.toString()),
+    EmptyState() => const Text('No items'),
+    SuccessState(:final data) => ItemList(data),
+  };
+}
+```
+
+Rule: Use sealed classes + `switch` expressions for any state with 3+ mutually exclusive cases. Applies to: UI state, network state, auth state, form state.
+
+Applies to: Flutter 3.38 / Dart 3.11+ (sealed classes require Dart 3.0+)
+
+## State Management Quick Reference
+
+Library-agnostic comparison (for Riverpod-specific patterns, see `.claude/skills/riverpod-patterns/`):
+
+| Library | Best for | Avoid when |
+|---------|----------|-----------|
+| **Riverpod** | Complex apps, DI, testability | Simple apps — overhead not justified |
+| **Bloc** | Team environments, strict separation, audit-ready | Solo devs — too much boilerplate |
+| **Provider** | Simple state, migration path from InheritedWidget | New projects — use Riverpod instead |
+| **GetX** | Rapid prototyping | Production apps — couples UI to logic |
+| **flutter_hooks** | Functional widget style, reusable stateful logic | Mixed teams unfamiliar with hooks |
+| **setState** | Local ephemeral UI state (single widget) | Shared state across widgets |
+| **InheritedWidget** | Framework/library authors only | App code — use Provider/Riverpod |
+
+This workspace's stack uses **Riverpod** — see `.claude/skills/riverpod-patterns/` for detailed patterns.
+
 ## Post-Code Review
 
 After writing Dart code, dispatch these reviewer agents:

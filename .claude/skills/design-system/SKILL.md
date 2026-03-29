@@ -164,3 +164,40 @@ When a design rule must be violated intentionally:
 |-------|----------|----------|
 | Flutter | `lib/` | `test/`, `*.g.dart`, `*.freezed.dart`, build output |
 | Angular | `src/app/` | `node_modules/`, `*.spec.ts`, config files |
+
+## Visual Audit — 10-Dimension Scoring
+
+Score the current UI across these 10 dimensions (0–10 each). For each dimension provide: score, specific file:line example, and a concrete fix.
+
+1. **Color consistency** — Are colors using theme tokens (`bg-primary`, `colorScheme.primary`) or hardcoded hex values (`Color(0xFF3b82f6)`, `#3b82f6` in SCSS)?
+2. **Typography hierarchy** — Clear h1 > h2 > h3 > body > caption scale using `Theme.of(context).textTheme.*` (Flutter) or Tailwind typography scale (`text-sm`, `text-lg`, `text-xl`) (Angular)? Or raw `TextStyle(fontSize: N)` / `text-[14px]` scattered throughout?
+3. **Spacing rhythm** — Consistent 4px/8px/16px scale via `AppSpacing.*` (Flutter) or Tailwind semantic scale (Angular)? Or arbitrary `EdgeInsets.all(16)` / `mt-3` / `px-4` that break the grid?
+4. **Component consistency** — Do similar elements (buttons, cards, list items, form fields) use the same widget/component patterns, or are there one-off inline implementations?
+5. **Responsive behavior** — Fluid across breakpoints? Angular: Tailwind `sm:`/`md:`/`lg:` breakpoints applied? Flutter: `LayoutBuilder` / `MediaQuery` used for adaptive layouts?
+6. **Dark mode** — Complete theme coverage using `colorScheme` (Flutter) / daisyUI semantic tokens (Angular)? Or half-done with hardcoded light values that break in dark mode?
+7. **Animation** — Purposeful (entrance transitions, state changes, feedback)? Or gratuitous scroll-triggered animations on every section that distract rather than guide?
+8. **Accessibility** — Color contrast ≥ 4.5:1 for normal text / ≥ 3:1 for large text, focus states present, touch targets ≥ 48dp (Flutter) / 44px (Angular), semantic labels on interactive elements?
+9. **Information density** — Cluttered (too many competing elements) or too sparse (wasted space)? Empty states handled with meaningful UI rather than blank screens or raw `null` renders?
+10. **Polish** — Hover states (Angular), loading states (`CircularProgressIndicator` / skeleton screens), error states (user-visible feedback), and micro-transitions present and consistent?
+
+**Total score / 100.**
+- **≥ 80** — Ship-ready. Minor issues only.
+- **60–79** — Polish pass needed before release.
+- **< 60** — Redesign required. Do not ship.
+
+For each dimension scored below 7: file the specific file:line violation and state the concrete fix using the correct token or pattern for the stack.
+
+## AI Slop Detection
+
+Flag these patterns immediately — they signal generic AI-generated UI with no design intention. Each flag requires the exact file:line and the replacement pattern.
+
+| Pattern | Signal | Replacement |
+|---------|--------|-------------|
+| Purple-to-blue gradient as primary background (`from-purple-500 to-blue-500`, `LinearGradient([Color(0xFF...purple), Color(0xFF...blue)])`) | Generic AI hero aesthetic | Use brand color tokens from `colorScheme` (Flutter) or daisyUI semantic `bg-primary` (Angular); gradients only for deliberate decorative surfaces |
+| Glass morphism cards with no semantic purpose (`backdrop-blur`, `bg-white/10`, `BackdropFilter` on every card) | Trendy filler masking weak content hierarchy | Use solid surface tokens (`colorScheme.surface`, `bg-base-100`); reserve blur effects for modal overlays where focus isolation is the intent |
+| Excessive border-radius on everything including data tables and code blocks (`rounded-2xl` on `<table>`, `BorderRadius.circular(24)` on list tiles) | Indiscriminate softening | Apply radius intentionally: cards and buttons use `AppRadius.*` tokens; data-dense surfaces (tables, code) use `rounded-none` or `rounded-sm` |
+| Scroll-triggered animations on every section (`IntersectionObserver` on 10+ elements, `AnimationController` firing on every scroll event) | Cargo-culted engagement pattern | Use entrance animations only for primary hero or key CTAs; all other content renders immediately; see `flutter-design-polish.md` and `animations.md` for approved patterns |
+| Generic centered hero: `[Big Title] [Subtitle] [Primary Button] [Secondary Button]` over gradient background | Uncustomized template output | Differentiate with brand-specific layout, real imagery or illustration, and a single focused CTA |
+| Inter / Roboto / Space Grotesk as the only fonts with no display personality (same weight, same size hierarchy everywhere) | Default font stack, zero typographic intention | Add a display typeface for headings that matches brand tone; establish a deliberate type scale with size AND weight contrast between levels |
+| Symmetrical 3-column feature card grid: icon + title + body, all equal height, all centered (`grid-cols-3`, `Column(children: [Icon, Text, Text])` × N) | The AI feature section template | Vary layout rhythm — mix wide + narrow cards, use real screenshots or illustrations instead of icons, break the grid for emphasis |
+| Shadow stacking — `shadow-lg` on a container that already has `shadow-md`, nested inside `shadow-sm` (`BoxShadow` arrays with 3+ layers on the same widget) | Depth miscalculation, not intentional elevation | Use a single elevation token per surface level; Flutter: one `BoxShadow` per widget matching `colorScheme.shadow`; Angular: one daisyUI shadow utility per element |

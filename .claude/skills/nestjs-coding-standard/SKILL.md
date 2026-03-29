@@ -62,6 +62,70 @@ For naming examples, TypeScript strictness, immutability patterns, DTO validatio
 
 **Remember**: Keep code intentional, typed, and observable. Optimize for maintainability over micro-optimizations unless proven necessary.
 
+## TypeScript Immutability Rules
+
+**CRITICAL** — Never mutate objects or arrays directly in NestJS services/controllers.
+
+```typescript
+// ✅ ALWAYS: Spread operator for object updates
+const updatedUser = { ...user, name: 'New Name', updatedAt: new Date() }
+const updatedItems = [...items, newItem]
+
+// ❌ NEVER: Direct mutation
+user.name = 'New Name'    // BAD — breaks immutability, causes subtle bugs
+items.push(newItem)       // BAD — mutates in place, unpredictable in reactive chains
+```
+
+**Why:** Prisma entities and DTOs passed between layers can be shared references. Mutating them corrupts upstream state silently.
+
+### No Magic Numbers
+
+```typescript
+// ✅ GOOD: Named constants
+const MAX_RETRY_ATTEMPTS = 3
+const DEBOUNCE_DELAY_MS = 500
+const DEFAULT_PAGE_SIZE = 20
+
+// ❌ BAD: Magic literals
+if (retryCount > 3) { }
+setTimeout(fn, 500)
+.limit(20)
+```
+
+### Early Returns Over Deep Nesting
+
+```typescript
+// ✅ GOOD: Guard clauses, max 2 levels nesting
+if (!user) throw new NotFoundException('User not found')
+if (!user.isActive) throw new ForbiddenException('Account suspended')
+return this.userRepo.findOrders(user.id)
+
+// ❌ BAD: 4+ levels of nesting
+if (user) {
+  if (user.isActive) {
+    if (order) {
+      if (order.isPaid) { ... }
+    }
+  }
+}
+```
+
+### Parallel Async (use Promise.all)
+
+```typescript
+// ✅ GOOD: Parallel when operations are independent
+const [user, orders, stats] = await Promise.all([
+  this.userService.findById(userId),
+  this.orderService.findByUser(userId),
+  this.statsService.forUser(userId),
+])
+
+// ❌ BAD: Sequential when not needed
+const user = await this.userService.findById(userId)
+const orders = await this.orderService.findByUser(userId)
+const stats = await this.statsService.forUser(userId)
+```
+
 ## Error Handling
 
 **Exception hierarchy**: Use `HttpException` subclasses (`NotFoundException`, `BadRequestException`). Global exception filter returns RFC 9457 ProblemDetail.

@@ -90,6 +90,22 @@ GET /api/v1/users?q=john
 GET /api/v1/users?fields=id,name,email
 ```
 
+### Bracket Filter Operators
+
+```
+# Comparison operators (bracket notation)
+GET /api/v1/products?price[gte]=10&price[lte]=100
+GET /api/v1/orders?created_at[after]=2025-01-01T00:00:00Z
+
+# Multiple values (comma-separated)
+GET /api/v1/products?category=electronics,clothing
+
+# Sparse fieldsets (return only needed fields)
+GET /api/v1/users?fields=id,name,email
+```
+
+Supported bracket operators: `[eq]`, `[neq]`, `[gt]`, `[gte]`, `[lt]`, `[lte]`, `[after]`, `[before]`, `[in]`, `[not_in]`.
+
 ---
 
 ## Pagination
@@ -179,14 +195,29 @@ Cursor encodes the last-seen sort key (e.g., base64-encoded `{"id": 123, "create
 
 ---
 
-## Versioning
+## API Versioning Strategy
 
 **Recommendation: URL path versioning.**
+
+### URL Path Versioning (Recommended)
 
 ```
 /api/v1/users   ← production
 /api/v2/users   ← new version (breaking changes)
 ```
+
+Pros: Explicit, cacheable, easy to route
+Cons: URL changes between versions
+
+### Header Versioning
+
+```
+GET /api/users
+Accept: application/vnd.myapp.v2+json
+```
+
+Pros: Clean URLs
+Cons: Harder to test in browser, easy to forget
 
 | Strategy | Example | When to Use |
 |----------|---------|-------------|
@@ -194,10 +225,79 @@ Cursor encodes the last-seen sort key (e.g., base64-encoded `{"id": 123, "create
 | Accept header | `Accept: application/vnd.api+json; version=2` | Clean URLs, but harder to test and cache |
 | Query param | `/api/users?version=2` | Easy to test, but forgettable |
 
+### Rules
+
+1. Start with `/api/v1/` — never version prematurely
+2. Maintain at most 2 active versions (current + previous)
+3. Non-breaking changes (add new optional fields/endpoints) do **NOT** need a new version
+4. Breaking changes (remove/rename fields, change types, change URL) **REQUIRE** a new version
+
 **Breaking vs non-breaking changes:**
 - Adding optional fields → non-breaking, no version bump required
 - Removing fields, renaming fields, changing types → breaking, requires new version
-- Deprecate old version: set `Sunset: Sat, 31 Dec 2026 00:00:00 GMT` header
+
+---
+
+## Deprecation Notice Pattern
+
+When deprecating an endpoint, add RFC 8594 response headers to signal the sunset date and migration target.
+
+```
+Sunset: Sat, 01 Jan 2026 00:00:00 GMT          # When this endpoint dies
+Deprecation: true                                # RFC 8594
+Link: </api/v2/users>; rel="successor-version"  # Where to migrate
+```
+
+**Python FastAPI:**
+```python
+@app.get("/api/v1/users")
+async def list_users_v1(response: Response):
+    response.headers["Sunset"] = "Sat, 01 Jan 2026 00:00:00 GMT"
+    response.headers["Deprecation"] = "true"
+    response.headers["Link"] = '</api/v2/users>; rel="successor-version"'
+    return await user_service.list()
+```
+
+**NestJS** — custom decorator + interceptor:
+```typescript
+// decorator
+export const Deprecated = (opts: { sunset: string; successor: string }) =>
+  SetMetadata('deprecated', opts);
+
+// interceptor
+@Injectable()
+export class DeprecationInterceptor implements NestInterceptor {
+  constructor(private reflector: Reflector) {}
+  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
+    const opts = this.reflector.get<{ sunset: string; successor: string }>(
+      'deprecated', context.getHandler()
+    );
+    if (opts) {
+      const res = context.switchToHttp().getResponse<Response>();
+      res.setHeader('Sunset', new Date(opts.sunset).toUTCString());
+      res.setHeader('Deprecation', 'true');
+      res.setHeader('Link', `<${opts.successor}>; rel="successor-version"`);
+    }
+    return next.handle();
+  }
+}
+
+// usage on controller method
+@Deprecated({ sunset: '2026-01-01', successor: '/api/v2/users' })
+@Get('v1/users')
+listUsersV1() { ... }
+```
+
+**Spring Boot WebFlux:**
+```java
+@GetMapping("/v1/users")
+public Mono<ResponseEntity<List<UserResponse>>> listUsersV1(ServerHttpResponse serverResponse) {
+    serverResponse.getHeaders().add("Sunset", "Sat, 01 Jan 2026 00:00:00 GMT");
+    serverResponse.getHeaders().add("Deprecation", "true");
+    serverResponse.getHeaders().add("Link", "</api/v2/users>; rel=\"successor-version\"");
+    return userService.list().collectList().map(ResponseEntity::ok);
+}
+```
 
 ---
 
