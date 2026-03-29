@@ -42,7 +42,7 @@ Consult official docs via MCP before writing ANY code. Zero tolerance for deprec
 
 > Defined in `.claude/rules/core-behaviors.md` (always loaded). Process patterns in `.claude/rules/leverage-patterns.md`.
 >
-> **Rule precedence** (when rules conflict): `core-behaviors` > `code-standards` > `verification-and-reporting` > `leverage-patterns`.
+> **Rule precedence** (when rules conflict): `core-behaviors` > `first-principles` > `code-standards` > `verification-and-reporting` > `leverage-patterns`.
 
 ## Communication
 

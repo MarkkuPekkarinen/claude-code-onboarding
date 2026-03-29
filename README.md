@@ -887,6 +887,7 @@ This repo includes 4 hooks out of the box:
 | **Bash Guard** | `pre-bash-guard.sh` | `PreToolUse` → Bash | Blocks `rm -rf /`, `rm -rf .`, force-push to main, `DROP DATABASE` |
 | **Protect Sensitive Files** | `pre-edit-protect-sensitive.sh` | `PreToolUse` → Write/Edit | Blocks edits to `.env`, credentials, private keys, lock files |
 | **Auto-Format** | `post-edit-format.sh` | `PostToolUse` → Write/Edit | Runs Prettier (TS/JS/HTML/CSS), `dart format`, ruff/black (Python) |
+| **Smart Suggest** | `smart-suggest.sh` | `UserPromptSubmit` | Behavioral coaching — detects intent (debug/review/deploy/scaffold) and injects the right command/agent suggestion before Claude responds. Tier 0 blocks policy violations. |
 | **Secret Scan** | `stop-secret-scan.sh` | `Stop` | Warns if changed files contain AWS/GCP/GitHub/OpenAI API keys |
 | **Blackbox Log** | `stop-blackbox-log.sh` | `Stop` | Appends session decisions, user constraints, and changed files to `blackbox/session-log.md` |
 | **Ralph Loop** | `stop-ralph-loop.sh` | `Stop` | Autonomous iteration — blocks exit and re-feeds prompt until task complete. Opt-in: only active when `/ralph-loop` was called. |
@@ -1902,6 +1903,7 @@ claude-code-onboarding/
     ├── rules/                            # Always-loaded behavioral guidelines
     │   ├── code-standards.md             # Error handling, DRY, logging, output quality
     │   ├── core-behaviors.md             # Assumptions, confusion management, simplicity
+    │   ├── first-principles.md           # Hard Constraints, Quality Thresholds, Workflow Invariants, AI anti-pattern detection
     │   ├── leverage-patterns.md          # Task protocol, test-first, naive-then-optimize
     │   └── verification-and-reporting.md # Verify before claiming, honest status reporting
     │
