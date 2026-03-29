@@ -164,6 +164,94 @@ management:
         http.server.requests: true
 ```
 
+## Method-Level Metrics — @Timed and ObservationRegistry
+
+### @Timed (annotation-driven timer)
+
+Add `micrometer-core` (already included via `spring-boot-starter-actuator`) and enable `@Timed` with `TimedAspect`:
+
+```java
+@Configuration
+public class MicrometerConfig {
+
+    @Bean
+    public TimedAspect timedAspect(MeterRegistry registry) {
+        return new TimedAspect(registry);
+    }
+}
+```
+
+Annotate service methods:
+
+```java
+@Service
+public class OrderService {
+
+    @Timed(value = "orders.create", description = "Time to create an order",
+           percentiles = {0.5, 0.95, 0.99})
+    public Mono<OrderResponse> createOrder(CreateOrderRequest request) {
+        return orderRepository.save(orderMapper.toEntity(request))
+            .map(orderMapper::toResponse);
+    }
+
+    @Timed(value = "orders.find", description = "Time to fetch an order by ID",
+           extraTags = {"tier", "standard"})
+    public Mono<OrderResponse> findById(UUID id) {
+        return orderRepository.findById(id).map(orderMapper::toResponse);
+    }
+}
+```
+
+**Metric naming:** `orders.create.timer{exception, method, result}` — tags are added automatically.
+
+### Programmatic timer (for conditional or complex cases)
+
+```java
+@Service
+@RequiredArgsConstructor
+public class PaymentService {
+
+    private final MeterRegistry registry;
+
+    public Mono<PaymentResponse> processPayment(PaymentRequest request) {
+        Timer.Sample sample = Timer.start(registry);
+        return paymentGateway.charge(request)
+            .doOnSuccess(r -> sample.stop(
+                Timer.builder("payment.charge")
+                    .tag("provider", request.provider())
+                    .tag("result", "success")
+                    .register(registry)))
+            .doOnError(e -> sample.stop(
+                Timer.builder("payment.charge")
+                    .tag("provider", request.provider())
+                    .tag("result", "error")
+                    .tag("error", e.getClass().getSimpleName())
+                    .register(registry)));
+    }
+}
+```
+
+### Prometheus scrape verification
+
+```bash
+# After running the app, confirm the metric is being scraped:
+curl http://localhost:8080/actuator/prometheus | grep "orders_create"
+# Expected output: orders_create_seconds_count{...} and orders_create_seconds_sum{...}
+```
+
+**application.yml — enable percentile histograms:**
+
+```yaml
+management:
+  metrics:
+    distribution:
+      percentiles-histogram:
+        orders.create: true
+        payment.charge: true
+      percentiles:
+        orders.create: 0.5, 0.95, 0.99
+```
+
 ## R2DBC Connection Pool
 
 ```yaml

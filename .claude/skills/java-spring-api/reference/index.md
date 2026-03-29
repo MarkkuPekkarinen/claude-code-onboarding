@@ -5,6 +5,7 @@
 | Reference | When to Load | Key Content |
 |-----------|-------------|-------------|
 | [spring-boot-conventions.md](spring-boot-conventions.md) | **Before any reactive code** — Iron Law | Package layout, reactive rules, coding conventions, R2DBC patterns |
+| [spring-boot-caching.md](spring-boot-caching.md) | Adding @Cacheable, @CacheEvict, Caffeine configuration, or cache eviction strategies | Caffeine setup, @Cacheable/@CacheEvict/@CachePut, reactive caching caveat, eviction strategies, anti-patterns |
 | [spring-boot-config.md](spring-boot-config.md) | Project setup or configuring dependencies | pom.xml template, application.yml configuration |
 | [spring-boot-templates.md](spring-boot-templates.md) | Creating DTOs, entities, services, or controllers | DTO records, Entity, Repository, Service, Controller, Error Handler, Test templates |
 | [spring-boot-enterprise-errors-security.md](spring-boot-enterprise-errors-security.md) | Implementing error handling, adding auth, configuring CORS | Exception hierarchy, OAuth2/JWT security, CORS configuration |

@@ -157,6 +157,39 @@ logging:
   config: classpath:log4j2-spring.xml
 ```
 
+## Proxy Headers — ForwardedHeaderTransformer
+
+Spring WebFlux does NOT trust `X-Forwarded-For`, `X-Forwarded-Host`, or `X-Forwarded-Proto` by default. Without this bean, the application sees the load balancer's IP rather than the real client IP — breaking rate limiting, audit logging, and geo-restrictions.
+
+```java
+@Bean
+public ForwardedHeaderTransformer forwardedHeaderTransformer() {
+    return new ForwardedHeaderTransformer();
+}
+```
+
+Place this in your main `@Configuration` class or `SecurityConfig`.
+
+**What it does:**
+- Rewrites the `ServerWebExchange` host/scheme/IP from `X-Forwarded-*` headers before request processing
+- Makes `exchange.getRequest().getRemoteAddress()` return the real client IP (not the proxy IP)
+- Required when running behind Cloud Run, an NGINX reverse proxy, or any load balancer
+
+**Security note:** Only enable this if your infrastructure actually passes `X-Forwarded-For` from a trusted proxy. If traffic can reach the app directly (not via proxy), an attacker can spoof the header. On Cloud Run + GCP Load Balancer, enabling this bean is safe — the infrastructure strips attacker-injected headers.
+
+**Verification:**
+```java
+// In a test or health endpoint — should return real client IP, not 127.0.0.1
+String clientIp = exchange.getRequest().getRemoteAddress()
+    .getAddress().getHostAddress();
+```
+
+**`application.yml` alternative (Spring Boot 3.1+):**
+```yaml
+server:
+  forward-headers-strategy: framework  # equivalent to registering ForwardedHeaderTransformer bean
+```
+
 ## Type-Safe Configuration Properties
 
 Use Java records with `@ConfigurationProperties` for type-safe, immutable configuration. Prefer this over scattered `@Value` annotations.

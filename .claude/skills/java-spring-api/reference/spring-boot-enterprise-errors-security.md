@@ -228,6 +228,62 @@ public class OrderService {
 }
 ```
 
+### Custom SpEL Method Security — Ownership Checks
+
+For fine-grained ownership authorization beyond roles, create a Spring bean used as a SpEL evaluator:
+
+```java
+@Component("authz")
+@RequiredArgsConstructor
+public class AuthorizationService {
+
+    private final ResourceRepository resourceRepository;
+
+    /**
+     * Returns true if the authenticated user owns the resource.
+     * Usage: @PreAuthorize("@authz.isOwner(#resourceId, authentication)")
+     */
+    public boolean isOwner(UUID resourceId, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) return false;
+        String userId = authentication.getName();
+        return resourceRepository.findById(resourceId)
+            .map(r -> r.getOwnerId().toString().equals(userId))
+            .defaultIfEmpty(false)
+            .block(); // acceptable in security filter — not in reactive chain
+    }
+}
+```
+
+Apply on controller methods:
+
+```java
+@GetMapping("/{id}")
+@PreAuthorize("hasRole('ADMIN') or @authz.isOwner(#id, authentication)")
+public Mono<ResponseEntity<ResourceResponse>> getResource(@PathVariable UUID id) {
+    return resourceService.findById(id).map(ResponseEntity::ok);
+}
+
+@DeleteMapping("/{id}")
+@PreAuthorize("@authz.isOwner(#id, authentication)")
+public Mono<ResponseEntity<Void>> deleteResource(@PathVariable UUID id) {
+    return resourceService.delete(id).thenReturn(ResponseEntity.noContent().<Void>build());
+}
+```
+
+Enable method security in your security config:
+
+```java
+@Configuration
+@EnableMethodSecurity  // replaces @EnableGlobalMethodSecurity(prePostEnabled=true)
+public class SecurityConfig { ... }
+```
+
+**Rules:**
+- Bean name (`"authz"`) must match the SpEL expression prefix (`@authz`)
+- The `.block()` call is acceptable inside a security service bean — not inside a `Mono`/`Flux` chain
+- Avoid complex DB queries in the security bean — keep checks lightweight
+- Always combine with role checks (`hasRole('ADMIN') or @authz.isOwner(...)`) to allow admins to bypass
+
 ### CORS Configuration
 
 ```java

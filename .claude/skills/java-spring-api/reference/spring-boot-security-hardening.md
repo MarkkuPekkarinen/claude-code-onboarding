@@ -32,6 +32,87 @@ mvn org.owasp:dependency-check-maven:check -DfailBuildOnCVSS=7
 
 Create `dependency-check-suppressions.xml` for false positives with documented justification for each entry.
 
+## Static Analysis — Build-Time Quality Gates
+
+Add these plugins to `pom.xml` under `<build><plugins>`. They run during `mvn verify`.
+
+```xml
+<!-- SpotBugs — bytecode bug detection -->
+<plugin>
+    <groupId>com.github.spotbugs</groupId>
+    <artifactId>spotbugs-maven-plugin</artifactId>
+    <version>4.8.6.4</version>
+    <executions>
+        <execution>
+            <phase>verify</phase>
+            <goals><goal>check</goal></goals>
+        </execution>
+    </executions>
+</plugin>
+
+<!-- PMD — code style and bad practices -->
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-pmd-plugin</artifactId>
+    <version>3.24.0</version>
+    <executions>
+        <execution>
+            <phase>verify</phase>
+            <goals><goal>check</goal></goals>
+        </execution>
+    </executions>
+</plugin>
+
+<!-- Checkstyle — formatting and naming conventions -->
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-checkstyle-plugin</artifactId>
+    <version>3.4.0</version>
+    <configuration>
+        <configLocation>google_checks.xml</configLocation>
+        <failsOnError>true</failsOnError>
+    </configuration>
+    <executions>
+        <execution>
+            <phase>verify</phase>
+            <goals><goal>check</goal></goals>
+        </execution>
+    </executions>
+</plugin>
+
+<!-- Spotless — auto-format Java source -->
+<plugin>
+    <groupId>com.diffplug.spotless</groupId>
+    <artifactId>spotless-maven-plugin</artifactId>
+    <version>2.43.0</version>
+    <configuration>
+        <java>
+            <googleJavaFormat>
+                <version>1.22.0</version>
+                <style>AOSP</style>
+            </googleJavaFormat>
+        </java>
+    </configuration>
+    <executions>
+        <execution>
+            <phase>verify</phase>
+            <goals><goal>check</goal></goals>
+        </execution>
+    </executions>
+</plugin>
+```
+
+**Run individually:**
+```bash
+mvn spotbugs:check          # Bug detection
+mvn pmd:check               # Code style
+mvn checkstyle:check        # Formatting
+mvn spotless:check          # Auto-format check
+mvn spotless:apply          # Auto-apply formatting
+```
+
+**CI gate:** Add `mvn verify` to your pipeline — all four plugins run at the `verify` phase.
+
 ## Static Analysis Patterns
 
 Grep patterns to identify common security issues in a Spring Boot codebase. Use these during code review or as pre-commit checks.
@@ -116,6 +197,22 @@ Add HSTS (HTTP Strict Transport Security) to the existing SecurityConfig:
 ```
 
 This supplements the SecurityConfig in `spring-boot-enterprise-errors-security.md` which already covers CSP and X-Frame-Options.
+
+## Password Encoding — BCryptPasswordEncoder
+
+Always instantiate with explicit strength=12 (Spring default is 10 — too low for production).
+
+```java
+@Bean
+public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder(12); // strength=12; default=10 is insufficient
+}
+```
+
+**Rules:**
+- Never compare passwords with `.matches()` on raw strings — always use `passwordEncoder.matches(raw, encoded)`
+- Never log password fields, even masked
+- Argon2 (`Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8()`) is acceptable alternative for new services
 
 ## JWT Role Extraction
 
