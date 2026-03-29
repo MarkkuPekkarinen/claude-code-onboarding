@@ -109,7 +109,7 @@
 - **mcp-builder**: Used when building MCP servers to integrate external APIs — also listed under Backend as it produces implementation code.
 - **nosql-expert**: Expert guidance for distributed NoSQL databases (Cassandra, DynamoDB, ScyllaDB) — query-first modeling, partition key design, hot partition prevention, single-table design (adjacency lists), denormalization patterns, and BASE vs ACID tradeoffs. Load when designing schemas for Cassandra/DynamoDB or troubleshooting hot partitions and high-latency scans.
 
-### Quality & Testing (11 skills)
+### Quality & Testing (13 skills)
 - **browser-testing**: Browser automation and testing using Chrome DevTools MCP and Browser-Use MCP for debugging, performance analysis, E2E flows, and UI interaction.
 - **ui-visual-validator**: CI/CD visual regression setup and pre-commit 13-item verification checklist. Scoped complement to `reality-checker` agent — adds Chromatic, Percy, Applitools, BackstopJS, and Playwright Visual tooling setup for GitHub Actions. Use alongside `reality-checker`: this skill provides the methodology and CI tooling; `reality-checker` provides the live browser verdict.
 - **accessibility-audit**: WCAG 2.1 AA accessibility audit for Angular 21.x and Flutter 3.38. Use when auditing UI for accessibility compliance, adding automated axe-core or flutter_test semantic testing, identifying barriers, or integrating accessibility gates into CI/CD. Reference files: `reference/angular-a11y-automated.md`, `reference/flutter-a11y-automated.md`, `reference/manual-testing-checklist.md`, `reference/cicd-integration.md`. Command: `/fixing-accessibility <file>` for targeted single-file audits.
@@ -121,6 +121,8 @@
 - **test-driven-development**: Used when implementing new features or logic that requires tests before writing implementation code, covering Red-Green-Refactor cycle and stack-specific test patterns.
 - **python-testing-patterns**: Comprehensive pytest patterns for Python 3.14 / FastAPI — fixtures, parametrize, async testing, database fixtures, test markers, coverage config, monkeypatch, and GitHub Actions CI integration. Load when setting up test infrastructure beyond the basic TDD cycle in `test-driven-development`.
 - **vibe-code-auditor**: Pre-commit gate for AI-generated and rapidly-prototyped code. Audits across 7 dimensions — architecture, consistency, robustness, production risks, security, dead/hallucinated code (imports that don't exist, API mismatches), and technical debt. Produces a Production Readiness Score (0–100) with severity-bucketed findings. Use before `code-reviewer` when code was AI-assisted or evolved without deliberate architecture.
+- **tdd** (`/tdd`): Red-Green-Refactor enforcement slash command. Invokes `tdd-guide` agent. Covers Spring Boot/JUnit5, Python/pytest, NestJS/Vitest, Flutter/flutter_test. 80% coverage gate; 100% required for auth/crypto/payments. Modes: default cycle, focus on named class, coverage-only, test audit.
+- **test-coverage** (`/test-coverage`): Multi-stack coverage report — detects Spring Boot (JaCoCo), Python (pytest-cov), NestJS (vitest), Flutter (lcov). Lists files below 80% sorted worst-first. 100% threshold for auth/crypto/payment logic.
 
 ### Security (4 skills)
 - **claude-actions-auditor**: Audits GitHub Actions workflows for Claude Code Action security vulnerabilities — detects 9 attack vectors (env var intermediary, direct injection, PR target misuse, dangerous sandbox configs, wildcard allowlists). Run before adding `anthropics/claude-code-action` to any workflow or during a CI/CD security review.
@@ -128,7 +130,7 @@
 - **security-reviewer**: Security vulnerability detection and remediation skill providing OWASP Top 10 checklists, secret scanning patterns, and security review methodology. Includes `owasp-infrastructure-baseline.md` (15 OWASP-mapped infra controls: encryption, IAM, network hardening, audit logging) for IaC and cloud config reviews. Includes `agent-guardrails-checklist.md` (12-layer AI agent guardrail pipeline: prompt injection defense, output validation, async audit logging, Constitutional AI) for LangGraph agents and agentic AI services.
 - **threat-modeling**: Threat modeling skill for STRIDE analysis, attack tree construction, and security requirement extraction when designing new features or reviewing architecture.
 
-### Workflow & Process (17 skills)
+### Workflow & Process (24 skills)
 - **changelog-generator**: Used when preparing releases, writing app store updates, or maintaining a CHANGELOG.md by parsing conventional commits and outputting polished release notes.
 - **documentation-generation**: Documentation generation skill for README creation, docstring patterns, and CI/CD doc pipelines when generating project documentation or creating README files.
 - **domain-finder**: Used when starting a new project or brand and needing to find a registrable domain by brainstorming creative names and checking real availability via DNS/WHOIS.
@@ -146,6 +148,13 @@
 - **iterate-pr**: Autonomous PR completion loop — fetches CI failures and review feedback, fixes and pushes until all checks are green. Classifies feedback by LOGAF scale (high/medium auto-fix, low asks user), polls CI, and posts GitHub thread replies.
 - **multi-agent-brainstorming**: Structured design review using 5 constrained sequential roles (Primary Designer, Skeptic, Constraint Guardian, User Advocate, Arbiter) to validate designs before implementation. Produces mandatory Decision Log and APPROVED/REVISE/REJECT verdict. Use after `/brainstorm` and before `/plan-review` for high-stakes or irreversible decisions. Reference files: `agent-role-scripts.md`, `decision-log-template.md`, `exit-criteria-checklist.md`.
 - **parallel-agents**: Multi-agent orchestration for Claude Code's native Agent tool — coordinates this workspace's 42 actual agents across 6 orchestration patterns (comprehensive review, pre-deploy audit, Flutter feature, agentic AI review, DB schema review, architecture validation). Includes workspace agent catalog and synthesis protocol. Reference files: `workspace-agent-catalog.md`, `orchestration-patterns.md`, `synthesis-protocol.md`.
+- **aside** (`/aside`): Freeze current task state, answer a side question, then resume with mandatory "— Back to task:" footer. Read-only during aside. Handles 3 edge cases: no question, question reveals task problem, question is actually a task redirect.
+- **checkpoint** (`/checkpoint`): Named session checkpoints logged to `.claude/checkpoints.log` (timestamp|name|SHA|files). Modes: create, verify (diff against saved SHA), list, clear. Use before risky changes or between implementation phases.
+- **update-codemaps** (`/update-codemaps`): Generate `docs/CODEMAPS/` token-lean snapshots (<1000 tokens each) for Spring Boot, NestJS, Angular, Flutter, Python services. 30% diff gate skips unchanged services. Writes diff summary to `.reports/codemap-diff.txt`.
+- **verify** (`/verify`): Binary PASS/FAIL build + test verification across all detected stacks. Modes: quick (compile+lint), full (+ tests), pre-commit (+ forbidden pattern scan), pre-pr (+ security + coverage). Reports exact exit codes.
+- **skill-create** (`/skill-create`): Analyzes `git log --oneline -n 200` to detect repeated patterns, then generates a new skill matching the `writing-skills` spec (Iron Law, frontmatter, progressive disclosure, ≤500 lines). Rule of Three enforced — pattern must appear 3+ times.
+- **java-build-resolver** (agent): Surgical Maven/Spring Boot 3.5.x build error fix — 12-error pattern lookup table (missing bean, R2DBC classpath, dependency conflicts, JDK mismatch, port conflicts). Diagnostic sequence: mvnw compile → dependency:tree → effective-pom. 3-attempt stop condition.
+- **python-reviewer** (agent): Python 3.14/FastAPI 0.128.x code reviewer. CRITICAL: SQL injection via f-strings, bare `except:`, eval/exec. HIGH: blocking calls in async, missing CORS restriction, broad `Any` types. Runs mypy, ruff, bandit, pytest-cov. Distinct from `agentic-ai-reviewer` (which covers LangChain/LangGraph only).
 
 ---
 
