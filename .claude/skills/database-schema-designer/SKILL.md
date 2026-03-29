@@ -77,6 +77,8 @@ Read `reference/normalization-guide.md` for 1NF/2NF/3NF rules and examples.
 
 Read `reference/migration-patterns.md` for zero-downtime patterns and rollback strategies.
 
+Read `reference/expand-contract-migrations.md` for zero-downtime Expand-Contract strategy, CONCURRENTLY index operations, and batched SKIP LOCKED backfills.
+
 ### NoSQL Design
 
 For MongoDB, Firestore, and other document databases, read `reference/nosql-design-patterns.md` for embedding vs referencing patterns and Firestore-specific design rules.
@@ -140,6 +142,7 @@ Before generating schemas or queries, consult these sources:
 | `reference/constraints-and-relationships.md` | PKs, FKs, CHECK, UNIQUE, relationship patterns |
 | `reference/nosql-design-patterns.md` | MongoDB/Firestore embedding vs referencing |
 | `reference/migration-patterns.md` | Zero-downtime migrations, rollback strategies |
+| `reference/expand-contract-migrations.md` | Expand-Contract pattern, CONCURRENTLY index ops, SKIP LOCKED backfills |
 | `assets/templates/migration-template.sql` | SQL migration file template |
 | `reference/postgresql-review-checklist.md` | PostgreSQL review checklist (used by `postgresql-database-reviewer` agent) |
 

@@ -123,6 +123,8 @@
 - **vibe-code-auditor**: Pre-commit gate for AI-generated and rapidly-prototyped code. Audits across 7 dimensions — architecture, consistency, robustness, production risks, security, dead/hallucinated code (imports that don't exist, API mismatches), and technical debt. Produces a Production Readiness Score (0–100) with severity-bucketed findings. Use before `code-reviewer` when code was AI-assisted or evolved without deliberate architecture.
 - **tdd** (`/tdd`): Red-Green-Refactor enforcement slash command. Invokes `tdd-guide` agent. Covers Spring Boot/JUnit5, Python/pytest, NestJS/Vitest, Flutter/flutter_test. 80% coverage gate; 100% required for auth/crypto/payments. Modes: default cycle, focus on named class, coverage-only, test audit.
 - **test-coverage** (`/test-coverage`): Multi-stack coverage report — detects Spring Boot (JaCoCo), Python (pytest-cov), NestJS (vitest), Flutter (lcov). Lists files below 80% sorted worst-first. 100% threshold for auth/crypto/payment logic.
+- **rules-distill** (`/rules-distill`): Scans `.claude/skills/` for behavioral patterns appearing in 2+ skills. Applies 4 filters (2+ evidence, actionable, violation risk, not already in rules) and presents candidates for promotion to `.claude/rules/` with APPROVE/SKIP/MODIFY per candidate. Agent: `rules-distill`.
+- **codebase-onboarding**: Systematically analyzes an unfamiliar codebase using a 4-phase workflow (Reconnaissance → Architecture Mapping → Convention Detection → Artifact Generation). Produces an Onboarding Guide (`docs/ONBOARDING.md`) and a tailored `CLAUDE.md` ≤100 lines. Use when joining a new project or onboarding a developer to an existing repo.
 
 ### Security (4 skills)
 - **claude-actions-auditor**: Audits GitHub Actions workflows for Claude Code Action security vulnerabilities — detects 9 attack vectors (env var intermediary, direct injection, PR target misuse, dangerous sandbox configs, wildcard allowlists). Run before adding `anthropics/claude-code-action` to any workflow or during a CI/CD security review.
@@ -668,3 +670,5 @@ a2ui-angular + angular-spa + google-adk + security-reviewer
 | typescript-advanced-types | backend | specialist | implementation | code |
 | typescript-expert | backend | specialist | analysis | report |
 | typescript-pro | backend | specialist | design | code |
+| rules-distill | workflow | analyst | governance | report |
+| codebase-onboarding | quality | specialist | analysis | document |

@@ -120,3 +120,4 @@ Multi-phase workflow guides for every development process in this workspace. Eac
 | [ralph-loop-autonomous.md](ralph-loop-autonomous.md) | Autonomous iteration loop until completion |
 | [build-error-resolution.md](build-error-resolution.md) | Maven/Spring Boot 3.5.x build failures — `java-build-resolver` agent |
 | [session-checkpoints.md](session-checkpoints.md) | Named session checkpoints with `/checkpoint` — before/after comparison |
+| `rules-distill` command + agent | Promote repeated skill patterns to `.claude/rules/` — `/rules-distill [domain]`, 3-phase pipeline with APPROVE/SKIP/MODIFY per candidate |
