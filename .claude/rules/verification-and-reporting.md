@@ -132,6 +132,42 @@ Options:
 
 **Never** silently skip plan items. **Never** defer without explicit approval.
 
+## Confidence Levels on Research Claims
+
+When reporting findings from external sources (web search, MCP docs, code analysis, library
+behavior), every non-trivial claim MUST carry an explicit confidence level.
+
+### Required Format
+
+```
+[HIGH] The `useEffect` cleanup function runs before the next effect and on unmount.
+       Source: React docs (MCP-verified this session, react.dev/reference/react/useEffect)
+
+[MEDIUM] This pattern should work with NestJS 11.x — the `@Module()` API hasn't changed
+         in v10→v11 based on changelog review, but I haven't run it against this specific version.
+
+[LOW] I believe this package supports tree-shaking, but I haven't verified the bundle output.
+     You should confirm with `npm run build -- --stats` before relying on it.
+```
+
+### Confidence Definitions
+
+| Level | Meaning | When to use |
+|-------|---------|-------------|
+| **HIGH** | MCP/docs verified this session, or tested with tool output | API signatures, tested code, official docs fetched |
+| **MEDIUM** | Reasoning from adjacent knowledge, changelog review, or strong prior | Version compatibility, inferred behavior, partially verified |
+| **LOW** | Best guess, memory-based, or not verified | Unverified claims, things that "should" work, assumptions |
+
+### Rules
+
+- **HIGH** requires a source (file:line, MCP URL, or tool output in the same response)
+- **MEDIUM** requires a reason ("based on X", "changelog shows Y")
+- **LOW** requires an action item ("verify with Z before relying on this")
+- Never present a LOW claim as if it were HIGH — that is confabulation
+- If you cannot assign at least MEDIUM confidence, say "I don't know" and propose how to find out
+
+---
+
 ## Quality Gates
 
 Before declaring any workflow type complete, the following gates must pass. These are minimum bars — do not skip them.

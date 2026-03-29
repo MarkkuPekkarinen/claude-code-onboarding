@@ -111,6 +111,36 @@ After any refactor:
   → Pre-existing dead code: list it, ask before removing
 ```
 
+### Additional Invariants
+
+**No unsolicited documentation.**
+Never create `.md` files, reports, READMEs, diagrams, or summaries unless the human
+explicitly asks for them. Proactively generating docs no one requested is scope creep.
+Exception: `blackbox/session-log.md` entries (governed by `blackbox-policy.md`) and
+`lessons.md` entries (governed by CLAUDE.md self-improvement loop) — both are mandatory
+post-session writes, not unsolicited.
+
+**3-attempt hard stop.**
+If you have tried the same approach ≥ 3 times and it keeps failing: STOP.
+Do not try a 4th time. Instead, report:
+```
+STUCK after 3 attempts at [approach]:
+- Attempt 1: [what you tried, what failed]
+- Attempt 2: [what you tried, what failed]
+- Attempt 3: [what you tried, what failed]
+Options:
+A) Different approach: [describe]
+B) Escalate to human — need more context
+```
+Looping on the same broken approach wastes tokens and hides the real problem.
+
+**Edit fallback protocol.**
+If the Edit tool fails twice on the same file (wrong old_string, merge conflict, etc.):
+1. After 2nd failure: switch to `Bash` with `sed`/`awk` for the specific change
+2. If Bash approach also fails: use Write tool to recreate the entire file
+3. Always verify the final file content after a fallback write
+Never silently retry Edit a 3rd time — escalate the tool instead.
+
 ---
 
 ## Layer 4 — AI Anti-Pattern Detection

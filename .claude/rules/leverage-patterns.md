@@ -68,6 +68,25 @@ For small/obvious tasks, compress — but NEVER skip UNDERSTAND or VERIFY.
 
 For non-trivial changes (architecture, multi-service, schema changes): use the `plan-mode-review` skill or `/plan-review` command, which extends this protocol with Phase 0 self-review, approval scope triage, and production readiness gates. Save the approved plan to `docs/plans/YYYY-MM-DD-<feature>.md` before starting implementation — this gives a persistent, git-committed reference for the session and future sessions.
 
+### Task Quantification Rule
+
+Plans and PLAN step output MUST state **specific counts and named items**, not vague categories.
+
+**Forbidden (vague):**
+- "implement authentication features"
+- "update several services"
+- "add some tests"
+- "fix a few endpoints"
+
+**Required (quantified):**
+- "implement 3 features: [JWT auth middleware, refresh token endpoint, session invalidation]"
+- "update 2 services: [UserService (add role check), TokenService (add expiry logic)]"
+- "add 4 tests: [happy path, expired token, missing token, invalid signature]"
+- "fix 2 endpoints: [POST /login (missing 401), GET /profile (unguarded)]"
+
+**Rule:** If you cannot name the items, you don't understand the scope yet. Clarify before planning.
+This rule applies to: PLAN step output, TaskCreate subjects, sub-agent dispatch prompts, and PR descriptions.
+
 ## Declarative Over Imperative
 
 Prefer success criteria over step-by-step commands:
