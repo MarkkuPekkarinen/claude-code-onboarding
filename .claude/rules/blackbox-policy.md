@@ -49,3 +49,35 @@ Naming convention: `src/auth/` maps to `docs/diagrams/auth-flow.md` (folder name
 - Note in Decisions: "Created docs/diagrams/[name].md"
 
 **If unsure whether a diagram needs updating:** check `docs/diagrams/` for files whose prefix matches the folders you modified.
+
+## Exit Signal Detection
+
+When the user sends any of these exit signals, immediately append a session log entry to
+`blackbox/session-log.md` — do NOT wait for an explicit command:
+
+```
+"that's all for now"
+"done for today"
+"i'm heading out" / "heading out"
+"going out" / "going out now"
+"talk later" / "talk to you later"
+"closing the window" / "closing this"
+"wrapping up" / "let's wrap up"
+"end of session"
+"bye" / "goodbye" (when used as a session closer, not mid-conversation)
+```
+
+### Trigger Behavior
+
+On exit signal detection:
+1. Check `git diff --stat` — were any files changed this session?
+2. If YES → immediately write the blackbox entry (format defined in Entry Format above)
+3. If NO (conversation-only session) → skip the entry per the "Skip if conversational" rule above
+4. Do NOT batch saves — write immediately on signal, not at session end
+
+### Exit Signal ≠ Mid-Task Pause
+
+Do NOT trigger on:
+- "hold on" / "hmm" / "let me think" — user is pausing, not leaving
+- "one more thing" — user is continuing
+- "actually" — user is redirecting, not ending
