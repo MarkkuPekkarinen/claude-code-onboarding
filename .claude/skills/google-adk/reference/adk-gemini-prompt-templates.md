@@ -34,7 +34,7 @@ from google.adk.agents import LlmAgent
 
 research_agent = LlmAgent(
     name="research_agent",
-    model="gemini-2.0-flash-exp",
+    model="gemini-3.1-flash-exp",
     instruction=GEMINI_BASE_INSTRUCTION.format(
         background="You are a research assistant for a software engineering team.",
         goal="Answer technical questions with accurate, cited information.",
@@ -76,7 +76,7 @@ The following aspects remain uncertain: {list_gaps}."
 
 rag_agent = LlmAgent(
     name="rag_agent",
-    model="gemini-2.0-flash-exp",
+    model="gemini-3.1-flash-exp",
     instruction=GEMINI_RAG_INSTRUCTION,
     tools=[load_memory_tool, search_documents_tool],
 )
@@ -109,14 +109,14 @@ Access draft: use get_session_state tool to read "draft_response"."""
 
 generator = LlmAgent(
     name="generator",
-    model="gemini-2.0-flash-exp",
+    model="gemini-3.1-flash-exp",
     instruction=GENERATOR_INSTRUCTION,
     output_key="draft_response",
 )
 
 critic = LlmAgent(
     name="critic",
-    model="gemini-2.0-flash-exp",
+    model="gemini-3.1-flash-exp",
     instruction=CRITIC_INSTRUCTION,
     output_key="final_response",
 )
@@ -159,7 +159,7 @@ Call exit_loop when implementation is complete."""
 
 tot_agent = LlmAgent(
     name="tot_reasoner",
-    model="gemini-2.0-flash-exp",  # Flash is sufficient for scoring; use Pro for complex domains
+    model="gemini-3.1-flash-exp",  # Flash is sufficient for scoring; use Pro for complex domains
     instruction=TOT_INSTRUCTION,
     tools=[exit_loop],
 )
@@ -232,10 +232,10 @@ recommendations:
 
 | Task | Recommended Model | Reason |
 |------|------------------|--------|
-| Standard agent tasks | `gemini-2.0-flash-exp` | Fast, cost-effective, strong instruction following |
+| Standard agent tasks | `gemini-3.1-flash-exp` | Fast, cost-effective, strong instruction following |
 | Complex reasoning (ToT, multi-step analysis) | `gemini-2.0-pro-exp` | Better at multi-step reasoning chains |
-| Long document RAG (>100k tokens) | `gemini-2.0-flash-exp` | 1M token context window |
-| Code generation | `gemini-2.0-flash-exp` | Strong coding, fast iteration |
+| Long document RAG (>100k tokens) | `gemini-3.1-flash-exp` | 1M token context window |
+| Code generation | `gemini-3.1-flash-exp` | Strong coding, fast iteration |
 
 ---
 
@@ -246,6 +246,6 @@ Load when:
 - Setting up multi-agent constitutional AI pipelines in ADK (`SequentialAgent` with critic)
 - Building RAG agents in ADK with citation requirements
 - Comparing prompt structure across models (see `agentic-prompt-optimization.md` for LangGraph equivalents)
-- Choosing between `gemini-2.0-flash-exp` and `gemini-2.0-pro-exp` for a task
+- Choosing between `gemini-3.1-flash-exp` and `gemini-2.0-pro-exp` for a task
 
 **Related:** `agentic-prompt-optimization.md` in `agentic-ai-dev/reference/` — same techniques expressed as LangGraph nodes.

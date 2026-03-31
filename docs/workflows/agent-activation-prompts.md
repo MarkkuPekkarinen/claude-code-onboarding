@@ -170,7 +170,7 @@ Load the google-adk skill. Build a [agent name] agent using Google ADK.
 
 Requirements:
 - Agent type: [SequentialAgent / ParallelAgent / LoopAgent / custom]
-- Gemini model: [gemini-2.0-flash or specify]
+- Gemini model: [gemini-3.1-flash or specify]
 - Tools: [FunctionTool definitions needed]
 - Session/memory needs: [stateless / in-memory / persistent]
 - FastAPI integration: [yes/no]

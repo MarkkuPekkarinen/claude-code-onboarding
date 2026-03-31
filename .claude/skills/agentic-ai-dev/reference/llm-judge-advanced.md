@@ -348,7 +348,7 @@ from google.adk.runners import InMemoryRunner
 # ADK SequentialAgent: [pass1_agent -> pass2_agent -> consistency_checker]
 pass1_agent = LlmAgent(
     name="pass1_judge",
-    model="gemini-2.0-flash",
+    model="gemini-3.1-flash",
     instruction="""You are a pairwise evaluator. ...(same criteria as above)...
 Output format: JSON with winner ("A"/"B"/"tie"), confidence (0-1), reasoning.""",
     output_key="pass1_result",
@@ -356,14 +356,14 @@ Output format: JSON with winner ("A"/"B"/"tie"), confidence (0-1), reasoning."""
 
 pass2_agent = LlmAgent(
     name="pass2_judge",  # evaluates with SWAPPED positions
-    model="gemini-2.0-flash",
+    model="gemini-3.1-flash",
     instruction="""...same but note: Response A here was Response B in pass 1...""",
     output_key="pass2_result",
 )
 
 consistency_checker = LlmAgent(
     name="consistency_checker",
-    model="gemini-2.0-flash",
+    model="gemini-3.1-flash",
     instruction="""Read pass1_result and pass2_result from session state.
 Remap pass2 winner (A->B, B->A, tie->tie).
 If mapped winners agree: final_winner = that winner, confidence = average.

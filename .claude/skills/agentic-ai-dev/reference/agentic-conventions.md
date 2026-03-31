@@ -65,7 +65,7 @@ Pre-ship checklist for LangGraph agents. Run through before marking any agent im
 ```
 □ LLM initialized with pinned model version
   □ Anthropic: "claude-sonnet-4-5" (or confirm current stable with MCP)
-  □ Google: "gemini-2.0-flash-exp" (see adk-gemini-prompt-templates.md)
+  □ Google: "gemini-3.1-flash-exp" (see adk-gemini-prompt-templates.md)
   □ OpenAI: confirm version from Context7 docs
 
 □ Embeddings configured (if RAG)
@@ -122,7 +122,7 @@ When writing prompts for agents, choose the template based on the LLM provider:
 | Provider | Model | Prompt structure | Reference |
 |----------|-------|-----------------|-----------|
 | Anthropic (LangChain) | claude-sonnet-4-5 | XML tags: `<context>`, `<task>`, `<thinking>` | `agentic-prompt-engineering.md` |
-| Google (ADK) | gemini-2.0-flash-exp | Markdown `**bold**` + numbered steps | `adk-gemini-prompt-templates.md` |
+| Google (ADK) | gemini-3.1-flash-exp | Markdown `**bold**` + numbered steps | `adk-gemini-prompt-templates.md` |
 | OpenAI (LangChain) | gpt-4o / gpt-5 | `##SECTION##` delimiters + JSON output block | `agentic-prompt-optimization.md` |
 
 For advanced techniques (Constitutional AI, Tree-of-Thoughts, canary rollout, prompt versioning):

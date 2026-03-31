@@ -242,7 +242,7 @@ import hashlib
 class PromptVersion:
     version: str                    # semver: "1.0.0"
     prompt_template: str            # the actual prompt
-    model: str                      # "claude-sonnet-4-5", "gemini-2.0-flash-exp"
+    model: str                      # "claude-sonnet-4-5", "gemini-3.1-flash-exp"
     description: str                # what changed from previous version
     traffic_percent: float = 100.0  # percentage of traffic this version handles
     performance_baseline: Optional[float] = None  # success rate from evaluation
