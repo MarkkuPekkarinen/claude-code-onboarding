@@ -36,6 +36,7 @@ Multi-phase workflow guides for every development process in this workspace. Eac
 | [tailwind-v4-patterns.md](tailwind-v4-patterns.md) | Configure Tailwind v4 in Angular — `@theme`, container queries, OKLCH daisyUI themes, Bento layouts, v3→v4 migration |
 | [ui-ux-design.md](ui-ux-design.md) | Design system selection — style, palette, typography via ui-ux-pro-max database before writing Angular/Flutter UI |
 | [feature-a2ui-renderer.md](feature-a2ui-renderer.md) | Agent-to-UI renderer for Angular |
+| [feature-flutter-genui.md](feature-flutter-genui.md) | Flutter GenUI — conversational AI widget rendering via A2UI protocol |
 | [feature-flutter-mobile.md](feature-flutter-mobile.md) | Flutter 3.41.x / Riverpod / iOS + Android |
 | [flutter-animations.md](flutter-animations.md) | Flutter animations — Rive (interactive state machines) + Lottie (illustrations, loaders) |
 | [mobile-developer.md](mobile-developer.md) | React Native / Native Swift-Kotlin / Mobile CI-CD (Fastlane, Codemagic, EAS) |
