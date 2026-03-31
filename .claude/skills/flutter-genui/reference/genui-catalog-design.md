@@ -159,6 +159,44 @@ builder: (context, properties) {
 },
 ```
 
+## Catalog Granularity — Atomic Design for GenUI
+
+Applying Brad Frost's Atomic Design to GenUI catalog items: atoms → molecules → organisms → templates → pages. The key decision is **what size building blocks to expose to the LLM**.
+
+### The Sweet Spot: Molecules and Organisms
+
+| Granularity | What Happens | Recommendation |
+|-------------|-------------|----------------|
+| **Atoms** (Text, Button, Image) | LLM controls layout, order, alignment — high risk of disjointed "Mr. Potato Head" UIs | Avoid as standalone catalog items |
+| **Molecules** (SearchForm, RatingInput, PhotoUpload) | Layout within the component is fixed. LLM decides *when* and *whether* to show it | **Default choice** — consistent UX with LLM flexibility |
+| **Organisms** (TriageCard, VendorProfile, LeaseSection) | Composed of molecules. LLM picks which organism to display | Good for complex, self-contained UI sections |
+| **Pages** (FullTriageFlow, CompleteOnboarding) | All decisions already made — LLM has nothing to control | Defeats the purpose of GenUI |
+
+**Rule**: Default to molecules and organisms. Use atoms only as children within larger catalog items (via `explicitList`), never as top-level catalog entries the LLM selects independently.
+
+### Property Exposure Calibration
+
+It's not just *which* components to expose — it's *which properties* of each component the LLM controls. Each exposed property is an additional degree of freedom.
+
+| Property Decision | Example | Risk |
+|-------------------|---------|------|
+| LLM controls text content | `label: "Describe the issue"` | Low — this is the point of GenUI |
+| LLM controls color/style | `color: "red"`, `fontSize: 24` | High — bypasses design system, inconsistent brand |
+| LLM controls layout | `alignment: "center"`, `padding: 16` | High — visual inconsistency across sessions |
+| LLM controls behavior | `maxPhotos: 10`, `multiline: true` | Medium — bound by schema validation |
+
+**Rule**: Expose content properties (labels, options, descriptions). Lock down visual properties (colors, spacing, typography) — those come from the design system. Expose behavioral properties only when bounded by schema constraints.
+
+### Iterative Calibration
+
+Getting the catalog right is not a one-off decision — it's ongoing calibration:
+
+1. Start with molecules and organisms as defaults
+2. Watch what the LLM renders in production (log A2UI payloads)
+3. If the LLM assembles atoms poorly → promote to a molecule
+4. If a molecule is too rigid for the use case → expose one more property
+5. If an organism is always used identically → consider making it a template (static)
+
 ## PropertyHarbor Triage Catalog
 
 ### 5 Custom Widget Types
