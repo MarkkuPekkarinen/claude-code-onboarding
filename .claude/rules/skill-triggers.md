@@ -106,6 +106,8 @@ New additions must pass this scan before use:
 | `adk-docs` (uvx mcpdoc) | ✅ Trusted | Read-only doc fetcher |
 | `voicemode` (uvx voice-mode) | ⚠️ Elevated | Uses OpenAI STT/TTS — sends audio to external API |
 | `weaviate-docs` (mcp-remote) | ✅ Trusted | Read-only doc fetcher |
+| `stripe` (mcp.stripe.com) | ✅ Trusted | Official Stripe HTTP MCP, OAuth-authenticated, payment operations |
+| `revenuecat` (mcp.revenuecat.ai) | ✅ Trusted | Official RevenueCat HTTP MCP, OAuth-authenticated, subscription management |
 
 ---
 

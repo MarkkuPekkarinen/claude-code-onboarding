@@ -161,6 +161,32 @@
       ],
       "timeout": 60000,
       "env": {}
+    },
+    "stripe": {
+      "type": "stdio",
+      "disabled": false,
+      "description": "Official Stripe MCP server (@stripe/mcp) — 27 tools: customer management, product/price creation, payment links, invoices, subscriptions, refunds, balance, disputes. Permissions controlled by Restricted API Key (RAK). Use --tools=all for full access or comma-separated tool names to restrict.",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@stripe/mcp",
+        "--tools=all",
+        "--api-key=${STRIPE_SECRET_KEY}"
+      ],
+      "env": {
+        "STRIPE_SECRET_KEY": "${STRIPE_SECRET_KEY}"
+      },
+      "timeout": 60000
+    },
+    "revenuecat": {
+      "type": "http",
+      "disabled": false,
+      "description": "Official RevenueCat MCP server — 26 tools: project/app management, product/entitlement CRUD, offering/package setup. Auth via OAuth (recommended) or API v2 Secret Key header.",
+      "url": "https://mcp.revenuecat.ai/mcp",
+      "headers": {
+        "Authorization": "Bearer ${REVENUECAT_API_V2_SECRET_KEY}"
+      },
+      "timeout": 60000
     }
   }
 }

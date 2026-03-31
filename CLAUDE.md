@@ -78,6 +78,8 @@ Consult official docs via MCP before writing ANY code. Zero tolerance for deprec
 | Critical Reasoning | `.claude/skills/the-fool/` | — | — |
 | Requirements / Feature Spec | `.claude/skills/feature-forge/` | — | — |
 | Brainstorm / Explore Options | — | — | `/brainstorm` |
+| Stripe Payments | `.claude/skills/stripe/` | — | — |
+| RevenueCat Subscriptions | `.claude/skills/revenuecat/` | — | — |
 
 ### Code Review Agents
 

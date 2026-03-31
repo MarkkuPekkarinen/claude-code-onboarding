@@ -2,7 +2,7 @@
 
 > Complete skill catalog for Claude Code Onboarding Kit. Use this to find the right skill for any task.
 >
-> 90 skills across 9 domains. Each skill is loaded with `/skill-name` or via `Skill` tool.
+> ~92 skills across 10 domains. Each skill is loaded with `/skill-name` or via `Skill` tool.
 >
 > **Lazy-load pattern:** Each SKILL.md is a routing document only. Detailed patterns live in `reference/` files within each skill directory. Load the reference file explicitly when the detail is needed — do not expect it to be loaded automatically.
 
@@ -131,6 +131,10 @@
 - **sast-configuration**: Static Application Security Testing (SAST) configuration skill for setting up security scanning, configuring Semgrep rules, running SAST in CI/CD, or writing custom security rules.
 - **security-reviewer**: Security vulnerability detection and remediation skill providing OWASP Top 10 checklists, secret scanning patterns, and security review methodology. Includes `owasp-infrastructure-baseline.md` (15 OWASP-mapped infra controls: encryption, IAM, network hardening, audit logging) for IaC and cloud config reviews. Includes `agent-guardrails-checklist.md` (12-layer AI agent guardrail pipeline: prompt injection defense, output validation, async audit logging, Constitutional AI) for LangGraph agents and agentic AI services.
 - **threat-modeling**: Threat modeling skill for STRIDE analysis, attack tree construction, and security requirement extraction when designing new features or reviewing architecture.
+
+### Payments & Subscriptions (2 skills)
+- **stripe**: Use when integrating Stripe payments — subscription billing, customer management, payment links, webhooks, Stripe Connect vendor payouts, or invoicing. Covers 27 MCP tools (read-only, create, modify), webhook patterns, idempotency keys, PCI compliance, and Restricted API Key configuration. Load before writing any Stripe API code.
+- **revenuecat**: Use when integrating RevenueCat in-app subscriptions — entitlements, offerings, paywalls, purchases_flutter SDK, or Stripe backend sync. Covers 26 MCP tools, Flutter client patterns (Riverpod providers), server-side entitlement verification, and webhook lifecycle handlers. Load before writing any RevenueCat or IAP code.
 
 ### Workflow & Process (24 skills)
 - **changelog-generator**: Used when preparing releases, writing app store updates, or maintaining a CHANGELOG.md by parsing conventional commits and outputting polished release notes.
@@ -352,6 +356,13 @@ Loaded from `rules/titan-methodology.md`. Dual-lens scoring for product decision
 4. **terraform-specialist** agent — Implement CUD reservations and billing budgets as Terraform
 5. **security-reviewer** agent — Review IAM for least-privilege on billing and cost exports
 
+### Payment & Subscription Integration (Stripe + RevenueCat)
+1. **stripe** — Load skill, configure Stripe MCP, implement webhook handlers and idempotency
+2. **revenuecat** — Load skill, configure RevenueCat MCP, set up entitlements and offerings
+3. **python-dev** — Backend webhook endpoints, server-side entitlement verification
+4. **flutter-mobile** — Payment Sheet UI, RevenueCat SDK integration, paywall screens
+5. **security-reviewer** agent — PCI compliance, webhook signature verification, key management
+
 ### Security Hardening Session
 1. **threat-modeling** — STRIDE analysis, DFD mapping, risk scoring
 2. **sast-configuration** — Configure Semgrep/Bandit/gosec rules
@@ -392,6 +403,9 @@ Loaded from `rules/titan-methodology.md`. Dual-lens scoring for product decision
 - **Android Google Play release / staged rollout** -> gpd-release-flow (+ gpd-cli-usage, gpd-id-resolver)
 - **App Store signing / certificates / provisioning** -> asc-signing-setup
 - **TestFlight crash investigation** -> asc-crash-triage
+- **Stripe payment integration / billing / Connect payouts** -> stripe
+- **RevenueCat in-app purchases / entitlements / paywalls** -> revenuecat
+- **Full payment stack (Stripe + RevenueCat)** -> stripe + revenuecat + python-dev + flutter-mobile
 - **MCP server integration** -> mcp-builder
 - **Database schema** -> database-schema-designer
 - **Slow PostgreSQL query / N+1 / OFFSET pagination** -> sql-optimization-patterns
@@ -507,6 +521,9 @@ weaviate + vector-database + weaviate-cookbooks + agentic-ai-dev + weaviate-sche
 ### AI Agent Stack
 agentic-ai-dev + agentic-ai-coding-standard + python-dev + security-reviewer
 
+### Payment & Subscription Stack
+stripe + revenuecat + python-dev + flutter-mobile + security-reviewer
+
 ### Complete Security Audit
 security-reviewer + sast-configuration + threat-modeling + code-reviewer
 
@@ -583,6 +600,12 @@ a2ui-angular + angular-spa + google-adk + security-reviewer
 - "Build a Query Agent chatbot on Weaviate" -> weaviate-cookbooks + agentic-ai-dev
 - "Review my pgvector migration for correctness" -> pgvector-schema-reviewer agent
 - "Set up Weaviate Cloud and load example data" -> weaviate → `/weaviate:quickstart`
+- "Set up Stripe subscription billing with webhooks" -> stripe + python-dev + security-reviewer
+- "Integrate RevenueCat IAP in Flutter with Riverpod" -> revenuecat + flutter-mobile + riverpod-patterns
+- "Build Stripe Connect vendor payout flow" -> stripe + python-dev
+- "Check RevenueCat entitlements via MCP" -> revenuecat (MCP tools: list_entitlements, get_customer)
+- "Add Stripe + RevenueCat webhook handlers" -> stripe + revenuecat + python-dev + security-reviewer
+- "Build a paywall screen in Flutter" -> revenuecat + flutter-mobile + ui-standards-tokens
 - "Design type-safe generic DTOs for NestJS with DeepPartial" -> typescript-advanced-types + nestjs-api
 - "Set up monorepo TypeScript with shared types between Angular and NestJS" -> typescript-expert + angular-spa + nestjs-api
 - "Design type-safe NestJS decorators and strict config hierarchy" -> typescript-pro + nestjs-coding-standard
@@ -670,5 +693,7 @@ a2ui-angular + angular-spa + google-adk + security-reviewer
 | typescript-advanced-types | backend | specialist | implementation | code |
 | typescript-expert | backend | specialist | analysis | report |
 | typescript-pro | backend | specialist | design | code |
+| stripe | payments | specialist | implementation | code |
+| revenuecat | payments | specialist | implementation | code |
 | rules-distill | workflow | analyst | governance | report |
 | codebase-onboarding | quality | specialist | analysis | document |

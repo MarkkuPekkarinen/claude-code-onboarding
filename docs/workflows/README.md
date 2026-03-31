@@ -56,6 +56,15 @@ Multi-phase workflow guides for every development process in this workspace. Eac
 
 ---
 
+## Payments & Subscriptions
+
+| Workflow | When to Use |
+|----------|------------|
+| [stripe-payment-integration.md](stripe-payment-integration.md) | Stripe subscription billing, payment links, Connect vendor payouts, webhooks |
+| [revenuecat-subscription-integration.md](revenuecat-subscription-integration.md) | RevenueCat in-app purchases, entitlements, paywalls, mobile subscription management |
+
+---
+
 ## Quality & Testing
 
 | Workflow | When to Use |
