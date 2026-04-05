@@ -475,6 +475,7 @@ Loaded from `rules/titan-methodology.md`. Dual-lens scoring for product decision
 - **Create a new skill** -> writing-skills
 - **Find a domain name** -> domain-finder
 - **Get copy-paste agent invocation templates** -> `docs/workflows/agent-activation-prompts.md`
+- **Set up team memory sharing (claude-mem-sync)** -> `/setup-team-memory` + `docs/workflows/setup-team-memory.md`
 
 ---
 

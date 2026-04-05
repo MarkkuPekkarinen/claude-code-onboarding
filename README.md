@@ -61,6 +61,7 @@ Clone it, install Claude Code, and start building.
   - [5. First-time Using Claude Code](#5-first-time-using-claude-code)
   - [6. Install Claude-Mem (Persistent Memory) *(Optional)*](#6-install-claude-mem-persistent-memory-optional)
     - [What Claude-Mem Does](#what-claude-mem-does)
+    - [6a. Set Up Team Memory Sharing *(Optional)*](#6a-set-up-team-memory-sharing-optional)
   - [7. Enable Voice Mode *(Optional)*](#7-enable-voice-mode-optional)
     - [One-Prompt Setup](#one-prompt-setup)
     - [Manual Setup](#manual-setup)
@@ -140,6 +141,9 @@ Clone it, install Claude Code, and start building.
     - [Phase 3: Feature Development](#phase-3-feature-development)
     - [Phase 4: Review \& Enforce Quality](#phase-4-review--enforce-quality)
     - [Phase 5: Evolve Your Setup](#phase-5-evolve-your-setup)
+  - [17a. AI-DLC — Full Development Lifecycle Workflow *(Optional)*](#17a-ai-dlc--full-development-lifecycle-workflow-optional)
+    - [How It Works](#how-it-works)
+    - [How It Fits With This Kit](#how-it-fits-with-this-kit)
   - [18. Security Considerations](#18-security-considerations)
     - [What Goes to Anthropic's API](#what-goes-to-anthropics-api)
     - [MCP Server Credentials](#mcp-server-credentials)
@@ -354,6 +358,26 @@ Verify with: Inside a Claude Code CLI session, run:
 ```
 > Do you have any memory from previous sessions?
 ```
+
+### 6a. Set Up Team Memory Sharing *(Optional)*
+
+Once each developer has claude-mem installed individually, **[claude-mem-sync](https://github.com/lopadova/claude-mem-sync)** lets the team share selected observations (decisions, bug fixes, discoveries) across a shared GitHub repo — so your team's collective knowledge grows over time.
+
+Run the one-shot setup command inside a Claude Code session:
+
+```
+> /setup-team-memory
+```
+
+This command:
+- Installs and configures `claude-mem-sync`
+- Creates `.claude/memories/` folder structure in the repo
+- Adds a GitHub Actions workflow that auto-merges contributions on push
+- Updates `.gitignore` to keep raw contributions local
+- Schedules weekly exports (Fridays 4pm) and imports (Saturdays 9am)
+- Prints a full pass/fail verification table at the end
+
+Safe to re-run — skips any step already completed. Each developer runs it once on their machine; the shared infrastructure files (workflow, memories folder) are committed once and shared via the repo.
 
 ## 7. Enable Voice Mode *(Optional)*
 
@@ -2877,6 +2901,36 @@ Over time, customize everything based on what you learn.
 - **Remove components** you don't use — fewer MCP servers and skills means more context budget for actual work
 
 The setup is a living product. Treat it like code: version-controlled, PR-reviewed, continuously improved.
+
+## 17a. AI-DLC — Full Development Lifecycle Workflow *(Optional)*
+
+> **Credit:** Adapted from [awslabs/aidlc-workflows](https://github.com/awslabs/aidlc-workflows) by AWS Labs — an open-source AI-assisted development methodology originally built for Amazon Q Developer, Cursor, Cline, and Kiro IDE.
+
+For non-trivial features, `/aidlc` gives Claude a structured, approval-gated development lifecycle instead of jumping straight to code.
+
+```
+> /aidlc
+```
+
+### How It Works
+
+AI-DLC runs three phases — Inception (plan), Construction (build), Operations (future):
+
+**Inception** gathers requirements, writes user stories, and plans which stages to run. **Construction** works through each unit of work: functional design → NFR requirements → infrastructure design → code generation. Every phase ends with an explicit approval gate — Claude won't advance until you confirm.
+
+The workflow is **adaptive**: a simple bug fix skips most stages and goes straight to code. A new multi-service feature runs the full lifecycle. Claude proposes the execution plan at the Workflow Planning gate and you can override any stage.
+
+An append-only `aidlc-docs/audit.md` logs every interaction verbatim with ISO timestamps. `aidlc-docs/aidlc-state.md` tracks stage progress so sessions resume exactly where they left off.
+
+### How It Fits With This Kit
+
+`/aidlc` doesn't replace skills, agents, or rules — it **orchestrates on top of them**. CLAUDE.md project constraints always win. During Construction, the same stack agents and skills this kit ships with are activated per stage — `architect` for design, `security-reviewer` for NFR, the appropriate stack agent (`flutter-mobile`, `nestjs-api`, etc.) for code generation.
+
+Two opt-in extensions ship in `.aidlc-rule-details/extensions/`:
+- **security/baseline** — enforces security constraints at every construction stage
+- **testing/property-based** — adds property-based testing patterns to code generation
+
+Full reference: `docs/workflows/aidlc.md`
 
 ## 18. Security Considerations
 
