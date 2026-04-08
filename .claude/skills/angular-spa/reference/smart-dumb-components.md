@@ -15,7 +15,7 @@ A **smart component** owns state, coordinates data flow, and delegates rendering
 - Owns signals (`signal()`, `computed()`)
 - Passes data **down** to children via `input()`
 - Receives events **up** from children via `output()`
-- Lives in `pages/` or `features/` directories
+- Lives in `features/` directory
 
 ### Dumb (Presentational) Component
 
@@ -46,7 +46,7 @@ Is this component reused in 2+ places OR is it a leaf UI element?
                   - own state with signal()
                   - inject services
                   - compose dumb children
-                  - place in pages/ or features/
+                  - place in features/
           NO  → Prefer dumb
                   - escalate to smart ONLY if unavoidable local state
                   - document WHY it cannot be dumb
@@ -59,7 +59,7 @@ Is this component reused in 2+ places OR is it a leaf UI element?
 ### Smart Component (page-level container)
 
 ```typescript
-// pages/properties/properties-page.component.ts
+// features/properties/properties-page.component.ts
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { resource } from '@angular/core';
 import { PropertyCardComponent } from '../../shared/components/property-card/property-card.component';
@@ -215,7 +215,7 @@ export class AccordionItemComponent {
 ✅ Should be the ONLY component in the chain that calls inject()
 
 ❌ NEVER put smart components in shared/components/
-   Smart components belong in pages/ or features/ only
+   Smart components belong in features/ only
 ❌ NEVER duplicate data-fetching logic across multiple smart components
    Extract to a shared service instead
 ```
@@ -226,13 +226,7 @@ export class AccordionItemComponent {
 
 ```
 web/property-harbor/src/app/
-├── pages/                          ← Smart components (page roots — own state, inject services)
-│   └── <page-name>/
-│       ├── <page-name>.component.ts
-│       ├── <page-name>.component.html   (if template is large)
-│       └── <page-name>.component.spec.ts
-│
-├── features/                       ← Smart components (feature-level — own state, inject services)
+├── features/                       ← Smart components (own state, inject services)
 │   └── <feature-name>/
 │       ├── <feature-name>.component.ts
 │       └── <feature-name>.component.spec.ts
@@ -264,7 +258,7 @@ export class SearchFilterComponent {
 }
 
 // ✅ Correct: smart parent owns state, passes down via input(), receives changes via output()
-// pages/search/search-page.component.ts
+// features/search/search-page.component.ts
 @Component({ selector: 'ph-search-page' })
 export class SearchPageComponent {
   private filterService = inject(FilterService); // ✅ smart component injects
@@ -356,10 +350,10 @@ Before committing any component:
   → grep -c "inject(" <component-file> must return 0
 
 □ Does it call inject()?
-  → MUST live in pages/ or features/, never in shared/components/
+  → MUST live in features/, never in shared/components/
 
 □ Does it call HTTP (HttpClient, resource(), service methods)?
-  → MUST live in pages/ or features/
+  → MUST live in features/
 
 □ Does it use input.required<T>()?
   → ✅ Dumb-safe — correct API for mandatory inputs

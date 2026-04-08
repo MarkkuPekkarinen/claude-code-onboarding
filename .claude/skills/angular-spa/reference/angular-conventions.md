@@ -100,7 +100,7 @@ Every component must be classified before implementation:
 
 | Type | Location | Can inject? | Can own state? | Receives data via |
 |------|----------|-------------|----------------|-------------------|
-| **Smart (Container)** | `pages/`, `features/` | YES | YES | Services, `resource()` |
+| **Smart (Container)** | `features/` | YES | YES | Services, `resource()` |
 | **Dumb (Presentational)** | `shared/components/` | NO | Local UI only | `input()` only |
 
 Rule: If a component lives in `shared/components/`, it MUST have zero `inject()` calls.
