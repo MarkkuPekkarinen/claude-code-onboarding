@@ -77,6 +77,58 @@ Future<Result<User>> getUser(String id) async {
   }
 }
 
+## DTO → Domain Model Mapper Pattern
+
+API models (DTOs) live in the data layer and are never passed to the UI or ViewModels. A mapper method converts them to domain entities at the repository boundary.
+
+**Rule:** UI and ViewModels receive domain entities only — never raw API models.
+**Location:** Mappers live in the data layer (`data/models/`) alongside the API model class.
+
+```dart
+// lib/features/properties/data/models/property_api_model.dart
+
+/// DTO — represents the raw API/Firestore document shape.
+/// Never expose this to the presentation layer.
+class PropertyApiModel {
+  final String id;
+  final String address;
+  final int bedroomCount;
+  final String statusCode; // raw string from API, e.g. "active"
+
+  const PropertyApiModel({
+    required this.id,
+    required this.address,
+    required this.bedroomCount,
+    required this.statusCode,
+  });
+
+  factory PropertyApiModel.fromJson(Map<String, dynamic> json) =>
+      PropertyApiModel(
+        id: json['id'] as String,
+        address: json['address'] as String,
+        bedroomCount: json['bedroom_count'] as int,
+        statusCode: json['status'] as String,
+      );
+
+  /// Mapper — converts DTO to the domain entity.
+  /// Called inside the repository; never called from a ViewModel or widget.
+  Property toDomain() => Property(
+        id: id,
+        address: address,
+        bedroomCount: bedroomCount,
+        status: PropertyStatus.fromCode(statusCode),
+      );
+}
+```
+
+The repository calls `toDomain()` before returning to callers:
+```dart
+Future<Result<Property>> getProperty(String id) async {
+  final doc = await _firestore.collection('properties').doc(id).get();
+  return Success(PropertyApiModel.fromJson(doc.data()!).toDomain());
+}
+```
+
 // Usage in provider
 @riverpod
 class UserDetail extends _$UserDetail {
@@ -945,3 +997,20 @@ xcrun simctl openurl booted "yourapp://open/products/abc-123"
 - **Validate every path parameter** from deep links — treat them as untrusted user input
 - **Never expose sensitive routes** (admin, payment confirmation) via deep links
 - **Test both schemes** in CI: verified HTTPS link + custom scheme fallback
+
+---
+
+## Smart vs Dumb Widget Pattern
+
+Every widget has a classification. Enforce it before writing any widget.
+
+| Type | Base class | ref usage | Location | Portable? |
+|------|-----------|-----------|----------|-----------|
+| **Smart (Container)** | `ConsumerWidget` / `ConsumerStatefulWidget` | `ref.watch()` in build, `ref.read()` in callbacks | `screens/` | No |
+| **Dumb (Presentational)** | `StatelessWidget` | NONE | `shared_ui/`, `widgets/` | Yes |
+
+**Core rule:** If a widget lives in `packages/shared_ui/`, it MUST extend `StatelessWidget` and MUST NOT import `flutter_riverpod`.
+
+**ref placement rule:** `ref.watch()` belongs in `build()` only. `ref.read()` belongs in callbacks and event handlers only. Never swap them.
+
+Full pattern guide, decision tree, and Riverpod enforcement gates: `smart-dumb-widgets.md`

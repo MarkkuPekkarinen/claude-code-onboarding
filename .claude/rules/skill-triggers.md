@@ -98,7 +98,7 @@ New additions must pass this scan before use:
 | `firebase` (npx firebase-tools mcp) | ✅ Trusted | Scoped to authenticated Firebase project |
 | `context7` (npx @upstash/context7-mcp) | ✅ Trusted | Read-only doc fetcher |
 | `dart-mcp-server` (dart mcp-server) | ✅ Trusted | Local Dart/Flutter tooling |
-| `langchain-docs` (docs.langchain.com/mcp) | ✅ Trusted | Read-only doc fetcher |
+| `langchain-docs` (docs.langchain.com/mcp) | ✅ Trusted | Read-only doc fetcher — ⛔ BANNED in PropertyHarbor — all AI code uses Google ADK only |
 | `postgres` (npx @modelcontextprotocol/server-postgres) | ✅ Trusted | Read-only DB queries via connection string |
 | `docker` (npx docker-mcp) | ⚠️ Elevated | Can manage containers — confirm scope per use |
 | `xcodebuild` (xcodebuildmcp) | ✅ Trusted | Local Xcode build tooling |
@@ -108,6 +108,7 @@ New additions must pass this scan before use:
 | `weaviate-docs` (mcp-remote) | ✅ Trusted | Read-only doc fetcher |
 | `stripe` (mcp.stripe.com) | ✅ Trusted | Official Stripe HTTP MCP, OAuth-authenticated, payment operations |
 | `revenuecat` (mcp.revenuecat.ai) | ✅ Trusted | Official RevenueCat HTTP MCP, OAuth-authenticated, subscription management |
+| `drawio` (mcp.draw.io) | ✅ Trusted | Official draw.io HTTP MCP App Server, read-only diagram creation — no auth required |
 
 ---
 

@@ -1,4 +1,54 @@
+> **Official Angular+Tailwind guide:** https://angular.dev/guide/tailwind
+
 # TailwindCSS v4.x Configuration
+
+## Angular Official Setup (from angular.dev)
+
+Angular's official guide (https://angular.dev/guide/tailwind) recommends:
+
+### Automated Setup (recommended)
+
+```bash
+ng add tailwindcss
+```
+
+This single command installs dependencies, creates `.postcssrc.json`, and imports Tailwind into your styles automatically. Use this for new projects.
+
+### Manual Setup
+
+```bash
+npm install tailwindcss @tailwindcss/postcss postcss
+```
+
+Create `.postcssrc.json` in project root:
+```json
+{
+  "plugins": {
+    "@tailwindcss/postcss": {}
+  }
+}
+```
+
+For CSS projects, add to `src/styles.css`:
+```css
+@import 'tailwindcss';
+```
+
+For SCSS projects, add to `src/styles.scss`:
+```scss
+@use 'tailwindcss';
+```
+
+### Differences from our PropertyHarbor setup
+
+| Angular Official Guide | PropertyHarbor (this project) | Reason |
+|------------------------|-------------------------------|--------|
+| `ng add tailwindcss` automated | Manual setup | More control over daisyUI integration |
+| SCSS `@use 'tailwindcss'` supported | CSS only (`src/styles.css`) | Sass intercepts `@import`/`@theme`/`@plugin` — CSS is required |
+| `@import 'tailwindcss'` | `@import "tailwindcss"` + `@import "daisyui/daisyui.css"` | daisyUI added as direct CSS import |
+| No mention of `@source` | `@source "./**/*.ts"` required | Angular build pipeline doesn't auto-scan TS inline templates |
+
+> Angular 21 does **not** use Tailwind v4 by default — it must be installed explicitly via `ng add tailwindcss` or manual setup. The `ng add` command installs Tailwind v4 when run in Angular 17+ projects using the `@angular/build:application` (esbuild) builder.
 
 ## CSS-Native Configuration (No tailwind.config.js)
 

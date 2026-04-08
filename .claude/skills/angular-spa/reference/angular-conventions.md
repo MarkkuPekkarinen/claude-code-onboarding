@@ -1,4 +1,73 @@
+> **Canonical source:** https://angular.dev/style-guide — PropertyHarbor strictly follows this guide. When in doubt, the official style guide takes precedence over any convention listed here.
+
 # Angular Conventions & Project Structure
+
+## Style Guide Quick Reference (must-follow rules)
+
+Source: https://angular.dev/style-guide
+
+### File Naming
+
+- Separate words in file names with hyphens: `user-profile.component.ts`, not `UserProfile.component.ts`
+- File name must reflect the primary class/concept — avoid `helpers.ts`, `utils.ts`, `common.ts`
+- Test files use `.spec.ts` matching the source: `user-profile.component.spec.ts`
+- Component file group shares the same base name: `user-profile.ts`, `user-profile.html`, `user-profile.css`
+- Named pattern: `<feature>.<type>.ts` — e.g. `hero-list.component.ts`, `auth.service.ts`, `app.routes.ts`
+
+### Class Naming
+
+- Components: `UpperCamelCase` + `Component` suffix — `UserProfileComponent`
+- Services: `UpperCamelCase` + `Service` suffix — `AuthService`, `UserService`
+- Directives: `UpperCamelCase` + `Directive` suffix — `TooltipDirective`
+- Pipes: `UpperCamelCase` + `Pipe` suffix — `DateFormatPipe`
+- Guards: `UpperCamelCase` + `Guard` suffix — `AuthGuard`
+- Interfaces: `UpperCamelCase`, no `I` prefix — `User`, not `IUser`
+- Enums: `UpperCamelCase` — `UserRole`
+
+### One Component Per File
+
+Each file must focus on a single concept: one component, one service, one directive, one pipe per file. Never combine multiple components in the same `.ts` file.
+
+### Folder / Feature Structure
+
+Organize by **feature area**, not by code type. Avoid flat `components/`, `directives/`, `services/` directories.
+
+```
+src/app/
+├── core/             # Singletons: auth, interceptors, guards (imported once in AppModule/config)
+├── shared/           # Reusable components, pipes, directives used across features
+└── features/
+    ├── show-times/   # Feature folder — all related files co-located
+    │   ├── show-times.component.ts
+    │   ├── show-times.component.html
+    │   ├── show-times.component.css
+    │   └── show-times.component.spec.ts
+    └── reserve-tickets/
+```
+
+Co-locate closely related files (component + template + styles + spec) in the same directory.
+
+### `@Injectable` / Dependency Injection
+
+- Use `providedIn: 'root'` on `@Injectable` for singleton services — avoids manual registration
+- Prefer the `inject()` function over constructor parameter injection for clarity and tree-shakability
+- Group injected dependencies at the top of class declarations before methods
+
+### Selector / Prefix Conventions
+
+- Component selectors: use a consistent app-specific prefix (e.g., `app-`, `ph-` for PropertyHarbor) in `kebab-case`
+- Directive selectors: `camelCase` attribute selector with prefix: `[phTooltip]`
+- Never use generic selectors like `div`, `span`, `button` as component selectors
+
+### Class Member Organization
+
+Angular-specific members first: inputs → outputs → queries → injected deps → lifecycle hooks → public methods → protected/private methods.
+
+Use `protected` for template-only members; `readonly` for properties initialized by Angular (`input()`, `model()`, `viewChild()`).
+
+### Event Handler Naming
+
+Name handlers for the **action performed**, not the triggering event: `saveUserData()`, not `handleClick()` or `onButtonClick()`.
 
 ## TypeScript
 
@@ -24,6 +93,18 @@
 - Do NOT use `@HostBinding`/`@HostListener` — use the `host` object in the decorator
 - Do NOT use `ngClass`/`ngStyle` — use `class`/`style` bindings
 - All interactive elements must have loading, error, empty, and success states
+
+### Component Classification (Smart vs Dumb)
+
+Every component must be classified before implementation:
+
+| Type | Location | Can inject? | Can own state? | Receives data via |
+|------|----------|-------------|----------------|-------------------|
+| **Smart (Container)** | `pages/`, `features/` | YES | YES | Services, `resource()` |
+| **Dumb (Presentational)** | `shared/components/` | NO | Local UI only | `input()` only |
+
+Rule: If a component lives in `shared/components/`, it MUST have zero `inject()` calls.
+Full pattern guide: `smart-dumb-components.md`
 
 ## Templates
 

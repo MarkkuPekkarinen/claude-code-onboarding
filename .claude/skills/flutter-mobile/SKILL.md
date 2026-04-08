@@ -34,11 +34,35 @@ cd my_app
 # Add core dependencies
 flutter pub add flutter_riverpod riverpod_annotation
 flutter pub add freezed_annotation json_annotation go_router firebase_core cloud_firestore firebase_auth
+flutter pub add dio
 flutter pub add dev:riverpod_generator dev:freezed dev:json_serializable dev:build_runner dev:mocktail
 
 # Run code generation
 dart run build_runner build --delete-conflicting-outputs
 ```
+
+## Melos Workspace Commands
+
+In a Melos monorepo, use these commands at the workspace root:
+- `melos bootstrap` — installs all Flutter workspace dependencies (run at root, NOT `flutter pub get`)
+- `melos run test` — runs tests across all packages
+- `melos run build_runner` — runs code generation across all packages
+
+## Shared Packages (monorepo pattern)
+
+In a Melos workspace, individual apps reference shared packages by path rather than publishing them. Example:
+```yaml
+dependencies:
+  <shared_ui_package>:
+    path: ../../packages/<shared_ui_package>
+  <shared_core_package>:
+    path: ../../packages/<shared_core_package>
+```
+Do NOT create a `lib/design_system/` directory in individual apps — shared UI components belong in the workspace's shared UI package.
+
+## Dio HTTP Client (monorepo pattern)
+
+In a Melos workspace, place the shared Dio instance with auth + retry interceptors in the shared core package's providers directory. Do NOT create new Dio instances in individual features.
 
 ## Before Writing Any UI Code
 
@@ -82,6 +106,8 @@ Read [reference/flutter-performance-ux.md](reference/flutter-performance-ux.md) 
 Read [reference/flutter-design-polish.md](reference/flutter-design-polish.md) — Glassmorphism, premium cards, dark/light themes, gradients
 Read [reference/accessibility-audit-checklist.md](reference/accessibility-audit-checklist.md) — WCAG 2.1 audit checklist (used by `accessibility-auditor` agent)
 Read [reference/flutter-security-hardening.md](reference/flutter-security-hardening.md) — Security hardening & privacy compliance (used by `flutter-security-expert` agent)
+Read [reference/smart-dumb-widgets.md](reference/smart-dumb-widgets.md) — Smart (ConsumerWidget) vs Dumb (StatelessWidget) pattern, ref.watch/read placement rules, decision tree, Riverpod enforcement gates
+Read [reference/flutter-use-case-layer.md](reference/flutter-use-case-layer.md) — When to add a use case, when not to, file location, example with two repositories, unit testing with fakes
 
 ## Documentation Sources
 
@@ -272,6 +298,10 @@ After writing Dart code, dispatch these reviewer agents:
 - `riverpod-reviewer` — state management, provider types, AsyncValue handling
 - `flutter-security-expert` — secure storage, certificate pinning, data protection
 - `accessibility-auditor` — WCAG 2.1 compliance, Semantics widgets, touch targets
+
+Pre-submit checks (smart/dumb pattern):
+- [ ] `shared_ui/` widgets extend `StatelessWidget` — zero ref/ConsumerWidget usage
+- [ ] `ref.watch()` only in `ConsumerWidget` `build()`; `ref.read()` only in callbacks
 
 ## Templates Reference
 

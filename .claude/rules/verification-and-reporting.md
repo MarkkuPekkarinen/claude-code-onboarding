@@ -199,6 +199,8 @@ Before declaring any workflow type complete, the following gates must pass. Thes
 - [ ] Touch targets >= 48dp (Flutter) / 44px (Angular) for interactive elements
 - [ ] `/lint-design-system` run with zero violations
 - [ ] Exception markers (`// ignore-design: [reason]`) reviewed and justified
+- [ ] Angular: `shared/components/` components have zero `inject()` calls (dumb rule enforced)
+- [ ] Flutter: `packages/shared_ui/` widgets extend `StatelessWidget` — no `ConsumerWidget` (dumb rule enforced)
 
 ### Release / Merge Gate
 - [ ] `/review-code` verdict = **APPROVE** (NEEDS_REVIEW requires written justification in PR; REJECT = hard block)

@@ -105,6 +105,13 @@ export class UserService {
 - Use environment variables for API URLs
 - Follow CRUD naming: `getAll`, `getById`, `create`, `update`, `delete`
 
+### DTO vs Domain Model (Angular services)
+// Services return domain models, not raw API shapes.
+// If the API response shape differs from what components need, transform inside the service.
+// For simple marketing site calls this is usually unnecessary.
+// For complex data: define a separate ApiResponseDto interface, add a private mapper method.
+// Components and templates NEVER import API response types directly.
+
 ---
 
 ## Lazy Routes Template

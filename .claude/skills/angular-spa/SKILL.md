@@ -16,6 +16,10 @@ last-reviewed: "2026-03-14"
 
 **NO ANGULAR CODE WITHOUT READING `reference/angular-conventions.md` FIRST — conventions, folder structure, and daisyUI token rules are all there**
 
+**STYLE LAW:** Strictly follow https://angular.dev/style-guide for ALL naming, file structure, and code organization. See `reference/angular-conventions.md` for the quick reference.
+
+**ANIMATION LAW (web/property-harbor):** Use `@angular/animations` for ALL interactive animations. Never raw CSS transitions on stateful elements. See `reference/angular-animations.md`.
+
 # Angular 21.x SPA Development Skill
 
 > **Tech Stack**: Angular 21+, TailwindCSS 4.x, daisyUI 5.5.5
@@ -34,6 +38,7 @@ Before generating code, consult these sources for current syntax and APIs:
 | Angular v21 | `https://angular.dev/assets/context/llms-full.txt` | Static docs bundle — API reference, deprecated features |
 | daisyUI v5.5.5 | `https://daisyui.com/llms.txt` | Component reference, color system, themes |
 | TailwindCSS / RxJS | `Context7` MCP | Latest syntax, utilities, operators |
+| Angular + Tailwind official guide | `https://angular.dev/guide/tailwind` | Canonical install steps, `ng add tailwindcss`, build integration |
 
 Cross-check all Angular APIs and CLI flags against fetched docs — do NOT use deprecated or removed features.
 
@@ -81,11 +86,20 @@ Detailed patterns are in `reference/`:
 ### UI/UX & Design System
 - `tailwind-v4-config.md` — TailwindCSS 4.x setup, breaking changes from v3
 - `daisyui-v5-components.md` — Full component reference, color system, themes, quick setup patterns
-- `angular-ui-form-components.md` — Form fields and validation components
-- `angular-ui-data-components.md` — Cards, tables, skeletons, empty states, navigation
+- `angular-forms-fields.md` — Input fields, select, textarea, checkbox, radio patterns
+- `angular-forms-validation.md` — Validation patterns, error messages, async validators
+- `angular-forms-advanced.md` — Multi-step forms, dynamic fields, form arrays
+- `angular-ui-tables.md` — Table and grid patterns with sorting, filtering, pagination
+- `angular-ui-lists.md` — List, card, and feed UI patterns
+- `angular-ui-navigation.md` — Navigation, breadcrumbs, tabs, and sidebar patterns
 - `angular-ui-feedback-components.md` — Toasts, dialogs, themes, error handling, utilities
 - `accessibility-checklist.md` — WCAG 2.1 AA checklist, ARIA patterns, test protocol
-- `animations.md` — Timing standards, keyframes, utility classes
+- `angular-aria.md` — Angular CDK accessible headless components (FocusTrap, ListKeyManager, LiveAnnouncer, Accordion, Combobox)
+- `component-harnesses.md` — Angular CDK component harnesses for stable UI testing
+- `testing-vitest.md` — Vitest setup, zoneless TestBed, testing Signals and resource(), migration from Karma
+- `e2e-cypress.md` — Cypress E2E setup, component testing, custom commands, data-cy convention
+- `smart-dumb-components.md` — Smart (container) vs Dumb (presentational) component pattern, decision tree, signal-based examples, hard rules, file location enforcement
+- `angular-animations.md` — Angular Animations API (`animate.enter`/`animate.leave`, `trigger()`, `state()`, `keyframes()`, `stagger()`), timing standards, PropertyHarbor animation rules
 - `user-research.md` — Persona templates, journey mapping, usability testing, SUS survey
 
 ## Anti-Patterns — What to Avoid
@@ -196,3 +210,19 @@ export class ThemeService {
 ```
 
 daisyUI v5.5.5 uses the `data-theme` attribute on `<html>`. All daisyUI semantic classes switch automatically — no additional CSS is needed per component.
+
+## Verify
+
+```bash
+ng serve                   # Starts at http://localhost:4200 — no errors in terminal
+ng test --watch=false      # All unit tests pass
+ng build                   # Exit code 0, no NG build errors
+npx ng lint                # Zero lint violations
+```
+
+- [ ] App serves without console errors
+- [ ] All Vitest unit tests pass (>90% coverage enforced)
+- [ ] Production build completes successfully
+- [ ] No TypeScript errors (`tsc --noEmit`)
+- [ ] Shared components in `shared/components/` have zero `inject()` calls (dumb rule)
+- [ ] Service-injecting components live in `pages/` or `features/` (smart rule)
