@@ -77,7 +77,7 @@ If accomplishing a single user intent requires more than 3 sequential tool calls
 | **Tool Explosion** | One tool per API endpoint (50+ tools) | Consolidate by user intent |
 | **Atomic Obsession** | Every field is a separate tool call | Bundle related operations |
 | **Developer-First Descriptions** | "Executes POST /api/v1/users" | "Create a new user account with name and email" |
-| **Missing Examples** | No usage examples in descriptions | Add 1-2 example inputs/outputs per tool |
+| **Missing Examples** | No usage examples in descriptions | Every tool needs `input_example`, `output_example`, and `common_mistakes` in its description — LLMs need examples 10× more than humans do |
 | **Auto-Generation Without Curation** | OpenAPI -> tools without review | Curate: merge, rename, add context |
 | **REST Trap** | CRUD maps 1:1 to tools | Design around user workflows, not endpoints |
 | **Context Window Neglect** | Tools return 50KB JSON blobs | Paginate, summarize, progressive disclosure |
@@ -93,196 +93,87 @@ Design tools by mapping user intent:
 ### When to Split vs Combine Tools
 
 Split a tool into multiple when:
-- **Safety Boundary**: Read vs write operations need different authorization
+- **Safety Boundary**: Read vs write operations need different authorization. Keep `delete_user_safe` (marks inactive, recoverable) separate from `delete_user_permanent` (GDPR erasure, irreversible). A hallucinated `permanent: true` flag with a consolidated tool destroys data — split these.
 - **Context Boundary**: Tool would need >5 unrelated parameters
 - **Logic Boundary**: Handler exceeds ~200 lines or has completely different error paths
+- **Output Format Boundary**: Keep `get_summary` (100 tokens, quick reference) separate from `get_full_detail` (2,000 tokens, complete history). Consolidating with a `detail_level` parameter forces the agent to reason about context budget — keep different output scales as separate tools.
+- **Execution Context Boundary**: Keep `execute_sync` (blocks, waits for result) separate from `execute_async` (returns job ID, requires polling). The agent's next action fundamentally differs depending on the execution pattern — these are not the same intent even if they trigger the same operation.
+- **Execution Time Variance Boundary**: If a tool sometimes completes in 200ms and sometimes takes 30 seconds (depending on input), consolidation breaks timeout handling — callers cannot set a sensible timeout. Split into a `fast_path` variant and a `slow_path` / async variant with different timeout contracts.
+
+**The rule:** If the agent's decision tree genuinely branches on a dimension (safety, format, blocking model), that dimension deserves a separate tool. If it's just a parameter variant of the same intent, consolidate. Over-consolidation is its own anti-pattern.
+
+### 11 Server Patterns — Priority Order
+
+You do not need to build all 11. Build in this order based on agent value vs effort:
+
+**Build First — covers 70% of agent needs:**
+1. **Authentication Server** — `authenticate()`, `refresh_token()`, `verify_permissions()`. Every other server depends on this.
+2. **Data Query Server** — `search_records()`, `fetch_by_id()`, `get_related_data()`. 80% of API usage is reads.
+3. **State Management Server** — `create_resource()`, `update_resource()`, `transition_state()`. All "make changes" intents.
+
+**Build Second:**
+4. **Diagnostic Server** — `check_api_health()`, `get_rate_limit_status()`
+5. **Error Investigation Server** — `explain_error()`, `trace_request()`
+
+**Build Third (when specific needs arise):**
+6. **Batch Operations Server** — long-running async jobs
+7. **Schema Discovery Server** — self-documenting behavior for dynamic agents
+8. **Testing Sandbox Server** — safe experimentation without real side effects
+
+**Build Last (only if needed):**
+9. **Event & Notification Server**
+10. **Configuration Server**
+11. **Cost & Budget Server** — only mandatory at ~$1M+/month agent spend
+
+Most production systems need servers 1–5. The rest are additions based on specific domain requirements.
+
+### Schema Flattening Rule
+
+MCP tool input/output schemas MUST NOT nest beyond 2 levels deep. Older models without structured output support struggle with deeper nesting, and even current models make more parameter extraction errors with deep schemas.
+
+```typescript
+// ❌ WRONG — 3 levels deep
+inputSchema: {
+  filter: z.object({
+    location: z.object({
+      city: z.string(),    // ← 3rd level
+    })
+  })
+}
+
+// ✅ CORRECT — max 2 levels
+inputSchema: {
+  filter_location_city: z.string().optional(),
+  filter_min_rating: z.number().optional(),
+}
+```
+
+**When you must represent nested data in responses:** flatten with dot-notation keys (`filter.location.city`) or include a `flat_*` alias at the top level alongside the nested version.
 
 ### The "3 AM Test"
 
-Imagine an on-call engineer debugging agent behavior at 3 AM. Can they tell from the tool name and description what it does, without reading the code? If not, rename or add clarity.
+Two distinct checks — both must pass before shipping:
 
----
+**Design-time (tool clarity):** Can an on-call engineer tell from the tool name and description what it does, without reading the code? If not, rename or add clarity.
 
-## Server Naming Conventions
+**Production-time (escalation trigger):** Would you want to be paged at 3 AM for this tool's failure mode? If yes, add human-in-the-loop using the standard escalation payload. Auto-escalate when:
+- Financial impact exceeds $10k per operation
+- Operation is irreversible (delete data, cancel enterprise contracts)
+- Legal or compliance implications
+- Agent confidence is below 70% on a critical decision
 
-Follow these standardized naming patterns:
-
-**Python**: Use format `{service}_mcp` (lowercase with underscores)
-- Examples: `slack_mcp`, `github_mcp`, `jira_mcp`
-
-**Node/TypeScript**: Use format `{service}-mcp-server` (lowercase with hyphens)
-- Examples: `slack-mcp-server`, `github-mcp-server`, `jira-mcp-server`
-
-The name should be general, descriptive of the service being integrated, easy to infer from the task description, and without version numbers.
-
----
-
-## Tool Naming and Design
-
-### Tool Naming
-
-1. **Use snake_case**: `search_users`, `create_project`, `get_channel_info`
-2. **Include service prefix**: Anticipate that your MCP server may be used alongside other MCP servers
-   - Use `slack_send_message` instead of just `send_message`
-   - Use `github_create_issue` instead of just `create_issue`
-3. **Be action-oriented**: Start with verbs (get, list, search, create, etc.)
-4. **Be specific**: Avoid generic names that could conflict with other servers
-
-### Tool Design
-
-- Tool descriptions must narrowly and unambiguously describe functionality
-- Descriptions must precisely match actual functionality
-- Provide tool annotations (readOnlyHint, destructiveHint, idempotentHint, openWorldHint)
-- Keep tool operations focused and atomic
-
-### Intent-Based Tool Consolidation
-
-Consolidate CRUD operations into intent-based tools to reduce agent cognitive load:
-
-```typescript
-// WRONG: 6 separate tools (decision paralysis for agents)
-tools: ["createUser", "readUser", "updateUser", "deleteUser", "getUserById", "searchUsers"]
-
-// RIGHT: 2 intent-based tools (clear purpose)
-tools: ["manageUser", "searchUsers"]
-
-// manageUser tool definition
-{
-  name: "manageUser",
-  description: "Unified user management (create/read/update/delete)",
-  inputSchema: z.object({
-    action: z.enum(["create", "read", "update", "delete"]),
-    userId: z.string().optional(),
-    data: z.record(z.any()).optional(),
-  }),
-}
-```
-
-### escalate_to_human Tool
-
-MCP servers SHOULD include an `escalate_to_human` tool for high-risk domains:
-
-**Required for:**
-- Life-safety decisions (healthcare, autonomous systems)
-- Fraud detection and account security
-- Financial operations >$1,000 (or domain-specific threshold)
-- Legal/compliance decisions
-
-**Not required for:**
-- Read-only or public-data servers (weather, documentation, search)
-- Low-risk CRUD operations with no financial or safety impact
-- Development/testing tools
-
-```typescript
-server.registerTool(
-  "escalate_to_human",
-  {
-    title: "Escalate to Human",
-    description: "Escalate to human operator for review. MUST be used for life-safety, fraud, or high-value decisions.",
-    inputSchema: {
-      reason: z.string().describe("Why human review is needed"),
-      severity: z.enum(["low", "medium", "high", "critical"]),
-      context: z.record(z.any()).describe("Relevant context for the human reviewer"),
-    },
-    annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false }
-  },
-  async ({ reason, severity, context }) => {
-    // Log escalation and notify human operator
-    return {
-      content: [{ type: "text", text: JSON.stringify({
-        success: true,
-        data: { escalation_id: generateId(), status: "pending_review" },
-        next_actions: ["check_escalation_status"],
-        suggestion: "Escalation submitted. Wait for human review before proceeding.",
-      })}]
-    };
-  }
-);
-```
-
----
-
-## Response Formats
-
-All tools that return data should support multiple formats:
-
-### JSON Format (`response_format="json"`)
-- Machine-readable structured data
-- Include all available fields and metadata
-- Consistent field names and types
-- Use for programmatic processing
-
-### Markdown Format (`response_format="markdown"`, typically default)
-- Human-readable formatted text
-- Use headers, lists, and formatting for clarity
-- Convert timestamps to human-readable format
-- Show display names with IDs in parentheses
-- Omit verbose metadata
-
----
-
-## Pagination
-
-For tools that list resources:
-
-- **Always respect the `limit` parameter**
-- **Implement pagination**: Use `offset` or cursor-based pagination
-- **Return pagination metadata**: Include `has_more`, `next_offset`/`next_cursor`, `total_count`
-- **Never load all results into memory**: Especially important for large datasets
-- **Default to reasonable limits**: 20-50 items is typical
-
-Example pagination response:
 ```json
 {
-  "total": 150,
-  "count": 20,
-  "offset": 0,
-  "items": [...],
-  "has_more": true,
-  "next_offset": 20
+  "requires_human": true,
+  "severity": "critical",
+  "reason": "Financial impact exceeds $10k threshold",
+  "action_attempted": "Refund $15,000 to customer",
+  "estimated_impact": "$15k immediate, $50k ARR at risk",
+  "escalation_sla_minutes": 15,
+  "suggested_actions": ["Verify customer identity", "Check fraud signals"]
 }
 ```
 
+This payload is the standard structure for `escalate_to_human` in high-stakes contexts. The `escalation_sla_minutes` field sets the response time expectation; `estimated_impact` gives the human operator context to triage urgency.
+
 ---
-
-## Transport Options
-
-### Streamable HTTP
-
-**Best for**: Remote servers, web services, multi-client scenarios
-
-**Characteristics**:
-- Bidirectional communication over HTTP
-- Supports multiple simultaneous clients
-- Can be deployed as a web service
-- Enables server-to-client notifications
-
-**Use when**:
-- Serving multiple clients simultaneously
-- Deploying as a cloud service
-- Integration with web applications
-
-### stdio
-
-**Best for**: Local integrations, command-line tools
-
-**Characteristics**:
-- Standard input/output stream communication
-- Simple setup, no network configuration needed
-- Runs as a subprocess of the client
-
-**Use when**:
-- Building tools for local development environments
-- Integrating with desktop applications
-- Single-user, single-session scenarios
-
-**Note**: stdio servers should NOT log to stdout (use stderr for logging)
-
-### Transport Selection
-
-| Criterion | stdio | Streamable HTTP |
-|-----------|-------|-----------------|
-| **Deployment** | Local | Remote |
-| **Clients** | Single | Multiple |
-| **Complexity** | Low | Medium |
-| **Real-time** | No | Yes |

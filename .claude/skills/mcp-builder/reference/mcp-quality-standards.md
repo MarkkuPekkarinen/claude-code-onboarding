@@ -85,6 +85,34 @@ try {
 
 ## Testing Requirements
 
+### Coverage Thresholds (Non-Negotiable)
+
+Configure these in `vitest.config.ts` under `coverage.thresholds`. These are the minimum bars — CI must fail if any threshold is not met:
+
+```typescript
+// vitest.config.ts
+export default defineConfig({
+  test: {
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'lcov', 'html'],
+      include: ['src/**/*.ts'],
+      exclude: ['src/**/*.d.ts', 'src/server.ts'], // exclude wire-up entry point
+      thresholds: {
+        statements: 90, // ← hard minimum
+        branches: 80,   // ← hard minimum (lower: branch paths harder to reach)
+        functions: 90,  // ← hard minimum
+        lines: 90,      // ← hard minimum
+      },
+    },
+  },
+});
+```
+
+**Why these numbers:** Statements/functions/lines at 90% catches the majority of dead or untested code paths. Branches at 80% acknowledges that some error branches (e.g. OS-level failures) are impractical to trigger in tests.
+
+**What to exclude:** Only exclude `server.ts` (the transport wire-up entry point) — this is pure glue code (instantiates classes, binds ports) that cannot be meaningfully unit tested. Every other file must hit the threshold.
+
 Comprehensive testing should cover:
 
 - **Functional testing**: Verify correct execution with valid/invalid inputs
@@ -267,3 +295,5 @@ server.registerPrompt(
 ```
 
 Always register Prompts for common workflows that agents or users frequently need.
+
+---

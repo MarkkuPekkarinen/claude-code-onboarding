@@ -1,6 +1,6 @@
 # MCP Design Patterns for Autonomous Agents — Core
 
-This reference covers the 5 foundational design patterns that EVERY MCP server should implement. For advanced patterns (idempotency, context carryover, circuit breakers, audit trails) and domain-specific presets, read `agent-design-patterns-advanced.md`.
+This reference covers the 5 foundational design patterns that EVERY MCP server should implement. For advanced patterns (idempotency, context carryover, circuit breakers, audit trails) and domain-specific presets, read `agent-design-patterns-advanced.md`. For multi-agent orchestration (supervisor, parallel execution, reflection, debate, self-healing tiers), read `agent-orchestration-patterns.md`.
 
 ---
 
@@ -128,6 +128,176 @@ server.registerTool(
   }
 }
 ```
+
+**Optional: `threshold_guidance` for numeric outputs**
+
+When a tool returns a score, probability, or other numeric value, agents need to know what the number *means* before they can act. Add a `threshold_guidance` field alongside `next_actions`:
+
+```json
+{
+  "data": { "risk_score": 73, "issues_found": 12 },
+  "next_actions": ["get_issue_details", "review_critical_vulnerabilities"],
+  "suggestion": "Risk score above 70. Investigate the 3 critical issues before deploying.",
+  "threshold_guidance": {
+    "low": "< 40",
+    "medium": "40–70",
+    "high": "> 70"
+  }
+}
+```
+
+Without `threshold_guidance`, the agent must infer meaning from context or ask for clarification. With it, the agent knows immediately that 73 is in the *high* tier and can branch without a follow-up call. Add this whenever the tool returns a dimensioned numeric result (scores, percentages, probabilities, confidence values).
+
+### Typed Next-Intent Envelope (Advanced)
+
+For complex workflows where agents need to know not just *what* to do next but *why* and *how*, extend `AgentResponse<T>` with a typed `next` object. This replaces the untyped `next_actions: string[]` with a discriminated union that the agent can branch on without parsing natural language.
+
+```typescript
+type NextIntent =
+  | 'present'       // Show result to user — workflow step complete
+  | 'ask_clarify'   // Agent must ask user before proceeding
+  | 'retry'         // Retry same tool with corrected params (corrective_params provided)
+  | 'escalate';     // Route to human — confidence below threshold or irreversible action
+
+interface TypedNextDirective {
+  intent: NextIntent;
+  prompt_template?: string;            // Pre-built prompt for ask_clarify intent
+  suggested_tool?: string;             // Next tool to call for present/retry intents
+  suggested_params?: Record<string, unknown>;  // Pre-populated params for suggested_tool
+}
+
+interface TypedAgentResponse<T> extends Omit<AgentResponse<T>, 'next_actions'> {
+  next: TypedNextDirective;
+  schema_version: number;              // Increment on breaking next.intent changes
+}
+```
+
+**When to use typed vs unstructured directives:**
+
+| Response type | When to use |
+|---|---|
+| `next_actions: string[]` | Advisory flows — agent picks from options (low-stakes, multiple valid paths) |
+| `next: TypedNextDirective` | Workflow-critical flows — agent must branch correctly (payments, deletions, auth) |
+
+**Anti-pattern:** Using `ask_clarify` intent when the required information is already in context. Reserve it for genuinely missing user intent — overuse trains agents to interrupt unnecessarily.
+
+---
+
+### Directive Strength Calibration (Three Tiers)
+
+Not every tool response needs the same directive strength. Over-directing trains agents to ignore suggestions; under-directing leaves agents lost.
+
+| Tier | When to Use | `next_actions` | `suggestion` |
+|------|------------|----------------|-------------|
+| **Mandatory** | Agent MUST do this or the workflow breaks | Single action, imperative phrasing: "call X to proceed" | "You must call X next — the workflow cannot continue without it" |
+| **Conditional** | Agent should do this IF a condition is true | 1-2 actions with condition: "if order_status is 'shipped', call track_shipment" | "If the status is 'shipped', call track_shipment to get delivery details" |
+| **Advisory** | Agent MAY do this — it's optional context | 2-3 options, no imperative phrasing | "You can optionally fetch user preferences for a personalized response" |
+
+**Anti-pattern:** Always-on suggestions with equal weight. If every tool response says "you should do X, Y, and Z", the agent learns to ignore suggestions entirely. Reserve Mandatory directives for genuine workflow requirements.
+
+**Health signal:** Monitor suggestion override rate (see observability-patterns.md). Target 5-15%. If it drops below 5%, your suggestions are too obvious or always followed — they may be unnecessary. If it exceeds 25%, your suggestions are wrong and agents are correctly ignoring them.
+
+### Typed `directive` Object (Structured Three-Tier Responses)
+
+The three-tier table above describes calibration intent. For production servers where the agent must distinguish tier at runtime, use a typed `directive` object instead of bare `next_actions[]`:
+
+```typescript
+type DirectiveTier = 'mandatory' | 'conditional' | 'advisory';
+
+interface MandatoryDirective {
+  type: 'mandatory';
+  next_action: string;
+  params?: Record<string, unknown>;
+  rationale: string;             // Required — always explain why
+}
+
+interface ConditionalDirective {
+  type: 'conditional';
+  conditions: Array<{
+    if: string;                  // Evaluable condition string
+    suggest: string;             // Tool to call if condition is true
+    rationale: string;           // Why this condition maps to this action
+  }>;
+  agent_override_allowed: true;  // Always true — agent retains judgment
+}
+
+interface AdvisoryDirective {
+  type: 'advisory';
+  considerations: string[];      // Context for agent to reason with
+  possible_actions: string[];    // Options — not ranked or recommended
+  decision_owner: 'agent';       // Explicit: agent must decide
+}
+```
+
+**Mandatory directive example** (transaction rollback after failure):
+```json
+{
+  "directive": {
+    "type": "mandatory",
+    "next_action": "rollback_transaction",
+    "params": { "transaction_id": "txn-123" },
+    "rationale": "Partial transaction detected. Rollback required for data consistency."
+  }
+}
+```
+
+**Conditional directive example** (data freshness branch):
+```json
+{
+  "directive": {
+    "type": "conditional",
+    "conditions": [
+      {
+        "if": "data_freshness == 'stale'",
+        "suggest": "refresh_market_data",
+        "rationale": "Sentiment score based on data >1hr old. Consider refreshing."
+      },
+      {
+        "if": "data_freshness == 'fresh'",
+        "suggest": "proceed_with_analysis",
+        "rationale": "Data is current. Analysis can proceed."
+      }
+    ],
+    "agent_override_allowed": true
+  }
+}
+```
+
+**Advisory directive example** (anomaly with ambiguous cause):
+```json
+{
+  "directive": {
+    "type": "advisory",
+    "considerations": [
+      "Anomaly could indicate data corruption OR genuine outlier",
+      "Historical false positive rate for this detector: 23%",
+      "Previous anomalies this week: 2 (both confirmed genuine)"
+    ],
+    "possible_actions": ["investigate_anomaly", "flag_for_review", "proceed_anyway"],
+    "decision_owner": "agent"
+  }
+}
+```
+
+**Mandatory directive usage cap:** If more than ~10% of your tool responses use `type: "mandatory"`, you are building a workflow executor, not an agent. Mandatory directives are appropriate for regulatory compliance sequences, safety-critical rollbacks, and idempotency enforcement — not for routine workflow guidance. Exceed 10% and reconsider whether agent autonomy is needed at all.
+
+**Rationale is required on every directive.** Omitting it trains agents to follow suggestions without understanding why, degrading their ability to handle novel situations where no directive is provided. Always explain: "Primary provider at 89% failure rate in last 5 minutes. Fallback recommended to maintain SLA."
+
+### Directive Fallback Chain (Graceful Autonomy Degradation)
+
+Design your directive logic to start with the least prescriptive tier and escalate only when response data indicates complexity:
+
+```
+Level 1: No directive — agent decides autonomously
+    ↓ if agent uncertainty detected after reasoning
+Level 2: Advisory directive — provide considerations, preserve agent judgment
+    ↓ if still uncertain
+Level 3: Conditional directive — provide if/then branches, allow override
+    ↓ only if condition match fails or safety threshold crossed
+Level 4: Mandatory directive or human escalation
+```
+
+Most tools default to Level 1 for routine cases. Reserve Level 3–4 for situations where the tool has domain-specific knowledge the agent doesn't (regulatory rules, partial-state detection, idempotency enforcement).
 
 ---
 

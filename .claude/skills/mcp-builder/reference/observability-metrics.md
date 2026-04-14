@@ -1,166 +1,3 @@
-# OpenTelemetry Observability Stack for Production MCP Servers
-
-This document provides production-ready OpenTelemetry instrumentation patterns for MCP servers, including tracing, metrics, and adaptive sampling strategies.
-
-## Dependencies
-
-```json
-{
-  "@opentelemetry/sdk-node": "~0.57.0",
-  "@opentelemetry/auto-instrumentations-node": "~0.54.0",
-  "@opentelemetry/exporter-trace-otlp-http": "~0.57.0",
-  "@opentelemetry/exporter-metrics-otlp-http": "~0.57.0",
-  "@opentelemetry/resources": "~1.29.0",
-  "@opentelemetry/semantic-conventions": "~1.29.0",
-  "@opentelemetry/api": "~1.9.0"
-}
-```
-
-## Tracing Setup
-
-Full initialization function with NodeSDK, auto-instrumentation, and OTLP exporters:
-
-```typescript
-import { NodeSDK } from '@opentelemetry/sdk-node';
-import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
-import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
-import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
-import { Resource } from '@opentelemetry/resources';
-import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION, ATTR_DEPLOYMENT_ENVIRONMENT } from '@opentelemetry/semantic-conventions';
-import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
-
-interface ObservabilityConfig {
-  serviceName: string;
-  serviceVersion: string;
-  environment: 'development' | 'staging' | 'production';
-  otlpEndpoint?: string;
-  enableAutoInstrumentation?: boolean;
-}
-
-export function initializeObservability(config: ObservabilityConfig): NodeSDK {
-  const {
-    serviceName,
-    serviceVersion,
-    environment,
-    otlpEndpoint = 'http://localhost:4318',
-    enableAutoInstrumentation = true
-  } = config;
-
-  // Create resource with service metadata
-  const resource = new Resource({
-    [ATTR_SERVICE_NAME]: serviceName,
-    [ATTR_SERVICE_VERSION]: serviceVersion,
-    [ATTR_DEPLOYMENT_ENVIRONMENT]: environment
-  });
-
-  // Configure OTLP trace exporter
-  const traceExporter = new OTLPTraceExporter({
-    url: `${otlpEndpoint}/v1/traces`,
-    headers: {}
-  });
-
-  // Configure OTLP metrics exporter with 10s export interval
-  const metricReader = new PeriodicExportingMetricReader({
-    exporter: new OTLPMetricExporter({
-      url: `${otlpEndpoint}/v1/metrics`,
-      headers: {}
-    }),
-    exportIntervalMillis: 10000 // 10 seconds
-  });
-
-  // Initialize NodeSDK
-  const sdk = new NodeSDK({
-    resource,
-    traceExporter,
-    metricReader,
-    instrumentations: enableAutoInstrumentation
-      ? [getNodeAutoInstrumentations()]
-      : []
-  });
-
-  // Start the SDK
-  sdk.start();
-
-  // Graceful shutdown on process termination
-  process.on('SIGTERM', () => {
-    sdk.shutdown()
-      .then(() => console.log('OpenTelemetry SDK shut down successfully'))
-      .catch((error) => console.error('Error shutting down OpenTelemetry SDK', error))
-      .finally(() => process.exit(0));
-  });
-
-  return sdk;
-}
-
-// Usage example
-// const sdk = initializeObservability({
-//   serviceName: 'my-mcp-server',
-//   serviceVersion: '1.0.0',
-//   environment: 'production',
-//   otlpEndpoint: process.env.OTEL_EXPORTER_OTLP_ENDPOINT
-// });
-```
-
-## Custom MCP Spans
-
-Wrapper function to create custom spans for MCP tool executions:
-
-```typescript
-import { trace, context, SpanKind, SpanStatusCode } from '@opentelemetry/api';
-
-const tracer = trace.getTracer('mcp-server');
-
-interface SpanAttributes {
-  [key: string]: string | number | boolean;
-}
-
-export async function withTracing<T>(
-  spanName: string,
-  attributes: SpanAttributes,
-  fn: () => Promise<T>
-): Promise<T> {
-  return tracer.startActiveSpan(
-    spanName,
-    { kind: SpanKind.SERVER, attributes },
-    async (span) => {
-      try {
-        const result = await fn();
-        span.setStatus({ code: SpanStatusCode.OK });
-        return result;
-      } catch (error) {
-        span.setStatus({
-          code: SpanStatusCode.ERROR,
-          message: error instanceof Error ? error.message : 'Unknown error'
-        });
-
-        // Record exception with stack trace
-        span.recordException(error as Error);
-
-        throw error;
-      } finally {
-        span.end();
-      }
-    }
-  );
-}
-
-// Usage example for MCP tool
-// async function executeTool(toolName: string, params: unknown) {
-//   return withTracing(
-//     `mcp.tool.${toolName}`,
-//     {
-//       'tool.name': toolName,
-//       'tool.params': JSON.stringify(params),
-//       'mcp.version': '1.0'
-//     },
-//     async () => {
-//       // Tool execution logic
-//       return performToolOperation(params);
-//     }
-//   );
-// }
-```
-
 ## MCP Metrics Collection
 
 Custom metrics using OpenTelemetry Metrics API:
@@ -187,6 +24,28 @@ const toolDurationHistogram = meter.createHistogram('mcp_tool_duration_seconds',
 const toolErrorsCounter = meter.createCounter('mcp_tool_errors_total', {
   description: 'Total number of MCP tool errors',
   unit: '1'
+});
+
+// Counter: Abandon events — when agents give up mid-task
+const toolAbandonsCounter = meter.createCounter('mcp_tool_abandons_total', {
+  description: 'Total number of MCP tool calls abandoned by the agent',
+  unit: '1'
+  // label: reason ('timeout', 'circuit_open', 'max_retries', 'agent_decision')
+});
+
+// Histogram: Tools per task — how many calls agents make per user intent
+const toolsPerTaskHistogram = meter.createHistogram('mcp_tools_per_task', {
+  description: 'Number of MCP tool calls to complete one user task',
+  unit: '1'
+  // Record at task boundary: toolsPerTaskHistogram.record(callCount, { task_type })
+  // P95 > 5 calls = consolidation opportunity (see mcp-design-principles.md 3-Step Rule)
+});
+
+// Counter: Token usage per tool (record input and output separately)
+const toolTokensCounter = meter.createCounter('mcp_tool_tokens_total', {
+  description: 'LLM tokens consumed by MCP tool responses',
+  unit: '1'
+  // labels: tool_name, direction ('input'|'output')
 });
 
 // Counter: Resource reads
@@ -426,71 +285,3 @@ class MCPToolSampler implements Sampler {
 //   // ... other config
 // });
 ```
-
-## Integration Example
-
-Complete example showing initialization and usage:
-
-```typescript
-import { initializeObservability } from './observability/tracing.js';
-import {
-  instrumentToolExecution,
-  recordResourceRead,
-  incrementActiveConnections,
-  decrementActiveConnections
-} from './observability/metrics.js';
-import { withTracing } from './observability/tracing.js';
-
-// Initialize on server startup
-const sdk = initializeObservability({
-  serviceName: 'payment-mcp-server',
-  serviceVersion: '2.1.0',
-  environment: 'production',
-  otlpEndpoint: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4318'
-});
-
-// Instrument MCP tool handler
-async function handleToolCall(toolName: string, params: unknown) {
-  return instrumentToolExecution(toolName, async () => {
-    return withTracing(
-      `mcp.tool.${toolName}`,
-      {
-        'tool.name': toolName,
-        'tool.params_size': JSON.stringify(params).length,
-        'mcp.protocol_version': '1.0'
-      },
-      async () => {
-        switch (toolName) {
-          case 'process_payment':
-            return processPayment(params);
-          case 'get_user_profile':
-            recordResourceRead('user_profile');
-            return getUserProfile(params);
-          default:
-            throw new Error(`Unknown tool: ${toolName}`);
-        }
-      }
-    );
-  });
-}
-
-// Track connections
-function onClientConnected() {
-  incrementActiveConnections();
-}
-
-function onClientDisconnected() {
-  decrementActiveConnections();
-}
-```
-
-## Best Practices
-
-1. **Always sample critical operations** - Payment processing, authentication, escalations should have 1.0 sampling rate
-2. **Use adaptive sampling** - Automatically increase sampling during incidents when error rates spike
-3. **Monitor high-cardinality attributes** - Avoid adding user IDs or request IDs directly to metric labels
-4. **Set export intervals appropriately** - 10s for metrics, immediate for traces in production
-5. **Use semantic conventions** - Follow OpenTelemetry semantic conventions for attribute naming
-6. **Implement graceful shutdown** - Always shut down SDK on SIGTERM to flush remaining data
-7. **Record exceptions properly** - Use `span.recordException()` to capture stack traces
-8. **Test sampling rates in staging** - Verify your sampling configuration doesn't miss critical traces before deploying to production

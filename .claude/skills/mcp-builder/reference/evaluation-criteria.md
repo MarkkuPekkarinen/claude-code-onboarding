@@ -145,3 +145,113 @@ After creating evaluations:
 5. Ensure stability by using historical data
 6. Verify answers by solving questions yourself
 7. Iterate and refine
+
+---
+
+## Agent Behavior Metrics (DeepEval)
+
+The QA-pair evaluation above tests whether agents *find the right answer*. Agent behavior metrics test whether agents *use your MCP server correctly* — right tools, right arguments, completed workflows. Use both together for production readiness.
+
+### The Three Core Metrics
+
+| Metric | What It Measures | Range |
+|--------|-----------------|-------|
+| **Primitive Usage Score** | Did the agent call the right tools? | 0.0 – 1.0 |
+| **Argument Correctness Score** | Did the agent pass the right arguments? | 0.0 – 1.0 |
+| **Task Completion Score** | Did the agent accomplish the actual goal? | 0.0 – 1.0 |
+
+**Production threshold:** All three must score ≥ 0.7 before shipping. Use 0.5 for permissive (early dev), 0.9 for high-stakes (payment, deletion, healthcare).
+
+**Minimum-within rule:** `MCPUseMetric` score = `min(primitive_usage, argument_correctness)`. A tool called with wrong arguments scores as badly as calling the wrong tool — both indicate the MCP server interface is unclear.
+
+### Low Score Root Cause Diagnosis
+
+| Score | Likely Cause | Fix |
+|-------|-------------|-----|
+| Low primitive usage | Ambiguous tool descriptions — agent can't distinguish tools | Rewrite tool `description` to start with the specific action verb |
+| Low argument correctness | Unclear parameter schemas — agent guesses field names or types | Add `.describe()` to every `z.string()` field; include format examples |
+| Low task completion | Underspecified task flow — agent doesn't know what "done" looks like | Add `next_actions` directives (Pattern 1) to guide workflow completion |
+
+### Implementation (Python / DeepEval)
+
+```python
+from deepeval import evaluate
+from deepeval.test_case import LLMTestCase, ConversationalTestCase, Turn
+from deepeval.metrics import MCPUseMetric, MCPTaskCompletionMetric
+
+# Single-turn evaluation
+def test_vendor_search_tool_use():
+    test_case = LLMTestCase(
+        input="Find plumbers within 10 miles of property 42",
+        actual_output=agent_response,
+        tools_called=agent_tool_calls,          # list of {name, args} dicts
+        expected_tools=[
+            {"name": "search_vendors", "args": {"trade": "plumber", "property_id": "42", "radius_miles": 10}}
+        ]
+    )
+    metric = MCPUseMetric(threshold=0.7)
+    metric.measure(test_case)
+    assert metric.score >= 0.7, f"MCPUse score {metric.score}: {metric.reason}"
+
+# Multi-turn (ConversationalTestCase) — for stateful workflows
+def test_checkout_workflow():
+    test_case = ConversationalTestCase(
+        turns=[
+            Turn(
+                input="I need to book a plumber for property 42",
+                actual_output=agent_turn_1_response,
+                tools_called=turn_1_tool_calls
+            ),
+            Turn(
+                input="Schedule for next Tuesday at 2pm",
+                actual_output=agent_turn_2_response,
+                tools_called=turn_2_tool_calls
+            ),
+            Turn(
+                input="Confirm the booking",
+                actual_output=agent_turn_3_response,
+                tools_called=turn_3_tool_calls
+            )
+        ]
+    )
+    completion_metric = MCPTaskCompletionMetric(threshold=0.7)
+    completion_metric.measure(test_case)
+    assert completion_metric.score >= 0.7
+```
+
+### Edge Case Test Categories
+
+Every MCP server eval suite must include these four edge case categories:
+
+| Category | Example | Why It Matters |
+|----------|---------|----------------|
+| **Abbreviations** | "AC unit" instead of "air conditioning unit" | Agent must map informal language to correct tool params |
+| **Disambiguation** | "Fix the leak" — roof or plumbing? | Agent must ask or infer from context rather than guessing |
+| **Implicit context** | "Same property as last time" in multi-turn | Agent must carry forward session context correctly |
+| **Format preferences** | "Next Friday" instead of ISO date | Agent must normalize before passing to tools |
+
+### Eval Suite Structure
+
+```python
+# Minimum viable eval suite for any MCP server
+eval_cases = [
+    # Happy path — basic tool calls work
+    happy_path_case,
+    # Edge cases — all 4 categories above
+    abbreviation_case,
+    disambiguation_case,
+    implicit_context_case,
+    format_preference_case,
+    # Error recovery — agent handles tool errors
+    error_recovery_case,
+    # Multi-step workflow — task completion
+    workflow_case,
+]
+
+results = evaluate(eval_cases, metrics=[
+    MCPUseMetric(threshold=0.7),
+    MCPTaskCompletionMetric(threshold=0.7)
+])
+```
+
+**Minimum bar:** 7 test cases (3 happy path + 4 edge case categories). Add workflow tests when your server supports multi-step operations.
