@@ -1,0 +1,71 @@
+---
+name: firebase-basics
+description: >-
+  Firebase CLI foundation for any project. Use when checking Firebase CLI
+  version, authenticating with Firebase, setting active projects, initializing
+  Firebase services, or running Firebase MCP commands. Triggers: firebase login,
+  firebase use, firebase projects list, firebase init, firebase MCP, Firebase CLI
+  setup, Firebase emulator start.
+allowed-tools: Bash, Read
+---
+
+## Iron Law
+
+**NEVER use the naked `firebase` binary — always `npx -y firebase-tools@latest <cmd>`.**
+
+This guarantees the latest CLI version is used without polluting global node_modules.
+Every command in this skill prepends `npx -y firebase-tools@latest`.
+
+## Project Context
+
+Check the project's `CLAUDE.md` to understand which Firebase services are in use and any
+project-specific constraints (e.g. which services are intentionally NOT used, whether
+Firestore is used as a canonical store or a status bus only, etc.).
+
+Firebase project ID should be stored in an environment variable (e.g. `FIREBASE_PROJECT_ID`)
+— never hardcoded.
+
+# Prerequisites
+
+1. **Local Environment Setup:**
+   ```bash
+   npx -y firebase-tools@latest --version
+   ```
+   Read [references/local-env-setup.md](references/local-env-setup.md) for full setup.
+
+2. **Authentication:**
+   ```bash
+   npx -y firebase-tools@latest login
+   # Headless / remote shell:
+   npx -y firebase-tools@latest login --no-localhost
+   ```
+
+3. **Active Project:**
+   ```bash
+   npx -y firebase-tools@latest use
+   # Set project from env var (preferred):
+   npx -y firebase-tools@latest use --add ${FIREBASE_PROJECT_ID}
+   ```
+
+# Firebase Usage Principles
+
+1. **npx always:** `npx -y firebase-tools@latest <cmd>` — never bare `firebase`
+2. **Consult Firebase MCP first:** Use `developerknowledge_search_documents` before
+   falling back to web search or memory
+3. **Use Firebase MCP tools for remote API calls:** Crashlytics, Firestore queries,
+   project management — always MCP, never manual REST calls
+4. **Emulator for local dev:** Set `FIREBASE_AUTH_EMULATOR_HOST` and related emulator
+   environment variables — without them, Admin SDK calls hit production Firebase with
+   dev tokens
+
+# References
+
+- **Initialize services:** [references/firebase-service-init.md](references/firebase-service-init.md)
+- **CLI commands:** [references/firebase-cli-guide.md](references/firebase-cli-guide.md)
+- **Local env setup:** [references/local-env-setup.md](references/local-env-setup.md)
+
+# Related Skills
+
+- `flutter-mobile` — Firebase Auth integration in Flutter apps
+- `firebase-hosting-basics` — deploy static SPA to Firebase Hosting
+- `security-reviewer` — Firestore Security Rules audit
