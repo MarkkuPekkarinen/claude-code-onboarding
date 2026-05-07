@@ -34,7 +34,7 @@ last-reviewed: "2026-03-15"
 
 ---
 
-**Version context:** Angular 20 (Signals/Zoneless stable), Angular 21 (Signals-first default, current), Angular 22 (Signal Forms — upcoming).
+**Version context:** Angular 20 (Signals/Zoneless stable), Angular 21 (Signals-first default, Signal Forms available — current), Angular 22 (Signal Forms further enhancements).
 
 ---
 
@@ -53,31 +53,23 @@ This workspace uses Angular 21+. The patterns below show v20-style explicit prov
 
 Signals are Angular's fine-grained reactivity system, replacing zone.js-based change detection.
 
-### Core Concepts
+### Core signal / computed / effect
 
 ```typescript
 import { signal, computed, effect } from "@angular/core";
 
-// Writable signal
 const count = signal(0);
+count.set(5);
+count.update((v) => v + 1);
 
-// Read value
-console.log(count()); // 0
-
-// Update value
-count.set(5); // Direct set
-count.update((v) => v + 1); // Functional update
-
-// Computed (derived) signal
 const doubled = computed(() => count() * 2);
 
-// Effect (side effects)
 effect(() => {
   console.log(`Count changed to: ${count()}`);
 });
 ```
 
-### Signal-Based Inputs and Outputs
+### Signal inputs, outputs, and model
 
 ```typescript
 import { Component, input, output, model } from "@angular/core";
@@ -94,51 +86,150 @@ import { Component, input, output, model } from "@angular/core";
   `,
 })
 export class UserCardComponent {
-  // Signal inputs (read-only)
   id = input.required<string>();
   name = input.required<string>();
-  role = input<string>("User"); // With default
-
-  // Output
+  role = input<string>("User");
   select = output<string>();
-
-  // Two-way binding (model)
   isSelected = model(false);
 }
-
-// Usage:
 // <app-user-card [id]="'123'" [name]="'John'" [(isSelected)]="selected" />
 ```
 
-### Signal Queries (viewChild / contentChild)
+Signal queries (viewChild, viewChildren, contentChild): See [references/signals-core.md](references/signals-core.md)
+
+---
+
+## 1b. linkedSignal — Derived Writable Signals
+
+`linkedSignal` creates a writable signal whose default resets when its source changes.
+
+| Use | Tool |
+|-----|------|
+| Derived read-only value | `computed()` |
+| Writable value that resets on source change | `linkedSignal()` |
+| Local state with no dependency | `signal()` |
 
 ```typescript
-import {
-  Component,
-  viewChild,
-  viewChildren,
-  contentChild,
-} from "@angular/core";
+import { signal, linkedSignal } from '@angular/core';
 
-@Component({
-  selector: "app-container",
-  standalone: true,
-  template: `
-    <input #searchInput />
-    <app-item *ngFor="let item of items()" />
-  `,
-})
-export class ContainerComponent {
-  // Signal-based queries
-  searchInput = viewChild<ElementRef>("searchInput");
-  items = viewChildren(ItemComponent);
-  projectedContent = contentChild(HeaderDirective);
+const items = signal(['a', 'b', 'c']);
+const selectedItem = linkedSignal(() => items()[0]);
 
-  focusSearch() {
-    this.searchInput()?.nativeElement.focus();
+selectedItem.set('b');      // 'b'
+items.set(['x', 'y', 'z']); // selectedItem resets to 'x'
+```
+
+Full examples (advanced + pagination): [references/signals-core.md](references/signals-core.md)
+
+---
+
+## 1c. resource() — Reactive Async Data Fetching
+
+`resource()` is Angular's built-in reactive primitive for async data.
+
+| Scenario | Use |
+|----------|-----|
+| Component-local async data tied to signals | `resource()` |
+| Service-level shared HTTP calls | `HttpClient` + `inject()` |
+| Complex async pipelines (retry, cancel, merge) | `HttpClient` + RxJS |
+| One-time data loads | Either |
+
+```typescript
+import { httpResource } from '@angular/common/http';
+
+// HTTP GET shorthand — refetches when userId() changes
+userResource = httpResource<User>(() => `/api/users/${this.userId()}`);
+```
+
+Full API (resource() component, abort signal, status signals): [references/signals-core.md](references/signals-core.md)
+
+---
+
+## 1d. afterNextRender / afterRender — DOM Lifecycle Hooks
+
+In zoneless Angular 21, `afterNextRender` and `afterRender` replace `NgZone` lifecycle hacks for DOM-dependent initialization. Use these instead of `ngAfterViewInit` for code that requires a real DOM (chart init, third-party widget, scroll position).
+
+```typescript
+import { Component, afterNextRender, afterRender, ElementRef, viewChild } from '@angular/core';
+
+@Component({ selector: 'app-chart', template: '<canvas #canvas></canvas>' })
+export class ChartComponent {
+  canvas = viewChild.required<ElementRef<HTMLCanvasElement>>('canvas');
+
+  constructor() {
+    // Runs once after the first render — DOM is guaranteed to exist
+    afterNextRender(() => {
+      initChart(this.canvas().nativeElement);
+    });
+
+    // Runs after every render — use sparingly (performance cost)
+    afterRender(() => {
+      updateScrollPosition();
+    });
   }
 }
 ```
+
+**Rule:** Prefer `afterNextRender` over `afterRender` — it runs once. Both run in the browser only (SSR-safe).
+
+---
+
+## 1e. @let — Template Variable Declaration (Angular 18+)
+
+`@let` declares a local template variable — replaces the `*ngIf as` alias hack and verbose `ng-template` patterns.
+
+```html
+<!-- Declare a local alias for a long expression -->
+@let user = currentUser();
+@let greeting = 'Hello, ' + user.name + '!';
+
+<h1>{{ greeting }}</h1>
+<p>{{ user.email }}</p>
+
+<!-- Useful with async resources -->
+@let data = userResource.value();
+@if (data) {
+  <app-user-profile [user]="data" />
+}
+```
+
+**Rule:** Use `@let` to avoid repeating computed signal calls in templates. Do not use it as a substitute for `computed()` — `@let` re-evaluates on every render pass.
+
+---
+
+## 1f. Testing: Vitest (Stable in Angular 21)
+
+Angular 21 ships with **Vitest as the stable test runner** (replaces Karma). New projects default to Vitest. Migrate existing Karma setups.
+
+```typescript
+// vitest.config.ts (Angular CLI generates this)
+import { defineConfig } from 'vitest/config';
+import angular from '@analogjs/vite-plugin-angular';
+
+export default defineConfig({
+  plugins: [angular()],
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['src/test-setup.ts'],
+  },
+});
+```
+
+```typescript
+// Component test with zoneless TestBed
+import { TestBed } from '@angular/core/testing';
+import { provideExperimentalZonelessChangeDetection } from '@angular/core';
+
+beforeEach(() => {
+  TestBed.configureTestingModule({
+    providers: [provideExperimentalZonelessChangeDetection()],
+    imports: [MyComponent],
+  });
+});
+```
+
+Run: `ng test` (uses Vitest by default in Angular 21 workspaces). See `reference/testing-vitest.md` for full patterns.
 
 ---
 
@@ -154,9 +245,9 @@ import { CommonModule } from "@angular/common";
 import { RouterLink } from "@angular/router";
 
 @Component({
+  // standalone: true is the default in Angular v20+ — omit it
   selector: "app-header",
-  standalone: true,
-  imports: [CommonModule, RouterLink], // Direct imports
+  imports: [RouterLink], // CommonModule is a compat shim — don't import it
   template: `
     <header>
       <a routerLink="/">Home</a>
@@ -185,16 +276,11 @@ bootstrapApplication(AppComponent, {
 ### Lazy Loading Standalone Components
 
 ```typescript
-// app.routes.ts
-import { Routes } from "@angular/router";
-
 export const routes: Routes = [
   {
     path: "dashboard",
     loadComponent: () =>
-      import("./dashboard/dashboard.component").then(
-        (m) => m.DashboardComponent,
-      ),
+      import("./dashboard/dashboard.component").then((m) => m.DashboardComponent),
   },
   {
     path: "admin",
@@ -208,24 +294,16 @@ export const routes: Routes = [
 
 ## 3. Zoneless Angular
 
-Zoneless applications don't use zone.js, improving performance and debugging.
-
-> **Angular 21 reminder:** Zoneless is the default. The `provideZonelessChangeDetection()` call shown below is v20-style — omit it in Angular 21 projects.
-
-### Enabling Zoneless Mode (Angular 20 only)
+> **Angular 21 reminder:** Zoneless is the default. The `provideZonelessChangeDetection()` call below is v20-style — omit it in Angular 21 projects.
 
 ```typescript
 // main.ts (Angular 20 style — NOT needed in Angular 21+)
-import { bootstrapApplication } from "@angular/platform-browser";
-import { provideZonelessChangeDetection } from "@angular/core";
-import { AppComponent } from "./app/app.component";
-
 bootstrapApplication(AppComponent, {
   providers: [provideZonelessChangeDetection()],
 });
 ```
 
-### Zoneless Component Patterns
+### Zoneless Component Pattern
 
 ```typescript
 import { Component, signal, ChangeDetectionStrategy } from "@angular/core";
@@ -241,70 +319,17 @@ import { Component, signal, ChangeDetectionStrategy } from "@angular/core";
 })
 export class CounterComponent {
   count = signal(0);
-
-  increment() {
-    this.count.update((v) => v + 1);
-    // No zone.js needed — Signal triggers change detection
-  }
+  increment() { this.count.update((v) => v + 1); }
 }
 ```
 
-### Key Zoneless Benefits
-
-- **Performance**: No zone.js patches on async APIs
-- **Debugging**: Clean stack traces without zone wrappers
-- **Bundle size**: Smaller without zone.js (~15KB savings)
-- **Interoperability**: Better with Web Components and micro-frontends
+Benefits: no zone.js patches, cleaner stack traces, ~15KB bundle savings, better Web Component interop.
 
 ---
 
 ## 4. Server-Side Rendering & Hydration
 
-### SSR Setup with Angular CLI
-
-```bash
-ng add @angular/ssr
-```
-
-### Hydration Configuration
-
-```typescript
-// app.config.ts
-import { ApplicationConfig } from "@angular/core";
-import {
-  provideClientHydration,
-  withEventReplay,
-} from "@angular/platform-browser";
-
-export const appConfig: ApplicationConfig = {
-  providers: [provideClientHydration(withEventReplay())],
-};
-```
-
-### Incremental Hydration (v20+)
-
-```typescript
-import { Component } from "@angular/core";
-
-@Component({
-  selector: "app-page",
-  standalone: true,
-  template: `
-    <app-hero />
-
-    @defer (hydrate on viewport) {
-      <app-comments />
-    }
-
-    @defer (hydrate on interaction) {
-      <app-chat-widget />
-    }
-  `,
-})
-export class PageComponent {}
-```
-
-**Hydration triggers:** `on idle` | `on viewport` | `on interaction` | `on hover` | `on timer(ms)`
+See [references/ssr-hydration.md](references/ssr-hydration.md) for SSR setup, hydration configuration, incremental hydration patterns, TransferState, and common SSR troubleshooting.
 
 ---
 
@@ -354,8 +379,11 @@ export class PageComponent {}
 > See [references/api-reference.md](references/api-reference.md) for full reactive forms and signal form patterns.
 
 **Key patterns:**
-- `FormBuilder` + `Validators` for current reactive forms
-- Signal-based validation via `computed()` (v22+ preview)
+- Signal Forms (preferred for Angular 21+) — see `signal-forms.md` reference below
+- `FormBuilder` + `Validators` for reactive forms (legacy, still supported)
+- Signal-based validation via `computed()` for derived validation state
+
+> **Angular 21+:** Prefer Signal Forms over reactive forms for new apps. See [`references/signal-forms.md`](references/signal-forms.md).
 
 ---
 
@@ -387,20 +415,8 @@ import { NgOptimizedImage } from '@angular/common';
 @Component({
   imports: [NgOptimizedImage],
   template: `
-    <img
-      ngSrc="hero.jpg"
-      width="800"
-      height="600"
-      priority
-    />
-
-    <img
-      ngSrc="thumbnail.jpg"
-      width="200"
-      height="150"
-      loading="lazy"
-      placeholder="blur"
-    />
+    <img ngSrc="hero.jpg" width="800" height="600" priority />
+    <img ngSrc="thumbnail.jpg" width="200" height="150" loading="lazy" placeholder="blur" />
   `
 })
 ```
