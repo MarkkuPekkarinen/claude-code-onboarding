@@ -53,6 +53,12 @@ pip install -e ".[dev]"
 
 **Error handling, retry, and circuit breakers**: Read `reference/fastapi-error-handling.md` for custom exception hierarchy (`AppError` → `NotFoundError`/`ValidationError`/`ExternalServiceError`), FastAPI exception handlers, async retry with `tenacity`, async circuit breaker with `circuitbreaker`, error logging context middleware, and pytest patterns for error paths.
 
+**Backend service consistency patterns**: Read `reference/backend-service-patterns.md` for 12 mandatory patterns covering all `services/backend/<service>/` code: timing-safe internal secret guard (P1), fail-fast config fields (P2), structlog naming (P3), session ownership (P4), Pub/Sub singleton (P5), fire-and-forget (P6), Redis lifecycle (P7), DB count queries (P8), GCS URI validation (P9), shared auth helpers (P10), no hardcoded config (P11), DRY shared utilities (P12). Includes pre-commit grep gates and new/modified service checklists.
+
+**Live E2E integration testing**: Read `reference/backend-live-e2e-standard.md` for why unit tests (ASGITransport + mocks) miss real integration bugs, the per-service test pattern (health, auth gate, fake JWT rejection, internal secret gate, input validation), auth ordering rules (FastAPI validates auth before Pydantic), HTTP method verification from OpenAPI spec, and the feedback loop for fixing live failures.
+
+**Pub/Sub and Firestore messaging patterns**: Read `reference/pubsub-firestore-patterns.md` for the three canonical messaging patterns: Pattern A (fire-and-forget `asyncio.create_task` for informational events), Pattern B (transactional outbox with `SELECT FOR UPDATE SKIP LOCKED` for load-bearing events), Pattern C (Firestore status bus for real-time mobile UI). Includes decision tree, full implementation templates, subscriber patterns, and hard rules for each.
+
 ## Process
 
 1. **Scaffold project structure** using uv or pip commands above
@@ -133,9 +139,20 @@ alembic revision --autogenerate -m "description"       # Generate new migration
 - Use `str | None` union syntax (Python 3.10+), not `Optional[str]`
 - Use `model_validator` for cross-field Pydantic validation, not ad-hoc `__init__` logic
 
+## Background Worker Services
+
+For Pub/Sub, Cloud Scheduler, or GCS-triggered workers (NOT FastAPI REST APIs):
+
+- Use the `/scaffold-python-worker` command to create the service structure
+- Entry point: `async def run_job(payload: dict) -> JobResult:` in `src/job.py`
+- External clients (APIs, cloud services) MUST be injected — never instantiated inline
+- All failures MUST be logged via structlog and surfaced as status records — never swallowed
+- Required env vars MUST have NO defaults in config — missing values raise `ValidationError` at startup
+- After implementation: dispatch `python-worker-reviewer` agent for review
+
 ## Post-Code Review
 
 After writing Python code, dispatch these reviewer agents:
 - `code-reviewer` — general quality, DRY, error handling
-- `agentic-ai-reviewer` — if LangChain/LangGraph code: graph correctness, guardrails, cost
+- `python-worker-reviewer` — if this is a background worker service (Pub/Sub/Cloud Scheduler/GCS): silent failures, client injection, DB access patterns, structlog usage, test coverage
 - `security-reviewer` — input validation, auth, dependency audit
