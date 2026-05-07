@@ -1,0 +1,95 @@
+# Docker Orchestration Reference
+
+Read when health-check waits, port conflicts, or compose-file orchestration cause issues.
+
+## Required project layout
+
+```
+your-mcp-project/
+├── docker-compose.yml           # service: mcp-server with healthcheck
+├── Dockerfile                   # builds the MCP server
+├── tests/
+│   ├── mcp_test_client.py       # from this skill
+│   ├── scenarios.yaml           # the spec
+│   ├── run_validation.sh        # from this skill
+│   └── validation_report.json   # generated
+├── scripts/
+│   ├── generate_scenarios.py    # from this skill
+│   └── validate_coverage.py     # from this skill
+└── CLAUDE.md                    # includes feedback_loop.md block
+```
+
+## docker-compose.yml minimum
+
+```yaml
+services:
+  mcp-server:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - LOG_LEVEL=debug
+      # auth tokens, DB URLs, etc.
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 6
+      start_period: 10s
+```
+
+The `healthcheck` block is what `run_validation.sh` polls indirectly (it
+hits the URL itself, but Docker's healthcheck affects `docker compose ps`
+output, useful for diagnostics).
+
+## Wait strategies (ranked best to worst)
+
+1. **HTTP poll on `/health`** (current default in `run_validation.sh`)
+2. **Docker healthcheck status poll** — `docker inspect ... --format '{{.State.Health.Status}}'`
+3. **Fixed `sleep 10`** — fragile, never use this in a feedback loop
+
+## Common failure modes
+
+### Port already in use
+Symptom: `bind: address already in use` during `docker compose up`.
+Fix: orchestrator's `--force-recreate` handles re-creating the container,
+but if another process owns the port, you'll need to stop it. Check:
+```bash
+lsof -i :8080
+```
+
+### Health endpoint missing
+If your MCP server doesn't expose `/health`, add one. For Python MCP servers
+using FastAPI/Starlette under the hood:
+```python
+from starlette.responses import JSONResponse
+@app.route("/health")
+async def health(_): return JSONResponse({"status": "ok"})
+```
+
+### Container exits immediately
+The validator will time out on health check. Diagnose with:
+```bash
+docker compose logs --tail=100 mcp-server
+```
+The orchestrator dumps these logs automatically on health-check timeout.
+
+### Auth secrets in containers
+Use `.env` file referenced from `docker-compose.yml`:
+```yaml
+env_file:
+  - .env.test
+```
+Never commit `.env.test`. Add to `.gitignore`. The validator
+reads `SERVER_URL` etc. from environment, so the same `.env.test` can be
+sourced before running `bash tests/run_validation.sh`.
+
+### stdio transport (for MCP servers without HTTP)
+
+If your MCP server only supports stdio, skip Docker entirely for testing:
+```bash
+SERVER_URL="stdio://python -m mcp_server" \
+HEALTH_URL="" \
+bash tests/run_validation.sh
+```
+And modify `run_validation.sh` to skip Docker steps when `HEALTH_URL` is empty.
