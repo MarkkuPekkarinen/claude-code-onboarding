@@ -11,6 +11,29 @@ disable-model-invocation: true
 
 Delegate to the `google-adk` skill for all patterns, templates, and reference files.
 
+## Pre-Scaffold Questions
+
+Before writing any code or running any command, ask ALL of the following. Present DESIGN_SPEC.md for approval before running any scaffold command.
+
+**Always ask:**
+
+1. **What problem will the agent solve?** — Core purpose and capabilities
+2. **External APIs or data sources needed?** — Tools, integrations, auth requirements
+3. **Safety constraints?** — What the agent must NOT do, guardrails
+4. **Deployment preference?** — Prototype first (recommended) or full deployment? If deploying: Agent Engine or Cloud Run?
+
+**Ask based on context:**
+
+- If **retrieval or search over data** mentioned (RAG, semantic search, vector search, embeddings, similarity search, data ingestion) → **Datastore?** Use `--agent agentic_rag --datastore <choice>`:
+  - `vertex_ai_vector_search` — for embeddings, similarity search, vector search
+  - `vertex_ai_search` — for document search, search engine
+- If agent should be **available to other agents** → **A2A protocol?** Use `--agent adk_a2a` (see Option C below)
+- If **full deployment** chosen → **CI/CD runner?** Choose `github_actions` (WIF-based, no PAT) or `google_cloud_build` (native GCP)
+- If **Cloud Run** chosen → **Session storage?** `cloud_sql` for production (VertexAiSessionService); `in_memory` for dev/prototype
+- If **background job** chosen (schedule/event trigger, no HTTP) → Use Option D (BackgroundJob pattern) — no FastAPI, no streaming
+
+---
+
 ## Steps
 
 1. Read the `google-adk` skill (`SKILL.md` and reference files) before generating any code
@@ -59,6 +82,50 @@ Delegate to the `google-adk` skill for all patterns, templates, and reference fi
    Create `.env` from template in `adk-project-config.md`
 
    Create `Dockerfile` per `adk-project-config.md`
+
+   ### Option C: A2A Project Template (`adk_a2a`)
+
+   Use when the agent must be callable by other ADK agents via the A2A protocol. **NEVER write A2A code from scratch** — the import paths, `AgentCard` schema, and `to_a2a()` signature change across versions.
+
+   ```bash
+   uvx agent-starter-pack create $ARGUMENTS \
+     --agent adk_a2a \
+     --deployment-target cloud_run \
+     --prototype \
+     --agent-guidance-filename CLAUDE.md \
+     -y
+   ```
+
+   - Generates valid A2A imports and Dockerfile — no manual A2A code needed
+   - Enables inter-agent calling via A2A protocol between independently deployed agents
+
+   ### Option D: BackgroundJob Pattern
+
+   Use when the agent runs on a schedule or event trigger — not on user request. No HTTP server.
+
+   **Entry point:** `src/job.py`
+   ```python
+   async def run_job(payload: dict) -> JobResult:
+       ...
+   ```
+
+   **Trigger:** Cloud Scheduler cron OR Pub/Sub message. No FastAPI server or HTTP layer.
+
+   **ADK usage:** Construct the Agent directly and call `await runner.run_async(...)` — no streaming, no HTTP.
+
+   **Session:** `InMemorySessionService` — jobs are stateless; no `VertexAiSessionService` needed.
+
+   **Directory structure:**
+   ```
+   src/
+     agent.py       # Agent definition
+     tools/         # Tool functions
+     job.py         # Entry point — run_job()
+   tests/
+     test_job.py    # Use InMemoryRunner directly
+   ```
+
+   **Tests:** Use `InMemoryRunner` directly. Mock any external status writes — do not call real external services in unit tests.
 
 4. Verify:
    - `uv run ruff check src/` (Option B) or `make lint` (Option A)

@@ -52,3 +52,13 @@ You are a senior Python developer specializing in production AI agent systems bu
 5. Create `src/api/routes.py` with /chat and /stream endpoints
 6. Create `src/main.py` with FastAPI lifespan + Runner init
 7. Write tests in `tests/` using InMemoryRunner
+
+## BackgroundJob Agent Pattern
+
+**Use when:** The agent runs on a schedule or event trigger, not on a user request.
+
+- **Entry point:** `async def run_job(payload: dict) -> JobResult:` in `src/job.py` — no HTTP server
+- **Trigger:** Cloud Scheduler cron OR Pub/Sub message, configured in deployment infra
+- **Session:** `InMemorySessionService` — jobs are stateless; no session persistence needed
+- **Status reporting:** Write final job status to your project's status tracking system (e.g. Firestore, a database, or a queue)
+- **Never add FastAPI routes** to a BackgroundJob service — there is no HTTP layer

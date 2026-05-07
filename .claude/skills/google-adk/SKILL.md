@@ -18,6 +18,12 @@ last-reviewed: "2026-03-15"
 
 **NEVER call the real Gemini API in unit tests.** Always use `InMemoryRunner` for tests. Production agents use `Runner` with real session services. Mixing these means real API costs, flaky tests, and non-deterministic CI.
 
+**NEVER connect to external services from a FunctionTool.** All external I/O (HTTP, DB, vector DB, cloud APIs) belongs in MCPTools accessed via `McpToolset`. FunctionTools contain ONLY pure logic or session state access.
+
+**ALWAYS use `McpToolset` for MCP connections** — never instantiate `McpToolset(connection_params=...)` directly in agent code; use the factory provided by your project. Rules:
+- **`tool_filter` is MANDATORY and non-empty** in every `McpToolset` call — limits which MCP tools the LLM can call; empty list raises `ValueError` at startup
+- **NEVER bypass McpToolset** with direct `httpx`/`requests` calls — all external I/O routes through the MCP server via McpToolset
+
 ## Quick Scaffold (Two Options)
 
 ### Option A: agent-starter-pack (Recommended for production)
@@ -36,6 +42,14 @@ uv init my-adk-service && cd my-adk-service
 uv add google-adk "google-genai>=1.0.0" "fastapi>=0.135.2" "uvicorn[standard]" pydantic pydantic-settings structlog
 uv add --dev pytest pytest-asyncio httpx ruff mypy
 ```
+
+### Option C: Enhance existing project (add deployment to scaffolded project)
+
+```bash
+uvx agent-starter-pack enhance .
+```
+
+Choose deployment target when prompted: `cloud_run` or `agent_engine`.
 
 ## Process
 
@@ -72,6 +86,62 @@ uv add --dev pytest pytest-asyncio httpx ruff mypy
 | Evaluation | `adk eval` + evalset schema + LLM-as-judge | See Google ADK docs |
 | Deployment | Agent Engine, Cloud Run, CI/CD | See Google ADK docs |
 | Observability | Cloud Trace, prompt logging, agent analytics | See Google ADK docs |
+
+## R1/R2 Tool Placement Rule
+
+Before writing any tool, apply this binary test:
+
+> "Does this tool perform I/O outside the agent process (DB, HTTP, vector DB, cloud APIs)?"
+
+| Answer | Tool type | Location |
+|--------|-----------|----------|
+| **YES** | **R1 — MCPTool** | MCP server — agent accesses via `McpToolset` |
+| **NO** | **R2 — FunctionTool** | Agent tools directory — pure logic only |
+
+**ToolContext exception:** If a tool needs BOTH external data AND `ToolContext` session state, it MUST be a FunctionTool — only in-process tools can access `ToolContext`. The FunctionTool reads data from session state previously populated by an MCPTool.
+
+**NEVER put `import httpx`, `import sqlalchemy`, or `import requests` in FunctionTool files.**
+
+## Eval-First Development
+
+Write golden test cases BEFORE writing agent code. This prevents writing code that passes no evaluation criteria.
+
+**Order of operations:**
+1. Define `tests/golden/agents/<agent_name>/` directory
+2. Write at minimum: one happy-path case, one error-path case, one edge-case
+3. Each case: input → expected output with `confidence_min`, `contains_keywords`, or `pattern_*` assertions
+4. Run eval skeleton to confirm test infrastructure works
+5. THEN implement the agent
+6. Iterate until all golden cases pass
+
+### Eval Skeleton (generate this first, before implementing the agent)
+
+```bash
+AGENT=my_agent  # replace with your agent name
+mkdir -p tests/golden/agents/$AGENT tests/evals
+
+# Placeholder evalset
+cat > tests/evals/$AGENT.evalset.json << 'JSON'
+[
+  {
+    "name": "happy_path_1",
+    "input": { "query": "your test input here" },
+    "expected_tool_use": [{ "tool_name": "your_tool_name" }],
+    "expected_final_response": { "contains": "expected keyword" }
+  }
+]
+JSON
+
+# Eval config with accuracy threshold
+cat > tests/evals/eval_config.json << 'JSON'
+{
+  "criteria": [
+    { "type": "tool_trajectory_avg_score", "config": { "match_type": "IN_ORDER" } },
+    { "type": "final_response_match_v2", "config": { "threshold": 0.8 } }
+  ]
+}
+JSON
+```
 
 ## Code Preservation Rules
 
