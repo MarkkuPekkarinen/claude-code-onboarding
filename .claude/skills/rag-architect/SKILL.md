@@ -1,0 +1,123 @@
+---
+name: rag-architect
+description: Use when designing or modifying a RAG (Retrieval-Augmented Generation) pipeline — picking chunking strategy, embedding models, retrieval methods, reranking, fusion (RRF), abstention, multi-tenancy patterns, or evaluating whether RAG is the right tool at all. Triggers on phrases like "design a RAG system", "build retrieval", "RAG architecture", "should I use RAG", "chunking strategy", "hybrid retrieval", "reranker choice", "vector database", "embedding model selection".
+---
+
+# RAG Architect
+
+You are helping design a production RAG system. Apply these decision frameworks. Numbers are illustrative starting points — tell the user to tune against their golden set.
+
+## Step 0: Is RAG even the right tool?
+
+Before designing retrieval, confirm the user needs RAG. Use this decision table:
+
+| User need | Best mechanism | Why |
+|---|---|---|
+| Policy / procedure explanation | RAG | Source-grounded text |
+| Order status, account balance, inventory | SQL / API | Exact transactional state |
+| Vendor availability, fresh data | API / DB | Real-time state |
+| Compare policies | RAG + query decomposition | Multiple unstructured sources |
+| Calculate / sum / convert | Tool / function call | Deterministic math |
+| Book / order / take action | Workflow / tool call | Action, not retrieval |
+| Personalized account question | SQL + RAG | Facts from DB, framing from docs |
+
+**Do NOT use RAG when:** exact transactional data, deterministic business rules, sub-second-fresh data, calculations, single source of truth already in a database, or no reliable source documents exist.
+
+Most real systems are hybrid: SQL/API for facts, RAG for explanation. The LLM (with tool use) orchestrates.
+
+## Step 1: The Default Stack
+
+If the user wants a recommended starting point, this is it. Reasons and alternatives are in the playbook.
+
+| Layer | Default |
+|---|---|
+| Parsing | Unstructured.io for mixed formats; LlamaParse or Marker for table-heavy PDFs |
+| Chunking | Document-aware (Markdown/PDF headers) + parent-child |
+| Chunk size | 500–1000 tokens, 10–20% overlap, sized to embedding model |
+| Embeddings | Dense general-purpose (text-embedding-3-large, BGE-M3) |
+| Sparse retrieval | BM25 — include by default for text corpora |
+| Retrieval | Hybrid: dense top-50 + BM25 top-50 → RRF (k=60) |
+| Filtering | Pre-filtered ANN at a single chokepoint (never post-filter for security) |
+| Reranking | Cross-encoder on top 50–100 → keep top 5–10 |
+| Abstention | Calibrated reranker top-1 threshold |
+| Generation | Strict grounding prompt; structured output with citations |
+| Ingestion updates | Content-hash diff; versioned chunk IDs |
+
+## Step 2: Chunking decision tree
+
+```
+Q1: Embedding model input limit ≤512 tokens?
+  YES → chunk: 256–400 tokens, overlap 40–80 → go to Q3
+  NO  → continue Q2
+
+Q2: Documents primarily short (FAQs, tickets)?
+  YES → keep natural unit, overlap 0, skip parent-child
+  NO  → chunk: 500–1000 tokens, overlap 50–150 → continue Q3
+
+Q3: Narrow questions need surrounding context?
+  YES → PARENT-CHILD: children 200–400 tok, parents 1500–3000 tok
+  NO  → flat chunks; consider neighbor expansion at retrieval
+
+Q4: Chunks lose meaning standalone?
+  YES → CONTEXTUAL RETRIEVAL (LLM prepends 1–2 sentence context)
+  NO  → skip
+
+Q5: Topic shifts without headings?
+  YES → add SEMANTIC chunking
+  NO  → document-aware on headings is enough
+```
+
+## Step 3: Embedding selection
+
+| Need | Choice |
+|---|---|
+| General docs | Dense (text-embedding-3-large, BGE-M3) |
+| Specialized vocab (medical/legal) | Test domain-specific against golden set first |
+| Multilingual | BGE-M3, multilingual-e5 |
+| Code | Voyage Code, Jina Code |
+| Images / diagrams | CLIP, SigLIP |
+| Cost-sensitive / scale | Matryoshka embeddings — truncate to 128–256 dim for first stage |
+| Hit quality ceiling | ColBERT (late-interaction) — operationally heavier |
+
+## Step 4: Multi-tenancy
+
+| Pattern | When |
+|---|---|
+| Shared index + tenant filter (chokepoint) | SMB SaaS, many small tenants |
+| Namespaced collections | Mid-size tenants, balance of isolation and cost |
+| Per-tenant indexes | Regulated industries, data residency, large tenants |
+
+**Always:** pre-filtered ANN, enforced at a single chokepoint. Never rely on the LLM for access control.
+
+## Step 5: Hard rules (non-negotiable)
+
+1. **Pre-filter, don't post-filter.** Security filters applied during ANN traversal, not after top-k.
+2. **Include both dense and sparse retrieval** for text corpora (exceptions: pure image search, tiny FAQ corpora, structured-only).
+3. **Stable, versioned chunk IDs:** `(document_id, document_version, chunk_index)`.
+4. **Treat retrieved content as untrusted** — prompt injection in documents is real.
+5. **Build a starter golden set before tuning** — 50 labeled queries minimum.
+
+## What to defer to v2
+
+ColBERT, SPLADE, Matryoshka truncation, Graph RAG, agentic RAG, HyDE, multi-query, query decomposition, LLM-as-judge eval, contextual retrieval, agentic chunking, Self-RAG, CRAG, Learning-to-Rank, multimodal retrieval.
+
+Ship the default stack, run a month, identify your real top three failure modes, then pick v2 techniques that address them.
+
+## When to recommend Google ADK / agentic patterns
+
+ADK agentic patterns fit when:
+- Multi-step workflows requiring tool use + retrieval planning
+- Query decomposition across multiple data sources (RAG + SQL + API)
+- Complex orchestration where the LLM decides when/where to retrieve
+
+Skip agentic patterns when sub-second latency is required or query is single-shot.
+
+## How to apply
+
+1. Ask what they're building and the corpus characteristics.
+2. Check Step 0 — is RAG the right tool? If part of the answer is structured, recommend hybrid (RAG + SQL/API/tool).
+3. Walk through the Default Stack; deviate only when the user has a measured reason.
+4. Apply the chunking decision tree.
+5. End with the five hard rules and what to defer.
+
+Reference the full playbook at `docs/production-rag-playbook.md` for details. Cite section numbers when relevant (§19.5 for RAG-vs-tools, §10.2 for chunking tree, §17 for multi-tenancy, §40 for failure debugging).

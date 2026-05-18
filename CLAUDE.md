@@ -86,6 +86,12 @@ Consult official docs via MCP before writing ANY code. Zero tolerance for deprec
 | AI Feature Audit | `.claude/skills/ai-audit/` | — | `/ai-audit` |
 | AI Incident Response | `.claude/skills/ai-incident-response/` | — | `/ai-incident-response` |
 | AI Design Playbook | `.claude/skills/ai-playbook/` | — | `/ai-playbook` |
+| RAG Architecture Design | `.claude/skills/rag-architect/` | — | `/rag-design` |
+| RAG Failure Debugging | `.claude/skills/rag-debugger/` | — | `/rag-debug` |
+| RAG Evaluation Framework | `.claude/skills/rag-evaluator/` | — | `/rag-eval-init` |
+| RAG Security Controls | `.claude/skills/rag-security-reviewer/` | — | — |
+| RAG System Audit | — | — | `/rag-review` |
+| RAG Failure Trace | — | — | `/rag-failure-trace` |
 
 ### Code Review Agents
 
@@ -100,7 +106,9 @@ Consult official docs via MCP before writing ANY code. Zero tolerance for deprec
 | Database | `postgresql-database-reviewer` |
 | pgvector schema | `pgvector-schema-reviewer` |
 | Weaviate schema | `weaviate-schema-reviewer` |
-| RAG pipeline | `rag-pipeline-reviewer` |
+| RAG pipeline (code) | `rag-pipeline-reviewer` |
+| RAG full system | `rag-implementation-reviewer` |
+| RAG eval execution | `rag-eval-runner` |
 | UI/UX | `ui-standards-expert`, `frontend-design`, `accessibility-auditor` |
 | AI Security | `ai-security-reviewer` |
 | AI Evals | `ai-eval-designer` |

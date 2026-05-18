@@ -97,10 +97,14 @@
 - **gpd-release-flow**: End-to-end Google Play release workflow covering upload, staged rollout, track promotions, and production release — the primary Android release skill.
 - **gpd-submission-health**: Preflight checklist for Google Play production releases — run all 5 checks before promoting to production. Reference: `reference/submission-preflight-checklist.md`.
 
-### Vector Database (3 skills)
+### Vector Database & RAG (7 skills)
 - **vector-database**: Use for all vector database work — pgvector schema design, Weaviate collection creation, RAG pipeline scaffolding, embedding model selection, HNSW vs IVFFlat index tuning, and embedding model migration. Iron law: pin dimensions at model selection. Reference files: `references/pgvector-migration-template.md`, `references/weaviate-collection-patterns.md`, `references/rag-pipeline-patterns.md`, `references/embedding-migration-guide.md`, `references/vector-index-tuning-playbook.md` (quantization strategies, HNSW benchmarking, memory estimation, Qdrant config).
 - **weaviate**: Search, query, and manage Weaviate vector database collections — semantic search, hybrid search, keyword search, natural language queries, data import, collection inspection, and filtered fetching. Includes Python scripts in `scripts/`. Required env: `WEAVIATE_URL`, `WEAVIATE_API_KEY`.
 - **weaviate-cookbooks**: Build complete AI applications with Weaviate — Query Agent Chatbot, PDF Multimodal RAG, Basic/Advanced/Agentic RAG, Basic Agents with DSPy. High-level blueprints and end-to-end project patterns. Read `references/project_setup.md` and `references/environment_requirements.md` first.
+- **rag-architect**: RAG system design decision framework. Use at the start of any RAG project — covers "Is RAG the right tool?" (SQL vs RAG vs hybrid), chunking decision tree (5 Q&A branches), embedding model selection table, multi-tenancy patterns (shared/namespaced/per-tenant), and 5 hard rules (pre-filter, hybrid retrieval, stable chunk IDs, untrusted content, golden set). Command: `/rag-design` (produces ADR).
+- **rag-debugger**: RAG failure root-cause diagnosis via 9-layer chain (parsing → chunking → filtering → BM25 → dense → RRF → reranking → context packing → generation). First layer where chunk disappears = root cause. Command: `/rag-debug`.
+- **rag-evaluator**: RAG evaluation strategy covering 3 levels (retrieval, answer, operational), golden set design (60/20/20 coverage split), retrieval metrics (Recall@K, NDCG@K, MRR), answer metrics (faithfulness, citation accuracy per-claim, hallucination, abstention quality), LLM-as-judge calibration, eval at scale (synthetic, production-trace, drift detection), and CI gate pattern. Command: `/rag-eval-init`.
+- **rag-security-reviewer**: RAG-specific security controls: pre-filter vs post-filter mode safety, single chokepoint enforcement pattern, treating retrieved content as untrusted (delimiters, no tool instruction execution), audit log schema (response_id, tenant_id, filters_applied, chunks_used), and PII redaction pipeline at 4 stages (pre-ingestion, pre-retrieval, post-retrieval, generation-time).
 
 ### API & Architecture (13 skills)
 - **architect-review**: Deep architectural review specialist — assesses system design changes, identifies anti-patterns (Anemic Domain, Fat Controller, Missing Outbox, Distributed Monolith), evaluates distributed systems compliance (Saga, CQRS, service mesh, circuit breaker), and produces prioritized HIGH/MEDIUM/LOW findings with ADR triggers. Use when reviewing architecture before implementation. Distinct from `plan-mode-review` Phase 1 (shallow pass) — this is a full dedicated review. Reference: `reference/architect-review-patterns.md` (anti-pattern catalog, distributed systems checklist).
@@ -290,12 +294,17 @@ Loaded from `rules/titan-methodology.md`. Dual-lens scoring for product decision
 2. **angular-spa** or **flutter-mobile** — Platform-specific component patterns
 3. **security-reviewer** — File upload, innerHTML rendering, token exposure
 
-### pgvector Schema + RAG Pipeline
-1. **vector-database** — Design pgvector migration (model, dimensions, index type, distance metric)
-2. **database-schema-designer** — Design surrounding relational schema for the table
-3. **pgvector-schema-reviewer** agent — Review migration for operator/index alignment, dimension match, null guards
-4. **agentic-ai-dev** (or **python-dev**) — Implement embedding + retrieval layer
-5. **rag-pipeline-reviewer** agent — Review pipeline for model pinning, batch embedding, silent failure risks
+### RAG System — Full Lifecycle
+1. **rag-architect** `/rag-design` — Architecture decisions + ADR (chunking, embedding, multi-tenancy, pre-filter)
+2. **vector-database** — Design pgvector migration or Weaviate collection (dimensions, index, distance metric)
+3. **pgvector-schema-reviewer** agent — Review migration for operator/index alignment, dimension match
+4. **agentic-ai-dev** (or **python-dev**) — Implement embedding + retrieval + generation layer
+5. **rag-implementation-reviewer** agent — Full code review (ingestion, retrieval, generation, security, audit, eval)
+6. **rag-security-reviewer** — Verify pre-filter mode, single chokepoint, audit log, PII redaction
+7. **rag-evaluator** `/rag-eval-init` — Bootstrap golden set + metrics infrastructure
+8. **rag-eval-runner** agent — Run evals, detect regressions, triage failures
+9. `/rag-debug` — Diagnose failures via 9-layer chain when queries miss expected results
+10. `/rag-review` — Full system audit (ingestion, retrieval, generation, security, eval, ops MVP checklist)
 
 ### SQL Query Optimization (PostgreSQL OLTP)
 1. **sql-optimization-patterns** — Run `pg_stat_statements` query to find slowest queries
@@ -324,11 +333,13 @@ Loaded from `rules/titan-methodology.md`. Dual-lens scoring for product decision
 4. **database-schema-designer** — Design the PostgreSQL side of the hybrid system
 
 ### Weaviate Collection + Application
-1. **weaviate** — Inspect existing cluster, list collections, explore schema
-2. **vector-database** — Design collection schema (vectorizer, named vectors, multi-tenancy)
-3. **weaviate-schema-reviewer** agent — Review collection for v4 API, distance metric, multi-tenancy flag
-4. **weaviate-cookbooks** — Pick application blueprint (RAG, chatbot, agentic RAG, DSPy agent)
-5. **agentic-ai-dev** (or **python-dev**) — Implement FastAPI layer
+1. **rag-architect** `/rag-design` — Architecture decisions before implementation
+2. **weaviate** — Inspect existing cluster, list collections, explore schema
+3. **vector-database** — Design collection schema (vectorizer, named vectors, multi-tenancy)
+4. **weaviate-schema-reviewer** agent — Review collection for v4 API, distance metric, multi-tenancy flag
+5. **weaviate-cookbooks** — Pick application blueprint (RAG, chatbot, agentic RAG, DSPy agent)
+6. **agentic-ai-dev** (or **python-dev**) — Implement FastAPI layer
+7. **rag-security-reviewer** — Verify pre-filter, single chokepoint, audit log
 
 ### AI Agent Development
 1. **agentic-ai-dev** — Build LangGraph agent, RAG system, tools
