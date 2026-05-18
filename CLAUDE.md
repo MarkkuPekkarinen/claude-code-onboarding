@@ -81,6 +81,11 @@ Consult official docs via MCP before writing ANY code. Zero tolerance for deprec
 | Brainstorm / Explore Options | — | — | `/brainstorm` |
 | Stripe Payments | `.claude/skills/stripe/` | — | — |
 | RevenueCat Subscriptions | `.claude/skills/revenuecat/` | — | — |
+| AI Feature Design | `.claude/skills/ai-decision-record/` | — | `/ai-decision-record` |
+| AI Launch Gate | `.claude/skills/ai-launch-check/` | — | `/ai-launch-check` |
+| AI Feature Audit | `.claude/skills/ai-audit/` | — | `/ai-audit` |
+| AI Incident Response | `.claude/skills/ai-incident-response/` | — | `/ai-incident-response` |
+| AI Design Playbook | `.claude/skills/ai-playbook/` | — | `/ai-playbook` |
 
 ### Code Review Agents
 
@@ -97,6 +102,8 @@ Consult official docs via MCP before writing ANY code. Zero tolerance for deprec
 | Weaviate schema | `weaviate-schema-reviewer` |
 | RAG pipeline | `rag-pipeline-reviewer` |
 | UI/UX | `ui-standards-expert`, `frontend-design`, `accessibility-auditor` |
+| AI Security | `ai-security-reviewer` |
+| AI Evals | `ai-eval-designer` |
 | Tech debt | `dedup-code-agent` |
 
 ## Common Commands
