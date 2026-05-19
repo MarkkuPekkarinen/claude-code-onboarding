@@ -347,6 +347,118 @@ void main() {
 }
 ```
 
+---
+
+## Standard A2UI v0.8 Catalog Widgets (Extended Set)
+
+These map the A2UI standard catalog to Flutter widgets. Register them in `widget_catalog.dart` alongside custom widgets.
+
+### `slider` — Numeric Range Input
+
+```dart
+CatalogItem(
+  type: 'slider',
+  schema: JsonSchema.object({
+    'label': JsonSchema.string(description: 'Display label above slider'),
+    'value': JsonSchema.object({}), // path or literalString for initial value
+    'min': JsonSchema.number(description: 'Minimum value'),
+    'max': JsonSchema.number(description: 'Maximum value'),
+    'step': JsonSchema.number(description: 'Step increment (optional)'),
+  }, required: ['label', 'min', 'max']),
+  builder: (properties, conversation, dataModel) {
+    final min = (properties['min'] as num? ?? 0).toDouble();
+    final max = (properties['max'] as num? ?? 100).toDouble();
+    final initial = (properties['value']?['literalString'] as num? ?? min).toDouble();
+    return _SliderWidget(
+      label: properties['label']?.toString() ?? '',
+      min: min,
+      max: max,
+      initialValue: initial,
+      divisions: properties['step'] != null
+          ? ((max - min) / (properties['step'] as num)).round()
+          : null,
+      onChanged: (v) => conversation.updateDataModel(
+        (properties['value']?['path'] as String? ?? '/slider'), v,
+      ),
+    );
+  },
+),
+```
+
+**Accessibility:** Use `Semantics(slider: true, value: '${value.round()}', label: label)`.
+
+### `audio_player` — Audio Playback
+
+```dart
+CatalogItem(
+  type: 'audio_player',
+  schema: JsonSchema.object({
+    'src': JsonSchema.object({}), // URL — validated before use
+    'label': JsonSchema.string(description: 'Accessible label for the player'),
+  }, required: ['src']),
+  builder: (properties, conversation, dataModel) {
+    final rawUrl = properties['src']?['literalString']?.toString() ?? '';
+    // Validate: only allow https:// URLs
+    if (!rawUrl.startsWith('https://')) {
+      debugPrint('GenUI: audio_player src blocked — non-https URL rejected');
+      return const SizedBox.shrink();
+    }
+    return _AudioPlayerWidget(url: rawUrl, label: properties['label']?.toString());
+  },
+),
+```
+
+**Security:** Always validate `src` URL — reject non-https. Use `just_audio` or `audioplayers` package.
+
+### `video` — Video Playback
+
+```dart
+CatalogItem(
+  type: 'video',
+  schema: JsonSchema.object({
+    'src': JsonSchema.object({}), // URL — validated before use
+    'label': JsonSchema.string(description: 'Accessible label / alt text'),
+    'autoPlay': JsonSchema.boolean(description: 'Auto-start playback (default false)'),
+  }, required: ['src']),
+  builder: (properties, conversation, dataModel) {
+    final rawUrl = properties['src']?['literalString']?.toString() ?? '';
+    if (!rawUrl.startsWith('https://')) {
+      debugPrint('GenUI: video src blocked — non-https URL rejected');
+      return const SizedBox.shrink();
+    }
+    return _VideoPlayerWidget(
+      url: rawUrl,
+      label: properties['label']?.toString(),
+      autoPlay: properties['autoPlay'] as bool? ?? false,
+    );
+  },
+),
+```
+
+**Security:** Validate URL before initializing the video controller. Use `video_player` package. Never auto-play audio on first render without user consent (accessibility + UX).
+
+---
+
+## Updated Catalog Registry
+
+Add to `widget_catalog.dart` alongside triage widgets:
+
+```dart
+// Standard A2UI extended widgets
+_buildSliderCatalogItem(),
+_buildAudioPlayerCatalogItem(),
+_buildVideoCatalogItem(),
+
+// PropertyHarbor triage widgets (existing)
+_buildPhotoUploadCatalogItem(),
+_buildDropdownCatalogItem(),
+_buildFreeTextCatalogItem(),
+_buildRatingCatalogItem(),
+_buildConfirmationCatalogItem(),
+```
+
+---
+
 ## Accessibility Requirements
 
 All triage widgets must meet WCAG 2.1 AA:

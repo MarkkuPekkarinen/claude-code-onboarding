@@ -73,13 +73,14 @@ Detailed patterns are in `reference/`:
 - `a2ui-protocol-advanced.md` — Action model, streaming (JSONL/SSE/WebSocket/REST/A2A), A2A integration, versioning
 - `a2ui-security.md` — Allowlist enforcement, injection prevention, untrusted payload handling
 - `a2ui-component-catalog.md` — Layout (Row, Column) + Display (Text, Image, Icon, Divider) + Interactive (Button, TextField, Checkbox, DateTimeInput) component schemas
-- `a2ui-component-containers.md` — Container types (Card, Modal, Tabs, List), extended catalog, how to add new types
+- `a2ui-component-containers.md` — Container types (Card, Modal, Tabs, List), extended catalog (ChoicePicker, Slider, AudioPlayer, Video), how to add new types
+- `a2ui-functions.md` — Full functions reference: validation (required, regex, email), formatting (formatCurrency, formatDate, pluralize), logical (and, or, not), navigation (openUrl) — `A2UIFunctionService` implementation
 
 ### Angular Implementation
 - `a2ui-renderer-patterns.md` — Architecture overview, file structure, TypeScript models, catalog service, sanitizer service, renderer key patterns
 - `a2ui-renderer-template.md` — Full A2UIRendererComponent implementation (all 12 @case branches, computed signals, action dispatch)
 - `a2ui-chat-template.md` — Chat page component, streaming variant (SSE + JSONL), wire format reference with JSON examples
-- `a2ui-renderer-services.md` — A2UIAgentService (REST + SSE), buildSurfaceState, unit test template (5 test cases)
+- `a2ui-renderer-services.md` — Official `@a2ui/angular` SDK setup (A2uiRendererService, SurfaceComponent, A2UI_RENDERER_CONFIG), A2UIAgentService (REST + SSE), unit test template
 
 ## Anti-Patterns — What to Avoid
 

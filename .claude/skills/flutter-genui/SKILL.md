@@ -70,9 +70,10 @@ GenUI is Flutter's official SDK for **generative UI** — it turns text-based LL
 2. **Read `reference/genui-conversation-orchestration.md`** — Conversation lifecycle, model adapters, streaming loop
 3. **Read `reference/genui-state-binding.md`** — DataModel, SurfaceController, reactive state, surface rendering
 4. **Read `reference/genui-a2ui-transport.md`** — A2uiTransportAdapter, A2uiMessage, SSE streaming, JSONL parsing
-5. **Read `reference/genui-custom-widgets.md`** — custom widget integration, PropertyHarbor triage widgets
-6. **Read `reference/genui-security.md`** — catalog allowlist enforcement, input sanitization, payload limits
-7. **Verify Flutter/Dart APIs** — Use `dart-mcp-server` or Context7 MCP before using any API
+5. **Read `reference/genui-functions.md`** — A2UIFunctionEvaluator, declarative functions (formatCurrency, required, email, and/or/not), integration pattern
+6. **Read `reference/genui-custom-widgets.md`** — custom widget integration, Slider/AudioPlayer/Video, PropertyHarbor triage widgets
+7. **Read `reference/genui-security.md`** — catalog allowlist enforcement, input sanitization, payload limits
+8. **Verify Flutter/Dart APIs** — Use `dart-mcp-server` or Context7 MCP before using any API
 
 ## Process
 
@@ -95,9 +96,10 @@ Detailed patterns are in `reference/`:
 - `genui-conversation-orchestration.md` — Conversation lifecycle, model adapter setup, message history, streaming loop
 - `genui-state-binding.md` — DataModel observable state, SurfaceController, surface management, reactive rendering
 - `genui-a2ui-transport.md` — A2uiTransportAdapter, A2uiMessage types, SSE/JSONL streaming, backend integration
+- `genui-functions.md` — `A2UIFunctionEvaluator`: validation (required, regex, email), formatting (formatCurrency, formatDate, pluralize), logical (and, or, not), navigation (openUrl) — full Dart implementation
 
 ### Integration
-- `genui-custom-widgets.md` — Custom widget registration, PropertyHarbor triage widgets (photo_upload, dropdown, free_text, rating, confirmation), category-specific widget sets
+- `genui-custom-widgets.md` — Custom widget registration, extended A2UI catalog (Slider, AudioPlayer, Video), PropertyHarbor triage widgets (photo_upload, dropdown, free_text, rating, confirmation)
 - `genui-security.md` — Catalog allowlist enforcement, untrusted payload handling, input sanitization, size limits
 
 ### A2UI Protocol (shared with Angular skill)

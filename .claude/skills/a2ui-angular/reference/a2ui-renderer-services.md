@@ -1,4 +1,75 @@
-# A2UI Angular — Agent Service and Unit Tests
+# A2UI Angular — Agent Service, Official SDK, and Unit Tests
+
+## Official SDK: `@a2ui/angular`
+
+The `@a2ui/angular` package is the **official Angular renderer SDK** from Google. Use it for new projects instead of building a custom renderer from scratch.
+
+```bash
+npm install @a2ui/angular
+```
+
+### Provider Setup (app.config.ts)
+
+```typescript
+import { ApplicationConfig } from '@angular/core';
+import { provideA2uiRenderer, A2UI_RENDERER_CONFIG, provideMarkdownRenderer } from '@a2ui/angular';
+import { BasicCatalog } from '@a2ui/angular/catalogs';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideA2uiRenderer(),
+    provideMarkdownRenderer(),           // optional: enables Markdown text rendering
+    {
+      provide: A2UI_RENDERER_CONFIG,
+      useValue: {
+        catalogs: [BasicCatalog],        // register available component catalogs
+      },
+    },
+  ],
+};
+```
+
+### Service API
+
+```typescript
+import { A2uiRendererService } from '@a2ui/angular';
+
+@Component({ ... })
+export class ChatComponent {
+  private renderer = inject(A2uiRendererService);
+
+  // Feed A2UI messages to the renderer (createSurface, updateComponents, updateDataModel, deleteSurface)
+  handleAgentMessages(messages: A2UIMessage[]): void {
+    this.renderer.processMessages(messages);
+  }
+
+  // Subscribe to user actions (button clicks, form submits) from any surface
+  constructor() {
+    this.renderer.surfaceGroup.onAction.subscribe(action => {
+      // action: { name, surfaceId, sourceComponentId, timestamp, context }
+      this.sendActionToAgent(action);
+    });
+  }
+}
+```
+
+### Surface Rendering (template)
+
+```html
+<!-- Renders a named surface by ID — the SDK handles all component mapping internally -->
+<a2ui-surface surfaceId="main" />
+```
+
+### When to Use SDK vs Custom Renderer
+
+| Scenario | Use |
+|----------|-----|
+| New project, standard catalog sufficient | `@a2ui/angular` SDK |
+| Need custom component types (chart, map, etc.) | Custom renderer (see `a2ui-renderer-patterns.md`) |
+| Need custom security policy or data binding | Custom renderer |
+| Need catalog extensions beyond BasicCatalog | Register additional catalogs via `A2UI_RENDERER_CONFIG` |
+
+---
 
 ## Agent Service (REST + SSE)
 

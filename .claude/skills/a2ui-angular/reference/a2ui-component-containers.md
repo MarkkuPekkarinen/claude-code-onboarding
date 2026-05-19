@@ -114,6 +114,41 @@ The following types are not in the A2UI v0.8 core spec but are supported as rend
 | `table` | Tabular data display with column definitions and row data | `<table class="table">` |
 | `chart` | Bar, line, or pie data visualization | Custom chart library wrapper |
 | `badge` | Status indicator or label with semantic color variants | `<span class="badge badge-success">` |
+| `ChoicePicker` | Single or multi-select from a list of options | `<select class="select">` or radio group |
+| `Slider` | Numeric range input with min/max/step | `<input type="range" class="range">` |
+| `AudioPlayer` | Embeds audio playback controls for a given URL | `<audio controls>` — URL validated before binding |
+| `Video` | Embeds video playback for a given URL | `<video controls>` — URL validated before binding |
+
+**ChoicePicker example:**
+```json
+{
+  "id": "cabin-picker",
+  "component": {
+    "type": "ChoicePicker",
+    "label": {"literalString": "Cabin class"},
+    "value": {"path": "/booking/cabinClass"},
+    "options": [
+      {"label": {"literalString": "Economy"}, "value": {"literalString": "economy"}},
+      {"label": {"literalString": "Business"}, "value": {"literalString": "business"}}
+    ]
+  }
+}
+```
+
+**Slider example:**
+```json
+{
+  "id": "price-slider",
+  "component": {
+    "type": "Slider",
+    "label": {"literalString": "Max price"},
+    "value": {"path": "/filters/maxPrice"},
+    "min": 0,
+    "max": 1000,
+    "step": 50
+  }
+}
+```
 
 Each extension type follows the same property format rules as official types — text fields use `{"literalString": "..."}` or `{"path": "/..."}`. Extension types must have unit tests and a property schema entry in this file before they are added to the allowlist.
 
