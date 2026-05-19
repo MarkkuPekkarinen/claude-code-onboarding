@@ -60,6 +60,42 @@ export class ChatComponent {
 <a2ui-surface surfaceId="main" />
 ```
 
+### Production vs Demo Action Handler
+
+A common demo pattern calls `processMessages` directly from the action handler:
+
+```typescript
+// ⚠️ DEMO-ONLY — do NOT use in production
+this.renderer.surfaceGroup.onAction.subscribe(action => {
+  this.renderer.processMessages([{ version: 'v0.9', updateDataModel: { ... } }]);
+});
+```
+
+**This is wrong for production.** It:
+- Cuts the agent out of the loop — the agent never sees the action
+- Breaks observability — no trace of the action or its result
+- Bypasses server-side validation — the update goes straight to the renderer
+- Creates state divergence between client and agent
+
+**Production pattern — forward to agent:**
+```typescript
+this.renderer.surfaceGroup.onAction.subscribe((action: A2uiClientAction) => {
+  this.agentService.sendUserAction(action).subscribe(messages => {
+    this.renderer.processMessages(messages); // messages come from the validated agent response
+  });
+});
+```
+
+Always forward actions to the agent. Let the agent decide whether to emit new A2UI messages.
+
+**Cleanup pattern (required):**
+```typescript
+constructor(private destroyRef: DestroyRef) {
+  const sub = this.renderer.surfaceGroup.onAction.subscribe(action => { ... });
+  this.destroyRef.onDestroy(() => sub.unsubscribe());
+}
+```
+
 ### When to Use SDK vs Custom Renderer
 
 | Scenario | Use |

@@ -263,6 +263,31 @@ Sent from the **client to the agent** when the user interacts with an A2UI compo
 
 `userAction` contrasts with the four agent-to-client message types: where `surfaceUpdate`, `dataModelUpdate`, `beginRendering`, and `deleteSurface` flow from agent to client, `userAction` flows from client to agent.
 
+## v0.8 → v0.9 Message Name Changes
+
+The most common migration gotcha — names changed completely:
+
+| Purpose | v0.8 (stable) | v0.9 (draft) |
+|---------|--------------|--------------|
+| Create a surface | `surfaceUpdate` + `beginRendering` | `createSurface` |
+| Add/update components | `surfaceUpdate` | `updateComponents` |
+| Update data model | `dataModelUpdate` | `updateDataModel` |
+| Delete a surface | `deleteSurface` | `deleteSurface` |
+
+v0.9 also adds a `version` field to every message:
+```json
+{ "version": "v0.9", "createSurface": { "surfaceId": "main", "catalogId": "https://..." } }
+```
+
+**v0.9 `root` requirement.** Every rendered surface must include exactly one component with `id: "root"` — this is a v0.9 protocol requirement, not a renderer convention.
+
+**Import from versioned paths in v0.9:**
+```typescript
+import { A2uiRendererService, SurfaceComponent } from '@a2ui/angular/v0_9';
+import type { A2uiMessage, A2uiClientAction } from '@a2ui/web_core/v0_9';
+```
+
+v0.8 and v0.9 are not drop-in compatible. Pin one version across your entire stack.
 
 > Action model, streaming protocol, A2A integration, and versioning are in `a2ui-protocol-advanced.md`.
 

@@ -40,6 +40,7 @@ Every component from an agent must be validated against the client's approved ca
 | A2UI Spec | `https://a2ui.org/` | Protocol specification, component format |
 | A2UI GitHub | `https://github.com/google/A2UI` | Reference implementations, samples |
 | A2A Extension | `https://a2ui.org/a2a-extension/a2ui/v0.8` | A2A protocol integration (Python ADK) |
+| A2UI Composer | `https://a2ui.org/composer/` | Visual widget builder — prototype before wiring |
 | @a2ui/angular | `npm install @a2ui/angular` | Official Angular renderer SDK |
 | Angular v21 | `angular-cli` MCP | Workspace-aware help, schematics |
 | daisyUI v5 | `https://daisyui.com/llms.txt` | Component reference for rendering |
@@ -81,6 +82,7 @@ Detailed patterns are in `reference/`:
 - `a2ui-renderer-template.md` — Full A2UIRendererComponent implementation (all 12 @case branches, computed signals, action dispatch)
 - `a2ui-chat-template.md` — Chat page component, streaming variant (SSE + JSONL), wire format reference with JSON examples
 - `a2ui-renderer-services.md` — Official `@a2ui/angular` SDK setup (A2uiRendererService, SurfaceComponent, A2UI_RENDERER_CONFIG), A2UIAgentService (REST + SSE), unit test template
+- `a2ui-production-architecture.md` — Production stack, Domain DSL, Custom Catalog patterns (BoundProperty, BasicCatalogBase, FunctionImplementation), Charts/Dashboard, Testing patterns, Observability metrics
 
 ## Anti-Patterns — What to Avoid
 

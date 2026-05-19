@@ -208,6 +208,31 @@ Function.apply(properties['handler'], []);
 - Max 50 widget interactions per triage session (prevents abuse)
 - Triage sessions timeout after 10 minutes of inactivity
 
+## Rate Limits (Server-Side)
+
+A misbehaving agent can DoS the client by spamming messages. These limits belong on the server:
+
+| Limit | Recommended Cap |
+|-------|----------------|
+| Surfaces per session | ~50 |
+| User actions per second per surface | ~10 |
+| `updateDataModel` payload size | Set a max bytes limit |
+
+## Server-Side Validation Before Rendering
+
+LLM-generated GenUI payloads are not safe to render without validation. Required production loop:
+
+```
+LLM generates widget JSON
+  ↓
+Validate against catalog JSON schemas (CatalogItem.schema)
+  ↓
+[FAIL] → Return structured error to LLM → retry (max 2-3 retries)
+[PASS] → Send validated payload to Flutter client
+```
+
+Track validation failure rate per widget type — a spike indicates LLM regression or prompt drift before users notice.
+
 ## Security Checklist
 
 - [ ] Catalog defines explicit allowlist of widget types

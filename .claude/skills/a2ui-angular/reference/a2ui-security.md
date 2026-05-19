@@ -208,6 +208,79 @@ validateSurface(update: { surfaceId: string; components: Array<{id: string; comp
 }
 ```
 
+## Catalog ID Allowlisting
+
+The `catalogId` field in `createSurface` is agent-controlled. Never load a catalog dynamically based on a catalogId from the agent without server-side allowlisting:
+
+```typescript
+const ALLOWED_CATALOG_IDS = new Set([
+  'https://a2ui.org/specification/v0_9/basic_catalog.json',
+  'https://example.com/catalogs/your-custom-catalog',
+]);
+
+function validateA2uiMessage(msg: unknown): void {
+  if (typeof msg === 'object' && msg !== null && 'createSurface' in msg) {
+    const catalogId = (msg as Record<string, Record<string, string>>).createSurface?.catalogId;
+    if (catalogId && !ALLOWED_CATALOG_IDS.has(catalogId)) {
+      throw new Error(`Disallowed catalogId: ${catalogId}`);
+    }
+  }
+}
+```
+
+Validate all incoming A2UI messages server-side before they reach the client.
+
+## sendCatalogDescription: false in Production
+
+`sendCatalogDescription: true` (a development convenience) sends component descriptions and schema examples into the agent prompt automatically. This expands the prompt injection surface — a malicious or compromised agent can exploit those descriptions.
+
+Safe production posture:
+```
+Client sends catalogId only (no descriptions)
+  ↓
+Agent validates catalogId against server-side allowlist
+  ↓
+Agent loads catalog schema from internal trusted registry
+  ↓
+LLM receives only approved catalog instructions
+  ↓
+Server validates generated A2UI before sending to client
+```
+
+Set `sendCatalogDescription: false` on all custom catalog registrations in production:
+```typescript
+provideA2uiCatalog({
+  id: 'https://example.com/custom_catalog.json',
+  components: [...],
+  sendCatalogDescription: false, // REQUIRED in production
+});
+```
+
+## Rate Limits (Server-Side)
+
+A misbehaving or compromised agent can DoS the client by spamming messages. These limits belong on the server or agent gateway — client-side limits are bypassable.
+
+| Limit | Recommended Cap | Rationale |
+|-------|----------------|-----------|
+| Surfaces per session | ~50 | Catches runaway loops without affecting normal use |
+| Actions per second per surface | ~10 | Prevents button spam / click flooding |
+| `updateDataModel` payload size | Set a max bytes limit | Prevents oversized payloads that freeze the renderer |
+
+## Server-Side Validation Loop
+
+LLM-generated A2UI is not safe to render without validation. The required production loop:
+
+```
+LLM generates A2UI
+  ↓
+Schema validation (Zod against component catalog)
+  ↓
+[FAIL] → Send structured error back to LLM → retry (max 2-3 retries)
+[PASS] → Wrap in AG-UI/A2A event → ship to client
+```
+
+A spike in validation failure rate is often the earliest signal that an LLM regression or prompt change has destabilized UI generation — before users notice.
+
 ## Security Checklist
 
 - [ ] LLM output validated against catalog schema server-side before transmission
