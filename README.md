@@ -39,8 +39,8 @@ This repository is a pre-configured starter kit packed with agents, skills, slas
 |---|---|
 | **Backend** | Java 21, Spring Boot WebFlux v3.5.x, Node.js v24.14, NestJS v11.17.x, Python v3.14 |
 | **Agentic AI** | Python 3.14, LangChain v1.2.8, LangGraph v1.0.7, Google ADK, FastAPI 0.135.2 |
-| **Frontend** | Angular 21.2.x, TypeScript 5.9.x, A2UI v0.8 (Agent-to-User Interface renderer) |
-| **Mobile** | Flutter 3.41.x, Dart 3.10.9 |
+| **Frontend** | Angular 21.2.x, TypeScript 5.9.x, A2UI v0.8 (Agent-to-User Interface renderer), Three.js r160+ (3D/WebGL) |
+| **Mobile** | Flutter 3.41.x, Dart 3.10.9, three_dart (3D in Flutter) |
 | **Data & Infra** | PostgreSQL, pgvector (vector search), Weaviate Serverless, Firebase |
 | **AI Tooling** | Claude Code, MCP servers |
 
@@ -133,6 +133,8 @@ Clone it, install Claude Code, and start building.
     - [Exercise 10: Add a Feature End-to-End](#exercise-10-add-a-feature-end-to-end)
     - [Exercise 11: Build an A2UI Renderer (Agent-to-User Interface)](#exercise-11-build-an-a2ui-renderer-agent-to-user-interface)
     - [Exercise 12: Build a Google ADK Agent Service](#exercise-12-build-a-google-adk-agent-service)
+    - [Exercise 13: Build a Three.js 3D Scene (Angular/Web)](#exercise-13-build-a-threejs-3d-scene-angularweb)
+    - [Exercise 14: Build a three\_dart 3D Scene (Flutter)](#exercise-14-build-a-three_dart-3d-scene-flutter)
     - [What's Next?](#whats-next)
   - [17. Development Workflow — Putting It All Together](#17-development-workflow--putting-it-all-together)
     - [How Components Interact](#how-components-interact)
@@ -778,6 +780,13 @@ The skills in this repo auto-activate based on context:
 | Flutter screens | `flutter-mobile` |
 | Database schemas | `database-design` |
 | System architecture | `architecture-design` |
+| Three.js scene / 3D web | `threejs-fundamentals`, `threejs-geometry`, `threejs-materials` etc. |
+| Three.js animation | `threejs-animation` |
+| GLTF / GLB model loading (web) | `threejs-loaders` |
+| Custom GLSL shaders | `threejs-shaders` |
+| Post-processing / bloom / DOF | `threejs-postprocessing` |
+| three_dart / 3D Flutter | `three-dart-fundamentals`, `three-dart-geometry` etc. |
+| Flutter GLTF / model loading | `three-dart-loaders` |
 
 
 ### MCP Servers — External Tool Integrations
@@ -2749,6 +2758,117 @@ This creates a complete ADK project: `Agent` with `gemini-2.5-flash`, `FunctionT
 > @agentic-ai-reviewer Review the ADK agent service for correctness, safety guardrails, and production readiness
 > @security-reviewer Check tool input validation and session state handling in the ADK service
 ```
+
+### Exercise 13: Build a Three.js 3D Scene (Angular/Web)
+
+**Components used:** Skills (auto-activated) + Agent + MCP (Context7)
+
+Three.js is a JavaScript/WebGL library for building 3D scenes in the browser. When you add `three` to your Angular project's `package.json`, the `threejs-*` skills activate automatically based on context — no slash command needed.
+
+**Skills that auto-activate** (10 skills in `.claude/skills/`):
+
+| Skill | Activates when you ask about… |
+|-------|-------------------------------|
+| `threejs-fundamentals` | Scene setup, camera, renderer, animation loop |
+| `threejs-geometry` | Shapes, BufferGeometry, custom meshes, instancing |
+| `threejs-materials` | PBR materials, ShaderMaterial, transparency |
+| `threejs-lighting` | Lights, shadows, environment maps |
+| `threejs-textures` | Texture loading, UV mapping, render targets |
+| `threejs-animation` | AnimationMixer, keyframe clips, GLTF animations |
+| `threejs-loaders` | GLTFLoader, DRACOLoader, async asset loading |
+| `threejs-shaders` | GLSL, uniforms, custom vertex/fragment shaders |
+| `threejs-postprocessing` | EffectComposer, bloom, depth-of-field |
+| `threejs-interaction` | Raycasting, mouse/touch input, OrbitControls |
+
+**Sample prompts — ask these after adding `three` to your project:**
+
+```
+> Create a basic Three.js scene with a rotating cube and directional lighting
+```
+
+```
+> Set up a Three.js scene in Angular that loads a GLTF model with Draco compression and plays its idle animation
+```
+
+```
+> Add OrbitControls so the user can rotate the camera with mouse drag
+```
+
+```
+> Create a custom ShaderMaterial with a fresnel edge glow effect
+```
+
+```
+> Add post-processing: bloom on bright objects and a subtle vignette
+```
+
+```
+> Optimize the scene: 500 trees using InstancedMesh instead of individual meshes
+```
+
+**Add Three.js to an Angular project:**
+```bash
+npm install three @types/three
+npm install three/addons  # for GLTFLoader, OrbitControls, EffectComposer etc.
+```
+
+> Three.js uses `three/addons/` import paths as of r150+. Skills are audited against r160+ — no deprecated patterns.
+
+---
+
+### Exercise 14: Build a three\_dart 3D Scene (Flutter)
+
+**Components used:** Skills (auto-activated) + Agent + MCP (Dart)
+
+`three_dart` is a Dart port of Three.js for Flutter. Same API concepts as Three.js — Scene, Camera, Mesh, Material, Geometry — but in Dart syntax with Flutter widget integration via `ThreeDartWidget`. When you add `three_dart` to `pubspec.yaml`, the `three-dart-*` skills activate automatically.
+
+**Skills that auto-activate** (5 skills in `.claude/skills/`):
+
+| Skill | Activates when you ask about… |
+|-------|-------------------------------|
+| `three-dart-fundamentals` | Scene setup, PerspectiveCamera, ThreeDartWidget, animation loop |
+| `three-dart-geometry` | Built-in shapes, BufferGeometry, InstancedMesh |
+| `three-dart-materials` | MeshStandardMaterial, ShaderMaterial, transparency |
+| `three-dart-animation` | AnimationMixer, AnimationClip, crossfade |
+| `three-dart-loaders` | GLTFLoader, TextureLoader, Flutter asset loading |
+
+**Sample prompts — ask these after adding `three_dart` to your Flutter project:**
+
+```
+> Set up a three_dart scene in Flutter with a rotating sphere and ambient + directional lighting
+```
+
+```
+> Load a GLTF model from Flutter assets using GLTFLoader and play its first animation clip
+```
+
+```
+> Create a scene with 500 instanced tree meshes using InstancedMesh for a single draw call
+```
+
+```
+> Add a MeshStandardMaterial with a roughness map loaded from assets/textures/
+```
+
+```
+> Write a crossfade between two AnimationClips — walk → run over 0.3 seconds
+```
+
+```
+> Add proper dispose() cleanup to the ThreeDartWidget to prevent WebGL context leaks on mobile
+```
+
+**Add three_dart to a Flutter project (`pubspec.yaml`):**
+```yaml
+dependencies:
+  three_dart: ^0.0.15
+  flutter_gl: ^0.0.10
+  three_dart_jsm: ^0.0.15  # for GLTFLoader, DRACOLoader
+```
+
+> three_dart mirrors the Three.js API surface. The `three-dart-fundamentals` skill includes a JS↔Dart API mapping table so developers familiar with Three.js can ramp up instantly.
+
+---
 
 ### What's Next?
 
