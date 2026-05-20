@@ -78,6 +78,7 @@ Before generating code, consult these sources for current syntax and APIs:
 
 | File | Content | When to Use |
 |------|---------|-------------|
+| `agentic-agent-variant-ladder.md` | Capability tier pattern, deterministic shadow agents, NDJSON replay | Multi-agent architecture |
 | `agentic-config-project.md` | pyproject.toml, .env, config, Docker, ruff/mypy | Project setup |
 | `agentic-templates-core.md` | FastAPI app, main.py, routes, middleware, base state | Creating API layer |
 | `agentic-templates-basic.md` | ReAct Agent, Multi-Agent Collaborative patterns | Building basic agents |

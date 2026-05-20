@@ -106,6 +106,67 @@ When a skill overlaps with another, use explicit cross-references instead of dup
 
 Never copy-paste content from one skill into another. Reference it.
 
+## Recommended Skill Types
+
+Not all skills have the same shape. Match the skill type to the job it does.
+
+| Skill Type | When to Use | Signature Pattern |
+|---|---|---|
+| **How-to skill** | Teaches a technology or pattern (e.g., `flutter-mobile`, `nestjs-api`) | Iron Law → quick-start template → pattern table → reference files |
+| **Workflow skill** | Enforces a multi-step process (e.g., `systematic-debugging`, `verification-before-completion`) | Iron Law → phase/step sequence → stop conditions → escalation protocol |
+| **Codebase orientation skill** | Helps a developer navigate an unfamiliar repo or system | Reading-order-by-intent table → topology diagram → patterns worth understanding → gotchas |
+| **Review/audit skill** | Used to evaluate existing code or decisions | Severity rubric → checklist → output format → pass/fail gates |
+| **Config/setup skill** | One-time bootstrapping that must not be re-done | Pre-flight checklist → step sequence → verification commands → known failure modes |
+
+### Codebase Orientation Skill — Template
+
+Use this template when writing a skill whose primary job is to orient a developer in a codebase, explain how a system works, or provide a guided reading path. This type is distinct from how-to or workflow skills.
+
+Sourced from the `race-condition` reference architecture (Google Cloud Next '26 keynote demo).
+
+```markdown
+## Iron Law
+
+**READ THE ARCHITECTURE BEFORE CHANGING ANYTHING — code changes without orientation create bugs that are hard to diagnose**
+
+## Where to Start (by Intent)
+
+Pick the question that matches your goal and follow the file pointers.
+
+| You want to understand... | Read in this order |
+|---|---|
+| The whole system end-to-end | [entry file] → [next file] → [next file] |
+| How components discover each other | [protocol doc] → [implementation dir] → [example config] |
+| The [core loop / tick / pipeline] | [agent/service file] → [callback file] → [output file] |
+| How [feature X] works | [design doc] → [implementation file] → [test file] |
+| Deployment and infra | [infra README] → [terraform/docker dir] → [Dockerfile] |
+| Tests and how they run offline | [testing guide] → [conftest / test config] |
+
+## High-Level Topology
+
+[Mermaid diagram — 5-8 nodes max, show the data flow not the file tree]
+
+[3-5 bullet summary of layers]
+
+## Patterns Worth Understanding
+
+### 1. [Pattern Name]
+
+**What:** [One sentence]
+**Why:** [The non-obvious reason this design was chosen]
+**Where:** [file:line or directory pointer]
+
+### 2. [Pattern Name]
+...
+
+## Common Gotchas
+
+- [Gotcha]: [How to avoid it / file:line where it matters]
+- [Gotcha]: [How to avoid it / file:line where it matters]
+```
+
+**When to use this type:** when the skill's primary trigger is "explain", "how does", "orient me", "give me a tour", "understand the system", "architecture of", or "before I change X I want to understand Y".
+
 ## Checklist for Reviewing a Skill You've Written
 
 ```

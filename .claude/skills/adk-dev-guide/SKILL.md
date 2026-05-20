@@ -262,12 +262,64 @@ If a skill's `last-reviewed` date is >90 days old, flag it for review before usi
 
 ---
 
+## Testing Without Burning API Credits
+
+When you need to validate system behavior, measure performance, or run CI without real LLM calls:
+
+### Deterministic Shadow Agent
+
+Create a variant of your ADK agent that overrides only the LLM decision callback with deterministic heuristics. Same tool contracts, same output schema, same session state — zero `model` calls.
+
+```python
+# Standard LLM-powered agent
+class RunnerAgent(BaseAgent):
+    async def _run_async_impl(self, ctx: InvocationContext):
+        result = await self.llm.generate_content_async(build_prompt(ctx.session.state))
+        # ... handle result
+
+# Shadow: same class hierarchy, no LLM
+class AutopilotRunnerAgent(RunnerAgent):
+    async def _run_async_impl(self, ctx: InvocationContext):
+        state = ctx.session.state
+        decision = "slow" if state["energy"] < 0.3 else "steady"
+        ctx.session.state["decision"] = decision
+        yield Event(author=self.name, content=types.Content(parts=[types.Part(text=decision)]))
+```
+
+Switch via env var — no code-path changes at the call site:
+
+```python
+def get_runner_agent() -> BaseAgent:
+    if os.getenv("RUNNER_MODE") == "autopilot":
+        return AutopilotRunnerAgent()
+    return RunnerAgent()
+```
+
+Use the autopilot variant in all `InMemoryRunner` unit tests. Zero API cost, deterministic assertions.
+
+### NDJSON Replay for Integration Tests and Demos
+
+Record every event your ADK agent emits to a `.ndjson` file during a real run. Replay against the frontend or test harness without running agents:
+
+```python
+# Record in agent's broadcast/after_agent layer
+with open("recordings/sim-run.ndjson", "a") as f:
+    f.write(json.dumps({"ts": elapsed, "event": event.model_dump()}) + "\n")
+```
+
+Commit the recording — it becomes a regression baseline. CI replays it; no agents need to be running.
+
+**When to use either pattern:** CI integration tests, load testing (run 1000s of autopilot agents cheaply), keynote demos, UI development iterations.
+
+> Full implementation detail for both patterns: `agentic-agent-variant-ladder.md` in `agentic-ai-dev/reference/`
+
 ## Reference Files
 
 - **`adk-dev-lifecycle.md`** — Full detail on each phase, commands, common pitfalls
 - **`google-adk/SKILL.md`** — Agent patterns, tool API reference, ToolContext usage
 - **`adk-eval-guide` skill** — Evaluation strategy and eval dataset structure
 - **`adk-deploy-guide` skill** — Deployment to Cloud Run / Agent Engine, health checks, rollback
+- **`agentic-ai-dev/reference/agentic-agent-variant-ladder.md`** — Agent variant ladder, deterministic shadow agents, NDJSON replay
 
 ---
 
