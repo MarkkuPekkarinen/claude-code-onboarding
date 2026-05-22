@@ -74,6 +74,8 @@ Touch only what you're asked to touch.
 
 **Test:** Every changed line traces directly to the user's request.
 
+**Boy Scout Rule:** Leave code in the touched area cleaner than you found it. When a file you're editing contains dead code, unused imports, obvious duplication, or small issues *directly in the area you're modifying* — clean them up as part of the task. Do not touch unrelated areas of the same file. Scope = the function, class, or block you were already editing, not the whole file.
+
 **Dead code rule — two cases:**
 
 | Code type | Action |

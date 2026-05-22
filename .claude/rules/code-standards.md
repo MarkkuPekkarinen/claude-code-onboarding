@@ -52,6 +52,15 @@ Does relevant file exist?
 
 When creating new files: remove/update old files, update all imports, delete orphans. NEVER leave old + new both existing.
 
+### New File Justification (mandatory before creating any file)
+
+Before creating a new file, state explicitly:
+1. Which existing files were checked and found unsuitable
+2. Why they could not be extended or reused
+3. Why the new file is necessary for this specific task
+
+Every new file must have a clear purpose that traces directly to the requested change. Creating a new file to avoid understanding the existing structure is not acceptable.
+
 ## Error Handling
 
 ### No Silent Failures, No Mock Data, No Fallbacks
