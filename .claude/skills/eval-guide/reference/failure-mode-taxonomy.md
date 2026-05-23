@@ -121,7 +121,7 @@ uv run pytest tests/golden/security/ -m r1   # 9 CI blockers
 **How to diagnose:**
 ```bash
 make eval-adk   # compare golden cases vs edge-case evalset
-# Check: tests/golden/agents/triage_agent/critical_cases.evalset.json specifically
+# Check: tests/golden/agents/<your_agent>/critical_cases.evalset.json specifically
 ```
 
 **Eval tools:**

@@ -1,15 +1,14 @@
-# RAG Ingest Pipeline Checklist (PropertyHarbor §38)
+# RAG Ingest Pipeline Checklist
 
 Load this file BEFORE writing any agent or worker that ingests text into a
 Weaviate collection or pgvector table for retrieval. Following this
-checklist makes the agent §26-, §37-, and §38-compliant by construction.
+checklist implements RAG hygiene, PII redaction, multi-tenancy, and observability by construction.
 
 ## When this applies
 
 - Any agent/worker that takes text → produces a vector → writes to a
   vector store
-- Examples: `lease_ingestion_agent`, future vendor-rules ingestion,
-  knowledge-base seeding scripts, batch backfill jobs
+- Examples: document ingestion agents, knowledge-base seeding scripts, batch backfill jobs
 - **Does NOT apply** to query-time embedding (user types a question → embed
   → search). Use raw `embed_text()` for queries; redaction would break
   recall.
@@ -18,7 +17,7 @@ checklist makes the agent §26-, §37-, and §38-compliant by construction.
 
 ### A. Embedding API choice
 
-- [ ] Use `ai_shared.embeddings.embed_text_for_storage(text)` — NOT raw
+- [ ] Use `your_project.embeddings.embed_text_for_storage(text)` — NOT raw
       `embed_text()`. The for-storage variant runs PII redaction and
       enforces `MAX_CHARS_PER_EMBEDDING` automatically.
 - [ ] If you absolutely need raw `embed_text()` (e.g. embedding metadata
@@ -27,10 +26,9 @@ checklist makes the agent §26-, §37-, and §38-compliant by construction.
 
 ### A2. Chunking — apply ~10% overlap
 
-- [ ] Apply chunk overlap before storage. PropertyHarbor default:
+- [ ] Apply chunk overlap before storage. Recommended default:
       `CHUNK_OVERLAP_CHARS = 200` (~10% of typical chunk).
-- [ ] Reference impl:
-      `lease_ingestion_agent.sub_agents.chunk_agent._apply_overlap(...)` —
+- [ ] Reference impl: your chunking agent's `_apply_overlap(...)` method —
       copy this pattern in custom chunkers (extends each chunk's body with
       leading N chars of the next chunk).
 - [ ] Hard zero-overlap chunking is **forbidden** — retrieval recall
@@ -56,7 +54,7 @@ checklist makes the agent §26-, §37-, and §38-compliant by construction.
       EMBEDDING_MODEL` on every chunk via `chunk.setdefault(...)` — don't
       reimplement; just include the property in the schema.
 - [ ] Operations against a multi-tenancy-enabled collection MUST pass
-      `tenant_id` to `upsert_chunks(...)` and `delete_by_lease_id(...)`.
+      `tenant_id` to `upsert_chunks(...)` and `delete_by_document_id(...)`.
       Omitting it raises at the Weaviate layer.
 
 ### B. Persistence pattern
@@ -74,9 +72,9 @@ checklist makes the agent §26-, §37-, and §38-compliant by construction.
 - [ ] Collection-level failures (Weaviate unreachable, schema missing)
       must be fatal — propagate the error so the pipeline reports
       `WEAVIATE_WRITE_FAILED` or equivalent.
-- [ ] Stale-chunk deletion (BR-07): call `delete_by_lease_id()` (or your
+- [ ] Stale-chunk deletion: call `delete_by_document_id()` (or your
       collection's analog) BEFORE upserting new chunks. Delete failures
-      are logged but non-fatal (stale-data risk acceptable per BR-07).
+      are logged but non-fatal (stale-data risk acceptable for most pipelines).
 
 ### D. Observability
 
@@ -84,7 +82,7 @@ checklist makes the agent §26-, §37-, and §38-compliant by construction.
       (`embedding_call_complete` event). Don't reimplement this.
 - [ ] Per-pipeline aggregate cost: sum `len(chunk["text"])` across kept
       chunks and call `estimate_embedding_cost_usd(total_chars)`. Log
-      result as `<pipeline>_cost_summary` with `lease_id`/`tenant_id`/etc.
+      result as `<pipeline>_cost_summary` with `document_id`/`tenant_id`/etc.
 - [ ] Persist the aggregate cost on the response model (e.g.
       `embedding_cost_usd_estimate`) so downstream FinOps dashboards
       see ingest costs without scraping logs.
@@ -94,7 +92,7 @@ checklist makes the agent §26-, §37-, and §38-compliant by construction.
 - [ ] Pre-fetch upstream content (e.g. PDF download via MCP) using a tool
       that runs `enforceTenantScope`. The vector store doesn't enforce
       tenant scope on its own.
-- [ ] Filter retrieval queries by `lease_id` / `tenant_id` / equivalent
+- [ ] Filter retrieval queries by `document_id` / `tenant_id` / equivalent
       in the WHERE clause. Never trust callers to provide the right
       filter — bake it into the helper.
 
@@ -113,7 +111,7 @@ checklist makes the agent §26-, §37-, and §38-compliant by construction.
 ### ❌ Calling embed_text directly from an ingest path
 
 ```python
-# ✗ — bypasses PII redaction and 8K-char ceiling
+# ✗ — bypasses PII redaction and 8K-char ceiling; use embed_text_for_storage instead
 for chunk in chunks:
     vec = embed_text(chunk["text"])
     writer.upsert_chunks([chunk], embeddings=[vec])
@@ -139,8 +137,8 @@ for chunk in chunks:
 
 ## G. ADK SequentialAgent state propagation (CRITICAL — hard-won lesson)
 
-**Captured from PR #344 / Issue #10 — pipeline reported `chunks_written: 0`
-despite 69 chunks landing in Weaviate.** Direct `ctx.session.state[X] = Y`
+**Common bug: pipeline reports `chunks_written: 0` despite chunks landing in Weaviate.**
+Direct `ctx.session.state[X] = Y`
 mutations are visible to the next sub-agent in the SAME runner invocation,
 but are LOST when `routes.py` re-reads via `session_service.get_session(...)`
 because `InMemorySessionService` returns a light-copy of the storage session.
@@ -150,10 +148,9 @@ because `InMemorySessionService` returns a light-copy of the storage session.
       `Event(actions=EventActions(state_delta={...}), ...)`. Direct
       `ctx.session.state[X] = Y` is in-runner-only.
 - [ ] In an ingest pipeline this applies to: `download_status`,
-      `lease_chunks`, `chunking_method`, `ingestion_result`, `pipeline_error` —
+      `document_chunks`, `chunking_method`, `ingestion_result`, `pipeline_error` —
       anything routes.py reads after the runner exits.
-- [ ] Reference impl:
-      `services/ai/lease_ingestion_agent/src/.../sub_agents/embed_agent.py`
+- [ ] Reference impl: your ingest agent's `embed_agent.py`
       (see `EventActions(state_delta={"ingestion_result": ...})` on the
       success Event AND the error Event).
 - [ ] Cross-link: `.claude/skills/google-adk/reference/adk-state-propagation.md`
@@ -174,49 +171,41 @@ yield Event(
 )
 ```
 
-## H. Live verification gate (constraints §39 G-LIVE-3a + 3b)
+## H. Live verification gate
 
 Unit tests stub the LLM and the vector store — exactly the layers most
 prone to live bugs. ANY PR that touches a RAG ingest agent MUST run these
 gates locally before opening the PR.
 
-- [ ] **G-LIVE-3a — RAG fixture replay** — for every fixture in
-      `tests/fixtures/leases/manifest.yaml`, run `bash
-      scripts/replay-golden-case.sh tests/golden/agent/case_*_<agent>_*.yaml
+- [ ] **Live fixture replay** — for every fixture in your test manifest, run
+      `bash scripts/replay-golden-case.sh tests/golden/agent/case_*_<agent>_*.yaml
       http://localhost:<port>/run`. Each case must return its
       documented `expected_output` (status, error, chunks_written_min,
       success_rate_min). This proves the **HTTP path** works.
-- [ ] **G-LIVE-3b — direct vector-store verification** — run `bash
-      scripts/verify-weaviate-tenant.sh <lease_id> <landlord_id> <min_chunks>`
-      for every fixture. This queries Weaviate **directly** to confirm
-      chunks landed under the right tenant AND that no raw PII (email,
-      9-digit SSN) is in stored `text` properties. A passing G-LIVE-3a
-      with a failing G-LIVE-3b = ADK state-propagation bug — fix Section
-      G above before continuing.
-- [ ] Both gates are mandatory PR checklist items per §39. CI gate
-      `pr-checklist-gate.yml` greps the PR body for both.
+- [ ] **Direct vector-store verification** — query Weaviate directly to confirm
+      chunks landed under the right tenant AND that no raw PII (email, SSN)
+      is in stored `text` properties. A passing fixture replay with failing
+      direct verification = ADK state-propagation bug — fix Section G above.
+- [ ] Both gates are mandatory PR checklist items. Add a CI gate that greps
+      the PR body for evidence of both having been run.
 
 ```bash
 # Canonical end-to-end verification, copied into your PR body:
 docker compose -f infra/docker-compose.yml --env-file .env build <agent>
 docker compose -f infra/docker-compose.yml --env-file .env up -d --force-recreate <agent>
-until docker ps --filter "name=ph-<agent>" --format "{{.Status}}" | grep -q "(healthy)"; do sleep 3; done
+until docker ps --filter "name=<agent>" --format "{{.Status}}" | grep -q "(healthy)"; do sleep 3; done
 for case in tests/golden/agent/case_*_<agent>_*.yaml; do
     bash scripts/replay-golden-case.sh "$case" "http://localhost:<port>/run"
 done
 WEAVIATE_API_KEY=$(grep '^WEAVIATE_API_KEY=' .env | cut -d= -f2-) \
-    bash scripts/verify-weaviate-tenant.sh <lease_id> <landlord_id> <min_chunks>
-docker logs ph-<agent> --since 5m | grep '"level":"error"' | wc -l   # must be 0
+    bash scripts/verify-weaviate-tenant.sh <document_id> <owner_id> <min_chunks>
+docker logs <agent> --since 5m | grep '"level":"error"' | wc -l   # must be 0
 ```
 
 ## Reference
 
-- `.claude/rules/propertyharbor-constraints.md` §38 (this rule)
-- `.claude/rules/propertyharbor-constraints.md` §37 (embedding purity)
-- `.claude/rules/propertyharbor-constraints.md` §26 (LLM callbacks)
-- `.claude/rules/propertyharbor-constraints.md` §39 (Live Verification Gate — G-LIVE-1..5 + 3a/3b)
 - `.claude/skills/google-adk/reference/adk-state-propagation.md` (Section G context)
-- `services/ai-shared/src/ai_shared/embeddings.py` (canonical helpers)
-- `services/ai-shared/src/ai_shared/redaction.py` (PII patterns)
-- `services/ai/lease_ingestion_agent/src/lease_ingestion_agent/sub_agents/embed_agent.py` (reference impl)
-- `scripts/replay-golden-case.sh` + `scripts/verify-weaviate-tenant.sh` (G-LIVE-3a/3b tooling)
+- Your project's `embeddings.py` (canonical helpers)
+- Your project's `redaction.py` (PII patterns)
+- Your ingest agent's `embed_agent.py` (reference impl)
+- `scripts/replay-golden-case.sh` + `scripts/verify-weaviate-tenant.sh` (live verification tooling)

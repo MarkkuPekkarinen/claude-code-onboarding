@@ -1,6 +1,5 @@
-# Pytest Harness Configuration — PropertyHarbor
+# Pytest Harness Configuration
 
-> Source: `docs/architecture/eval-tooling-strategy.md` lines 285-378.
 > Verify `pytest-asyncio` version compatibility via Context7 before using.
 
 ## Required pyproject.toml Configuration
@@ -8,7 +7,7 @@
 ```toml
 # pyproject.toml (root — all services inherit via uv workspace)
 [tool.pytest.ini_options]
-asyncio_mode = "auto"          # REQUIRED: all 14 agents are async
+asyncio_mode = "auto"          # REQUIRED: all async agents need this
                                # eliminates @pytest.mark.asyncio decoration per test
                                # requires pytest-asyncio >= 0.21
 testpaths = ["tests", "services"]
@@ -52,8 +51,8 @@ def adk_runner():
 
 @pytest.fixture
 def mock_mcp_tool():
-    """Inject a failing MCP tool to test graceful degradation (Dimension 13).
-    Per constraints §12: every ADK tool must have a defined fallback path.
+    """Inject a failing MCP tool to test graceful degradation.
+    Every ADK tool must have a defined fallback path.
     """
     return AsyncMock(side_effect=Exception("MCP tool unavailable — testing fallback"))
 
@@ -70,17 +69,17 @@ def golden_cases(request):
 ## Parametrize-Over-Golden Pattern
 
 ```python
-# services/ai/triage_agent/tests/test_triage_evals.py
+# services/ai/your_agent/tests/test_your_agent_evals.py
 import pytest
 import json
 import pathlib
 
 GOLDEN = json.loads(
-    pathlib.Path("tests/golden/agents/triage_agent/golden.evalset.json").read_text()
+    pathlib.Path("tests/golden/agents/your_agent/golden.evalset.json").read_text()
 )["evals"]
 
 CRITICAL = json.loads(
-    pathlib.Path("tests/golden/agents/triage_agent/critical_cases.evalset.json").read_text()
+    pathlib.Path("tests/golden/agents/your_agent/critical_cases.evalset.json").read_text()
 )["evals"]
 
 @pytest.mark.parametrize("case", GOLDEN, ids=[c["name"] for c in GOLDEN])
@@ -91,34 +90,33 @@ async def test_triage_urgency(case, adk_runner):
     assert result.output.get("confidence", 1.0) >= case.get("min_confidence", 0.0)
 
 @pytest.mark.parametrize("case", CRITICAL, ids=[c["name"] for c in CRITICAL])
-@pytest.mark.r1                           # BLOCKS PR — habitability 100% threshold
-async def test_triage_critical_habitability(case, adk_runner):
-    """Zero tolerance for missed habitability emergencies (gas leak, flood, no heat).
-    100% threshold — a single miss is a blocking CI failure per constraints §10.
+@pytest.mark.r1                           # BLOCKS PR — critical-path 100% threshold
+async def test_triage_critical_cases(case, adk_runner):
+    """Zero tolerance for missed critical-path cases.
+    100% threshold — a single miss is a blocking CI failure.
     """
     result = await adk_runner.run(case["query"]["content"])
-    assert result.output["urgency"] == "Emergency", (
-        f"Habitability emergency misclassified as {result.output['urgency']} — CI BLOCKER"
+    assert result.output["priority"] == "Critical", (
+        f"Critical case misclassified as {result.output['priority']} — CI BLOCKER"
     )
 ```
 
 ## Tool Failure Injection (Fallback Testing)
 
 ```python
-# Per constraints §12 + §26: every ADK tool must have a defined fallback path.
-# Test it with pytest-mock:
+# Every ADK tool must have a defined fallback path. Test it with pytest-mock:
 
 @pytest.mark.r1    # critical — blocks PR if fallback breaks
-async def test_classify_urgency_fallback(mock_mcp_tool, adk_runner, mocker):
-    """When classify_urgency tool fails, agent must fall back gracefully."""
+async def test_tool_fallback(mock_mcp_tool, adk_runner, mocker):
+    """When a tool fails, agent must fall back gracefully."""
     mocker.patch(
-        "ai_shared.tools.classify_urgency.call",
+        "your_project.tools.your_tool.call",
         side_effect=Exception("tool unavailable")
     )
-    result = await adk_runner.run("Water heater leaking in unit 4B")
-    # Fallback: needs_classification=True, status=Open (per constraints §12)
-    assert result.output["needs_classification"] is True
-    assert result.output["status"] == "Open"
+    result = await adk_runner.run("Your domain-specific input here")
+    # Fallback: agent produces a valid degraded output rather than raising
+    assert result.output["needs_review"] is True
+    assert result.output["status"] == "Pending"
     # Must NOT raise — fallback must produce a valid output
 ```
 
@@ -161,7 +159,7 @@ uv run pytest --cov=services/ai --cov-report=term-missing --cov-fail-under=85
 
 ## asyncio_mode = "auto" — Why This Is Required
 
-All 14 PropertyHarbor ADK agents are async. Without `asyncio_mode = "auto"`:
+All ADK agents are async. Without `asyncio_mode = "auto"`:
 - Async test functions silently vacuously pass (no error, no actual execution)
 - Collection errors on some pytest-asyncio versions
 - Missing `@pytest.mark.asyncio` on every test causes cryptic failures

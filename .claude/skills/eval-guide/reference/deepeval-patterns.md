@@ -70,11 +70,11 @@ from deepeval.test_case import LLMTestCase
 
 @pytest.mark.r1   # critical — runs on every PR
 @pytest.mark.eval
-def test_messaging_agent_no_hallucinations(messaging_agent_response):
+def test_answer_agent_no_hallucinations(answer_agent_response):
     test_case = LLMTestCase(
-        input="What is my late fee policy?",
-        actual_output=messaging_agent_response.text,
-        retrieval_context=messaging_agent_response.retrieved_chunks
+        input="What does my document say about X?",
+        actual_output=answer_agent_response.text,
+        retrieval_context=answer_agent_response.retrieved_chunks
     )
     assert_test(test_case, [FaithfulnessMetric(
         threshold=0.9,

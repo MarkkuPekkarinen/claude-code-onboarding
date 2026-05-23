@@ -1,24 +1,23 @@
-# Ragas Patterns — PropertyHarbor
+# Ragas Patterns
 
 > **Verify via Context7 (`ragas`) before using.** These patterns reflect API state as of 2026-04-28.
-> Source: `docs/architecture/eval-tooling-strategy.md` lines 350-437.
 
 ## Install
 
 ```toml
 # services/ai-shared/pyproject.toml
 ragas = ">=0.2.0"   # pin to latest stable after Context7 verification
-# Do NOT add langchain or langchain-* as a dependency — violates constraints §1
+# Prefer not adding langchain or langchain-* as a dependency — use the LangChain-free path
 ```
 
-## LangChain-Free Path — MANDATORY
+## LangChain-Free Path — Preferred
 
 ```python
 # ✅ CORRECT — use generate() directly, no LangChain
 from ragas import evaluate
 from ragas.dataset_schema import SingleTurnSample
 
-# ❌ FORBIDDEN — requires LangChain, violates constraints §1
+# ❌ AVOID — requires LangChain, adds unnecessary dependency
 # from ragas import TestsetGenerator
 # generator.generate_with_langchain_docs(docs, ...)
 ```
@@ -27,22 +26,22 @@ from ragas.dataset_schema import SingleTurnSample
 
 ```python
 # Query Context7 for exact llm_factory API before using
-# Pattern: configure Ragas to use Gemini as the evaluation LLM
-# Do NOT use OpenAI as judge — violates constraints §1
+# Pattern: configure Ragas to use your preferred LLM as the evaluation judge
+# Best practice: use the same LLM provider as your main stack for consistency
 ```
 
-## Key Metrics for PropertyHarbor
+## Key Metrics
 
-| Metric | PropertyHarbor use | Agent(s) |
-|--------|-------------------|----------|
-| `ToolCallAccuracy(strict_order=True)` | Validates tool call sequence (classify_urgency BEFORE vendor lookup) | `triage_agent`, `matching_engine` |
-| `AgentGoalAccuracyWithReference` | Validates agent achieved stated goal against golden reference | `matching_engine`, `scheduling_agent` |
-| `AgentGoalAccuracyWithoutReference` | Validates goal achieved without needing golden answer | `scheduling_agent` |
-| `TopicAdherence(mode="precision")` | Validates agent stays within tenant's own data scope | `portfolio_agent` |
-| `Faithfulness` | RAG faithfulness ≥ 0.9 | `messaging_agent`, `lease_qa_agent` |
-| `ContextPrecision` | Retrieved chunks are relevant | `matching_engine`, `lease_qa_agent` |
+| Metric | Use | Typical agent(s) |
+|--------|-----|----------|
+| `ToolCallAccuracy(strict_order=True)` | Validates tool call sequence where order matters | Triage agents, retrieval agents |
+| `AgentGoalAccuracyWithReference` | Validates agent achieved stated goal against golden reference | Matching agents, scheduling agents |
+| `AgentGoalAccuracyWithoutReference` | Validates goal achieved without needing golden answer | Scheduling agents |
+| `TopicAdherence(mode="precision")` | Validates agent stays within tenant's own data scope | Dashboard agents, scoped agents |
+| `Faithfulness` | RAG faithfulness ≥ 0.9 | Messaging agents, QA agents |
+| `ContextPrecision` | Retrieved chunks are relevant | Retrieval agents, QA agents |
 | `ContextUtilization` | Reference-free context utilization check | Any RAG agent without golden reference |
-| `FactualCorrectness(mode="f1")` | Claim decomposition vs golden reference answers | `lease_qa_agent` |
+| `FactualCorrectness(mode="f1")` | Claim decomposition vs golden reference answers | QA agents |
 
 > **Verify all metric class names and constructor signatures via Context7 before writing code.**
 > `answer_relevancy` is NOT a confirmed metric name in current Ragas API — use `ContextUtilization` instead.
@@ -55,9 +54,9 @@ from datasets import Dataset  # verify Dataset import via Context7
 
 @pytest.mark.r2   # nightly — RAG evals are slower
 @pytest.mark.eval
-async def test_lease_qa_faithfulness(lease_qa_runner):
+async def test_qa_agent_faithfulness(qa_agent_runner):
     # Run agent against golden question
-    result = await lease_qa_runner.run("What is the late fee in my lease?")
+    result = await qa_agent_runner.run("What does my document say about X?")
     
     # Build Ragas dataset
     data = {
@@ -78,16 +77,14 @@ async def test_lease_qa_faithfulness(lease_qa_runner):
 ## ToolCallAccuracy — Sequence Validation
 
 ```python
-# Validates that classify_urgency is called BEFORE vendor_search_vendors
-# strict_order=True enforces the sequence — order matters for triage
+# Validates that tool calls occur in the correct order
+# strict_order=True enforces the sequence — use for agents with sequential tool dependencies
 
 # Query Context7 for exact ToolCallAccuracy constructor signature
-# Source: eval-tooling-strategy.md confirms strict_order=True parameter exists
-# triage_agent threshold: ToolCallAccuracy >= 0.9 (per-agent-thresholds.md)
-# matching_engine threshold: ToolCallAccuracy >= 0.9
+# Typical threshold: ToolCallAccuracy >= 0.9 (see per-agent-thresholds.md)
 ```
 
-## Known Gotchas (PropertyHarbor-specific)
+## Known Gotchas
 
 | Gotcha | Fix |
 |--------|-----|
@@ -98,12 +95,14 @@ async def test_lease_qa_faithfulness(lease_qa_runner):
 
 ## Minimum Thresholds (from per-agent-thresholds.md)
 
+Replace example agent names with your project's actual agents.
+
 | Agent | Metric | Threshold |
 |-------|--------|-----------|
-| `triage_agent` | `ToolCallAccuracy(strict_order=True)` | ≥ 0.9 |
-| `matching_engine` | `ToolCallAccuracy(strict_order=True)` | ≥ 0.9 |
-| `matching_engine` | `ContextPrecision` | See per-agent-thresholds.md |
-| `messaging_agent` | `Faithfulness` | ≥ 0.9 |
-| `lease_qa_agent` | `Faithfulness` | ≥ 0.9 |
-| `lease_qa_agent` | `ContextPrecision` | ≥ 0.8 |
-| `lease_qa_agent` | `FactualCorrectness(mode="f1")` | ≥ 0.85 |
+| Triage agents with sequential tools | `ToolCallAccuracy(strict_order=True)` | ≥ 0.9 |
+| Retrieval / matching agents | `ToolCallAccuracy(strict_order=True)` | ≥ 0.9 |
+| Retrieval / matching agents | `ContextPrecision` | See per-agent-thresholds.md |
+| Messaging agents | `Faithfulness` | ≥ 0.9 |
+| QA agents | `Faithfulness` | ≥ 0.9 |
+| QA agents | `ContextPrecision` | ≥ 0.8 |
+| QA agents | `FactualCorrectness(mode="f1")` | ≥ 0.85 |

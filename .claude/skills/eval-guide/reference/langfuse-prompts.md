@@ -43,7 +43,7 @@ Examples:
 **Never call Langfuse SDK directly from agent code.** All agents use `PromptRegistry`:
 
 ```python
-# services/ai-shared/src/ai_shared/prompts/registry.py
+# services/ai-shared/src/your_project/prompts/registry.py
 import os
 from functools import lru_cache
 from typing import Literal

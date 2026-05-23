@@ -467,10 +467,10 @@ When writing to a vector store you have two choices for who runs the embedding:
 | **Model migration** | Re-config vector store | Update env var, re-ingest |
 | **Multi-store RAG** | Each store owns its own pipeline | One embed function feeds all stores |
 
-**PropertyHarbor mandate (constraints §38):** Path B always for RAG ingest.
-The §38 PII redaction rule + §37 single-source-of-cost-truth + multi-store
-support (pgvector + Weaviate) make Path A unworkable. The PropertyHarbor
-`WeaviateWriter.ensure_collection()` hardcodes `Configure.Vectorizer.none()`.
+**Best practice:** Path B always for RAG ingest.
+PII redaction + single-source-of-cost-truth + multi-store
+support (pgvector + Weaviate) make Path A unworkable for production.
+`WeaviateWriter.ensure_collection()` should hardcode `Configure.Vectorizer.none()`.
 
 **Industry evidence — every shipped production AI product uses Path B:**
 
@@ -488,7 +488,7 @@ without exception migrate to Path B within 6-12 months when PII, cost
 tracking, model versioning, or multi-store needs arrive.
 
 ```python
-# ✓ — Path B canonical pattern (PropertyHarbor)
+# ✓ — Path B canonical pattern
 self._client.collections.create(
     name="LeaseClauses",
     vectorizer_config=Configure.Vectorizer.none(),
@@ -510,14 +510,12 @@ collection.with_tenant(landlord_id).data.insert(properties=chunk, vector=vec)
 
 ## Tier 1 vs Tier 2 — Multi-Store RAG Architecture
 
-Production RAG systems rarely run on one store. PropertyHarbor uses a
-two-tier split (constraints §8) — same pattern used by Stripe, Notion,
-Linear, GitHub Copilot.
+Production RAG systems rarely run on one store. The two-tier split below — same pattern used by Stripe, Notion, Linear, GitHub Copilot — balances relational + semantic workloads.
 
 | | Tier 1 — pgvector | Tier 2 — Weaviate |
 |---|---|---|
 | **Job** | Vectors that live alongside relational data | Pure unstructured text RAG corpus |
-| **PropertyHarbor uses for** | Vendor profiles, landlord rule embeddings | Lease clause chunks, FAQ corpus |
+| **Typical uses** | Entity profiles, policy rule embeddings | Document clause chunks, FAQ corpus |
 | **Query style** | Mixed — SQL JOIN + WHERE + vector | Pure semantic + hybrid BM25 |
 | **Optimal latency** | <50ms (user-blocking matching) | <500ms (streamed chat response) |
 | **Scale** | Millions of rows per tenant | Billions of chunks across tenants |
@@ -533,7 +531,7 @@ Linear, GitHub Copilot.
 
 ---
 
-## Best-in-Class Retrieval Stack (constraints §52 / issue #52)
+## Best-in-Class Retrieval Stack
 
 Single-stage dense retrieval plateaus at recall@5 ≈ 0.75–0.80 on long-document QA (BEIR, MTEB benchmarks). To clear 0.85+ on lease QA / legal docs / customer-support corpora, **three techniques stacked are mandatory** — not optional:
 
@@ -557,12 +555,12 @@ Tune `alpha` empirically against `tests/golden/rag/<corpus>/`:
 
 ### 2. Reranking (top-N → top-k)
 
-Lifts recall@5 from ~0.78 → 0.92 on long-document QA. Two PropertyHarbor-compatible options:
+Lifts recall@5 from ~0.78 → 0.92 on long-document QA. Two options:
 
 | Option | Implementation | Trade-off |
 |---|---|---|
 | **Cohere/Voyage/BGE rerank via MCP** | New MCP tool wrapping the reranker API | Network hop; managed quality |
-| **Gemini-based LlmAgent rerank** | Inline `LlmAgent` step that scores candidates | Same model family as judge; one less vendor |
+| **LLM-based LlmAgent rerank** | Inline `LlmAgent` step that scores candidates | Same model family as judge; one less vendor |
 
 ```python
 # Pattern: hybrid → top-N=20 → rerank → top-k=5 → LLM
@@ -610,7 +608,5 @@ If any threshold fails, retrieval is NOT production-ready. Add reranking, tune `
 ## Cross-References
 
 - `.claude/skills/google-adk/reference/adk-state-propagation.md` — ADK SequentialAgent `EventActions.state_delta` rule (CRITICAL for RAG ingest agents)
-- `.claude/skills/vector-database/references/rag-ingest-checklist.md` — Section G (state propagation), Section H (G-LIVE-3a/3b verification)
-- `.claude/rules/propertyharbor-constraints.md` §8 (embedding model + tier split), §37 (embedding observability), §38 (RAG hygiene + multi-tenancy), §39 (live verification gate)
-- `scripts/replay-golden-case.sh` + `scripts/verify-weaviate-tenant.sh` — G-LIVE-3a/3b tooling
-- GitHub issue #52 (lease_qa_agent) — specifies hybrid + rerank + contextual chunking as ACs
+- `.claude/skills/vector-database/references/rag-ingest-checklist.md` — Section G (state propagation), Section H (live verification)
+- `scripts/replay-golden-case.sh` + `scripts/verify-weaviate-tenant.sh` — live verification tooling

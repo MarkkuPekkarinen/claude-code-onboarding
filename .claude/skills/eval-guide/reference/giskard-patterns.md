@@ -49,10 +49,10 @@ from giskard.checks import (
 
 # Basic scenario: lease Q&A grounding check
 result = await (
-    Scenario("lease_qa_grounding")
+    Scenario("qa_agent_grounding")
     .interact(
-        "What is the late fee policy in unit 4B lease?",
-        lambda inputs: lease_qa_agent.run(inputs)
+        "What does my document say about X?",
+        lambda inputs: your_qa_agent.run(inputs)
     )
     .check(Groundedness(
         name="answer_grounded_in_lease",
@@ -105,7 +105,7 @@ suite.add(fha_scenario)
 suite.add(cross_tenant_scenario)
 
 suite_results = await suite.run()
-suite_results.to_junit_xml("reports/giskard/triage_agent.xml")
+suite_results.to_junit_xml("reports/giskard/your_agent.xml")
 ```
 
 ## Deterministic Checks (No LLM Required)

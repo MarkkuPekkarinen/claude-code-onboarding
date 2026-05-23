@@ -19,8 +19,8 @@ tests/golden/
 │       ├── golden.evalset.json
 │       └── dataset_manifest.yaml
 ├── rag/                       # RAG faithfulness + precision cases
-│   ├── lease_qa_cases.json
-│   ├── matching_engine_rag.json
+│   ├── qa_agent_cases.json
+│   ├── retrieval_agent_rag.json
 │   └── dataset_manifest.yaml
 ├── security/                  # CI BLOCKERS #1-#9 test cases
 │   ├── tenant_isolation.json      # CI BLOCKER #1
