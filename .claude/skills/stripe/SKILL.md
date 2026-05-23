@@ -1,6 +1,6 @@
 ---
 name: stripe
-description: Use when integrating Stripe payments in PropertyHarbor — subscription billing, customer management, payment links, webhooks, Stripe Connect vendor payouts, or invoicing. Load before writing any Stripe API code. Query the Stripe MCP server for API verification.
+description: Use when integrating Stripe payments — subscription billing, customer management, payment links, webhooks, Stripe Connect vendor payouts, or invoicing. Load before writing any Stripe API code. Query the Stripe MCP server for API verification.
 allowed-tools: Bash, Read, Write, Edit
 metadata:
   triggers: Stripe, payment, billing, subscription, checkout, invoice, payout, payment link, pricing, Stripe Connect, webhook
@@ -33,7 +33,7 @@ claude mcp add --transport http stripe https://mcp.stripe.com
 ```
 
 **Configuration flags:**
-- `--tools=all` — enable all 27 tools (default for PropertyHarbor)
+- `--tools=all` — enable all 27 tools (default)
 - `--tools=customers.create,customers.read,...` — restrict to specific tools
 - `--api-key=<key>` — Stripe secret key (prefer Restricted API Key `rk_*`)
 - `--stripe-account=<acct_id>` — operate on a Stripe Connect connected account
@@ -86,21 +86,21 @@ claude mcp add --transport http stripe https://mcp.stripe.com
 
 **Tool permissions are controlled by your Restricted API Key (RAK).** Create one at the Stripe Dashboard → Developers → API Keys → Restricted Keys. Only grant the permissions each service actually needs.
 
-## PropertyHarbor Context
+## Context
 
-PropertyHarbor uses Stripe for:
-- **Subscription billing** — 3 tiers: Free ($0), Pro ($9/unit/mo), Growth ($7/unit/mo)
+Stripe is used for:
+- **Subscription billing** — multiple tiers (e.g., Free, Pro, Growth)
 - **Vendor payouts** — Stripe Connect (Express accounts) for paying service vendors
-- **One-time charges** — maintenance service invoicing to landlords
+- **One-time charges** — service invoicing
 - RevenueCat handles mobile in-app subscription entitlements; Stripe is the backend payment processor
 
 ## Architecture Constraints
 
-- **Backend only** — all Stripe API calls happen in Python/FastAPI services, never from Flutter clients
+- **Backend only** — all Stripe API calls happen in backend services (e.g., Python/FastAPI), never from Flutter clients
 - **Webhook-first** — use Stripe webhooks as the source of truth for payment state, not API polling
 - **Idempotency keys** — every mutating API call must include an idempotency key
-- **Stripe Connect Express** — vendors onboard via Express accounts; PropertyHarbor is the platform
-- **No PCI data in our DB** — never store card numbers, CVVs, or raw payment tokens in Cloud SQL
+- **Stripe Connect Express** — vendors onboard via Express accounts; your app is the platform
+- **No PCI data in your DB** — never store card numbers, CVVs, or raw payment tokens in Cloud SQL
 - **Restricted API Keys** — use `rk_*` keys scoped to minimum required permissions, not `sk_*` root keys
 - **Environment variables** — `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_CONNECT_CLIENT_ID`
 
@@ -166,7 +166,7 @@ tools = toolkit.get_tools()
 
 ```dart
 // Flutter NEVER calls Stripe API directly
-// Instead: Flutter → PropertyHarbor API → Stripe API
+// Instead: Flutter → your backend API → Stripe API
 // Use flutter_stripe for Payment Sheet UI only
 
 // Payment flow:

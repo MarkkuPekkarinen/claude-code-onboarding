@@ -1,6 +1,6 @@
 ---
 name: screenshot-to-flutter
-description: "Pixel-perfect Flutter widget replication from a screenshot. Use when the user provides a UI screenshot and asks to replicate, clone, implement, or build it in Flutter. Enforces PropertyHarbor design system (ColorScheme tokens, AppSpacing, TextTheme) — never raw hex or hardcoded values. Triggers: screenshot to flutter, replicate this screen, clone this UI, build this screen in flutter, implement this design in flutter."
+description: "Pixel-perfect Flutter widget replication from a screenshot. Use when the user provides a UI screenshot and asks to replicate, clone, implement, or build it in Flutter. Enforces design system tokens (ColorScheme tokens, AppSpacing, TextTheme) — never raw hex or hardcoded values. Triggers: screenshot to flutter, replicate this screen, clone this UI, build this screen in flutter, implement this design in flutter."
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 metadata:
   triggers: screenshot to flutter, replicate screen, clone UI, pixel perfect flutter, implement design flutter, build this screen flutter, recreate UI flutter
@@ -20,7 +20,7 @@ last-reviewed: "2026-04-04"
 
 ## Purpose
 
-Replicate a UI screenshot as a production-ready Flutter widget with pixel-perfect visual accuracy, while staying compliant with the PropertyHarbor design system.
+Replicate a UI screenshot as a production-ready Flutter widget with pixel-perfect visual accuracy, while staying compliant with your project's design system.
 
 ---
 
@@ -127,7 +127,7 @@ ClipRRect(
 )
 ```
 
-### PropertyHarbor Token Reference
+### Design System Token Reference
 ```dart
 // Colors — from theme, never hardcoded
 final cs = Theme.of(context).colorScheme;

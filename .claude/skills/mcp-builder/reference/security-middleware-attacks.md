@@ -243,5 +243,5 @@ assertSafeUpstreamUrl(config.externalApiUrl);
 // Add every outbound URL your server calls
 ```
 
-> **PropertyHarbor note:** `config.ts:290-310` implements `assertSafeUpstreamUrl()` with the exact blocked set above. It is called at the end of `loadConfig()` so any misconfigured upstream URL crashes the server before it accepts connections.
+> **Implementation note:** Implement `assertSafeUpstreamUrl()` with the exact blocked set above in your config loading code. Call it at the end of `loadConfig()` so any misconfigured upstream URL crashes the server before it accepts connections.
 

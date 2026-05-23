@@ -14,3 +14,10 @@
 - .claude/skills/flutter-genui/reference/genui-custom-widgets.md
 - CLAUDE.md
 <!-- end-snapshot -->
+
+<!-- git-snapshot 2026-05-23T16:14:55Z -->
+- .claude/skills/mcp-builder/reference/mcp-quality-versioning.md
+- .claude/skills/mcp-builder/reference/security-middleware-attacks.md
+- .claude/skills/screenshot-to-flutter/SKILL.md
+- .claude/skills/stripe/SKILL.md
+<!-- end-snapshot -->

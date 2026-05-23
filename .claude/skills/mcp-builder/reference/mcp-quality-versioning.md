@@ -184,7 +184,7 @@ Commit `.tool-surface-hash` to the repository. The baseline is the last human-re
 Never ship new tool versions to 100% of traffic immediately.
 
 ```typescript
-// mcp/property-harbor-mcp/src/rollout.ts
+// mcp/your-project-mcp/src/rollout.ts
 interface RolloutConfig {
   [toolVersion: string]: {
     rollout_percentage: number;          // 0–100
