@@ -102,12 +102,12 @@ async def test_mcp_rejects_invalid_token(mcp_client_invalid_token):
 import pytest
 
 WRITE_TOOLS = [
-    "ticket_create_ticket",
-    "quote_submit_quote",
-    "invoice_mark_paid",
+    # List all write/mutation tools in your MCP server here
+    "your_create_tool",
+    "your_update_tool",
+    "your_delete_tool",
     "notification_send",
     "payment_process",
-    "vendor_assign_job",
 ]
 
 @pytest.mark.parametrize("tool_name", WRITE_TOOLS)
@@ -134,14 +134,14 @@ async def test_write_tool_emits_audit_log(tool_name, mcp_client_valid, audit_log
 providers:
   - type: mcp
     config:
-      serverPath: mcp/property-harbor-mcp/
+      serverPath: mcp/your-project-mcp/
       env:
         DATABASE_URL: ${DATABASE_URL}
 
 tests:
-  - description: "vendor search — valid call returns tool schema"
+  - description: "search tool — valid call returns tool schema"
     vars:
-      input: "Find plumbers near property 123"
+      input: "Find resources matching criteria"
     assert:
       - type: is-valid-openai-tools-call    # validates tool call JSON schema
       - type: function-call-count
@@ -164,7 +164,7 @@ make mcp-inspect
 
 | Gotcha | Fix |
 |--------|-----|
-| `auth.ts` tenant isolation not yet enforced (Day-1 blocker) | Do not run MCP evals in staging until #285 (PH-EVAL-001) is merged |
+| `auth.ts` tenant isolation not yet enforced | Do not run MCP evals in staging until tenant scoping is implemented and merged |
 | MCP Inspector requires running MCP server | Start with `make up` first |
 | Tool surface lock hash mismatch after schema update | Run `make update-mcp-hashes` to regenerate; commit the updated file |
 | Promptfoo MCP provider format may differ from REST provider | Verify via Context7 (`promptfoo`) — MCP provider config differs from HTTP provider |
