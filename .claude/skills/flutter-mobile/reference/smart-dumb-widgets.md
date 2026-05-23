@@ -1,6 +1,6 @@
 # Smart vs Dumb Widget Pattern
 
-Container/Presentational widget separation for Flutter + Riverpod 3.x (PropertyHarbor).
+Container/Presentational widget separation for Flutter + Riverpod 3.x.
 
 ---
 
@@ -268,13 +268,13 @@ packages/shared_core/lib/src/
     └── <name>_provider.dart
 ```
 
-**PropertyHarbor app mapping:**
+**Example app mapping:**
 
 | App | Screens directory | Shared dumb widgets |
 |-----|-------------------|---------------------|
-| Tenant | `apps/tenant/lib/screens/` | `packages/shared_ui/lib/src/widgets/` |
-| Landlord | `apps/landlord/lib/screens/` | `packages/shared_ui/lib/src/widgets/` |
-| Vendor | `apps/vendor/lib/screens/` | `packages/shared_ui/lib/src/widgets/` |
+| App A | `apps/app-a/lib/screens/` | `packages/shared_ui/lib/src/widgets/` |
+| App B | `apps/app-b/lib/screens/` | `packages/shared_ui/lib/src/widgets/` |
+| App C | `apps/app-c/lib/screens/` | `packages/shared_ui/lib/src/widgets/` |
 
 ---
 

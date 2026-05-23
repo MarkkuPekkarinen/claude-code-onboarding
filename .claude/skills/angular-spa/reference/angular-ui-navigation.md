@@ -81,7 +81,7 @@ export class ResponsiveNavComponent {
 
 **Usage:**
 ```html
-<app-responsive-nav title="PropertyHarbor" [navItems]="navItems">
+<app-responsive-nav title="My App" [navItems]="navItems">
   <!-- page content here — projected into <main> -->
   <router-outlet />
 </app-responsive-nav>

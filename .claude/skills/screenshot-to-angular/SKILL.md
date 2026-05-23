@@ -1,6 +1,6 @@
 ---
 name: screenshot-to-angular
-description: "Pixel-perfect Angular component replication from a screenshot. Use when the user provides a UI screenshot and asks to replicate, clone, implement, or build it in Angular. Enforces PropertyHarbor Angular standards (daisyUI semantic classes, Tailwind scale, standalone components, signals). Triggers: screenshot to angular, replicate this screen angular, clone this UI angular, build this screen in angular, implement this design angular."
+description: "Pixel-perfect Angular component replication from a screenshot. Use when the user provides a UI screenshot and asks to replicate, clone, implement, or build it in Angular. Enforces Angular standards (daisyUI semantic classes, Tailwind scale, standalone components, signals). Triggers: screenshot to angular, replicate this screen angular, clone this UI angular, build this screen in angular, implement this design angular."
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 metadata:
   triggers: screenshot to angular, replicate screen angular, clone UI angular, pixel perfect angular, implement design angular, build this screen angular, recreate UI angular
@@ -20,9 +20,9 @@ last-reviewed: "2026-04-04"
 
 ## Purpose
 
-Replicate a UI screenshot as a production-ready Angular 21.x standalone component with pixel-perfect visual accuracy, compliant with PropertyHarbor Angular standards (daisyUI + Tailwind 4.x).
+Replicate a UI screenshot as a production-ready Angular 21.x standalone component with pixel-perfect visual accuracy, compliant with Angular standards (daisyUI + Tailwind 4.x).
 
-> **Scope reminder:** PropertyHarbor's Angular app (`web/property-harbor/`) is a **marketing site only**. If the screenshot shows app-level CRUD features (dashboards, forms, ticket management), implement in Flutter — not Angular. Confirm scope before proceeding.
+> **Scope reminder:** Confirm whether this screenshot is for a marketing/web app or a mobile app feature. If it shows app-level CRUD features (dashboards, forms, ticket management) intended for mobile, consider implementing in Flutter instead of Angular.
 
 ---
 
@@ -94,7 +94,7 @@ Replicate a UI screenshot as a production-ready Angular 21.x standalone componen
 
 ### File Structure
 ```
-web/property-harbor/src/app/
+src/app/
   pages/<page-name>/
     <page-name>.component.ts    ← standalone component
     <page-name>.component.html  ← template

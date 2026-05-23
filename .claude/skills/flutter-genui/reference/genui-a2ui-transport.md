@@ -24,7 +24,7 @@ The `A2uiTransportAdapter` from the `genui_a2a` package connects GenUI to any A2
 import 'package:genui_a2a/genui_a2a.dart';
 
 final transport = A2uiTransportAdapter(
-  endpoint: 'https://api.propertyharbor.com/triage/$jobId/stream',
+  endpoint: 'https://api.your-app.com/triage/$jobId/stream',
   streamMode: StreamMode.sse,
   headers: {
     'Authorization': 'Bearer $authToken',
@@ -33,9 +33,9 @@ final transport = A2uiTransportAdapter(
 );
 ```
 
-## SSE Streaming (PropertyHarbor Pattern)
+## SSE Streaming
 
-PropertyHarbor's triage agent streams responses via Server-Sent Events (SSE). Each SSE `data:` line contains one A2UI JSONL message.
+The triage agent streams responses via Server-Sent Events (SSE). Each SSE `data:` line contains one A2UI JSONL message.
 
 ### Wire Format
 
@@ -47,9 +47,9 @@ data: {"dataModelUpdate":{"surfaceId":"main","contents":[{"key":"category","valu
 data: {"beginRendering":{"surfaceId":"main","root":"root"}}
 ```
 
-### PropertyHarbor SSE Payload (Extended)
+### Extended SSE Payload
 
-PropertyHarbor extends the standard A2UI payload with triage-specific fields:
+Your app can extend the standard A2UI payload with triage-specific fields:
 
 ```json
 {
@@ -94,7 +94,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-/// Custom SSE transport for PropertyHarbor triage agent.
+/// Custom SSE transport for the triage agent.
 class TriageTransport {
   final String endpoint;
   final Map<String, String> headers;

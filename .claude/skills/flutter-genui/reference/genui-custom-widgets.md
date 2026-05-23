@@ -1,8 +1,8 @@
-# GenUI Custom Widgets — PropertyHarbor Triage
+# GenUI Custom Widgets — Triage Example
 
 ## Overview
 
-PropertyHarbor extends the standard GenUI widget catalog with 5 custom widget types designed for the maintenance triage flow. Each custom widget is registered as a `CatalogItem` with a JSON schema (for the AI model) and a Dart builder (for rendering).
+This example extends the standard GenUI widget catalog with 5 custom widget types designed for a maintenance triage flow. Each custom widget is registered as a `CatalogItem` with a JSON schema (for the AI model) and a Dart builder (for rendering).
 
 ## Architecture
 

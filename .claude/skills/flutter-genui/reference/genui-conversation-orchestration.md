@@ -82,9 +82,9 @@ class TriageConversationManager {
 }
 ```
 
-## PropertyHarbor Triage Conversation
+## Example: Triage Conversation
 
-For the PropertyHarbor triage flow, the Conversation connects to the ADK triage agent via SSE:
+For a triage flow, the Conversation connects to the ADK triage agent via SSE:
 
 ```dart
 // triage_conversation.dart
@@ -93,8 +93,8 @@ import 'package:genui/genui.dart';
 import 'widget_catalog.dart';
 
 const _triageSystemPrompt = '''
-You are a maintenance triage assistant for PropertyHarbor.
-Your job is to collect information about a tenant's maintenance issue
+You are a maintenance triage assistant.
+Your job is to collect information about the user's maintenance issue
 using the available widget catalog.
 
 Rules:
@@ -125,9 +125,9 @@ Future<TriageConversationManager> createTriageConversation({
 }
 ```
 
-## Conversation with Riverpod (PropertyHarbor Pattern)
+## Conversation with Riverpod
 
-Since PropertyHarbor uses Riverpod 3.x for state management:
+With Riverpod 3.x for state management:
 
 ```dart
 // triage_conversation_provider.dart
@@ -187,7 +187,7 @@ final history = conversation.messages;
 | **REST (non-streaming)** | Simple Q&A — full response at once | `StreamMode.rest` |
 | **WebSocket** | Bidirectional real-time — both directions stream | `StreamMode.websocket` |
 
-PropertyHarbor uses **SSE** for the triage flow because:
+SSE is recommended for the triage flow because:
 - Agent streams follow-up questions one at a time
 - UI updates progressively as each widget arrives
 - SSE auto-reconnects on connection drop
@@ -201,7 +201,7 @@ try {
 } on TransportException catch (e) {
   // Connection error — show retry option
   logger.error('Triage transport failed', error: e);
-  // Fall back to static form (PropertyHarbor constraint §12)
+  // Fall back to static form (GenUI fallback requirement)
   _showStaticFallbackForm();
 } on CatalogValidationException catch (e) {
   // Agent sent invalid widget type — log and continue
@@ -214,7 +214,7 @@ try {
 }
 ```
 
-## Fallback: Static Form (PropertyHarbor Constraint §12)
+## Fallback: Static Form
 
 Every AI flow must have a fallback. If GenUI fails:
 

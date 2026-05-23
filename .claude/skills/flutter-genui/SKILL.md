@@ -1,6 +1,6 @@
 ---
 name: flutter-genui
-description: "Flutter GenUI SDK — conversational AI-driven UI using A2UI protocol. Use when building GenUI renderers, widget catalogs, Conversation orchestration, DataModel binding, SurfaceController setup, or SSE-streamed agent-to-UI flows in Flutter. Covers catalog design, A2UI transport, state binding, custom widgets, and PropertyHarbor triage integration."
+description: "Flutter GenUI SDK — conversational AI-driven UI using A2UI protocol. Use when building GenUI renderers, widget catalogs, Conversation orchestration, DataModel binding, SurfaceController setup, or SSE-streamed agent-to-UI flows in Flutter. Covers catalog design, A2UI transport, state binding, custom widgets, and triage integration."
 allowed-tools: Read, Edit, Write, Glob, Grep, Bash, WebFetch, mcp__context7__resolve-library-id, mcp__context7__query-docs, mcp__dart-mcp-server__dart
 metadata:
   triggers: GenUI, gen_ui, genui, Flutter GenUI, conversational UI, A2UI Flutter, widget catalog, Catalog, CatalogItem, Conversation, DataModel, SurfaceController, A2uiTransportAdapter, triage UI, agent-driven UI Flutter, gen ui renderer
@@ -50,7 +50,7 @@ GenUI is Flutter's official SDK for **generative UI** — it turns text-based LL
 
 ## Prerequisites
 
-- Flutter >= 3.35.7 (PropertyHarbor uses 3.41.x)
+- Flutter >= 3.35.7 (3.41.x recommended)
 - Add to `pubspec.yaml` in the package that uses GenUI (e.g., `packages/shared_ui/`):
   ```yaml
   dependencies:
@@ -71,7 +71,7 @@ GenUI is Flutter's official SDK for **generative UI** — it turns text-based LL
 3. **Read `reference/genui-state-binding.md`** — DataModel, SurfaceController, reactive state, surface rendering
 4. **Read `reference/genui-a2ui-transport.md`** — A2uiTransportAdapter, A2uiMessage, SSE streaming, JSONL parsing
 5. **Read `reference/genui-functions.md`** — A2UIFunctionEvaluator, declarative functions (formatCurrency, required, email, and/or/not), integration pattern
-6. **Read `reference/genui-custom-widgets.md`** — custom widget integration, Slider/AudioPlayer/Video, PropertyHarbor triage widgets
+6. **Read `reference/genui-custom-widgets.md`** — custom widget integration, Slider/AudioPlayer/Video, custom triage widgets
 7. **Read `reference/genui-security.md`** — catalog allowlist enforcement, input sanitization, payload limits
 8. **Verify Flutter/Dart APIs** — Use `dart-mcp-server` or Context7 MCP before using any API
 
@@ -83,7 +83,7 @@ GenUI is Flutter's official SDK for **generative UI** — it turns text-based LL
 4. **Build Surface Rendering** — Use `SurfaceController` to process incoming A2UI messages and render surfaces
 5. **Implement DataModel Binding** — Bind widget state to `DataModel` for reactive updates
 6. **Handle User Input** — Wire user interactions back to the Conversation as structured events
-7. **Add Custom Widgets** — Register PropertyHarbor-specific widgets (photo_upload, dropdown, rating, etc.)
+7. **Add Custom Widgets** — Register app-specific widgets (photo_upload, dropdown, rating, etc.)
 8. **Write Tests** — Unit tests for catalog validation, surface building, input handling
 9. **Verify Build** — Run `melos run test` and `flutter analyze`
 
@@ -99,25 +99,25 @@ Detailed patterns are in `reference/`:
 - `genui-functions.md` — `A2UIFunctionEvaluator`: validation (required, regex, email), formatting (formatCurrency, formatDate, pluralize), logical (and, or, not), navigation (openUrl) — full Dart implementation
 
 ### Integration
-- `genui-custom-widgets.md` — Custom widget registration, extended A2UI catalog (Slider, AudioPlayer, Video), PropertyHarbor triage widgets (photo_upload, dropdown, free_text, rating, confirmation)
+- `genui-custom-widgets.md` — Custom widget registration, extended A2UI catalog (Slider, AudioPlayer, Video), custom triage widgets (photo_upload, dropdown, free_text, rating, confirmation)
 - `genui-security.md` — Catalog allowlist enforcement, untrusted payload handling, input sanitization, size limits
 
 ### A2UI Protocol (shared with Angular skill)
 - See `../a2ui-angular/reference/a2ui-protocol.md` for the full A2UI protocol spec (5 message types, JSONL format)
 - See `../a2ui-angular/reference/a2ui-protocol-advanced.md` for streaming, action model, Gemini quirks
 
-## PropertyHarbor Integration
+## Example Integration: Conversational Triage Flow
 
-GenUI is used in PropertyHarbor for the **tenant triage flow** — the conversational UI that replaces static maintenance request forms.
+GenUI can power a **triage flow** — the conversational UI that replaces static request forms.
 
 **Flow:**
-1. Tenant describes issue (voice/text) -> `POST /triage/start` returns `{ job_id }`
+1. User describes issue (voice/text) -> `POST /triage/start` returns `{ job_id }`
 2. Flutter opens `GET /triage/{job_id}/stream` SSE
 3. Agent streams `{ response, category, widgets[] }` via A2UI protocol
 4. `GenUIRenderer` renders widgets as native Flutter widgets
-5. Tenant interacts -> next question streams -> repeat until triage complete
+5. User interacts -> next question streams -> repeat until triage complete
 
-**Fallback:** If GenUI/ADK unavailable -> standard form fields shown; ticket `needs_classification = true`
+**Fallback:** If GenUI/ADK unavailable -> standard form fields shown; record `needs_classification = true`
 
 **File location in monorepo:**
 ```

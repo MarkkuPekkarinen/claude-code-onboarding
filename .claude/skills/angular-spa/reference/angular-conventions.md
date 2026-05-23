@@ -1,4 +1,4 @@
-> **Canonical source:** https://angular.dev/style-guide — PropertyHarbor strictly follows this guide. When in doubt, the official style guide takes precedence over any convention listed here.
+> **Canonical source:** https://angular.dev/style-guide — this project strictly follows this guide. When in doubt, the official style guide takes precedence over any convention listed here.
 
 # Angular Conventions & Project Structure
 
@@ -55,7 +55,7 @@ Co-locate closely related files (component + template + styles + spec) in the sa
 
 ### Selector / Prefix Conventions
 
-- Component selectors: use a consistent app-specific prefix (e.g., `app-`, `ph-` for PropertyHarbor) in `kebab-case`
+- Component selectors: use a consistent app-specific prefix (e.g., `app-`, `my-`) in `kebab-case`
 - Directive selectors: `camelCase` attribute selector with prefix: `[phTooltip]`
 - Never use generic selectors like `div`, `span`, `button` as component selectors
 

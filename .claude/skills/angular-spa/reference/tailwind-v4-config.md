@@ -39,9 +39,9 @@ For SCSS projects, add to `src/styles.scss`:
 @use 'tailwindcss';
 ```
 
-### Differences from our PropertyHarbor setup
+### Differences from the official guide in a typical project setup
 
-| Angular Official Guide | PropertyHarbor (this project) | Reason |
+| Angular Official Guide | This project | Reason |
 |------------------------|-------------------------------|--------|
 | `ng add tailwindcss` automated | Manual setup | More control over daisyUI integration |
 | SCSS `@use 'tailwindcss'` supported | CSS only (`src/styles.css`) | Sass intercepts `@import`/`@theme`/`@plugin` — CSS is required |

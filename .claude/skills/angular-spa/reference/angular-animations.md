@@ -286,9 +286,9 @@ If the animation feels slow, it IS slow. Target 150–250ms for most interaction
 </div>
 ```
 
-## PropertyHarbor Rule: Angular Animations Only
+## Angular Animations Rule: Angular Animations Only
 
-**MANDATORY for web/property-harbor:** Use Angular Animations for ALL animations.
+**MANDATORY:** Use Angular Animations for ALL animations.
 
 - **NEW CODE:** Use `animate.enter` / `animate.leave` (compiler API) for enter/leave transitions
 - **STATEFUL / COMPLEX:** Use `@angular/animations` (`trigger()`, `state()`, etc.) for multi-step or stateful animations
