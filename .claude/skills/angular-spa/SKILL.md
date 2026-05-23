@@ -18,7 +18,7 @@ last-reviewed: "2026-03-14"
 
 **STYLE LAW:** Strictly follow https://angular.dev/style-guide for ALL naming, file structure, and code organization. See `reference/angular-conventions.md` for the quick reference.
 
-**ANIMATION LAW (web/property-harbor):** Use `@angular/animations` for ALL interactive animations. Never raw CSS transitions on stateful elements. See `reference/angular-animations.md`.
+**ANIMATION LAW:** Use `@angular/animations` for ALL interactive animations. Never raw CSS transitions on stateful elements. See `reference/angular-animations.md`.
 
 # Angular 21.x SPA Development Skill
 
@@ -99,7 +99,7 @@ Detailed patterns are in `reference/`:
 - `testing-vitest.md` — Vitest setup, zoneless TestBed, testing Signals and resource(), migration from Karma
 - `e2e-cypress.md` — Cypress E2E setup, component testing, custom commands, data-cy convention
 - `smart-dumb-components.md` — Smart (container) vs Dumb (presentational) component pattern, decision tree, signal-based examples, hard rules, file location enforcement
-- `angular-animations.md` — Angular Animations API (`animate.enter`/`animate.leave`, `trigger()`, `state()`, `keyframes()`, `stagger()`), timing standards, PropertyHarbor animation rules
+- `angular-animations.md` — Angular Animations API (`animate.enter`/`animate.leave`, `trigger()`, `state()`, `keyframes()`, `stagger()`), timing standards, animation rules
 - `user-research.md` — Persona templates, journey mapping, usability testing, SUS survey
 
 ## Anti-Patterns — What to Avoid

@@ -1,12 +1,12 @@
 ---
 name: setup-team-memory
-description: One-shot setup of claude-mem + claude-mem-sync for 5-person PropertyHarbor team memory sharing. Installs, configures, and verifies end-to-end. Safe to run multiple times — skips steps already completed.
+description: One-shot setup of claude-mem + claude-mem-sync for team memory sharing. Installs, configures, and verifies end-to-end. Safe to run multiple times — skips steps already completed.
 allowed-tools: Bash, Read, Write, Edit, Glob
 ---
 
 # Setup Team Memory — claude-mem + claude-mem-sync
 
-One-shot installer and verifier for PropertyHarbor's team memory stack.
+One-shot installer and verifier for your team memory stack.
 Reference doc: `docs/tools/claude-mem-team-memory.md`
 
 ---
@@ -156,7 +156,7 @@ Fix: Try running manually: npx claude-mem install
 
 ---
 
-## Step 4 — Configure claude-mem for PropertyHarbor
+## Step 4 — Configure claude-mem
 
 **Skip this step if:** `~/.claude-mem/settings.json` already exists with `CLAUDE_MEM_FOLDER_CLAUDEMD_ENABLED` set to `"false"`.
 
@@ -253,21 +253,22 @@ Fix: cd ~/.claude/plugins/marketplaces/claude-mem-sync && bun install && bun run
 
 ## Step 6 — Create .claude/memories/ Folder Structure
 
-**Skip this step if:** `.claude/memories/merged/property-harbor/` exists.
+**Skip this step if:** `.claude/memories/merged/your-project/` exists.
 
 ```bash
 echo "=== CREATING MEMORIES FOLDER STRUCTURE ==="
 PROJ=$(git rev-parse --show-toplevel)
+PROJECT_NAME=$(basename $PROJ)
 
-mkdir -p $PROJ/.claude/memories/merged/property-harbor
+mkdir -p $PROJ/.claude/memories/merged/$PROJECT_NAME
 mkdir -p $PROJ/.claude/memories/contributions
 
 # Placeholder so merged dir is tracked by git
-touch $PROJ/.claude/memories/merged/property-harbor/.gitkeep
+touch $PROJ/.claude/memories/merged/$PROJECT_NAME/.gitkeep
 
 echo "Verifying folder structure..."
 ls -la $PROJ/.claude/memories/
-ls -la $PROJ/.claude/memories/merged/property-harbor/
+ls -la $PROJ/.claude/memories/merged/$PROJECT_NAME/
 ```
 
 ---
@@ -341,7 +342,7 @@ grep -n "memories" $PROJ/.gitignore
 **Skip this step if:** `~/.claude-mem-sync/config.json` already exists.
 
 `mem-sync init` is an interactive wizard and cannot run non-interactively in a bash block.
-Write the config directly instead — this is equivalent to running the wizard with PropertyHarbor answers.
+Write the config directly instead — this is equivalent to running the wizard for your project.
 
 The developer name defaults to the current user (`$USER`). Each developer will have their own
 config with their own name — this is correct and expected.
@@ -373,11 +374,11 @@ config = {
         }
     },
     "projects": {
-        "property-harbor": {
+        "your-project": {
             "enabled": True,
             "remote": {
                 "type": "github",
-                "repo": "cropdoctor-ai/property-harbor",
+                "repo": "your-org/your-project",
                 "branch": "develop",
                 "autoMerge": True
             },
@@ -497,7 +498,7 @@ mem-sync status 2>/dev/null || echo "status command failed"
 # 13. Export preview (dry-run, no push)
 echo ""
 echo "Export preview (dry-run):"
-mem-sync preview --project property-harbor 2>/dev/null || echo "preview failed — no observations yet is normal on first install"
+mem-sync preview --project your-project 2>/dev/null || echo "preview failed — no observations yet is normal on first install"
 ```
 
 ---
@@ -509,7 +510,7 @@ Print a complete verdict table based on all Step 11 outputs:
 ```
 ══════════════════════════════════════════════════════════
   /setup-team-memory — Final Report
-  Project: property-harbor
+  Project: your-project
 ══════════════════════════════════════════════════════════
 
 PREREQUISITES
@@ -565,18 +566,18 @@ If overall verdict is READY, print:
    → Each teammate runs: /setup-team-memory
 
 3. AFTER your first week of coding, share your observations:
-   mem-sync preview --project property-harbor   # see what will be shared
-   mem-sync export --project property-harbor    # push to team repo
+   mem-sync preview --project your-project   # see what will be shared
+   mem-sync export --project your-project    # push to team repo
 
 4. IMPORT teammate observations after they export:
-   mem-sync import --project property-harbor
+   mem-sync import --project your-project
 
 5. WEEKLY (automated via cron):
    Export: Fridays 4pm
    Import: Saturdays 9am
 
 6. MONTHLY (optional):
-   mem-sync distill --project property-harbor   # extract rules → .claude/rules/
+   mem-sync distill --project your-project   # extract rules → .claude/rules/
 
 Full reference: docs/tools/claude-mem-team-memory.md
 ══════════════════════════════════════════════════════════

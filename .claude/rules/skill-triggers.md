@@ -98,7 +98,7 @@ New additions must pass this scan before use:
 | `firebase` (npx firebase-tools mcp) | ✅ Trusted | Scoped to authenticated Firebase project |
 | `context7` (npx @upstash/context7-mcp) | ✅ Trusted | Read-only doc fetcher |
 | `dart-mcp-server` (dart mcp-server) | ✅ Trusted | Local Dart/Flutter tooling |
-| `langchain-docs` (docs.langchain.com/mcp) | ✅ Trusted | Read-only doc fetcher — ⛔ BANNED in PropertyHarbor — all AI code uses Google ADK only |
+| `langchain-docs` (docs.langchain.com/mcp) | ✅ Trusted | Read-only doc fetcher — if your project standardizes on Google ADK, prefer `adk-docs` MCP instead |
 | `postgres` (npx @modelcontextprotocol/server-postgres) | ✅ Trusted | Read-only DB queries via connection string |
 | `docker` (npx docker-mcp) | ⚠️ Elevated | Can manage containers — confirm scope per use |
 | `xcodebuild` (xcodebuildmcp) | ✅ Trusted | Local Xcode build tooling |

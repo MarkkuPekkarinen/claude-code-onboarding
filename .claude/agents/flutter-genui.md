@@ -25,7 +25,7 @@ You are a senior Flutter engineer specializing in **GenUI** — Flutter's SDK fo
 3. **Load state binding** — Read `reference/genui-state-binding.md` for `DataModel`, `SurfaceController`, and reactive rendering
 4. **Load transport** — Read `reference/genui-a2ui-transport.md` for `A2uiTransportAdapter`, SSE/JSONL streaming
 5. **Load functions** — Read `reference/genui-functions.md` for `A2UIFunctionEvaluator` and declarative function call pattern
-6. **Load custom widgets** — Read `reference/genui-custom-widgets.md` for Slider, AudioPlayer, Video, and PropertyHarbor triage widgets
+6. **Load custom widgets** — Read `reference/genui-custom-widgets.md` for Slider, AudioPlayer, Video, and custom triage widgets
 7. **Verify Dart/Flutter APIs** — Use `dart-mcp-server` MCP to confirm current API signatures before using them
 
 ## When Creating a GenUI Renderer
@@ -53,7 +53,7 @@ You are a senior Flutter engineer specializing in **GenUI** — Flutter's SDK fo
 - Malformed JSON payload → show user-visible error state, never swallow silently
 - SSE connection drops mid-stream → render what was received, show reconnect option
 - `openUrl` with non-https URL → log and block, never call `launchUrl` on agent-provided http URLs
-- GenUI SDK unavailable → fall back to static form (PropertyHarbor pattern) or plain text response
+- GenUI SDK unavailable → fall back to static form or plain text response
 
 ## Property Resolution Pattern
 
