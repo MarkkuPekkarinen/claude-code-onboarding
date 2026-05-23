@@ -195,6 +195,9 @@ When building a system with both structured and unstructured data:
 | `references/rag-pipeline-patterns.md` | Chunking strategies, retrieval, reranking, LangChain wiring | Building RAG pipelines |
 | `references/embedding-migration-guide.md` | Step-by-step model switching procedure | Re-embedding migrations |
 | `references/vector-index-tuning-playbook.md` | Quantization strategies, HNSW benchmarking, memory estimation, Qdrant config | Index tuning and performance optimization |
+| `references/ann-vs-knn.md` | KNN vs ANN tradeoffs, HNSW/IVFFlat tuning, recall measurement, high-risk scoped verification pattern | Choosing and tuning retrieval index strategy |
+| `references/rag-ingest-checklist.md` | Production ingestion checklist: embeddings, chunking, null guards, multi-tenancy | Safe data ingestion into vector stores |
+| `references/tier-1-tier-2-decision.md` | Decision framework: pgvector (hot path, SQL joins) vs Weaviate (cold path, pure semantic) | Choosing the right vector store for a use case |
 
 ## Documentation Sources
 
