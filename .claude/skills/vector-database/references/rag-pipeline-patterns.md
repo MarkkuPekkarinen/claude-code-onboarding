@@ -451,3 +451,166 @@ CREATE INDEX ON documents USING hnsw (embedding vector_cosine_ops);
 | API-based, full accuracy | `EmbeddingService` (text-embedding-3-small) | 1536 |
 | API-based, cost-optimized | `ReducedEmbeddingService` | 512 |
 | Code search | OpenAI `text-embedding-3-small` or Voyage `voyage-code-3` | 1536 |
+
+---
+
+## Server-Side Vectorizer vs Pre-Computed Vectors (Path A vs Path B)
+
+When writing to a vector store you have two choices for who runs the embedding:
+
+| | Path A — Server vectorizer | Path B — Pre-computed (`Vectorizer.none()`) |
+|---|---|---|
+| **Setup** | Schema declares `text2vec_*`; you write text; vector store calls embedding API | Schema declares `Vectorizer.none()`; you embed in app code; you pass the vector |
+| **PII control** | Raw text leaves your service | Redact → embed → store all in your code |
+| **Cost tracking** | Hidden inside vector DB invoice | Logged once via `embed_text` event |
+| **Local dev** | Needs the embedding module loaded (e.g. `text2vec-google`) | Works with vanilla Weaviate |
+| **Model migration** | Re-config vector store | Update env var, re-ingest |
+| **Multi-store RAG** | Each store owns its own pipeline | One embed function feeds all stores |
+
+**PropertyHarbor mandate (constraints §38):** Path B always for RAG ingest.
+The §38 PII redaction rule + §37 single-source-of-cost-truth + multi-store
+support (pgvector + Weaviate) make Path A unworkable. The PropertyHarbor
+`WeaviateWriter.ensure_collection()` hardcodes `Configure.Vectorizer.none()`.
+
+**Industry evidence — every shipped production AI product uses Path B:**
+
+| Product | Vector store | Embedding path |
+|---|---|---|
+| Notion AI | Pinecone | Path B (Pinecone has no Path A) |
+| GitHub Copilot for Docs | Azure AI Search | Path B |
+| Anthropic Contextual Retrieval reference | Pinecone / Voyage | Path B |
+| Linear "Search workspace" | Pinecone | Path B |
+| Perplexity | Multi-store | Path B |
+| Pinecone, Qdrant, pgvector, Vespa | (themselves) | Path B is the ONLY mode |
+
+Path A exists for hackathons, demos, and starter tutorials. Production teams
+without exception migrate to Path B within 6-12 months when PII, cost
+tracking, model versioning, or multi-store needs arrive.
+
+```python
+# ✓ — Path B canonical pattern (PropertyHarbor)
+self._client.collections.create(
+    name="LeaseClauses",
+    vectorizer_config=Configure.Vectorizer.none(),
+    multi_tenancy_config=Configure.multi_tenancy(enabled=True, auto_tenant_creation=True),
+    properties=[
+        Property(name="text", data_type=DataType.TEXT),
+        Property(name="embedding_model", data_type=DataType.TEXT),  # version stamp
+        # ...
+    ],
+)
+
+# Write path: embed → write
+vec, meta = embed_text_for_storage(chunk["text"])
+chunk["text"] = meta["redacted_text"]    # never store raw PII
+collection.with_tenant(landlord_id).data.insert(properties=chunk, vector=vec)
+```
+
+---
+
+## Tier 1 vs Tier 2 — Multi-Store RAG Architecture
+
+Production RAG systems rarely run on one store. PropertyHarbor uses a
+two-tier split (constraints §8) — same pattern used by Stripe, Notion,
+Linear, GitHub Copilot.
+
+| | Tier 1 — pgvector | Tier 2 — Weaviate |
+|---|---|---|
+| **Job** | Vectors that live alongside relational data | Pure unstructured text RAG corpus |
+| **PropertyHarbor uses for** | Vendor profiles, landlord rule embeddings | Lease clause chunks, FAQ corpus |
+| **Query style** | Mixed — SQL JOIN + WHERE + vector | Pure semantic + hybrid BM25 |
+| **Optimal latency** | <50ms (user-blocking matching) | <500ms (streamed chat response) |
+| **Scale** | Millions of rows per tenant | Billions of chunks across tenants |
+| **Consistency** | ACID with PostgreSQL | Eventual (writes → readable in seconds) |
+| **Multi-tenancy** | `WHERE tenant_id = ?` (logical filter) | `with_tenant()` (physical shard) |
+| **Hybrid search** | DIY (tsvector + cosine) | Native `hybrid()` query |
+
+**Decision rule:**
+- If the query needs SQL JOIN, PostGIS geo, or relational filters → **Tier 1 (pgvector)**
+- If the query is "find similar text under tenant T" with hybrid BM25+vector → **Tier 2 (Weaviate)**
+
+**Why split at all?** Putting everything in pgvector hits HNSW degradation past ~10M vectors per table; putting everything in Weaviate forces denormalizing relational data and loses native PostGIS. The split is not about size — it's about query characteristics.
+
+---
+
+## Best-in-Class Retrieval Stack (constraints §52 / issue #52)
+
+Single-stage dense retrieval plateaus at recall@5 ≈ 0.75–0.80 on long-document QA (BEIR, MTEB benchmarks). To clear 0.85+ on lease QA / legal docs / customer-support corpora, **three techniques stacked are mandatory** — not optional:
+
+### 1. Hybrid search (BM25 + vector)
+
+Pure vector misses exact phrases ("$2,400", "Section 5.3", proper names). BM25 alone misses paraphrase. Combine via score fusion:
+
+```python
+results = collection.with_tenant(landlord_id).query.hybrid(
+    query="Can I have a cat?",
+    vector=query_embedding,
+    alpha=0.5,                    # 0.5 = balanced; tune per golden set
+    limit=20,                     # over-fetch for reranker
+).objects
+```
+
+Tune `alpha` empirically against `tests/golden/rag/<corpus>/`:
+- `alpha=0` → pure BM25 (exact-match heavy)
+- `alpha=1` → pure vector (semantic only)
+- `alpha=0.5` → starting point; often optimal at ~0.5-0.7
+
+### 2. Reranking (top-N → top-k)
+
+Lifts recall@5 from ~0.78 → 0.92 on long-document QA. Two PropertyHarbor-compatible options:
+
+| Option | Implementation | Trade-off |
+|---|---|---|
+| **Cohere/Voyage/BGE rerank via MCP** | New MCP tool wrapping the reranker API | Network hop; managed quality |
+| **Gemini-based LlmAgent rerank** | Inline `LlmAgent` step that scores candidates | Same model family as judge; one less vendor |
+
+```python
+# Pattern: hybrid → top-N=20 → rerank → top-k=5 → LLM
+hybrid_candidates = collection.query.hybrid(...).objects[:20]
+ranked = await reranker.rerank(query=q, documents=[c.text for c in hybrid_candidates])
+top_k = [hybrid_candidates[i] for i in ranked[:5]]
+# Pass top_k to the answering LLM
+```
+
+Single-stage = forbidden for production lease QA / legal RAG.
+
+### 3. Contextual chunking (Anthropic 2024-09)
+
+Plain section-body chunks miss cross-section references ("see Section 5.3" in Section 12). Solution: prepend section context to each chunk's `text` BEFORE embedding:
+
+```python
+# At chunk_agent — prepend lease+section context
+contextual_text = f"[Lease {lease_id} | Section {section_number} {section_title}] {body}"
+vec, meta = embed_text_for_storage(contextual_text)
+chunk["text"] = meta["redacted_text"]
+```
+
+Reference: [Anthropic Contextual Retrieval](https://www.anthropic.com/news/contextual-retrieval) — reduces retrieval failure rate by ~49% over plain chunking.
+
+### Eval gates for retrieval (mandatory before production)
+
+`tests/golden/rag/<corpus>/` with ≥30 query-answer pairs containing:
+- `query`
+- `expected_chunk_ids` (list)
+- `expected_section`
+- `expected_answer_contains` (list of substrings)
+
+Blocking thresholds:
+
+| Metric | Threshold | What it measures |
+|---|---|---|
+| `recall@5` | ≥ 0.85 | At least one expected chunk in top 5 |
+| `mrr@5` | ≥ 0.75 | First expected chunk's rank in top 5 |
+| `HallucinationsV1` | ≤ 0.05 | LLM-as-judge hallucination rate |
+
+If any threshold fails, retrieval is NOT production-ready. Add reranking, tune `alpha`, or expand contextual chunking before shipping.
+
+---
+
+## Cross-References
+
+- `.claude/skills/google-adk/reference/adk-state-propagation.md` — ADK SequentialAgent `EventActions.state_delta` rule (CRITICAL for RAG ingest agents)
+- `.claude/skills/vector-database/references/rag-ingest-checklist.md` — Section G (state propagation), Section H (G-LIVE-3a/3b verification)
+- `.claude/rules/propertyharbor-constraints.md` §8 (embedding model + tier split), §37 (embedding observability), §38 (RAG hygiene + multi-tenancy), §39 (live verification gate)
+- `scripts/replay-golden-case.sh` + `scripts/verify-weaviate-tenant.sh` — G-LIVE-3a/3b tooling
+- GitHub issue #52 (lease_qa_agent) — specifies hybrid + rerank + contextual chunking as ACs
