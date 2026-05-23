@@ -197,7 +197,7 @@ Getting the catalog right is not a one-off decision — it's ongoing calibration
 4. If a molecule is too rigid for the use case → expose one more property
 5. If an organism is always used identically → consider making it a template (static)
 
-## PropertyHarbor Triage Catalog
+## Example: Triage Catalog
 
 ### 5 Custom Widget Types
 
@@ -244,12 +244,12 @@ In addition to the 5 custom types, always register the standard A2UI component t
 import 'package:genui/genui.dart';
 import 'widget_types.dart';
 
-/// PropertyHarbor triage widget catalog.
+/// Triage widget catalog.
 /// Registers all allowed widget types for the AI triage agent.
 Catalog buildTriageCatalog() {
   return Catalog(
     items: [
-      // PropertyHarbor custom triage widgets
+      // custom triage widgets
       _photoUploadItem(),
       _dropdownItem(),
       _freeTextItem(),

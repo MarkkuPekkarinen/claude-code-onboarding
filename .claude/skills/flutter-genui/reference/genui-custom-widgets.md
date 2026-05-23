@@ -449,7 +449,7 @@ _buildSliderCatalogItem(),
 _buildAudioPlayerCatalogItem(),
 _buildVideoCatalogItem(),
 
-// PropertyHarbor triage widgets (existing)
+// custom triage widgets
 _buildPhotoUploadCatalogItem(),
 _buildDropdownCatalogItem(),
 _buildFreeTextCatalogItem(),
