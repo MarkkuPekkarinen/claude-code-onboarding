@@ -131,7 +131,7 @@ String? sanitizeUrl(dynamic value) {
 Only actions defined by the client application can be triggered:
 
 ```dart
-/// Allowed actions for PropertyHarbor triage flow.
+/// Allowed actions for the triage flow.
 const _allowedActions = {
   'select_option',     // Dropdown selection
   'submit_text',       // Free text submission
@@ -187,7 +187,7 @@ Function.apply(properties['handler'], []);
 // FORBIDDEN: Using agent data to construct database queries
 ```
 
-## PropertyHarbor-Specific Security
+## App-Specific Security
 
 ### Photo Upload Security
 
@@ -245,4 +245,4 @@ Track validation failure rate per widget type — a spike indicates LLM regressi
 - [ ] Photo uploads validated for type, size, and sanitized metadata
 - [ ] Payload size limits enforced (200 components, 1MB total)
 - [ ] Error boundaries prevent malformed components from crashing the app
-- [ ] Fallback to static form when GenUI fails (PropertyHarbor constraint §12)
+- [ ] Fallback to static form when GenUI fails
