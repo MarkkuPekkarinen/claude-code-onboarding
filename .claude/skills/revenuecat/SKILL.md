@@ -1,6 +1,6 @@
 ---
 name: revenuecat
-description: Use when integrating RevenueCat in-app subscriptions in PropertyHarbor's Flutter apps — entitlements, offerings, paywalls, purchases_flutter SDK, or Stripe backend sync. Load before writing any RevenueCat or IAP code. Query the RevenueCat MCP server for API verification.
+description: Use when integrating RevenueCat in-app subscriptions in Flutter apps — entitlements, offerings, paywalls, purchases_flutter SDK, or Stripe backend sync. Load before writing any RevenueCat or IAP code. Query the RevenueCat MCP server for API verification.
 allowed-tools: Bash, Read, Write, Edit
 metadata:
   triggers: RevenueCat, in-app purchase, IAP, entitlement, offering, paywall, subscription, StoreKit, Google Play Billing, purchases_flutter
@@ -98,12 +98,12 @@ Plus agents: Project Bootstrap Agent, Troubleshooting Agent
 | `get_customer` | Retrieve subscriber/customer info |
 | `list_customer_active_entitlements` | List active entitlements for a customer |
 
-## PropertyHarbor Context
+## Context
 
-RevenueCat manages mobile subscription entitlements for PropertyHarbor's 3 Flutter apps:
-- **Landlord app** — Pro ($9/unit/mo) and Growth ($7/unit/mo) tiers
-- **Tenant app** — Free tier (included with landlord subscription)
-- **Vendor app** — Free tier with optional premium features
+RevenueCat manages mobile subscription entitlements for Flutter apps. A typical setup might include:
+- **Primary app** — Pro and Growth subscription tiers
+- **Companion app** — Free tier (included with primary subscription)
+- **Partner/vendor app** — Free tier with optional premium features
 
 Stripe is the payment processor; RevenueCat sits on top as the entitlement/subscription management layer. RevenueCat handles App Store and Google Play receipt validation, cross-platform entitlement sync, and subscription analytics.
 
