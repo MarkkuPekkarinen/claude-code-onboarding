@@ -1,6 +1,6 @@
 # Smart (Container) vs Dumb (Presentational) Component Pattern
 
-> **Applies to:** PropertyHarbor Angular marketing site (`web/property-harbor/`) — Angular 21.2.x, signals, standalone components, `input()`/`output()` APIs.
+> **Applies to:** Angular 21.2.x, signals, standalone components, `input()`/`output()` APIs.
 
 ---
 
@@ -225,7 +225,7 @@ export class AccordionItemComponent {
 ## 5. File Location Rule
 
 ```
-web/property-harbor/src/app/
+src/app/
 ├── features/                       ← Smart components (own state, inject services)
 │   └── <feature-name>/
 │       ├── <feature-name>.component.ts

@@ -187,7 +187,7 @@ npx cypress run --spec "cypress/e2e/login.cy.ts"
 npx cypress run --record --key <dashboard-key>
 ```
 
-## PropertyHarbor: E2E for marketing site
+## Example: E2E for a marketing site
 
 The Angular app is a static marketing site. E2E tests should cover:
 - [ ] Landing page renders app download CTAs
