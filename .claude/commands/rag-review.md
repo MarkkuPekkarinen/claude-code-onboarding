@@ -1,134 +1,94 @@
 ---
-description: Audit the current repo against the MVP RAG checklist; produce a structured gaps report with severity
+description: Audit a RAG pipeline E2E against all 8 stages of the production RAG checklist; produce a structured gaps report with severity and verdict
 ---
 
-# /rag-review — Audit RAG Implementation
+# /rag-review — E2E RAG Pipeline Audit
 
-Audit the current repository against the production RAG MVP checklist (§45) and the hard rules from the playbook.
+**Skill:** Load `rag-review` skill — it is the single source of truth for all 8-stage checks, severity rubric, verdict format, and reference cross-links. Do not restate checks inline here.
+
+Audit a RAG pipeline against the production checklist covering all 8 stages: ingestion/chunking, versioning/updates, embedding/indexing, query routing, retrieval/fusion/reranking, generation/abstention, security, and eval/observability.
 
 ## Phase 1: Discover the implementation
 
 Walk the repo and identify:
-- Where is the RAG pipeline code? (typically `rag/`, `retrieval/`, `pipeline/`, or similar)
-- What vector DB is used? (look for imports: pinecone, weaviate, qdrant, pgvector, chroma)
-- What embedding model? (look for OpenAI, Cohere, BGE, Voyage, etc.)
-- What reranker, if any?
-- Where is the prompt template?
+- Where is the RAG pipeline code? (`rag/`, `retrieval/`, `pipeline/`, `agents/`, or similar)
+- What vector DB is used? (check imports: pgvector, weaviate, qdrant, pinecone, chroma)
+- What embedding model and reranker, if any?
+- Where is the generation prompt template?
 - Is there an audit log?
-- Is there an eval directory? Golden set?
+- Is there an eval directory with a golden set?
 
 If the structure is unclear, ask the user once to point at the main pipeline entry point.
 
 ## Phase 2: Run the checklist
 
-For each item, classify as ✅ Present, ⚠️ Partial, ❌ Missing, or ❓ Unknown (couldn't determine).
+Apply the 8-stage checklist from the `rag-review` skill. For each check, classify as:
+- ✅ **Present** — implemented correctly with evidence
+- ⚠️ **Partial** — exists but incomplete or misconfigured
+- ❌ **Missing** — not present
+- ❓ **Unknown** — couldn't determine from available code
 
-### Ingestion (must have)
-
-- [ ] Parser appropriate to corpus (not raw `pdf.extract_text()` for complex PDFs)
-- [ ] Document-aware chunking (not fixed-size only)
-- [ ] Stable chunk IDs: `(document_id, document_version, chunk_index)`
-- [ ] Content-hash diffing for updates
-- [ ] Required metadata per chunk: `document_id`, `chunk_id`, `tenant_id`, `access_level`, `version`, `updated_at`, section, page
-- [ ] Tested deletion path (including cache invalidation)
-
-### Retrieval (must have)
-
-- [ ] Hybrid retrieval (dense + BM25) — or measured justification for skipping sparse
-- [ ] RRF fusion (not ad-hoc score blending)
-- [ ] Hard filters at a SINGLE chokepoint, applied BEFORE retrieval
-- [ ] **Pre-filtered ANN, not post-filter on top-k** (critical security check)
-- [ ] Cross-encoder reranker on top 50–100 → keep top 5–10
-
-### Generation (must have)
-
-- [ ] Strict grounding prompt ("answer only from context")
-- [ ] Citation format — every claim traceable to a chunk
-- [ ] Calibrated abstention threshold
-- [ ] Structured answer contract (or equivalent — citations + confidence + abstained fields)
-
-### Security (must have)
-
-- [ ] Access control enforced at retrieval, not in LLM
-- [ ] Retrieved content treated as untrusted (delimiters, no instruction execution)
-- [ ] Tenant filter single chokepoint
-- [ ] Per-response audit log
-
-### Evaluation (must have)
-
-- [ ] Golden set (50+ queries minimum) — or planned with explicit date
-- [ ] CI gate on golden set regressions
-- [ ] Production logging of failures (no-answer rate, low-confidence rate)
-
-### Operations (must have)
-
-- [ ] p95 latency target defined and monitored
-- [ ] Cost dashboard (vector DB, LLM, reranker, embedding)
-- [ ] Query embedding cache
-- [ ] Runbook for embedding model migration
+For every ❌ or ⚠️ finding, cite **file:line** as evidence. No generic advice without a code reference.
 
 ## Phase 3: Output a structured report
 
-Use this format:
-
 ```markdown
-# RAG Implementation Audit
+# RAG Pipeline Audit
 
 **Repo:** {{repo-name}}
 **Date:** {{today}}
-**Auditor:** Claude (via /rag-review)
+**Stack detected:** {{vector DB | embedding model | reranker | LLM}}
 
 ## Summary
 
-- ✅ Present: {{N}} of {{total}}
-- ⚠️ Partial: {{N}}
-- ❌ Missing: {{N}}
-- ❓ Unknown: {{N}}
+- ✅ Present: N of total
+- ⚠️ Partial: N
+- ❌ Missing: N
+- ❓ Unknown: N
 
-**Critical findings:** {{count of critical}}
-**Recommended next 3 PRs:** {{list}}
+## 🔴 Critical (BLOCK)
 
-## Critical (security or data integrity)
+### C1. {{Finding title}}
+**Stage:** {{stage number and name}}
+**Status:** ❌ Missing / ⚠️ Partial
+**Evidence:** `path/to/file.py:42` — [paste the problematic code]
+**Issue:** [one sentence — why this is a production risk]
+**Fix:** [concrete code change or pattern]
+**Reference:** `rag-review/SKILL.md §{{stage}} check {{#}}`
 
-### {{Finding 1}}
-**Status:** ❌ Missing
-**Evidence:** `rag/retrieve.py:42` — `vector_db.search(query)` followed by `[c for c in results if c.tenant_id == user.tenant_id]`
-**Issue:** Post-filtering after retrieval. ANN sees unauthorized documents; one filter bug = data leak.
-**Fix:** Switch to pre-filtered ANN. Example:
-```python
-vector_db.search(query, filter={"tenant_id": user.tenant_id}, top_k=50)
-```
-**Playbook reference:** §20.2
+## 🟠 High (NEEDS_REVIEW — fix before merge)
 
-## High (recall or production stability)
+### H1. {{Finding title}}
+[same structure as Critical]
 
-{{...}}
+## 🟡 Medium (NEEDS_REVIEW — recommend)
 
-## Medium (quality and ops)
+[same structure]
 
-{{...}}
+## 🟢 Low (APPROVE with note)
 
-## Low (nice-to-have, hygiene)
-
-{{...}}
+[brief list — no full structure needed for Low]
 
 ## Recommended next 3 PRs (priority order)
 
-1. **{{PR title}}** — fixes {{finding}}; effort {{S/M/L}}
+1. **{{PR title}}** — fixes {{finding IDs}}; effort S/M/L
 2. ...
 3. ...
+
+VERDICT: [APPROVE | NEEDS_REVIEW | BLOCK] — CRITICAL: N | HIGH: N | MEDIUM: N | LOW: N
 ```
 
 ## Phase 4: Offer follow-ups
 
-After delivering the report, ask the user:
-- Want me to draft the top-priority fix as a PR-ready change?
-- Want me to create `/rag-debug` traces for any specific failing queries you've seen?
-- Want me to scaffold the missing eval setup?
+After delivering the report, offer:
+- Draft the top-priority fix as a PR-ready change
+- Run `/rag-debug` traces for specific failing queries
+- Scaffold missing eval setup via `/rag-eval-init`
+- Dispatch `@rag-security-reviewer` for a deeper security audit on Stage 7 findings
 
 ## Style notes
 
-- Be specific — file:line citations, not generic advice.
-- Severity matters: a missing audit log is medium; a post-filter on security is critical.
-- If something is unclear from code alone, mark ❓ Unknown and ask ONE clarifying question rather than guessing.
-- Don't pad the report — if there are 3 critical findings, list 3, don't manufacture 10.
+- Cite file:line for every finding — no generic advice without evidence
+- Severity matters: a missing audit log is 🟠 High; a post-filter on security is 🔴 Critical
+- If a stage is clean, say so in one line — don't pad the report
+- Mark ❓ Unknown and ask ONE clarifying question rather than guessing

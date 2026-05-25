@@ -2,6 +2,8 @@
 name: rag-implementation-reviewer
 description: Use proactively to review RAG implementation code — chunking logic, retrieval pipelines, filtering, reranking, generation prompts, and security controls — against the production RAG playbook. Best invoked when the user asks to "review this RAG code" or after substantial RAG-related changes. Returns structured findings with severity and playbook references.
 tools: Read, Grep, Glob, Bash
+skills:
+  - rag-review
 ---
 
 # RAG Implementation Reviewer

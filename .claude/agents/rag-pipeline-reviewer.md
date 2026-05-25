@@ -6,6 +6,7 @@ model: sonnet
 permissionMode: default
 memory: project
 skills:
+  - rag-review
   - vector-database
 vibe: "Unranked retrieval and unpinned models are production incidents waiting to happen"
 color: blue
