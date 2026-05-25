@@ -38,7 +38,7 @@ If the user wants a recommended starting point, this is it. Reasons and alternat
 | Sparse retrieval | BM25 — include by default for text corpora |
 | Retrieval | Hybrid: dense top-50 + BM25 top-50 → RRF (k=60) |
 | Filtering | Pre-filtered ANN at a single chokepoint (never post-filter for security) |
-| Reranking | Cross-encoder on top 50–100 → keep top 5–10 |
+| Reranking | Cross-encoder on top 50–100 → keep top 5–10 (local/dev: use smaller cross-encoder or skip; staging/prod: use full cross-encoder or Vertex AI Ranking API) |
 | Abstention | Calibrated reranker top-1 threshold |
 | Generation | Strict grounding prompt; structured output with citations |
 | Ingestion updates | Content-hash diff; versioned chunk IDs |
@@ -121,3 +121,15 @@ Skip agentic patterns when sub-second latency is required or query is single-sho
 5. End with the five hard rules and what to defer.
 
 Reference the full playbook at `docs/production-rag-playbook.md` for details. Cite section numbers when relevant (§19.5 for RAG-vs-tools, §10.2 for chunking tree, §17 for multi-tenancy, §40 for failure debugging).
+
+## Reference Files
+
+| File | Contents | When to Load |
+|---|---|---|
+| `references/advanced-chunking-guide.md` | §9 chunking techniques (late chunking, contextual retrieval, quality scoring, adaptive by type), §6 OCR quality gates, §12 full metadata schema (16 fields), §5.3 ingestion update strategies | Designing chunking strategy, debugging parser quality, setting up metadata schema |
+| `references/query-classification-taxonomy.md` | §18.1 nine query intent classes, §19 routing decision table (rule-based → classifier → LLM router), §19.5 when not to use RAG | Designing query understanding layer, building a query router |
+| `references/context-packing-patterns.md` | §31 eight packing techniques (MMR, parent expansion, neighbor, token budget, recency, authority), §32.1 structured answer contract JSON schema, §30 abstention calibration | Building the generation stage, designing the answer contract, tuning abstention |
+| `references/rag-operations-guide.md` | §36.3 six cache types with tenant-scoped key requirements, §36.1 cost hierarchy percentages, §36.4 five observability dashboards with alert thresholds, §36.2 optimization techniques | Operating production RAG, setting up monitoring, cost optimization |
+| `references/query-transformation-guide.md` | Query rewriting (conversational context), expansion (domain synonyms), multi-query retrieval, splitting/decomposition, HyDE decision tree with risk rules | Designing v2 query understanding layer; fixing measured recall gaps by query type |
+| `references/table-chunking-strategy.md` | Why text chunking destroys tables; row-group chunking with header repeat; multiple representations (plain, Markdown, JSON); metadata schema for tables; parser selection | Chunking tabular data (fee schedules, comparison tables, SLA grids, structured docs) |
+| `references/versioning-and-freshness.md` | Versioning model (effective_from/to, superseded_at); default current-only filter; historical query detection; atomic version ingestion transaction; GDPR deletion across versions | Corpora with evolving content — policies, contracts, pricing, regulations |

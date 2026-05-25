@@ -127,15 +127,36 @@ def ndcg_at_k(result: RetrievalResult, k: int) -> float:
     return actual / ideal if ideal > 0 else 0.0
 
 
+def context_precision_at_k(result: RetrievalResult, k: int) -> float:
+    """Measures whether relevant chunks are ranked near the top of the retrieved set.
+
+    Unlike Precision@k (binary: how many are relevant?), Context Precision rewards
+    retrievers that put relevant chunks at positions 1-2 over those that bury them
+    at positions 4-5. Critical signal for reranker quality.
+
+    Formula: sum(Precision@i * rel_i for i in 1..k) / total_relevant_in_top_k
+    """
+    if not result.expected_doc_ids:
+        return 1.0
+    running_hits = 0
+    precision_sum = 0.0
+    for i, doc_id in enumerate(result.retrieved_doc_ids[:k], start=1):
+        if doc_id in result.expected_doc_ids:
+            running_hits += 1
+            precision_sum += running_hits / i  # Precision@i
+    return precision_sum / len(result.expected_doc_ids) if result.expected_doc_ids else 0.0
+
+
 def aggregate(results: Iterable[RetrievalResult], k: int = 10) -> dict[str, float]:
     results = list(results)
     if not results:
         return {}
     return {
-        f"recall@{k}":    sum(recall_at_k(r, k) for r in results) / len(results),
-        f"precision@{k}": sum(precision_at_k(r, k) for r in results) / len(results),
-        "mrr":            sum(mrr(r) for r in results) / len(results),
-        f"ndcg@{k}":      sum(ndcg_at_k(r, k) for r in results) / len(results),
+        f"recall@{k}":            sum(recall_at_k(r, k) for r in results) / len(results),
+        f"precision@{k}":         sum(precision_at_k(r, k) for r in results) / len(results),
+        f"context_precision@{k}": sum(context_precision_at_k(r, k) for r in results) / len(results),
+        "mrr":                    sum(mrr(r) for r in results) / len(results),
+        f"ndcg@{k}":              sum(ndcg_at_k(r, k) for r in results) / len(results),
     }
 
 

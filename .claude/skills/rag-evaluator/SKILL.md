@@ -32,9 +32,14 @@ You need all three. Skipping retrieval evaluation is the most common mistake —
 |---|---|---|
 | Recall@K | Fraction of relevant docs in top-K | High-stakes / compliance |
 | Precision@K | Fraction of top-K that are relevant | Reducing noise |
+| Context Precision | Are relevant chunks ranked near the **top** of retrieved set? | As soon as you add a reranker |
 | MRR | 1 / rank of first relevant | Q&A where first hit matters |
 | NDCG@K | Ranking quality with graded relevance | Search-style ordering |
 | Hit@K | Any relevant doc in top-K? | Coarse baseline |
+
+**Context Precision vs Precision@K:** Precision@K asks "how many of the top-K are relevant?" — binary. Context Precision asks "are the relevant chunks ranked near position 1 or buried at position K?" A reranker can leave Precision@K unchanged while dramatically improving Context Precision. Add this metric as soon as you introduce a reranker — it's the clearest signal of whether the reranker is earning its keep.
+
+**Formula:** `Context Precision@K = Σ (Precision@i × relevance_i) / total_relevant` where `i` ranges over positions 1..K and `relevance_i` is 1 if chunk at position i is relevant, 0 otherwise.
 
 ## Answer metrics
 
@@ -145,6 +150,21 @@ evals/
 ```
 
 Suggested libraries: `ragas` (with calibration), `deepeval`, or custom — depends on stack. The framework matters less than having the golden set and running it on every change.
+
+## Diagnostic Matrix
+
+When a metric regresses, use this table to triage the root cause before touching any code. Fix the upstream layer first — don't patch generation when retrieval is broken.
+
+| Bad Metric | Likely Root Cause | Where to Look First |
+|---|---|---|
+| Low **Recall@K** | Bad chunking (chunks too large/small), weak embedding model, indexing gap, metadata filter too strict | Check chunking strategy, embedding model selection, pre-filter logic |
+| Low **Precision@K** | Too many irrelevant chunks retrieved, reranker missing or weak, k too high | Reduce k, add/tune reranker, tighten hybrid retrieval |
+| Low **Context Precision** | Reranker missing or underperforming — relevant chunks exist but are buried | Reranker not deployed, or `ef_search`/`nprobe` index params too loose; tune or add cross-encoder |
+| Low **Context Relevance** | Semantic drift between query and document vocabulary, poor chunking, wrong retrieval strategy | Check query expansion, embedding model mismatch, chunking granularity |
+| Low **Answer Relevance** | Prompt issue, generation model too weak, instructions unclear or conflicting | Audit system prompt, check for prompt injection, try stronger model |
+| Low **Faithfulness** | Hallucination, citation enforcement absent in prompt, grounding prompt too weak | Add atomic-claim citation check, tighten grounding instructions, check context packing for noise |
+
+**Key principle:** trace backward from the bad metric to the pipeline layer that owns it. Low Faithfulness is almost always a generation-layer or context-packing problem, not a retrieval problem. Low Recall@K is almost always a retrieval or chunking problem — fixing the prompt won't help.
 
 ## How to apply
 

@@ -288,3 +288,58 @@ cost_large = (total_tokens / 1_000_000) * 0.130
 - `total_tokens` = 100,000 × 50 = 5M tokens
 - `text-embedding-3-small`: ~$0.10
 - `text-embedding-3-large`: ~$0.65
+
+---
+
+## Migration Strategies (§38)
+
+Choose based on risk tolerance and corpus size.
+
+### Strategy A — Hard Cutover (Default for Low-Risk)
+Use the Expand → Re-embed → Swap → Contract pattern documented above.
+- Suitable when: dev/staging migration, non-critical corpora, small teams
+- Risk: brief window where old and new index coexist; rollback is clean via column drop
+
+### Strategy B — Shadow Index (High-Stakes Pipelines)
+Write embeddings to both old and new columns. Read from old. Compare recall divergence before cutting over.
+```python
+# Dual-write at ingestion (both models run in parallel)
+async def embed_dual(text: str) -> tuple:
+    old_emb, new_emb = await asyncio.gather(
+        embed(text, model=OLD_MODEL),
+        embed(text, model=NEW_MODEL),
+    )
+    return old_emb, new_emb
+
+# At query time: run both retrievers, compare top-k overlap
+old_results = retrieve(query_emb_old, index="embedding")
+new_results = retrieve(query_emb_new, index="embedding_v2")
+overlap = len(set(old_results) & set(new_results)) / k
+# Proceed with cutover only when overlap >= 0.90 on golden set
+```
+- Suitable when: production corpus, high query volume, no tolerance for recall regression
+- Cost: 2× embedding API calls during transition period
+- Cutover gate: shadow recall@k ≥ baseline − 0.02 on golden set
+
+### Strategy C — A/B at Query Time
+Route X% of live traffic to the new embedding; measure production metrics before full cutover.
+```python
+def get_retriever(user_id: str, rollout_pct: float = 0.05):
+    # Deterministic assignment — same user always gets same model
+    bucket = int(hashlib.md5(user_id.encode()).hexdigest(), 16) % 100
+    if bucket < rollout_pct * 100:
+        return retriever_v2  # new model
+    return retriever_v1      # old model
+```
+- Suitable when: you want production recall signal before full cutover
+- Requires: A/B metric tracking (Recall@k by group, user satisfaction, abstention rate)
+- Cutover gate: new model group shows Recall@k ≥ old model group after 1000+ queries
+
+### Strategy Selection Guide
+
+| Condition | Strategy |
+|---|---|
+| Dev / non-critical / small corpus | A — Hard Cutover |
+| Production, high stakes, can afford 2× embedding cost | B — Shadow Index |
+| Production, want real-user signal, low risk tolerance | C — A/B at Query Time |
+| Need to minimize downtime window | B or C (never hard cutover during peak) |
