@@ -52,6 +52,8 @@ You need all three. Skipping retrieval evaluation is the most common mistake —
 | Citation quality (≠ presence) | Does the cited chunk contain the *specific* assertion? |
 | Hallucination rate | Frequency of unsupported assertions |
 | Abstention quality | Refusals when refusal was correct |
+| False Abstention Rate | How often the system refused when retrieved context actually supported an answer |
+| False Answer Rate | How often the system answered when it should have abstained (the dangerous failure) |
 
 ## Citation quality is not citation presence
 
