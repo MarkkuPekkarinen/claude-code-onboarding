@@ -77,15 +77,15 @@ Dimensions to slice by before touching the pipeline:
 A common failure: 100% of answers have citations, but 30% of citations don't actually support the specific claim. Build evaluation that checks per-claim support:
 
 ```yaml
-- query: "What insurance is required for HVAC vendors?"
-  claim: "HVAC vendors need $1M liability insurance"
+- query: "What approval is required for external contractors?"
+  claim: "External contractors need written approval and a valid certificate"
   citation_must_support:
-    - vendor_type: HVAC
-    - requirement_type: liability_insurance
-    - minimum_amount: $1M
+    - contractor_type: external
+    - requirement_type: written_approval
+    - requirement_type: certificate
   failing_citations:
-    - Generic vendor insurance discussion without HVAC specificity
-    - Discussion of insurance without amount
+    - Generic contractor discussion without approval specificity
+    - Discussion of approval without certificate requirement
 ```
 
 ## Golden set design
@@ -93,14 +93,14 @@ A common failure: 100% of answers have citations, but 30% of citations don't act
 Build the golden set BEFORE building the system. Minimum viable golden set:
 
 ```yaml
-- question: What insurance is required for HVAC vendors?
+- question: What approval is required for external contractors?
   expected_documents:
-    - vendor-policy.pdf#page=12
+    - contractor-policy.pdf#page=12
   expected_sections:
-    - Insurance Requirements
+    - Approval Requirements
   expected_answer_contains:
-    - general liability insurance
-    - certificate of insurance
+    - written approval
+    - certificate of compliance
   must_not_contain:
     - unsupported cost estimate
   expected_classification: policy_question

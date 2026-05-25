@@ -29,7 +29,7 @@ Every field in the system belongs to exactly one tier:
 | Tier | Goes to | Fields |
 |---|---|---|
 | **User-facing** | Browser / mobile client | `schema_version`, `status`, `answer`, `answer_spans`, `confidence_level`, `citations` (title, section, page, quote, quote_policy, evidence_type), `assumptions`, `limitations`, `follow_up_questions`, `suggested_actions`, `safety`, `extensions`, `clarification_reason` |
-| **Internal trace** | Logs + trace store (Langfuse/Phoenix) | `confidence` (score, components, gates, warning_flags), `retrieval_metadata` (retriever, reranker, top_k, embedding_model, chunker_version), `trace` (trace_id, prompt_version, generated_at, tenant_id), `usage` (tokens, latency, cost), `relevance_score` per citation |
+| **Internal trace** | Logs + trace store (e.g. Langfuse, Phoenix, or your observability platform) | `confidence` (score, components, gates, warning_flags), `retrieval_metadata` (retriever, reranker, top_k, embedding_model, chunker_version), `trace` (trace_id, prompt_version, generated_at, tenant_id), `usage` (tokens, latency, cost), `relevance_score` per citation |
 | **Async eval** | Eval pipeline, sampled 1–10% of traffic | RAGAS faithfulness, context precision, answer relevance — keyed by `trace_id` and `prompt_version` |
 
 **Key rule:** The `confidence` object (with raw float, components, gates) is internal. The `confidence_level` band (`high`/`medium`/`low`) is user-facing. Never expose the float to users — it is pseudo-precision that erodes trust when users see `0.79` vs `0.81`.
@@ -221,10 +221,10 @@ event: status
 data: {"status": "answered"}
 
 event: answer_delta
-data: {"text": "The tenant is responsible "}
+data: {"text": "According to the policy, the user is responsible "}
 
 event: citation
-data: {"citation_id": "C1", "title": "Tenant Lease Agreement", "evidence_type": "direct"}
+data: {"citation_id": "C1", "title": "Company Policy Document", "evidence_type": "direct"}
 
 event: answer_span
 data: {"start": 0, "end": 121, "citations": ["C1"]}
@@ -237,8 +237,8 @@ data: {"confidence_level": "high", "safety": {"contains_pii": false, "redaction_
 
 ```
 {"type":"status","status":"answered"}
-{"type":"answer_delta","text":"The tenant is responsible "}
-{"type":"citation","citation_id":"C1","title":"Tenant Lease Agreement","evidence_type":"direct"}
+{"type":"answer_delta","text":"According to the policy, the user is responsible "}
+{"type":"citation","citation_id":"C1","title":"Company Policy Document","evidence_type":"direct"}
 {"type":"answer_span","start":0,"end":121,"citations":["C1"]}
 {"type":"done","confidence_level":"high","safety":{...}}
 ```

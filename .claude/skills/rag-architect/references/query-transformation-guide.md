@@ -71,9 +71,9 @@ Adds synonyms and alternate phrasings to catch vocabulary mismatches between use
 Maintain a lookup table per corpus — do not hardcode in prompts:
 ```python
 DOMAIN_SYNONYMS: dict[str, list[str]] = {
-    "HVAC": ["air conditioning", "AC", "heating", "ventilation", "climate control"],
-    "plumbing": ["water leak", "pipe", "drain", "sewage", "faucet", "toilet"],
-    "electrical": ["power outage", "circuit", "breaker", "wiring", "outlet"],
+    "machine learning": ["ML", "model training", "neural network", "deep learning"],
+    "authentication": ["auth", "login", "sign in", "SSO", "identity"],
+    "deployment": ["release", "ship", "rollout", "go live", "publish"],
     # Add domain terms as measured recall gaps reveal them
 }
 

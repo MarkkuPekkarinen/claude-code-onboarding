@@ -255,7 +255,7 @@ def post_ingestion_smoke_test(doc_id: str, sample_queries: list[str]) -> bool:
 **Ingestion trace logging** (one structured log per run):
 ```json
 {
-  "doc_id": "lease-policy-001",
+  "doc_id": "company-policy-001",
   "doc_version": "2026-05-25",
   "chunks_unchanged": 12,
   "chunks_updated": 1,

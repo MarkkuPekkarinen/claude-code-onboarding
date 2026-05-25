@@ -30,8 +30,8 @@ Four distinct behaviors — only one of them is correct for each situation:
 |---|---|---|
 | **Hallucination** | Model answers without retrieved support | "The fee is $50" when no fee was retrieved |
 | **Abstention** | Model refuses to guess | "I do not have enough context to answer" |
-| **Clarification** | Model asks for the missing detail | "Which property or lease document should I check?" |
-| **Grounded Answer** | Model answers from retrieved evidence with citations | "The lease says late fees start after 5 days [source: lease-v3.pdf §4.2]" |
+| **Clarification** | Model asks for the missing detail | "Which document or policy section should I check?" |
+| **Grounded Answer** | Model answers from retrieved evidence with citations | "According to the policy, notice is required 30 days in advance [source: policy-v3.pdf §4.2]" |
 
 **Decision rule:**
 ```
@@ -65,11 +65,11 @@ Concrete trigger → example → correct behavior:
 |---|---|---|
 | **No context** | No relevant clause retrieved for the question | Abstain |
 | **Low relevance** | Password reset question retrieves vacation policy | Abstain |
-| **Missing clause** | Lease retrieved but late-fee section absent | Abstain |
-| **Conflicting docs** | Two vendor SLAs show different response times | Explain conflict; ask which is authoritative |
+| **Missing clause** | Policy retrieved but the specific section is absent | Abstain |
+| **Conflicting docs** | Two source documents give different answers to the same question | Explain conflict; ask which is authoritative |
 | **No citation** | Answer cannot be mapped to any source chunk | Do not answer |
 | **Low confidence** | Reranker top-1 score below calibrated threshold | Ask for more context or abstain |
-| **High-risk domain** | Legal, lease, payment, policy question without grounding | Require strong evidence before answering |
+| **High-risk domain** | Legal, financial, medical, or policy question without grounding | Require strong evidence before answering |
 
 ---
 

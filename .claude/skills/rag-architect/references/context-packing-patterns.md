@@ -164,8 +164,8 @@ The generation prompt should instruct the model to return this JSON structure. E
     "Any statement in the answer not backed by retrieved context"
   ],
   "follow_up_suggestions": [
-    "What is the appeal process for late fees?",
-    "Can this policy be waived?"
+    "What is the exception process for this policy?",
+    "Can this requirement be waived under specific circumstances?"
   ]
 }
 ```
