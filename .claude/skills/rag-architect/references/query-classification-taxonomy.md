@@ -87,7 +87,35 @@ results = retriever.query(query, metadata_filter=filters)
 
 ---
 
-## 4. When NOT to Route to RAG (§19.5)
+## 4. Query Routing to Sub-Indexes (Corpus Scale)
+
+When a corpus exceeds ~100k documents, routing queries to domain-scoped sub-indexes reduces noise and improves precision more reliably than pre-filtering a single shared index.
+
+| Approach | When to use | Trade-off |
+|---|---|---|
+| **Shared index + metadata pre-filter** | Many small tenants; corpus < ~100k docs per tenant | Simpler ops; index crowding at large scale causes hard negatives |
+| **Sub-index routing** | Corpus > 100k docs; clear domain boundaries (HR, Legal, Engineering, Finance); precision matters more than recall breadth | Better precision; more indexes to maintain and keep in sync |
+
+### How to Route
+
+```python
+DOMAIN_INDEX_MAP = {
+    "hr":          "index_hr",
+    "legal":       "index_legal",
+    "engineering": "index_engineering",
+    "finance":     "index_finance",
+}
+
+def route_to_index(query_class: str, metadata: dict) -> str:
+    domain = metadata.get("domain") or classify_domain(query_class)
+    return DOMAIN_INDEX_MAP.get(domain, "index_general")
+```
+
+**Decision rule:** start with a shared index + pre-filter (simpler). Switch to sub-index routing when measured Recall@K in a specific domain drops while others stay healthy — this is the signal that one segment has outgrown the shared index. See "Eval Breakdown by Dimension" in `rag-evaluator/SKILL.md`.
+
+---
+
+## 5. When NOT to Route to RAG (§19.5)
 
 Route away from RAG when the answer is definitively better from another source:
 

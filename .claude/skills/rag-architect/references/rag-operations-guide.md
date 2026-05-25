@@ -245,3 +245,55 @@ Use HyDE only as a fallback for low-confidence retrieval — never on exact fact
 ```
 
 **Tuning discipline:** establish a golden set of ≥50 queries first, measure Recall@5 per query type, then adjust `top_k`, chunk size, and overlap based on where recall falls short — not before.
+
+---
+
+## 9. Corpus Hygiene at Scale
+
+At small corpus size (< 10k docs), duplicate and stale documents are a nuisance. At large corpus size (> 100k docs), they become a retrieval accuracy problem — they crowd the embedding space with near-identical vectors, causing the retriever to return plausible-but-wrong results instead of the canonical answer.
+
+### Hard-Negative Pollution Signal
+
+When the same chunk appears in the top-K for many semantically different queries, it is likely a near-duplicate or an overly generic chunk that has become a hard negative attractor. Diagnose with:
+
+```python
+# Find chunks retrieved too frequently across diverse queries
+chunk_retrieval_counts = Counter(
+    chunk_id for result in eval_run for chunk_id in result.retrieved_doc_ids
+)
+# Chunks appearing in > 20% of queries are candidates for review
+hot_chunks = [cid for cid, count in chunk_retrieval_counts.items()
+              if count / len(eval_run) > 0.20]
+```
+
+Investigate hot chunks: are they duplicates? generic boilerplate? navigation text? Remove or de-weight them.
+
+### Corpus Hygiene Checklist
+
+| Problem | Detection | Fix |
+|---|---|---|
+| **Near-duplicate documents** | Cosine similarity > 0.95 between chunk embeddings across different doc IDs | Keep canonical version; soft-delete or exclude duplicates from index |
+| **Draft + final versions both indexed** | `doc_version` field present but no `superseded_at` filter applied | Apply `superseded_at IS NULL` filter; see `versioning-and-freshness.md §3` |
+| **Outdated policy docs** | `effective_to` date in the past but `is_active = true` | Run periodic sweep: mark expired docs inactive |
+| **Copied content across folders** | Same `content_hash` under different `source_uri` | Dedup on `content_hash` at ingestion; keep highest-authority source |
+| **Generic boilerplate chunks** | High retrieval frequency across unrelated queries | Tag with `is_boilerplate = true`; exclude from retrieval or downweight in reranker |
+
+### Source-of-Truth Tagging
+
+For corpora with authoritative and non-authoritative versions of the same content, add an `is_canonical` field to chunk metadata:
+
+```json
+{
+  "is_canonical": true,
+  "authority_tier": 1,
+  "supersedes": ["doc-id-v1", "doc-id-v2"]
+}
+```
+
+Use `authority_tier` as a reranker signal — boost canonical sources over draft/copied versions when rerank scores are close. See `context-packing-patterns.md §8` for authority boost at packing time.
+
+### When to Run Hygiene
+
+- After any bulk ingestion of a new document corpus
+- When Recall@K drops in a specific corpus segment (see `rag-evaluator/SKILL.md` Eval Breakdown)
+- On a scheduled basis for corpora with high update frequency (weekly for policy docs)

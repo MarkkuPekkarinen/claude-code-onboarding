@@ -41,6 +41,23 @@ You need all three. Skipping retrieval evaluation is the most common mistake —
 
 **Formula:** `Context Precision@K = Σ (Precision@i × relevance_i) / total_relevant` where `i` ranges over positions 1..K and `relevance_i` is 1 if chunk at position i is relevant, 0 otherwise.
 
+## Eval Breakdown by Dimension
+
+When Recall@K or another metric regresses — especially after a corpus growth event — **never treat the aggregate metric as the diagnosis**. Break it down first. The aggregate may hide a regression in one segment while other segments stay healthy.
+
+Dimensions to slice by before touching the pipeline:
+
+| Dimension | How to slice | What a drop isolates |
+|---|---|---|
+| **Document type** | policy vs. ticket vs. manual vs. table | Chunking or parsing problem specific to one format |
+| **Recency** | fresh docs (< 30 days) vs. stale docs (> 90 days) | Freshness/version filtering issue; stale docs flooding top-K |
+| **Query style** | keyword-heavy vs. semantic / conceptual | Embedding model weakness on one query style; BM25 not covering the other |
+| **Query length** | short (≤ 5 tokens) vs. long (≥ 15 tokens) | Short queries may need expansion; long queries may need decomposition |
+| **Corpus segment** | department, product line, access tier | Index crowding in one segment; wrong routing; missing sub-index |
+| **Near-duplicate rate** | queries where top-3 results are near-identical | Corpus has duplicate/stale documents polluting top-K |
+
+**Rule:** if one dimension shows a sharp drop while others are flat, the root cause is in that segment — fix that segment before changing the global pipeline. See `rag-operations-guide.md §9` for corpus hygiene fixes when duplicates or stale docs are the culprit.
+
 ## Answer metrics
 
 | Metric | Measures |
