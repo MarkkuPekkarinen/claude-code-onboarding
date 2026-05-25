@@ -92,6 +92,7 @@ Consult official docs via MCP before writing ANY code. Zero tolerance for deprec
 | RAG Security Controls | `.claude/skills/rag-security-reviewer/` | — | — |
 | RAG System Audit | — | — | `/rag-review` |
 | RAG Failure Trace | — | — | `/rag-failure-trace` |
+| Streaming Protocols (SSE, NDJSON, WebSocket, MCP transport) | `.claude/skills/streaming-protocols/` | — | — |
 
 ### Code Review Agents
 

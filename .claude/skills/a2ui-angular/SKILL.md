@@ -83,6 +83,7 @@ Detailed patterns are in `reference/`:
 - `a2ui-chat-template.md` — Chat page component, streaming variant (SSE + JSONL), wire format reference with JSON examples
 - `a2ui-renderer-services.md` — Official `@a2ui/angular` SDK setup (A2uiRendererService, SurfaceComponent, A2UI_RENDERER_CONFIG), A2UIAgentService (REST + SSE), unit test template
 - `a2ui-production-architecture.md` — Production stack, Domain DSL, Custom Catalog patterns (BoundProperty, BasicCatalogBase, FunctionImplementation), Charts/Dashboard, Testing patterns, Observability metrics
+- `a2ui-client-integration.md` — `agUiResource` service pattern, `registerHandlers`, widget template, **demo-only vs production action handler warning**, rate limits (surfaces/session, actions/sec, payload size)
 
 ## Anti-Patterns — What to Avoid
 
