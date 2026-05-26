@@ -138,6 +138,7 @@ python scripts/with_server.py \
 | Start perf trace | `playwright-cli tracing-start` |
 | Stop perf trace | `playwright-cli tracing-stop` |
 | Run Lighthouse audit | `mcp__chrome-devtools__lighthouse_audit` (via Chrome DevTools MCP) |
+| Debug a failing flow end-to-end | Load [Agentic Debug Loop](reference/agentic-debug-loop.md) — observe → diagnose → fix → re-verify |
 | Close session | `playwright-cli close-all` |
 | Start server then test | `python scripts/with_server.py --server "<cmd>" --port <N> -- <test-cmd>` |
 | Autonomous flow | Browser-Use MCP: `browser_navigate` → `browser_get_state` → `browser_input` |
@@ -172,6 +173,7 @@ Use this for: sketch-wireframe outputs, premium-wireframe-2026 outputs, any `.ht
 | [Browser-Use Tools](reference/browser-use-tools.md) | Browser-Use MCP command reference and best practices |
 | [Combined Workflows](reference/browser-testing-workflows.md) | Login flows, performance, E2E journeys, validation, accessibility |
 | [Chrome DevTools Tools](reference/chrome-devtools-tools.md) | Core Web Vitals analysis, performance traces, CPU/network throttling, Lighthouse audit |
+| [Agentic Debug Loop](reference/agentic-debug-loop.md) | Observe → diagnose → fix → re-verify pattern for AI-driven bug diagnosis on live apps |
 
 ## Process
 
