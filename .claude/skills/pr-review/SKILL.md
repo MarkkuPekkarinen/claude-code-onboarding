@@ -48,12 +48,26 @@ Read `references/pr-review-checklist.md` and evaluate the PR against all categor
 
 Optionally run `/review-pr` command on the diff to get structured 6-role findings before writing.
 
+### Step 2b: Identify THE CONVERSATION
+
+Before writing any files, identify the one architectural or design decision in this PR that deserves a real conversation before merging. This is **mandatory** — every non-trivial PR has one.
+
+THE CONVERSATION is not a problem. It is a *decision* — something the author chose that a reviewer should explicitly agree with before the code merges. Examples:
+- "This adds a new caching layer — have we decided this is the right place for that abstraction?"
+- "This moves retry logic into the service — is that our pattern going forward or a one-off?"
+- "This introduces a new dependency — was that evaluated against existing alternatives?"
+
+If the PR is trivially small (typo, config value, one-line fix), state: "No architectural decision requiring discussion."
+
+Include THE CONVERSATION in both `pr/review.md` and `pr/human.md`.
+
 ### Step 3: Generate Two Files
 
 **`pr/review.md`** — Internal rich format (never posted):
 - Use 🔴🟡🟢 severity markers
 - Include code snippets with file:line references
 - Write reasoning notes freely — this is for you, not the author
+- Include THE CONVERSATION with your internal reasoning about why it matters
 - No length limit; be thorough
 
 **`pr/human.md`** — Public clean format (posted after approval):
@@ -61,6 +75,7 @@ Optionally run `/review-pr` command on the diff to get structured 6-role finding
 - No emojis, no file:line references, no internal notes
 - Lead with one positive observation
 - Group issues: Blocking -> Important -> Suggestions
+- Include THE CONVERSATION as a clearly labelled section before the decision line
 - End with clear decision: Approve / Request Changes / Comment
 
 ## Gate — Human Review
