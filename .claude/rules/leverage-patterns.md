@@ -57,7 +57,9 @@ For every task:
 
 ```
 1. UNDERSTAND: Restate the task. Flag ambiguity.
-2. PLAN: 3-5 bullet approach before coding.
+2. PLAN: 3-5 steps, each with an inline verify criterion:
+      1. [Step] → verify: [how you'll confirm it worked]
+      2. [Step] → verify: [how you'll confirm it worked]
 3. DECISIONS: List design choices and tradeoffs.
 4. IMPLEMENT: Simplest correct solution.
 5. VERIFY: Dead code, unused imports, unrelated changes, edge cases.
