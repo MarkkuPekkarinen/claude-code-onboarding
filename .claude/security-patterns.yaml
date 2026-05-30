@@ -1,0 +1,188 @@
+# security-patterns.yaml
+# Custom per-edit pattern rules for the security-guidance plugin.
+# These run as fast deterministic string/regex checks (no model call) on every file write,
+# alongside the plugin's 25 built-in patterns.
+# Docs: https://code.claude.com/docs/en/security-guidance#add-custom-per-edit-patterns
+
+patterns:
+
+  # ── Spring WebFlux — reactive safety ────────────────────────────────────────
+
+  - rule_name: spring_blocking_call_in_reactive
+    regex: "\\.block(?:First|Last)?\\(|blockingGet\\("
+    paths:
+      - "**/src/main/**/*.java"
+      - "**/src/main/**/*.kt"
+    reminder: "⚠️ Security/Stability Warning: .block()/.blockFirst()/.blockLast()/blockingGet()
+      in reactive WebFlux code blocks the event-loop thread and can cause deadlocks under
+      load. Restructure to return Mono/Flux instead. If you truly need a blocking call,
+      wrap in Mono.fromCallable(...).subscribeOn(Schedulers.boundedElastic())."
+
+  - rule_name: spring_raw_sql_r2dbc
+    regex: "r2dbcTemplate\\.execute\\(|DatabaseClient.*\\.sql\\([\"'].*\\+|execute\\(\".*\\+"
+    paths:
+      - "**/src/main/**/*.java"
+    reminder: "⚠️ Security Warning: String-concatenated SQL in R2DBC is SQL injection.
+      Use DatabaseClient with .bind(\"param\", value) bind parameters, or Spring Data
+      R2DBC @Query with named parameters."
+
+  - rule_name: spring_actuator_permit_all
+    regex: "(?i)\\.requestMatchers.*actuator.*permitAll|antMatchers.*actuator.*permitAll"
+    paths:
+      - "**/src/main/**/*.java"
+    reminder: "⚠️ Security Warning: Exposing all actuator endpoints with permitAll() leaks
+      heap dumps, env vars (including secrets), and thread state. Restrict to health/info
+      publicly and require ADMIN role or management-port isolation for the rest."
+
+  # ── NestJS — auth guards ─────────────────────────────────────────────────────
+
+  - rule_name: nestjs_public_decorator_on_state_change
+    substrings:
+      - "@Public()"
+    paths:
+      - "**/src/**/*.controller.ts"
+    reminder: "⚠️ Security Warning: @Public() removes JWT auth on this route. Verify this
+      route does not write state, return user-specific data, or perform privileged operations.
+      If it does, remove @Public() and add @UseGuards(JwtAuthGuard) instead."
+
+  - rule_name: nestjs_prisma_raw_query
+    regex: "prisma\\.\\$queryRaw(?:Unsafe)?`[^`]*\\$\\{"
+    paths:
+      - "**/src/**/*.ts"
+    reminder: "⚠️ Security Warning: Template-literal interpolation into prisma.$queryRaw is
+      SQL injection. Use prisma.$queryRaw with Prisma.sql tagged template (which parameterizes
+      values automatically), or use the Prisma ORM query builder."
+
+  - rule_name: nestjs_bcrypt_sync_on_request
+    regex: "bcrypt\\.compareSync|bcrypt\\.hashSync"
+    paths:
+      - "**/src/**/*.ts"
+    reminder: "⚠️ Performance/Security Warning: bcrypt.*Sync blocks the Node.js event loop
+      during hashing — under load this is a DoS vector. Use bcrypt.compare() / bcrypt.hash()
+      (async) with await instead."
+
+  # ── Python / FastAPI ─────────────────────────────────────────────────────────
+
+  - rule_name: fastapi_sqlalchemy_text_injection
+    regex: "text\\([\"'].*\\+|text\\(f[\"']"
+    paths:
+      - "**/*.py"
+    reminder: "⚠️ Security Warning: SQLAlchemy text() with f-string or string concatenation
+      is SQL injection. Use text() with :param placeholders and pass values via
+      .bindparams(param=value) or execute({\"param\": value})."
+
+  - rule_name: fastapi_missing_rate_limit
+    regex: "@(?:app|router)\\.(?:post|put|patch|delete)\\("
+    paths:
+      - "**/routers/**/*.py"
+      - "**/api/**/*.py"
+    reminder: "⚠️ Reminder: Mutating FastAPI endpoints should have rate limiting. Confirm
+      a SlowAPI limiter or Nginx rate-limit is in place before shipping. Missing rate limits
+      on auth or payment endpoints is a brute-force / abuse vector."
+
+  - rule_name: python_requests_no_timeout
+    regex: "requests\\.(?:get|post|put|patch|delete)\\([^)]{0,200}\\)(?![^\\n]{0,50}timeout)"
+    paths:
+      - "**/*.py"
+    exclude_paths:
+      - "**/tests/**"
+      - "**/test_*.py"
+    reminder: "⚠️ Reliability Warning: requests calls without timeout= can hang indefinitely
+      and exhaust worker threads. Add timeout=(connect_timeout, read_timeout), e.g.
+      timeout=(5, 30)."
+
+  # ── Angular ──────────────────────────────────────────────────────────────────
+
+  - rule_name: angular_bypass_security_trust
+    regex: "bypassSecurityTrust(?:Html|Url|ResourceUrl|Script|Style)"
+    paths:
+      - "**/src/**/*.ts"
+    reminder: "⚠️ Security Warning: DomSanitizer.bypassSecurityTrust*() with user-supplied
+      input is an XSS sink. Only call this with fully static, developer-controlled strings.
+      If the value comes from a user, API, or URL parameter, sanitize it first or use a
+      safe Angular binding (textContent, [src] with trusted URL)."
+
+  - rule_name: angular_http_client_no_error_handling
+    regex: "\\.pipe\\(\\s*(?:map|switchMap|mergeMap|concatMap)\\b(?![\\s\\S]{0,300}catchError)"
+    paths:
+      - "**/src/**/*.service.ts"
+    reminder: "⚠️ Reliability Warning: HttpClient observable pipe is missing catchError().
+      Unhandled HTTP errors propagate as uncaught exceptions and crash the stream. Add
+      catchError((e) => { this.logger.error(e); return throwError(() => e); })."
+
+  # ── Flutter / Dart ───────────────────────────────────────────────────────────
+
+  - rule_name: flutter_bad_certificate_callback
+    regex: "badCertificateCallback\\s*=\\s*\\([^)]*\\)\\s*(?:=>|\\{)\\s*true"
+    paths:
+      - "**/*.dart"
+    reminder: "⚠️ Security Warning: badCertificateCallback returning true disables TLS
+      certificate validation entirely. This allows MITM attacks. Remove it in production;
+      for development self-signed certs, add the CA cert to the trust store instead."
+
+  - rule_name: flutter_shared_prefs_sensitive
+    regex: "(?:setString|setInt|setBool)\\([\"'][^\"']*(?:token|key|secret|password|jwt|auth)[^\"']*[\"']"
+    paths:
+      - "**/*.dart"
+    reminder: "⚠️ Security Warning: Storing tokens, keys, or credentials in SharedPreferences
+      saves them in plaintext on the device filesystem (readable on rooted/jailbroken devices).
+      Use flutter_secure_storage instead, which uses Keychain (iOS) and Keystore (Android)."
+
+  - rule_name: flutter_evaluate_javascript_user_input
+    regex: "evaluateJavascript\\("
+    paths:
+      - "**/*.dart"
+    reminder: "⚠️ Security Warning: WebViewController.evaluateJavascript() with user-supplied
+      content is an XSS sink. Never interpolate user data into the JavaScript string.
+      If you need to pass data to the WebView, use postMessage with a defined message schema."
+
+  - rule_name: flutter_firebase_uid_guessable_query
+    regex: "\\.doc\\([^)]*uid[^)]*\\+[^)]*|where.*uid.*[^=!<>]=(?!=)"
+    paths:
+      - "**/*.dart"
+    reminder: "⚠️ Security Warning: Firestore query using a user-supplied UID without
+      server-side rule enforcement is an IDOR risk. Ensure Firestore Security Rules enforce
+      request.auth.uid == resource.data.userId — client-side checks are not sufficient."
+
+  # ── PostgreSQL ───────────────────────────────────────────────────────────────
+
+  - rule_name: postgres_rls_disabled
+    regex: "(?i)ALTER\\s+TABLE.*DISABLE\\s+ROW\\s+LEVEL\\s+SECURITY"
+    paths:
+      - "**/*.sql"
+      - "**/migrations/**"
+      - "**/flyway/**"
+    reminder: "⚠️ Security Warning: Disabling Row Level Security on a table removes
+      tenant isolation. Verify this is intentional and the table contains no per-tenant
+      or per-user data. If RLS must be bypassed temporarily, use SET LOCAL row_security = off
+      inside an explicit transaction instead of a schema-level ALTER."
+
+  - rule_name: postgres_superuser_grant
+    regex: "(?i)GRANT\\s+(?:ALL|SUPERUSER|CREATEROLE|CREATEDB)"
+    paths:
+      - "**/*.sql"
+      - "**/migrations/**"
+    reminder: "⚠️ Security Warning: Granting SUPERUSER, CREATEROLE, CREATEDB, or ALL PRIVILEGES
+      violates least-privilege. Application users should have SELECT/INSERT/UPDATE/DELETE
+      only on the tables they own. Use role-based grants scoped to specific tables."
+
+  # ── Credentials & Secrets ────────────────────────────────────────────────────
+
+  - rule_name: hardcoded_api_key_prefix
+    substrings:
+      - "sk_live_"
+      - "sk_test_"
+      - "AKIA"
+      - "rk_live_"
+      - "whsec_"
+      - "xoxb-"
+      - "xoxp-"
+    reminder: "⚠️ Security Warning: Hardcoded API key or credential prefix detected.
+      Load credentials from environment variables or a secrets manager (Secret Manager,
+      AWS SSM, Vault). Never commit live keys to version control."
+
+  - rule_name: firebase_service_account_inline
+    regex: "\"private_key\"\\s*:\\s*\"-----BEGIN"
+    reminder: "⚠️ Security Warning: Firebase service account private key embedded inline.
+      Use GOOGLE_APPLICATION_CREDENTIALS env var pointing to a file outside the repo,
+      or load the key from Secret Manager at runtime."
