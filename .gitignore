@@ -28,6 +28,10 @@ sheets-mcp-credentials.json
 
 # Miscellaneous
 *.log
+# Hook runtime audit logs (already covered by *.log above; listed explicitly for
+# discoverability) — written by output-secrets-scanner.sh, output-llm-quota-guard.sh,
+# stopfailure-api-error-notice.sh, and session-mcp-governance.sh.
+.claude/*-detected.log
 *.swp
 .buildlog/
 .history

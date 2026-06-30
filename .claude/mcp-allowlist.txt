@@ -1,0 +1,17 @@
+adk-docs
+angular-cli
+browser-use
+chrome-devtools
+context7
+dart-mcp-server
+docker
+firebase
+github
+langchain-docs
+maestro
+postgres
+revenuecat
+stripe
+voicemode
+weaviate-docs
+xcodebuild

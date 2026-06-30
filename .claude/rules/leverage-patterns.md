@@ -385,7 +385,7 @@ Before dispatching ANY agent (Task tool or TeamCreate):
 ### Limitations (Both Modes)
 
 - Agents cannot read `.claude/rules/` or `CLAUDE.md` unless you paste the relevant rules into the prompt or message
-- Agents create `.claude/agent-memory/` files that are NOT reliably read by future agents — treat these as orphans and consolidate via `/promote-lessons`
+- Agent memory (native `memory:` frontmatter, v2.1.33): an agent that declares it **does** reliably re-read the first 200 lines of its OWN `.claude/agent-memory/<agent>/MEMORY.md` on each invocation — it just never reads another agent's memory, and overflow topic files load only on demand. So don't treat a `memory:`-enabled agent's notes as unread "orphans"; durable, cross-cutting knowledge still flows into `lessons.md`/skills via `/promote-lessons` (the review-gated path), not raw committed memory.
 - Agents do not see prior conversation context unless the agent type description says "access to current context"
 - Agent output is not visible to the user — you must summarize results back
 - Team teammates cannot hear you unless you use `SendMessage` — plain text output is invisible to them
