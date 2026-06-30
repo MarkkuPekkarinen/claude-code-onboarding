@@ -15,4 +15,18 @@ if [[ -f "$RALPH_STATE_FILE" ]]; then
 else
   echo "ℹ️  No active Ralph loop found."
 fi
+
+# Surface progress + escalated items from the surviving state file
+RALPH_PROGRESS_FILE="$CLAUDE_PROJECT_DIR/.claude/ralph-state.local.md"
+if [[ -f "$RALPH_PROGRESS_FILE" ]]; then
+  echo ""
+  echo "📄 Progress preserved at .claude/ralph-state.local.md"
+  echo "   (re-running /ralph-loop resumes from it; delete it for an unrelated task)"
+  ESCALATED=$(awk '/^## Escalated to humans/{flag=1; next} /^## /{flag=0} flag && NF' "$RALPH_PROGRESS_FILE")
+  if [[ -n "$ESCALATED" ]] && [[ "$ESCALATED" != "- (none)" ]]; then
+    echo ""
+    echo "⚠️  Items escalated to humans during this loop:"
+    echo "$ESCALATED"
+  fi
+fi
 ```

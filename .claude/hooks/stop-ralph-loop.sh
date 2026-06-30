@@ -40,9 +40,15 @@ if [[ ! "$MAX_ITERATIONS" =~ ^[0-9]+$ ]]; then
   exit 0
 fi
 
+# Progress state file (survives loop end — written by Claude per RULES in ralph-loop.md)
+RALPH_PROGRESS_FILE="$CLAUDE_PROJECT_DIR/.claude/ralph-state.local.md"
+
 # Check iteration limit
 if [[ $MAX_ITERATIONS -gt 0 ]] && [[ $ITERATION -ge $MAX_ITERATIONS ]]; then
   echo "🛑 Ralph loop: Max iterations ($MAX_ITERATIONS) reached. Stopping." >&2
+  if [[ -f "$RALPH_PROGRESS_FILE" ]]; then
+    echo "   Progress + escalated items: .claude/ralph-state.local.md" >&2
+  fi
   rm "$RALPH_STATE_FILE"
   exit 0
 fi
@@ -78,6 +84,7 @@ if [[ "$COMPLETION_PROMISE" != "null" ]] && [[ -n "$COMPLETION_PROMISE" ]]; then
     # Promise asserted. If a deterministic verifier is configured, IT — not the
     # model's self-report — decides completion. The worker controls what reaches
     # this hook (the transcript); a deterministic command checks the world itself.
+    # (mirrors the /goal verifier rule in leverage-patterns.md.)
     if [[ "$VERIFY_CMD" != "null" ]] && [[ -n "$VERIFY_CMD" ]]; then
       VERIFY_LOG="${RALPH_STATE_FILE}.verify.$$"
       RUN_PREFIX=""
@@ -91,6 +98,9 @@ if [[ "$COMPLETION_PROMISE" != "null" ]] && [[ -n "$COMPLETION_PROMISE" ]]; then
       fi
       if [[ $VERIFY_RC -eq 0 ]]; then
         echo "✅ Ralph loop: Promise '$COMPLETION_PROMISE' + verifier ('$VERIFY_CMD') exit 0. Loop complete." >&2
+        if [[ -f "$RALPH_PROGRESS_FILE" ]]; then
+          echo "   Run summary + lessons: .claude/ralph-state.local.md" >&2
+        fi
         rm -f "$VERIFY_LOG"
         rm "$RALPH_STATE_FILE"
         exit 0
@@ -103,6 +113,9 @@ if [[ "$COMPLETION_PROMISE" != "null" ]] && [[ -n "$COMPLETION_PROMISE" ]]; then
 ${VERIFY_TAIL}"
     else
       echo "✅ Ralph loop: Promise detected — '$COMPLETION_PROMISE'. Loop complete." >&2
+      if [[ -f "$RALPH_PROGRESS_FILE" ]]; then
+        echo "   Run summary + lessons: .claude/ralph-state.local.md" >&2
+      fi
       rm "$RALPH_STATE_FILE"
       exit 0
     fi
@@ -127,10 +140,11 @@ sed "s/^iteration: .*/iteration: $NEXT_ITERATION/" "$RALPH_STATE_FILE" > "$TEMP_
 mv "$TEMP_FILE" "$RALPH_STATE_FILE"
 
 # Build system message
+STATE_REMINDER="Read .claude/ralph-state.local.md first; update it before ending this iteration. 3 failed attempts on a sub-task = escalate, never retry."
 if [[ "$COMPLETION_PROMISE" != "null" ]] && [[ -n "$COMPLETION_PROMISE" ]]; then
-  SYSTEM_MSG="🔄 Ralph iteration $NEXT_ITERATION / $(if [[ $MAX_ITERATIONS -gt 0 ]]; then echo $MAX_ITERATIONS; else echo '∞'; fi) | Output <promise>$COMPLETION_PROMISE</promise> ONLY when genuinely true"
+  SYSTEM_MSG="🔄 Ralph iteration $NEXT_ITERATION / $(if [[ $MAX_ITERATIONS -gt 0 ]]; then echo $MAX_ITERATIONS; else echo '∞'; fi) | Output <promise>$COMPLETION_PROMISE</promise> ONLY when genuinely true | $STATE_REMINDER"
 else
-  SYSTEM_MSG="🔄 Ralph iteration $NEXT_ITERATION / $(if [[ $MAX_ITERATIONS -gt 0 ]]; then echo $MAX_ITERATIONS; else echo '∞'; fi) | No completion promise set"
+  SYSTEM_MSG="🔄 Ralph iteration $NEXT_ITERATION / $(if [[ $MAX_ITERATIONS -gt 0 ]]; then echo $MAX_ITERATIONS; else echo '∞'; fi) | No completion promise set | $STATE_REMINDER"
 fi
 
 # If a verifier rejected the promise this turn, lead the next turn with that evidence.

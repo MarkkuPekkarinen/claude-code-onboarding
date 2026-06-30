@@ -259,7 +259,7 @@ The answer to the 5th "Why?" is your fix target.
 
 The "3 fixes failed" counter is a backstop, not the first signal. A loop is usually
 stuck several attempts earlier — detect it *structurally* instead of waiting to exhaust
-the count:
+the count (loop-engineering no-progress signals):
 
 | Signal | What it looks like | Response |
 |---|---|---|
@@ -270,7 +270,8 @@ the count:
 
 Rule of thumb: **a repeated normalized error signature with no new strategy = escalate
 now** — do not spend the remaining attempts. Record the normalized signature when you log
-an attempt so repeats are detectable across a long session.
+an attempt so repeats are detectable across a long session (that is exactly what
+`ralph-state.local.md`'s `## Attempt counts` is for in an autonomous `/ralph-loop`).
 
 ## Red Flags — STOP and Follow Process
 
