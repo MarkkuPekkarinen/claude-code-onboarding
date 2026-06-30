@@ -255,6 +255,23 @@ The answer to the 5th "Why?" is your fix target.
 
    This is NOT a failed hypothesis — this is a wrong architecture.
 
+### No-Progress Detection (catch a stuck loop before the 3rd blind retry)
+
+The "3 fixes failed" counter is a backstop, not the first signal. A loop is usually
+stuck several attempts earlier — detect it *structurally* instead of waiting to exhaust
+the count:
+
+| Signal | What it looks like | Response |
+|---|---|---|
+| Repeated error | The SAME error recurs after your change — compare the **normalized** form (strip timestamps, IDs, paths, line offsets), not the raw text | Do not re-try the same class of fix. Form a genuinely new hypothesis (Phase 3) or escalate. |
+| Ping-pong edit | Your new diff reverts a previous attempt's diff (alternating file hashes) | Stop — you are oscillating between two wrong states. The real cause is elsewhere; escalate. |
+| Strategy repetition | You are about to run an approach already recorded as failed | Reject it without new evidence. A previously-failed strategy needs a NEW fact to be worth re-running. |
+| Verifier stagnation | Failing-test count / error signature does not improve across attempts | Treat as no progress even if each attempt "looks" different. |
+
+Rule of thumb: **a repeated normalized error signature with no new strategy = escalate
+now** — do not spend the remaining attempts. Record the normalized signature when you log
+an attempt so repeats are detectable across a long session.
+
 ## Red Flags — STOP and Follow Process
 
 If you catch yourself thinking:

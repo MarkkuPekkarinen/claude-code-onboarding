@@ -22,6 +22,7 @@ FRONTMATTER=$(sed -n '/^---$/,/^---$/{ /^---$/d; p; }' "$RALPH_STATE_FILE")
 ITERATION=$(echo "$FRONTMATTER" | grep '^iteration:' | sed 's/iteration: *//')
 MAX_ITERATIONS=$(echo "$FRONTMATTER" | grep '^max_iterations:' | sed 's/max_iterations: *//')
 COMPLETION_PROMISE=$(echo "$FRONTMATTER" | grep '^completion_promise:' | sed 's/completion_promise: *//' | sed 's/^"\(.*\)"$/\1/')
+VERIFY_CMD=$(echo "$FRONTMATTER" | grep '^verify_cmd:' | sed 's/^verify_cmd: *//' | sed 's/^"\(.*\)"$/\1/' || true)
 
 # Validate iteration is a number
 if [[ ! "$ITERATION" =~ ^[0-9]+$ ]]; then
@@ -70,12 +71,41 @@ if [[ -z "$LAST_OUTPUT" ]]; then
 fi
 
 # Check for completion promise
+VERIFY_FEEDBACK=""
 if [[ "$COMPLETION_PROMISE" != "null" ]] && [[ -n "$COMPLETION_PROMISE" ]]; then
   PROMISE_TEXT=$(echo "$LAST_OUTPUT" | perl -0777 -pe 's/.*?<promise>(.*?)<\/promise>.*/$1/s; s/^\s+|\s+$//g; s/\s+/ /g' 2>/dev/null || echo "")
   if [[ -n "$PROMISE_TEXT" ]] && [[ "$PROMISE_TEXT" = "$COMPLETION_PROMISE" ]]; then
-    echo "✅ Ralph loop: Promise detected — '$COMPLETION_PROMISE'. Loop complete." >&2
-    rm "$RALPH_STATE_FILE"
-    exit 0
+    # Promise asserted. If a deterministic verifier is configured, IT — not the
+    # model's self-report — decides completion. The worker controls what reaches
+    # this hook (the transcript); a deterministic command checks the world itself.
+    if [[ "$VERIFY_CMD" != "null" ]] && [[ -n "$VERIFY_CMD" ]]; then
+      VERIFY_LOG="${RALPH_STATE_FILE}.verify.$$"
+      RUN_PREFIX=""
+      if command -v timeout >/dev/null 2>&1; then
+        RUN_PREFIX="timeout 1800"
+      fi
+      if ( cd "$CLAUDE_PROJECT_DIR" && $RUN_PREFIX bash -c "$VERIFY_CMD" ) >"$VERIFY_LOG" 2>&1; then
+        VERIFY_RC=0
+      else
+        VERIFY_RC=$?
+      fi
+      if [[ $VERIFY_RC -eq 0 ]]; then
+        echo "✅ Ralph loop: Promise '$COMPLETION_PROMISE' + verifier ('$VERIFY_CMD') exit 0. Loop complete." >&2
+        rm -f "$VERIFY_LOG"
+        rm "$RALPH_STATE_FILE"
+        exit 0
+      fi
+      # Verifier FAILED — reject the promise, keep iterating with the evidence.
+      VERIFY_TAIL=$(tail -n 25 "$VERIFY_LOG" 2>/dev/null || echo "")
+      rm -f "$VERIFY_LOG"
+      echo "⛔ Ralph loop: Promise asserted but verifier '$VERIFY_CMD' exited $VERIFY_RC — rejecting promise, continuing." >&2
+      VERIFY_FEEDBACK="⛔ DETERMINISTIC VERIFIER FAILED. You emitted the completion promise, but \`$VERIFY_CMD\` exited ${VERIFY_RC} (non-zero), so the promise is REJECTED and the work is NOT done. Do NOT emit the promise again until \`$VERIFY_CMD\` exits 0 — and never weaken the verifier to force a pass. Last 25 lines of verifier output:
+${VERIFY_TAIL}"
+    else
+      echo "✅ Ralph loop: Promise detected — '$COMPLETION_PROMISE'. Loop complete." >&2
+      rm "$RALPH_STATE_FILE"
+      exit 0
+    fi
   fi
 fi
 
@@ -103,9 +133,20 @@ else
   SYSTEM_MSG="🔄 Ralph iteration $NEXT_ITERATION / $(if [[ $MAX_ITERATIONS -gt 0 ]]; then echo $MAX_ITERATIONS; else echo '∞'; fi) | No completion promise set"
 fi
 
+# If a verifier rejected the promise this turn, lead the next turn with that evidence.
+if [[ -n "$VERIFY_FEEDBACK" ]]; then
+  FEED_PROMPT="${VERIFY_FEEDBACK}
+
+---
+
+${PROMPT_TEXT}"
+else
+  FEED_PROMPT="$PROMPT_TEXT"
+fi
+
 # Block exit and feed prompt back
 jq -n \
-  --arg prompt "$PROMPT_TEXT" \
+  --arg prompt "$FEED_PROMPT" \
   --arg msg "$SYSTEM_MSG" \
   '{
     "decision": "block",
